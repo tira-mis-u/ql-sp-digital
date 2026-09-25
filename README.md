@@ -1,4 +1,4 @@
-# Bài tập lớn: Phần mềm quản lý nhà trọ
+# Bài tập lớn: Digital Product Management System (DPMS)
 
 <img align="right" width="12%" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Microsoft_SQL_Server_2025_icon.svg/960px-Microsoft_SQL_Server_2025_icon.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail">
 <img align="right" width="12%" src="https://cdn3d.iconscout.com/3d/free/thumb/free-visual-studio-3d-icon-png-download-7578028.png">
