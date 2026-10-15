@@ -63,7 +63,7 @@ Các mục tiêu chính:
 
 DPMS tập trung vào hai nhóm người dùng chính.
 
-### 2.1. Khách hàng (Customer)
+### 2.1. Khách hàng (KhachHang)
 
 - Đăng ký, đăng nhập và đăng xuất.
 - Quản lý thông tin cá nhân.
@@ -76,7 +76,7 @@ DPMS tập trung vào hai nhóm người dùng chính.
 - Quản lý thư viện sản phẩm đã sở hữu.
 - Tải xuống các sản phẩm đã mua.
 
-### 2.2. Quản trị viên (Administrator)
+### 2.2. Quản trị viên (QuanTriVien)
 
 - Quản lý sản phẩm.
 - Quản lý danh mục sản phẩm.
@@ -104,31 +104,34 @@ Danh mục có thể được mở rộng hoặc thay đổi thông qua chức n
 
 ## 3. Chức năng chính
 
-| Module | Chức năng |
-|---|---|
-| Authentication | Đăng ký, đăng nhập, đăng xuất và phân quyền |
-| Store | Hiển thị, tìm kiếm, lọc và sắp xếp sản phẩm |
-| Product Details | Hiển thị thông tin, hình ảnh, giá và mô tả |
-| Shopping Cart | Quản lý sản phẩm trong giỏ hàng |
-| Order Management | Tạo đơn hàng và lưu lịch sử giao dịch |
-| Payment Simulation | Mô phỏng quy trình thanh toán |
-| Digital Library | Quản lý các sản phẩm đã sở hữu |
-| Download Management | Kiểm tra quyền sở hữu và tải tệp |
-| Product Management | CRUD sản phẩm |
-| Category Management | CRUD danh mục |
-| User Management | Quản lý tài khoản và trạng thái người dùng |
-| Dashboard & Reports | Thống kê hoạt động kinh doanh |
+| Module | Chức năng | Phụ trách |
+|---|---|---|
+| Authentication | Đăng ký, đăng nhập, đăng xuất và phân quyền | Nhóm 4 |
+| Store | Hiển thị, tìm kiếm, lọc và sắp xếp sản phẩm | Nhóm 1 |
+| Product Details | Hiển thị thông tin, hình ảnh, giá và mô tả | Nhóm 1 |
+| Product Reviews & Ratings | Đánh giá sao (1-5★), viết nhận xét phản hồi và xem đánh giá cộng đồng | Nhóm 1 |
+| Shopping Cart | Quản lý sản phẩm trong giỏ hàng, cập nhật số lượng, xóa món | Nhóm 2 |
+| Payment & Wallet Simulation | Mô phỏng ví tài khoản (Steam Wallet), nạp tiền mệnh giá và thanh toán 1-Click | Nhóm 2 |
+| Vouchers & Promotions | Quản lý mã giảm giá, thu thập khuyến mãi và áp dụng khấu trừ đơn hàng | Nhóm 2 |
+| Product Management | CRUD sản phẩm (thêm, sửa, xóa, tìm kiếm sản phẩm) | Nhóm 3 |
+| Category Management | CRUD danh mục thể loại sản phẩm | Nhóm 3 |
+| User Profile | Quản lý hồ sơ cá nhân và đổi mật khẩu | Nhóm 3 |
+| User Management | Quản lý danh sách tài khoản, phân quyền và khóa/mở người dùng | Nhóm 4 |
+| Dashboard & Reports | Thống kê doanh thu, số lượng đơn hàng, số người dùng | Nhóm 4 |
+| Order Management | Duyệt và quản lý trạng thái đơn hàng (Admin) | Nhóm 5 |
+| Order History | Theo dõi lịch sử mua hàng và hóa đơn cá nhân | Nhóm 5 |
+| Digital Library & Downloads | Quản lý kho sản phẩm đã sở hữu và mô phỏng tải tệp kỹ thuật số | Nhóm 5 |
 
-### Quy trình mua hàng
+### Quy trình mua hàng & Áp dụng ưu đãi
 
-1. Khách hàng lựa chọn sản phẩm.
-2. Thêm sản phẩm vào giỏ hàng.
-3. Kiểm tra giỏ hàng và xác nhận đơn hàng.
-4. Hệ thống kiểm tra giá, trạng thái sản phẩm và quyền sở hữu.
-5. Tạo đơn hàng và thực hiện thanh toán mô phỏng.
-6. Nếu thanh toán thành công, cập nhật trạng thái đơn hàng.
-7. Cấp quyền sở hữu sản phẩm cho khách hàng.
-8. Hiển thị sản phẩm trong thư viện và cho phép tải xuống.
+1. Khách hàng lựa chọn sản phẩm từ Cửa hàng (Store), xem đánh giá cộng đồng và chi tiết cấu hình.
+2. Thêm sản phẩm vào giỏ hàng (Shopping Cart).
+3. Kiểm tra giỏ hàng, áp dụng mã giảm giá (Voucher) để được khấu trừ tiền.
+4. Hệ thống kiểm tra giá, trạng thái sản phẩm, hạn mức voucher và số dư ví tài khoản.
+5. Xác nhận thanh toán 1-Click bằng số dư Ví (nếu thiếu tiền, chuyển sang nạp thêm vào ví).
+6. Trừ tiền ví, tạo đơn hàng thành công và đánh dấu voucher đã sử dụng.
+7. Cấp quyền sở hữu vĩnh viễn sản phẩm cho khách hàng.
+8. Hiển thị sản phẩm trong Thư viện (Library) và cho phép tải xuống.
 
 **Nguyên tắc nghiệp vụ:** Chỉ cấp quyền sở hữu sau khi thanh toán được xác nhận thành công. Người dùng không được tải xuống sản phẩm mà mình chưa có quyền truy cập.
 
@@ -182,28 +185,27 @@ Lưu trữ thông tin tài khoản, sản phẩm, giỏ hàng, đơn hàng, than
 
 Các bảng dữ liệu chính:
 
-| Bảng | Mục đích |
-|---|---|
-| `Users` | Tài khoản và thông tin người dùng |
-| `Categories` | Danh mục sản phẩm |
-| `Publishers` | Nhà phát hành |
-| `Products` | Thông tin sản phẩm |
-| `ProductFiles` | Tệp kỹ thuật số và phiên bản |
-| `CartItems` | Chi tiết giỏ hàng |
-| `Orders` | Thông tin đơn hàng |
-| `OrderItems` | Chi tiết sản phẩm trong đơn hàng |
-| `Payments` | Thông tin thanh toán mô phỏng |
-| `UserProducts` | Quyền sở hữu sản phẩm |
-| `Reviews` | Đánh giá sản phẩm |
-| `Favorites` | Danh sách sản phẩm yêu thích |
-
-Các bảng như `Publishers`, `Reviews` và `Favorites` có thể được triển khai ở giai đoạn mở rộng nếu thời gian có hạn.
+| Bảng (Tiếng Việt) | Mục đích | Phân hệ sử dụng |
+|---|---|---|
+| `NguoiDung` | Tài khoản, vai trò và số dư ví tài khoản | Auth / Profile / Wallet / UserMgmt |
+| `DanhMuc` | Danh mục thể loại sản phẩm số | Store / ProductAdmin |
+| `NhaPhatHanh` | Nhà phát hành / Studio sáng tạo | Store / ProductAdmin |
+| `SanPham` | Thông tin sản phẩm kỹ thuật số, giá bán, phiên bản | Store / ProductDetail / ProductAdmin |
+| `TepSanPham` | Metadata tệp kỹ thuật số và đường dẫn tương đối lưu tệp | ProductAdmin / Library |
+| `GioHang` | Chi tiết giỏ hàng của từng tài khoản | Cart (Nhóm 2) |
+| `MaGiamGia` | Mã giảm giá, loại giảm (%, tiền mặt), đơn tối thiểu | Cart / Voucher (Nhóm 2) |
+| `MaGiamGiaNguoiDung` | Kho voucher người dùng đã thu thập và trạng thái sử dụng | Cart / Voucher (Nhóm 2) |
+| `DonHang` | Thông tin đơn hàng và tổng tiền thanh toán | Cart / OrderHistory / OrderAdmin |
+| `ChiTietDonHang` | Chi tiết sản phẩm trong đơn hàng và đơn giá lúc mua | OrderHistory / OrderAdmin |
+| `ThanhToan` | Lịch sử giao dịch thanh toán ví và nạp tiền | Cart / Wallet (Nhóm 2) |
+| `SoHuuSanPham` | Quyền sở hữu sản phẩm vĩnh viễn và lịch sử tải tệp | Library (Nhóm 5) |
+| `DanhGia` | Đánh giá sao (1-5★) & nhận xét phản hồi sản phẩm | Store & Reviews (Nhóm 1) |
 
 ### Các nguyên tắc thiết kế
 
 - Sử dụng khóa chính và khóa ngoại để duy trì tính toàn vẹn dữ liệu.
 - Đặt ràng buộc duy nhất cho email và các cặp dữ liệu không được trùng lặp.
-- Lưu giá sản phẩm tại thời điểm mua trong `OrderItems`.
+- Lưu giá sản phẩm tại thời điểm mua trong `ChiTietDonHang`.
 - Sử dụng kiểu `DECIMAL` cho dữ liệu tiền tệ.
 - Không xóa dây chuyền dữ liệu lịch sử đơn hàng khi sản phẩm ngừng kinh doanh.
 - Sử dụng transaction cho các thao tác mua hàng cần cập nhật nhiều bảng.
@@ -211,27 +213,36 @@ Các bảng như `Publishers`, `Reviews` và `Favorites` có thể được tri�
 
 ---
 
-## 6. Giao diện dự kiến
+## 6. Giao diện dự kiến (15 Màn hình - 5 Nhóm nhiệm vụ)
 
-Giao diện được định hướng theo phong cách cửa hàng kỹ thuật số hiện đại, ưu tiên khả năng sử dụng, tính nhất quán và trải nghiệm trực quan.
+Giao diện được định hướng theo phong cách cửa hàng kỹ thuật số hiện đại, ưu tiên khả năng sử dụng, tính nhất quán và trải nghiệm trực quan. Hệ thống bao gồm **15 màn hình chức năng**, phân đều cho 5 thành viên (mỗi người 3 màn hình / 3 chức năng độc lập):
 
-Các màn hình chính:
+### Nhóm 1: Cửa hàng, Chi tiết & Đánh giá sản phẩm (3 UI)
+1. **Home / Store (UI 2):** Trang chủ, duyệt sản phẩm dạng thẻ, tìm kiếm và lọc danh mục.
+2. **Product Details (UI 3):** Chi tiết sản phẩm, xem mô tả, ảnh lớn, thêm vào giỏ / mua ngay.
+3. **Product Reviews & Ratings (UI 14 - Bổ sung):** Đánh giá sao (1-5★), viết nhận xét phản hồi, quản lý đánh giá của tôi & xem nhận xét cộng đồng.
 
-1. **Login / Register:** Đăng nhập và đăng ký.
-2. **Home / Store:** Trang chủ và danh sách sản phẩm.
-3. **Product Details:** Chi tiết sản phẩm.
-4. **Shopping Cart:** Giỏ hàng.
-5. **Checkout:** Xác nhận và thanh toán mô phỏng.
-6. **My Library:** Thư viện sản phẩm đã sở hữu.
-7. **Order History:** Lịch sử mua hàng.
-8. **User Profile:** Thông tin cá nhân.
-9. **Admin Dashboard:** Tổng quan hoạt động kinh doanh.
-10. **Product Management:** Quản lý sản phẩm.
-11. **Category Management:** Quản lý danh mục.
-12. **User Management:** Quản lý người dùng.
-13. **Order Management:** Quản lý đơn hàng.
+### Nhóm 2: Mua hàng, Ví tài khoản & Mã giảm giá (3 UI)
+4. **Shopping Cart (UI 4):** Giỏ hàng, sửa số lượng, xóa món và thanh toán 1-Click bằng ví.
+5. **My Wallet / Top-up (UI 5):** Ví tài khoản (Steam Wallet), xem số dư và nạp tiền theo mệnh giá.
+6. **Vouchers & Promotions (UI 15 - Bổ sung):** Kho mã giảm giá, thu thập khuyến mãi mới và áp dụng giảm tiền giỏ hàng.
 
-Các màn hình có thể sử dụng `Form`, `UserControl`, `Panel`, `FlowLayoutPanel`, `DataGridView`, `PictureBox`, `ComboBox` và những control phù hợp của WinForms.
+### Nhóm 3: Quản trị Sản phẩm, Danh mục & Hồ sơ cá nhân (3 UI)
+7. **Product Management (UI 10):** Quản lý danh sách sản phẩm (CRUD sản phẩm, giá, trạng thái kinh doanh).
+8. **Category Management (UI 11):** Quản lý thể loại hàng hóa (CRUD danh mục).
+9. **User Profile (UI 8):** Xem hồ sơ cá nhân, cập nhật thông tin và đổi mật khẩu.
+
+### Nhóm 4: Xác thực, Quản lý tài khoản & Thống kê hệ thống (3 UI)
+10. **Login / Register (UI 1):** Đăng nhập và đăng ký tài khoản.
+11. **User Management (UI 12):** Danh sách người dùng, phân quyền Quản trị viên / Khách hàng (`QuanTriVien` / `KhachHang`) và khóa/mở tài khoản.
+12. **Admin Dashboard (UI 9):** Báo cáo số liệu tổng quan (Tổng doanh thu, số đơn, lượng người dùng).
+
+### Nhóm 5: Đơn hàng & Kho thư viện số (3 UI)
+13. **Order Management (UI 13):** Quản trị viên duyệt và quản lý trạng thái các đơn hàng.
+14. **Order History (UI 7):** Khách hàng tra cứu lịch sử mua hàng và hóa đơn cá nhân.
+15. **My Library (UI 6):** Kho sản phẩm đã sở hữu của khách hàng và mô phỏng tải tệp.
+
+Các màn hình được thiết kế dưới dạng `UserControl` WinForms, nhúng linh hoạt vào khung sườn chính `MainForm`.
 
 ---
 
@@ -327,17 +338,15 @@ Dự án dự kiến triển khai trong 6 tuần.
 
 ---
 
-## 9. Phân công công việc dự kiến
+## 9. Phân công công việc dự kiến (Mỗi thành viên tối thiểu 3 chức năng)
 
-| Thành viên | Trách nhiệm dự kiến |
-|---|---|
-| Phạm Trung Hiếu | Phân tích yêu cầu, thiết kế hệ thống và phối hợp tích hợp |
-| Trần Quốc Thuận | Phát triển chức năng theo phân công của nhóm |
-| Lê Nguyễn Minh Trí | Phát triển chức năng theo phân công của nhóm |
-| Phạm Văn Đam | Phát triển chức năng theo phân công của nhóm |
-| Nguyễn Quốc Trung | Phát triển chức năng theo phân công của nhóm |
-
-*Phân công trên là khung ban đầu; nhiệm vụ cụ thể sẽ được thống nhất theo năng lực, tiến độ và khối lượng công việc của từng thành viên.*
+| STT | Thành viên phụ trách | Nhóm phụ trách | Danh sách 3 Chức năng / UI chính | Trách nhiệm chính |
+|:---:|---|---|---|---|
+| 1 | *[Chưa phân công / Điền sau]* | **Nhóm 1:** Store & Reviews | 1. **Store / Trang chủ (UI 2)**: Duyệt sản phẩm, tìm kiếm, lọc thể loại.<br>2. **Product Details (UI 3)**: Xem chi tiết cấu hình, mô tả, mua hàng.<br>3. **Product Reviews (UI 14)**: Đánh giá sao, viết nhận xét, xem phản hồi cộng đồng. | Phân tích yêu cầu, thiết kế kiến trúc hệ thống, phát triển phân hệ Cửa hàng & Đánh giá sản phẩm |
+| 2 | *[Chưa phân công / Điền sau]* | **Nhóm 2:** Cart & Wallet | 1. **Shopping Cart (UI 4)**: Quản lý giỏ hàng, cập nhật số lượng, thanh toán ví.<br>2. **My Wallet (UI 5)**: Xem số dư ví, nạp tiền các gói mệnh giá.<br>3. **Vouchers (UI 15)**: Quản lý mã giảm giá, áp dụng ưu đãi đơn hàng. | Thiết kế và phát triển luồng Giỏ hàng, mô phỏng Ví tài khoản & Hệ thống mã giảm giá |
+| 3 | *[Chưa phân công / Điền sau]* | **Nhóm 3:** Product & Admin | 1. **Product Management (UI 10)**: CRUD sản phẩm, giá bán, trạng thái.<br>2. **Category Management (UI 11)**: CRUD danh mục thể loại hàng.<br>3. **User Profile (UI 8)**: Quản lý hồ sơ cá nhân và đổi mật khẩu. | Thiết kế và phát triển phân hệ Quản trị Hàng hóa, Thể loại và Hồ sơ người dùng |
+| 4 | *[Chưa phân công / Điền sau]* | **Nhóm 4:** Auth & Dashboard | 1. **Login / Register (UI 1)**: Đăng ký, đăng nhập tài khoản, bảo mật.<br>2. **User Management (UI 12)**: Quản lý tài khoản, phân quyền, khóa tài khoản.<br>3. **Admin Dashboard (UI 9)**: Thống kê doanh thu, số đơn, người dùng. | Thiết kế và phát triển phân hệ Xác thực, Phân quyền và Báo cáo số liệu quản trị |
+| 5 | *[Chưa phân công / Điền sau]* | **Nhóm 5:** Orders & Library | 1. **Order Management (UI 13)**: Quản lý và duyệt trạng thái đơn hàng.<br>2. **Order History (UI 7)**: Tra cứu lịch sử mua hàng, chi tiết đơn.<br>3. **My Library (UI 6)**: Kho sản phẩm kỹ thuật số sở hữu, mô phỏng tải file. | Thiết kế và phát triển phân hệ Đơn hàng, Lịch sử mua sắm và Kho thư viện số |
 
 ---
 
@@ -345,18 +354,20 @@ Dự án dự kiến triển khai trong 6 tuần.
 
 Các nhóm chức năng cần được kiểm thử trước khi nghiệm thu:
 
-- [ ] Đăng ký, đăng nhập và phân quyền hoạt động đúng.
-- [ ] CRUD sản phẩm và danh mục hoạt động đúng.
-- [ ] Tìm kiếm và lọc sản phẩm chính xác.
-- [ ] Giỏ hàng không tạo dữ liệu trùng ngoài ý muốn.
-- [ ] Tổng tiền và giá tại thời điểm mua chính xác.
-- [ ] Thanh toán thất bại không cấp quyền sở hữu.
-- [ ] Thanh toán thành công tạo quyền sở hữu hợp lệ.
-- [ ] Khách hàng chỉ tải xuống sản phẩm được phép truy cập.
-- [ ] Dữ liệu đơn hàng và lịch sử mua hàng được bảo toàn.
-- [ ] Dữ liệu được lưu và truy xuất từ SQL Server.
-- [ ] Các lỗi nhập liệu và lỗi kết nối được xử lý phù hợp.
-- [ ] Ứng dụng có thể khởi chạy trên môi trường demo đã chuẩn bị.
+- [ ] Đăng ký, đăng nhập và phân quyền (`QuanTriVien` / `KhachHang`) hoạt động đúng.
+- [ ] CRUD sản phẩm và danh mục hoạt động đúng, dữ liệu phản ánh ngay lập tức.
+- [ ] Tìm kiếm theo từ khóa và lọc sản phẩm theo thể loại chính xác.
+- [ ] Đánh giá sao (1-5 sao) và gửi nhận xét sản phẩm (Reviews) thành công, cập nhật điểm đánh giá trung bình chính xác.
+- [ ] Giỏ hàng thêm, sửa số lượng, xóa món không tạo dữ liệu trùng lặp ngoài ý muốn.
+- [ ] Áp dụng mã giảm giá (Voucher) tính toán chính xác số tiền được chiết khấu và chặn mã không hợp lệ.
+- [ ] Nạp tiền mô phỏng vào ví tài khoản cập nhật số dư chính xác.
+- [ ] Thanh toán 1-Click bằng số dư ví kiểm tra điều kiện số dư: đủ thì trừ tiền & cấp quyền, thiếu thì chặn và thông báo.
+- [ ] Đơn hàng tạo thành công lưu đầy đủ chi tiết mặt hàng và giá lúc mua trong SQL Server.
+- [ ] Khách hàng chỉ xem và tải xuống sản phẩm đã thanh toán thành công trong Thư viện cá nhân.
+- [ ] Dashboard hiển thị các con số tổng kết chính xác từ câu lệnh truy vấn SQL Server.
+- [ ] Dữ liệu được lưu trữ, kiểm tra ràng buộc và truy xuất từ Microsoft SQL Server qua ADO.NET.
+- [ ] Các lỗi nhập liệu, ngoại lệ dữ liệu và lỗi kết nối được bẫy bắt và xử lý phù hợp.
+- [ ] Ứng dụng khởi chạy ổn định trên môi trường demo của nhóm.
 
 ---
 

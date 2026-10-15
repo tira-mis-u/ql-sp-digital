@@ -25,10 +25,12 @@ Toàn bộ ứng dụng sử dụng một cửa sổ duy nhất (`MainForm`), l�
 +-----------------------+-----------------------------------------------------------------------+
 |                       |                                                                       |
 |  🔘 Cửa hàng (Store)  |                   VÙNG NỘI DUNG CHÍNH                                 |
-|  🔘 Thư viện (Library)|                     (panelMainContent)                                |
+|  🔘 Đánh giá (Reviews)|                   (panelMainContent)                                |
 |  🔘 Giỏ hàng (Cart)   |                                                                       |
 |  🔘 Ví của tôi (Wallet)|  => Khi bấm menu bên trái, UserControl của từng người                |
-|  🔘 Lịch sử đơn hàng  |     sẽ được tự động nạp và hiển thị tràn đầy vào đây.                 |
+|  🔘 Khuyến mãi (Voucher)|    sẽ được tự động nạp và hiển thị tràn đầy vào đây.                |
+|  🔘 Thư viện (Library)|                                                                       |
+|  🔘 Lịch sử đơn hàng  |                                                                       |
 |  🔘 Quản trị (Admin)  |                                                                       |
 |  🔘 Cài đặt cá nhân   |                                                                       |
 |                       |                                                                       |
@@ -44,7 +46,7 @@ Toàn bộ ứng dụng sử dụng một cửa sổ duy nhất (`MainForm`), l�
    - Chứa Header (Logo, trạng thái tài khoản, số dư ví `lblBalance`, nút giỏ hàng mini) và Sidebar (các nút menu điều hướng).
    - Chứa một `Panel` trung tâm đặt tên là `panelMainContent` (thuộc tính `Dock = DockStyle.Fill`).
 2. **Các màn hình chức năng (`UserControl`):**
-   - 13 màn hình chức năng của các thành viên được thiết kế dưới dạng **`UserControl`** thay vì từng `Form` riêng lẻ trôi nổi.
+   - **15 màn hình chức năng** của 5 thành viên (mỗi người 3 màn hình độc lập) được thiết kế dưới dạng **`UserControl`** thay vì từng `Form` riêng lẻ trôi nổi.
    - Khi bấm nút trên Sidebar, `UserControl` tương ứng sẽ được nạp trực tiếp vào `panelMainContent`.
 
 ### 2.3. Mã nguồn khởi chạy & Chuyển đổi màn hình động
@@ -54,6 +56,7 @@ Trong file `MainForm.cs`:
 using System;
 using System.Windows.Forms;
 using DPMS.WinForms.Views.Store;
+using DPMS.WinForms.Views.Cart;
 
 namespace DPMS.WinForms.Views.Main
 {
@@ -85,24 +88,34 @@ namespace DPMS.WinForms.Views.Main
             SwitchView(new StoreViewControl());
         }
 
-        private void btnMenuLibrary_Click(object sender, EventArgs e)
+        private void btnMenuReviews_Click(object sender, EventArgs e)
         {
-            SwitchView(new Views.Customer.LibraryControl());
+            SwitchView(new ProductReviewControl());
         }
 
         private void btnMenuCart_Click(object sender, EventArgs e)
         {
-            SwitchView(new Views.Cart.CartControl());
+            SwitchView(new CartControl());
         }
 
         private void btnMenuWallet_Click(object sender, EventArgs e)
         {
-            SwitchView(new Views.Cart.WalletControl());
+            SwitchView(new WalletControl());
+        }
+
+        private void btnMenuVouchers_Click(object sender, EventArgs e)
+        {
+            SwitchView(new VoucherControl());
+        }
+
+        private void btnMenuLibrary_Click(object sender, EventArgs e)
+        {
+            SwitchView(new Views.Orders.LibraryControl());
         }
 
         private void btnMenuAdmin_Click(object sender, EventArgs e)
         {
-            SwitchView(new Views.Admin.DashboardControl());
+            SwitchView(new Views.SystemAdmin.DashboardControl());
         }
     }
 }
@@ -128,33 +141,35 @@ DPMS.WinForms/
 │   ├── ProductCardControl.cs                # Thẻ sản phẩm trên lưới Store
 │   └── RatingStarsControl.cs                # Điều khiển hiển thị đánh giá sao
 │
-└── Views/                                   # 13 MÀN HÌNH CHỨC NĂNG
+└── Views/                                   # 15 MÀN HÌNH CHỨC NĂNG
     │
     ├── Main/                                # Khung sườn tổng thể
     │   ├── MainForm.cs                      # Form chính chứa Header, Sidebar và panelMainContent
     │   └── MainForm.Designer.cs
     │
-    ├── Store/                               # Phân hệ Cửa hàng & Xem sản phẩm
+    ├── Store/                               # Phân hệ Cửa hàng, Xem sản phẩm & Đánh giá (Nhóm 1)
     │   ├── StoreViewControl.cs              # UI 2: Trang chủ, lọc theo danh mục, tìm kiếm, lưới sản phẩm
-    │   └── ProductDetailControl.cs          # UI 3: Chi tiết sản phẩm, ảnh mô tả, giá, nút mua
+    │   ├── ProductDetailControl.cs          # UI 3: Chi tiết sản phẩm, ảnh mô tả, giá, xem điểm đánh giá
+    │   └── ProductReviewControl.cs          # UI 14: Đánh giá & Nhận xét sản phẩm (Reviews & Ratings)
     │
-    ├── Cart/                                # Phân hệ Mua hàng & Ví tài khoản
-    │   ├── CartControl.cs                   # UI 4: Giỏ hàng, sửa số lượng, thanh toán 1-click bằng ví
-    │   └── WalletControl.cs                 # UI 5: Ví tài khoản, nạp tiền mô phỏng (Steam Wallet)
+    ├── Cart/                                # Phân hệ Mua hàng, Ví tài khoản & Voucher (Nhóm 2)
+    │   ├── CartControl.cs                   # UI 4: Giỏ hàng, sửa số lượng, áp dụng voucher, thanh toán ví
+    │   ├── WalletControl.cs                 # UI 5: Ví tài khoản, nạp tiền mô phỏng theo mệnh giá
+    │   └── VoucherControl.cs                # UI 15: Kho mã giảm giá, thu thập ưu đãi, xóa mã hết hạn
     │
-    ├── ProductAdmin/                        # Phân hệ Quản trị Hàng hóa & Hồ sơ
+    ├── ProductAdmin/                        # Phân hệ Quản trị Hàng hóa & Hồ sơ (Nhóm 3)
     │   ├── ProductManageControl.cs          # UI 10: CRUD thông tin sản phẩm, giá, upload metadata file
     │   ├── CategoryManageControl.cs         # UI 11: CRUD danh mục thể loại
     │   └── ProfileControl.cs                # UI 8: Xem và cập nhật thông tin cá nhân, đổi mật khẩu
     │
-    ├── SystemAdmin/                         # Phân hệ Quản trị Hệ thống & Báo cáo
+    ├── SystemAdmin/                         # Phân hệ Quản trị Hệ thống & Báo cáo (Nhóm 4)
     │   ├── DashboardControl.cs              # UI 9: Thống kê doanh thu, số đơn, sản phẩm bán chạy
     │   ├── UserManageControl.cs             # UI 12: Danh sách tài khoản, phân quyền, khóa/mở tài khoản
     │   └── Auth/
     │       ├── LoginControl.cs              # UI 1: Đăng nhập
     │       └── RegisterControl.cs           # UI 1: Đăng ký tài khoản
     │
-    └── Orders/                              # Phân hệ Sở hữu & Đơn hàng
+    └── Orders/                              # Phân hệ Sở hữu & Đơn hàng (Nhóm 5)
         ├── LibraryControl.cs                # UI 6: Kho sản phẩm đã sở hữu của khách, nút tải file
         ├── OrderManageControl.cs            # UI 13: Quản trị viên theo dõi và duyệt đơn hàng
         └── OrderHistoryControl.cs           # UI 7: Khách hàng xem lịch sử đơn hàng cá nhân
@@ -162,24 +177,31 @@ DPMS.WinForms/
 
 ---
 
-## 4. Bảng phân công 13 UI & Tiêu chí mỗi người tối thiểu 2 CRUD (Đã đơn giản hóa)
+## 4. Bảng phân công 15 UI & Tiêu chí mỗi người tối thiểu 3 chức năng CRUD (Đã đơn giản hóa)
 
-> **Tiêu chí cốt lõi:** Mỗi thành viên đều có **ít nhất 2 chức năng CRUD (Create - Read - Update - Delete)** thao tác trực tiếp với SQL Server bằng các lệnh cơ bản (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) để tự tin trả lời khi giảng viên hỏi vấn đáp.  
+> **Tiêu chí cốt lõi:** Mỗi thành viên đều có **ít nhất 3 chức năng / màn hình với các thao tác CRUD (Create - Read - Update - Delete)** thao tác trực tiếp với SQL Server bằng các lệnh cơ bản (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) để tự tin trả lời khi giảng viên hỏi vấn đáp.  
 > Các nghiệp vụ phức tạp đều được **đơn giản hóa và mô phỏng** để vừa sức sinh viên, không gây quá tải.
 
 ### 4.1. Bảng phân công chi tiết
 
-| STT | Thành viên phụ trách | Số UI | Danh sách UI cụ thể | Chi tiết 2 CRUD đơn giản để báo cáo BTL | Cách đơn giản hóa |
+| STT | Thành viên phụ trách | Số UI | Danh sách UI cụ thể | Chi tiết 3 chức năng CRUD đơn giản để báo cáo BTL | Cách đơn giản hóa |
 |:---:|---|:---:|---|---|---|
-| **1** | *(Điền tên thành viên 1)* | **2 UI** | 1. **Store / Trang chủ** (UI 2)<br>2. **Product Details** (UI 3) | **CRUD 1: Lọc & Tìm kiếm sản phẩm (`Products`)**<br>- Xem danh sách (Read), tìm theo tên, lọc theo combobox danh mục.<br>**CRUD 2: Danh sách Yêu thích (`Favorites`)**<br>- Bấm nút "Thích" để thêm vào danh sách yêu thích (Create), xem danh sách đã thích (Read), bấm bỏ thích (Delete). | **Rất trực quan:**<br>Chỉ cần 1 nút hình trái tim để thêm/xóa khỏi bảng Yêu thích, không cần làm hệ thống đánh giá sao hay bình luận phức tạp. |
-| **2** | *(Điền tên thành viên 2)* | **2 UI** | 1. **Shopping Cart** (UI 4)<br>2. **My Wallet / Nạp tiền** (UI 5) | **CRUD 1: Quản lý Giỏ hàng (`CartItems`)**<br>- Thêm món vào giỏ (Create), xem giỏ hàng (Read), nút +/- sửa số lượng (Update), xóa món khỏi giỏ (Delete).<br>**CRUD 2: Ví tài khoản & Nạp tiền (`Users.Balance`)**<br>- Xem số dư ví (Read), nạp tiền vào ví bằng nút chọn mệnh giá 50k, 100k, 200k, 500k (Update: `Balance = Balance + @Amount`). Bấm thanh toán trong giỏ hàng để trừ tiền ví (Update: `Balance = Balance - @Total`) và tự động thêm game vào kho sở hữu `UserProducts`. | **Mô phỏng Ví Steam (Steam Wallet):**<br>Không tích hợp cổng ngân hàng hay tạo màn hình Checkout cồng kềnh; người dùng nạp tiền trước vào ví tài khoản, sau đó thanh toán 1-click ngay trong giỏ hàng. Kiểm tra `Số dư ví >= Tổng tiền` trước khi trừ tiền. |
-| **3** | *(Điền tên thành viên 3)* | **3 UI** | 1. **Product Management** (UI 10)<br>2. **Category Management** (UI 11)<br>3. **User Profile** (UI 8) | **CRUD 1: Quản lý Sản phẩm (`Products`)**<br>- Thêm, xem, sửa giá/tên, xóa sản phẩm cơ bản.<br>**CRUD 2: Quản lý Danh mục (`Categories`)**<br>- Thêm, xem, sửa, xóa thể loại (bảng cực kỳ dễ: Mã, Tên danh mục).<br>**CRUD 3: Hồ sơ cá nhân (`User Profile`)**<br>- Xem thông tin, sửa họ tên, đổi mật khẩu. | **Form nhập liệu tiêu chuẩn:**<br>Thao tác thêm/sửa/xóa trên các TextBox thông thường học trên lớp; CRUD Danh mục và Profile làm rất nhanh. |
-| **4** | *(Điền tên thành viên 4)* | **3 UI** | 1. **Login / Register** (UI 1)<br>2. **User Management** (UI 12)<br>3. **Admin Dashboard** (UI 9) | **CRUD 1: Quản lý Người dùng (`Users`)**<br>- Xem bảng user trên DataGridView, nút bấm Khóa/Mở tài khoản (`IsActive = 0/1`).<br>**CRUD 2: Đăng ký tài khoản (`Auth`)**<br>- Form đăng ký: Nhập tên, email, mật khẩu -> INSERT tài khoản mới.<br>*(Màn Dashboard: Xem thống kê tổng hợp)* | **Không cần vẽ biểu đồ phức tạp:**<br>Dashboard chỉ cần 3 ô chữ to hiển thị 3 con số thống kê bằng câu lệnh SQL cơ bản: Tổng doanh thu (`SUM`), Tổng số đơn (`COUNT`), Tổng user (`COUNT`). |
-| **5** | *(Điền tên thành viên 5)* | **3 UI** | 1. **Order Management** (UI 13)<br>2. **Order History** (UI 7)<br>3. **My Library** (UI 6) | **CRUD 1: Quản lý Đơn hàng (`Orders`)**<br>- Xem bảng đơn hàng, nút "Duyệt đơn" (chuyển trạng thái sang Hoàn thành) hoặc "Hủy đơn".<br>**CRUD 2: Thư viện sở hữu (`UserProducts`)**<br>- Xem kho game đã mua, nút "Tải về" (mô phỏng tải file), nút ẩn/gỡ game khỏi thư viện. | **Tận dụng chung 1 bảng Orders:**<br>Màn "Quản lý đơn (Admin)" và màn "Lịch sử đơn (Khách)" dùng chung 1 bảng dữ liệu `Orders`, chỉ khác nhau ở câu lệnh `WHERE UserId = ...`. |
+| **1** | *[Chưa phân công / Điền sau]* | **3 UI** | 1. **Store / Trang chủ** (UI 2)<br>2. **Product Details** (UI 3)<br>3. **Reviews & Ratings** (UI 14) | **CRUD 1: Lọc & Tìm kiếm sản phẩm (`SanPham`)**<br>- Xem danh sách thẻ sản phẩm (Read), tìm theo từ khóa, lọc theo ComboBox danh mục.<br>**CRUD 2: Xem chi tiết & Tóm tắt đánh giá (`SanPham`)**<br>- Xem chi tiết thông số, cấu hình, điểm sao trung bình (`AVG(SoSao)`).<br>**CRUD 3: Quản lý Đánh giá & Nhận xét (`DanhGia`)**<br>- Xem danh sách đánh giá của sản phẩm (Read), chấm điểm từ 1-5 sao và viết nhận xét mới (Create), chỉnh sửa đánh giá của mình (Update), xóa đánh giá (Delete). | **Chuẩn mô hình Steam Reviews:**<br>Màn hình Đánh giá mang tính tương tác cộng đồng cao, thao tác CRUD trực tiếp trên bảng `DanhGia` liên kết `SanPham` và `NguoiDung`. |
+| **2** | *[Chưa phân công / Điền sau]* | **3 UI** | 1. **Shopping Cart** (UI 4)<br>2. **My Wallet / Nạp tiền** (UI 5)<br>3. **Vouchers & Ưu đãi** (UI 15) | **CRUD 1: Quản lý Giỏ hàng (`GioHang`)**<br>- Thêm món vào giỏ (Create), xem giỏ hàng (Read), nút +/- sửa số lượng (Update), xóa món khỏi giỏ (Delete).<br>**CRUD 2: Ví tài khoản & Nạp tiền (`NguoiDung.SoDuVi`)**<br>- Xem số dư ví (Read), nạp tiền vào ví bằng nút chọn mệnh giá 50k, 100k, 200k, 500k (Update: `SoDuVi = SoDuVi + @SoTien`). Bấm thanh toán trong giỏ hàng để trừ tiền ví và tự động cấp quyền vào `SoHuuSanPham`.<br>**CRUD 3: Quản lý Voucher & Giảm giá (`MaGiamGia` & `MaGiamGiaNguoiDung`)**<br>- Xem danh sách voucher ưu đãi (Read), nhập mã code để thu thập voucher mới (Create), chọn voucher để chiết khấu trực tiếp tổng tiền giỏ hàng (Update `DaSuDung = 1`), xóa voucher khỏi ví cá nhân (Delete). | **Mô phỏng Ví Steam & Hệ thống khuyến mãi:**<br>Thanh toán 1-Click bằng số dư ví kết hợp trừ tiền chiết khấu từ mã giảm giá. Các mã voucher định nghĩa sẵn (VD: `WELCOME2026`, `SUMMERSALE`). Kiểm tra `Số dư ví >= Tổng tiền sau giảm giá` trước khi trừ tiền. |
+| **3** | *[Chưa phân công / Điền sau]* | **3 UI** | 1. **Product Management** (UI 10)<br>2. **Category Management** (UI 11)<br>3. **User Profile** (UI 8) | **CRUD 1: Quản lý Sản phẩm (`SanPham` & `TepSanPham`)**<br>- Thêm, xem, sửa giá/tên, xóa sản phẩm và cập nhật metadata tệp tải về.<br>**CRUD 2: Quản lý Danh mục (`DanhMuc`)**<br>- Thêm, xem, sửa, xóa thể loại (bảng cực kỳ dễ: Mã, Tên danh mục).<br>**CRUD 3: Hồ sơ cá nhân (`NguoiDung`)**<br>- Xem thông tin, sửa họ tên, đổi mật khẩu. | **Form nhập liệu tiêu chuẩn:**<br>Thao tác thêm/sửa/xóa trên các TextBox thông thường học trên lớp; CRUD Danh mục và Profile làm rất nhanh. |
+| **4** | *[Chưa phân công / Điền sau]* | **3 UI** | 1. **Login / Register** (UI 1)<br>2. **User Management** (UI 12)<br>3. **Admin Dashboard** (UI 9) | **CRUD 1: Quản lý Người dùng (`NguoiDung`)**<br>- Xem bảng user trên DataGridView, tìm kiếm, nút bấm Khóa/Mở tài khoản (`TrangThai = 0/1`).<br>**CRUD 2: Đăng ký tài khoản (`NguoiDung`)**<br>- Form đăng ký: Nhập tên đăng nhập, email, mật khẩu -> băm SHA-256 và INSERT tài khoản mới.<br>**CRUD 3: Bảng chỉ số Dashboard (`DonHang`, `NguoiDung`, `SanPham`)**<br>- Tính toán các chỉ số thống kê tổng hợp: Tổng doanh thu (`SUM`), Tổng số đơn (`COUNT`), Tổng khách hàng (`COUNT`), Tổng sản phẩm mở bán (`COUNT`), và Top 5 sản phẩm bán chạy nhất sàn. | **Không cần vẽ biểu đồ phức tạp:**<br>Dashboard chỉ cần các ô thẻ Metric Cards hiển thị con số thống kê to rõ ràng từ các câu lệnh SQL tổng hợp `SUM` và `COUNT`. |
+| **5** | *[Chưa phân công / Điền sau]* | **3 UI** | 1. **Order Management** (UI 13)<br>2. **Order History** (UI 7)<br>3. **My Library** (UI 6) | **CRUD 1: Quản lý Đơn hàng Admin (`DonHang` & `ChiTietDonHang`)**<br>- Xem bảng đơn hàng toàn hệ thống (Read), lọc theo trạng thái, xem danh sách sản phẩm con trong đơn, nút "Duyệt đơn" (chuyển sang Hoàn thành và tự động cấp game vào Thư viện) hoặc "Hủy đơn" (Update).<br>**CRUD 2: Lịch sử đơn hàng cá nhân (`DonHang` & `ChiTietDonHang`)**<br>- Xem danh sách các đơn hàng đã mua của chính mình (`WHERE MaNguoiDung = @UserId`), click đúp xem chi tiết hóa đơn (Read).<br>**CRUD 3: Thư viện sở hữu & Tải tệp số (`SoHuuSanPham` & `TepSanPham`)**<br>- Xem kho game đã mua (Read), nút "Tải xuống về máy" (Update `SoLanTai`, sao chép file từ `Storage/Products/...` sang máy khách có ProgressBar và kiểm tra hash SHA-256), nút "Gỡ khỏi thư viện" (Delete). | **Chuẩn nền tảng Steam Library:**<br>Màn "Quản lý đơn (Admin)" và "Lịch sử đơn (Khách)" dùng chung cấu trúc `DonHang`. Phân hệ kết nối trực tiếp với file upload của Nhóm 3 để tải tệp kỹ thuật số về máy tính khách hàng. |
 
-### 4.2. Nguyên tắc "Đơn giản hóa" cho cả nhóm
-- **Thanh toán & Nạp tiền (Mô hình Steam Wallet):** Mô phỏng nạp tiền vào ví tài khoản bằng các nút bấm mệnh giá cố định; mua hàng bằng cách trừ thẳng số dư ví và tự động ghi quyền vào thư viện `UserProducts`.
-- **Tải file kỹ thuật số:** Không cần tải tệp nặng thật; chỉ cần hiển thị thông báo `MessageBox.Show("Tải xuống thành công!")` hoặc mở một thư mục mẫu trên máy.
+### 4.2. Rà soát & Đảm bảo tính độc lập (Không trùng lặp giữa 5 nhóm)
+- **Nhóm 1 (Trải nghiệm Cửa hàng & Đánh giá):** Tập trung vào mặt tiền cửa hàng (Store, Product Details) và sự tương tác cảm nhận của khách hàng (Reviews). Không đụng chạm vào quản trị Admin hay tiền nong.
+- **Nhóm 2 (Thanh toán & Ưu đãi):** Tập trung vào túi tiền của khách (Giỏ hàng, Nạp tiền ví, Khấu trừ mã giảm giá). Độc lập hoàn toàn với việc duyệt đơn của Admin hay quản trị sản phẩm.
+- **Nhóm 3 (Quản trị Hàng hóa & Hồ sơ):** Đóng vai trò thủ kho Admin thêm/sửa sản phẩm, danh mục; tải lên tệp kỹ thuật số vật lý; kiêm quản lý thông tin tài khoản cá nhân.
+- **Nhóm 4 (Hạ tầng Xác thực & Báo cáo):** Đóng vai trò bảo mật hệ thống (Đăng nhập/Đăng ký), giám sát người dùng (phân quyền/khóa user) và báo cáo số liệu tổng kết toàn sàn (Dashboard).
+- **Nhóm 5 (Đơn hàng & Kho thư viện số):** Tập trung vào việc bàn giao sản phẩm sau mua (Quản lý trạng thái đơn hàng, Lịch sử hóa đơn cá nhân và Kho game sở hữu có nút tải file).
+
+### 4.3. Nguyên tắc "Đơn giản hóa" cho cả nhóm
+- **Thanh toán & Nạp tiền (Mô hình Steam Wallet):** Mô phỏng nạp tiền vào ví tài khoản bằng các nút bấm mệnh giá cố định; mua hàng bằng cách trừ thẳng số dư ví và tự động ghi quyền vào thư viện `SoHuuSanPham`.
+- **Tải file kỹ thuật số:** Lưu đường dẫn tương đối và metadata trong CSDL, đọc file nhị phân từ thư mục hệ thống có thanh tiến trình `ProgressBar` và đối chiếu mã băm SHA-256.
 - **Thống kê Dashboard:** Không cần thư viện biểu đồ phức tạp; dùng các `Label` hiển thị con số đếm từ database.
 - **Các thao tác CRUD:** Chỉ tập trung vào 4 câu lệnh SQL cốt lõi: `SELECT`, `INSERT`, `UPDATE`, `DELETE`.
 
@@ -188,7 +210,7 @@ DPMS.WinForms/
 | Giai đoạn | Nội dung công việc chính | Sản phẩm bàn giao | Người phụ trách chính |
 |---|---|---|---|
 | **Giai đoạn 1** | - Chốt yêu cầu & kịch bản bài tập lớn.<br>- Thiết kế cơ sở dữ liệu (ERD) và chạy script tạo bảng SQL Server.<br>- Dựng Solution đa dự án và khung sườn `MainForm`. | Database SQL hoàn chỉnh, `MainForm` khung sườn rỗng trên Git. | Cả nhóm |
-| **Giai đoạn 2** | - Từng thành viên tạo thư mục view của mình.<br>- Kéo thả giao diện `UserControl` theo phân công.<br>- Ghép các nút bấm menu trên `MainForm` để chuyển đổi qua lại giữa các màn hình. | Giao diện tĩnh của 13 UI hiển thị mượt mà trên khung sườn. | 5 thành viên theo phân công |
+| **Giai đoạn 2** | - Từng thành viên tạo thư mục view của mình.<br>- Kéo thả giao diện `UserControl` theo phân công.<br>- Ghép các nút bấm menu trên `MainForm` để chuyển đổi qua lại giữa các màn hình. | Giao diện tĩnh của 15 UI hiển thị mượt mà trên khung sườn. | 5 thành viên theo phân công |
 | **Giai đoạn 3** | - Viết tầng DAL (kết nối ADO.NET) và BLL (nghiệp vụ).<br>- Đổ dữ liệu thật từ SQL Server lên giao diện (Load DataGridView, nạp thẻ Store...). | Các chức năng CRUD và hiển thị dữ liệu hoạt động đúng. | 5 thành viên theo phân công |
 | **Giai đoạn 4** | - Nối luồng hoàn chỉnh: Chọn sản phẩm -> Giỏ hàng -> Thanh toán -> Cấp quyền sở hữu -> Thư viện tải file.<br>- Hoàn thiện Dashboard và báo cáo. | Toàn bộ luồng mua hàng và quản trị chạy thông suốt. | Cả nhóm |
 | **Giai đoạn 5** | - Kiểm thử tổng thể, xử lý lỗi nhập liệu, bẫy lỗi kết nối DB.<br>- Viết báo cáo Word/Slide thuyết trình và chuẩn bị dữ liệu demo bảo vệ bài tập lớn. | Bản báo cáo bài tập lớn hoàn thiện và bản demo sẵn sàng. | Cả nhóm |

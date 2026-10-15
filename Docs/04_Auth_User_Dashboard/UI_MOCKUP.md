@@ -64,10 +64,10 @@
 |  +-----+------------+----------------------+--------------------+-----------+------------+-------+ |
 |  | ID  | Tên đăng nhập | Họ và tên          | Email              | Vai trò   | Trạng thái | Ngày  | |
 |  +-----+------------+----------------------+--------------------+-----------+------------+-------+ |
-|  | 1   | admin      | Quản trị viên        | admin@dpms.com     | Admin     | Hoạt động  | 01/01 | |
-|  | 2   | hieupm     | Phạm Trung Hiếu      | hieu@gmail.com     | Customer  | Hoạt động  | 10/01 | |
-|  | 3   | thuanqt    | Trần Quốc Thuận      | thuan@gmail.com    | Customer  | Hoạt động  | 12/01 | |
-|  | 4   | baduser99  | Kẻ Phá Hoại          | spam@bad.com       | Customer  | ĐÃ KHÓA ⛔  | 15/01 | |
+|  | 1   | admin      | Quản trị viên        | admin@dpms.com     | QuanTriVien| Hoạt động  | 01/01 | |
+|  | 2   | hieupm     | Phạm Trung Hiếu      | hieu@gmail.com     | KhachHang  | Hoạt động  | 10/01 | |
+|  | 3   | thuanqt    | Trần Quốc Thuận      | thuan@gmail.com    | KhachHang  | Hoạt động  | 12/01 | |
+|  | 4   | baduser99  | Kẻ Phá Hoại          | spam@bad.com       | KhachHang  | ĐÃ KHÓA ⛔  | 15/01 | |
 |  +-----+------------+----------------------+--------------------+-----------+------------+-------+ |
 |                                                                                                   |
 |  Đang chọn tài khoản: [ baduser99 - Kẻ Phá Hoại ]                                                 |

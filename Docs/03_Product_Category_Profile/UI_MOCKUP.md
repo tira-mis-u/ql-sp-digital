@@ -3,22 +3,36 @@
 
 ---
 
-## 1. Bản vẽ mô phỏng UI 10: Quản lý sản phẩm (`ProductManageControl`)
+## 1. Bản vẽ mô phỏng UI 10: Quản lý sản phẩm & Tệp kỹ thuật số (`ProductManageControl`)
 
 ### 1.1. Bố cục trực quan (Wireframe Layout)
 ```text
 +---------------------------------------------------------------------------------------------------+
-|  QUẢN LÝ SẢN PHẨM HỆ THỐNG                                                                        |
+|  QUẢN LÝ SẢN PHẨM & TỆP KỸ THUẬT SỐ (ADMIN PRODUCT & ASSET MANAGEMENT)                             |
 +---------------------------------------------------------------------------------------------------+
-|  [ THÔNG TIN NHẬP LIỆU ]                                                                          |
-|  Mã SP:     [ 101       ] (Chỉ đọc)       Tên sản phẩm: [ Cyber Adventure RPG                   ] |
-|  Danh mục:  [ Game      v]                Giá bán (VNĐ):[ 450000                                ] |
-|  Hình ảnh:  [ cyber.png                   ] [Chọn tệp...]  Trạng thái: [X] Đang mở bán            |
-|  Mô tả:     [ Tựa game phiêu lưu thế giới mở tương lai hấp dẫn................................. ] |
+|  [ 1. THÔNG TIN CƠ BẢN SẢN PHẨM ]                                                                 |
+|  Mã SP:    [ 101       ] (Chỉ đọc)       Tên sản phẩm: [ Cyber Adventure RPG                    ] |
+|  Thể loại: [ Game      v]                Nhà phát hành:[ Pixel Game Studio                    v] |
+|  Giá bán:  [ 450000    ] VNĐ             Phiên bản:    [ 1.2.0     ]  Trạng thái: [X] Đang bán    |
+|  Ảnh bìa:  [ Assets/Images/cyber.jpg     ] [ 🖼️ Chọn ảnh... ] (Kèm PictureBox xem trước bên cạnh) |
+|  Mô tả:    [ Tựa game phiêu lưu thế giới mở tương lai hấp dẫn.................................. ] |
+|---------------------------------------------------------------------------------------------------|
+|  [ 2. TẢI LÊN & QUẢN LÝ TỆP KỸ THUẬT SỐ VẬT LÝ (Bảng TepSanPham) ]                                |
+|  Chọn tệp: [ C:\Downloads\Setup_CyberAdventure_v1.2.0.exe      ] [ 📁 Duyệt tệp (.zip, .exe)... ] |
+|  Thông số: Dung lượng: 14.5 GB (15.569.256.448 Bytes) | Đuôi: .exe | Mã SHA256: e3b0c44298fc1c...|
+|  Tiến trình nạp: [===================================================>] 100% (Đã nạp vào Storage) |
 |                                                                                                   |
-|  [ ➕ Thêm mới ]   [ 💾 Lưu thay đổi ]   [ 🗑️ Xóa / Ngưng bán ]   [ 🔄 Làm mới ô nhập ]           |
+|  Danh sách tệp đính kèm của sản phẩm này:                                                         |
+|  +----+----------------------------------+-----------+------------+-----------+-----------------+ |
+|  | Mã | Tên tệp                          | Định dạng | Dung lượng | Phiên bản | Thao tác        | |
+|  +----+----------------------------------+-----------+------------+-----------+-----------------+ |
+|  | 1  | Setup_CyberAdventure_v1.2.0.exe  | .exe      | 14.5 GB    | 1.2.0     | [ 🗑️ Xóa tệp ]  | |
+|  | 2  | Game_Manual_DigitalArtBook.pdf   | .pdf      | 85.0 MB    | 1.0.0     | [ 🗑️ Xóa tệp ]  | |
+|  +----+----------------------------------+-----------+------------+-----------+-----------------+ |
+|                                                                                                   |
+|  [ ➕ Thêm sản phẩm ]   [ 💾 Lưu thay đổi ]   [ 🚫 Ngưng kinh doanh ]   [ 🔄 Làm mới ô nhập ]     |
 +---------------------------------------------------------------------------------------------------+
-|  [ BẢNG DỮ LIỆU SẢN PHẨM ]  Tìm kiếm: [ cyber               ]  Lọc: [ Tất cả danh mục v]          |
+|  [ 3. BẢNG DỮ LIỆU SẢN PHẨM TOÀN SÀN ]  Tìm kiếm: [ cyber           ]  Lọc: [ Tất cả danh mục v]  |
 |  +-----+-------------------------+---------------+--------------+------------+------------------+ |
 |  | Mã  | Tên sản phẩm            | Danh mục      | Giá bán      | Trạng thái | Ngày tạo         | |
 |  +-----+-------------------------+---------------+--------------+------------+------------------+ |
@@ -27,7 +41,7 @@
 |  | 103 | Low Poly Sci-Fi Pack    | 3D Models     | 150.000 đ    | Đang bán   | 15/01/2026       | |
 |  | 104 | Old Pixel Engine 2020   | Phần mềm      | 200.000 đ    | Ngưng bán  | 01/01/2024       | |
 |  +-----+-------------------------+---------------+--------------+------------+------------------+ |
-|  Tổng số sản phẩm: 4 bản ghi                                                                       |
+|  Tổng cộng: 4 sản phẩm hiển thị                                                                   |
 +---------------------------------------------------------------------------------------------------+
 ```
 
@@ -71,7 +85,7 @@
 |  | Tên đăng nhập:   [ nguyenvana             ] |  | Mật khẩu hiện tại:                          | |
 |  | (Chỉ đọc)                                   |  | [ ****************                        ] | |
 |  |                                             |  |                                             | |
-|  | Vai trò:         [ KHÁCH HÀNG (Customer)  ] |  | Mật khẩu mới:                               | |
+|  | Vai trò:         [ Khách hàng (KhachHang) ] |  | Mật khẩu mới:                               | |
 |  | (Chỉ đọc)                                   |  | [ ****************                        ] | |
 |  |                                             |  |                                             | |
 |  | Họ và tên:                                  |  | Xác nhận mật khẩu mới:                      | |
@@ -95,6 +109,13 @@
 | `txtProductName` | `TextBox` | UI 10 | Nhập tên sản phẩm. |
 | `txtProductPrice` | `TextBox` | UI 10 | Nhập đơn giá sản phẩm. |
 | `cboCategory` | `ComboBox` | UI 10 | Chọn danh mục sản phẩm. |
+| `cboPublisher` | `ComboBox` | UI 10 | Chọn nhà phát hành sản phẩm. |
+| `btnBrowseFile` | `Button` | UI 10 | Mở `OpenFileDialog` chọn tệp cài đặt (.zip, .exe, .rar, .iso). |
+| `txtSelectedFilePath` | `TextBox` | UI 10 | Hiển thị đường dẫn tệp nguồn vừa chọn (`ReadOnly = True`). |
+| `lblFileDetails` | `Label` | UI 10 | Hiển thị dung lượng byte/MB và mã băm SHA-256 đã sinh. |
+| `prgUpload` | `ProgressBar` | UI 10 | Hiển thị tiến trình copy tệp vật lý vào thư mục `Storage/`. |
+| `dgvProductFiles` | `DataGridView` | UI 10 | Danh sách các tệp đính kèm của sản phẩm (`TepSanPham`). |
+| `btnDeleteFile` | `Button` | UI 10 | Xóa tệp đính kèm đã chọn khỏi CSDL và thư mục `Storage/`. |
 | `dgvCategories` | `DataGridView` | UI 11 | Hiển thị bảng thể loại. |
 | `txtCategoryName` | `TextBox` | UI 11 | Nhập tên danh mục. |
 | `txtFullName` | `TextBox` | UI 8 | Họ và tên người dùng. |

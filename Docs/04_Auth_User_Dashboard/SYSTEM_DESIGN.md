@@ -1,40 +1,95 @@
 # THIẾT KẾ HỆ THỐNG (SYSTEM DESIGN) - NHÓM 4
-**Màn hình:** UI 1 (`LoginControl`, `RegisterControl`), UI 12 (`UserManageControl`), UI 9 (`DashboardControl`)  
-**Mô hình áp dụng:** Kiến trúc 3 tầng (Presentation - BLL - DAL - SQL Server)
+**Phân hệ:** Xác thực, Quản trị người dùng & Dashboard thống kê (Auth, User Management & Admin Dashboard)  
+**Màn hình phụ trách:** UI 1 (`LoginControl`, `RegisterControl`), UI 12 (`UserManageControl`), UI 9 (`DashboardControl`)  
+**Thành viên phụ trách:** [Chưa phân công / Điền sau]  
+**Kiến trúc áp dụng:** 3 tầng (Presentation - Business Logic - Data Access - SQL Server)  
+**Quy chuẩn cơ sở dữ liệu:** 100% PascalCase Tiếng Việt Chuẩn Chuyên Ngành CNTT
 
 ---
 
-## 1. Kiến trúc tổng thể phân hệ
+## 1. Kiến trúc phân tầng & Luồng tương tác
 
 ```text
-+-------------------------------------------------------------+
-|                     PRESENTATION LAYER                      |
-|  - LoginControl.cs            - RegisterControl.cs          |
-|  - UserManageControl.cs       - DashboardControl.cs         |
-+------------------------------+------------------------------+
-                               | Xác thực & Quản trị User & Thống kê
-+------------------------------v------------------------------+
-|                    BUSINESS LOGIC (BLL)                     |
-|  - AuthService.cs             - UserManageService.cs        |
-|  - DashboardService.cs        - Session Manager             |
-+------------------------------+------------------------------+
-                               | Gọi ADO.NET
-+------------------------------v------------------------------+
-|                    DATA ACCESS LAYER (DAL)                  |
-|  - AuthRepository.cs          - UserRepository.cs           |
-|  - DashboardRepository.cs     - SqlDataReader / Execute     |
-+------------------------------+------------------------------+
-                               | Truy vấn SQL
-+------------------------------v------------------------------+
-|                     MICROSOFT SQL SERVER                    |
-|  - Bảng: Users, Orders, OrderItems, Products                |
-+-------------------------------------------------------------+
++----------------------------------------------------------------------------------------------------+
+|                                         PRESENTATION LAYER                                         |
+|  - LoginControl.cs (Đăng nhập, điều hướng phân quyền)  - RegisterControl.cs (Đăng ký tài khoản)    |
+|  - UserManageControl.cs (Quản trị danh sách người dùng) - DashboardControl.cs (Thống kê chỉ số)    |
++--------------------------------------------------+-------------------------------------------------+
+                                                   | DTOs (NguoiDungDTO, DashboardStatsDTO, TopProductDTO)
++--------------------------------------------------v-------------------------------------------------+
+|                                        BUSINESS LOGIC (BLL)                                        |
+|  - IAuthService / AuthService.cs                 - IUserManageService / UserManageService.cs       |
+|  - IDashboardService / DashboardService.cs       - UserSession (Quản lý phiên làm việc tĩnh)       |
+|  - Logic mã hóa băm mật khẩu SHA-256             - Kiểm tra khóa tài khoản, phân quyền Admin/User  |
++--------------------------------------------------+-------------------------------------------------+
+                                                   | Entities / Parameters
++--------------------------------------------------v-------------------------------------------------+
+|                                       DATA ACCESS LAYER (DAL)                                      |
+|  - IAuthRepository / AuthRepository.cs           - IUserRepository / UserRepository.cs             |
+|  - IDashboardRepository / DashboardRepository.cs - ADO.NET: SqlConnection, SqlCommand, SqlDataReader|
++--------------------------------------------------+-------------------------------------------------+
+                                                   | T-SQL Statements & Aggregations
++--------------------------------------------------v-------------------------------------------------+
+|                                        MICROSOFT SQL SERVER                                        |
+|  - Bảng sử dụng chính: NguoiDung, DonHang, ChiTietDonHang, SanPham                                 |
++----------------------------------------------------------------------------------------------------+
 ```
 
 ---
 
-## 2. Quản lý phiên làm việc tĩnh (`UserSession.cs`)
+## 2. Thiết kế Mô hình CSDL & Quan hệ Bảng cho Nhóm 4
 
+### 2.1. Bảng `NguoiDung` (Trọng tâm UI 1 & UI 12)
+| Tên cột | Kiểu dữ liệu | Khóa | Ràng buộc / Điều kiện | Ý nghĩa nghiệp vụ trong UI |
+|---|---|:---:|---|---|
+| `MaNguoiDung` | `INT` | **PK** | `IDENTITY(1,1)` | Mã định danh người dùng toàn hệ thống. |
+| `TenDangNhap` | `VARCHAR(50)` | | `NOT NULL, UNIQUE` | Tên đăng nhập (chỉ chữ và số, không trùng lặp). |
+| `MatKhauHash` | `VARCHAR(256)` | | `NOT NULL` | Chuỗi mã băm bảo mật SHA-256 của mật khẩu. |
+| `HoTen` | `NVARCHAR(100)` | | `NOT NULL` | Họ tên hiển thị trên thanh tiêu đề và bảng quản trị. |
+| `Email` | `VARCHAR(100)` | | `NOT NULL, UNIQUE` | Hộp thư điện tử liên hệ và phục hồi tài khoản. |
+| `SoDienThoai` | `VARCHAR(20)` | | `NULL` | Số điện thoại liên hệ cá nhân. |
+| `VaiTro` | `NVARCHAR(20)` | | `NOT NULL, DEFAULT N'KhachHang', CHECK IN (N'QuanTriVien', N'KhachHang')` | Phân quyền: `QuanTriVien` (truy cập quản trị) hoặc `KhachHang` (mua sắm). |
+| `TrangThai` | `BIT` | | `NOT NULL, DEFAULT 1` | Trạng thái tài khoản: 1 = Hoạt động bình thường, 0 = Đã bị khóa. |
+| `SoDuVi` | `DECIMAL(18,2)` | | `NOT NULL, DEFAULT 0, CHECK >= 0` | Số dư tài khoản ví Steam simulation. |
+| `NgayTao` | `DATETIME` | | `NOT NULL, DEFAULT GETDATE()` | Ngày đăng ký tài khoản. |
+
+### 2.2. Các bảng phục vụ tổng hợp chỉ số Dashboard (Trọng tâm UI 9)
+| Bảng CSDL | Cột truy vấn chính | Điều kiện & Hàm tổng hợp | Ý nghĩa hiển thị trên Thẻ Dashboard |
+|---|---|---|---|
+| `DonHang` | `TongThanhToan` | `SUM(TongThanhToan) WHERE TrangThaiDonHang = N'Hoàn thành'` | **Tổng doanh thu thực tế** của toàn sàn (VNĐ). |
+| `DonHang` | `MaDonHang` | `COUNT(1) WHERE TrangThaiDonHang = N'Hoàn thành'` | **Tổng số đơn hàng thành công**. |
+| `NguoiDung` | `MaNguoiDung` | `COUNT(1) WHERE VaiTro = N'KhachHang'` | **Tổng số khách hàng đăng ký**. |
+| `SanPham` | `MaSanPham` | `COUNT(1) WHERE DangKinhDoanh = 1` | **Tổng sản phẩm đang mở bán**. |
+| `ChiTietDonHang` + `SanPham` | `MaSanPham`, `SoLuong` | `SUM(SoLuong) GROUP BY SanPham ORDER BY DESC TOP 5` | **Top 5 sản phẩm bán chạy nhất**. |
+
+### 2.3. Quan hệ bảng & Quy tắc toàn vẹn dữ liệu
+```text
+[ NguoiDung ] (1) <---------- (N) [ DonHang ] (1) <---------- (N) [ ChiTietDonHang ] (N) ----------> (1) [ SanPham ]
+```
+- **Ràng buộc duy nhất:** `CONSTRAINT UQ_NguoiDung_TenDangNhap UNIQUE (TenDangNhap)` và `CONSTRAINT UQ_NguoiDung_Email UNIQUE (Email)` ngăn chặn triệt để hành vi đăng ký trùng lặp.
+- **Ràng buộc phân quyền hợp lệ:** Cột `VaiTro` chỉ chấp nhận một trong hai giá trị định trước: `N'QuanTriVien'` hoặc `N'KhachHang'`.
+- **Quy tắc an toàn quản trị:** Không cho phép tài khoản Quản trị viên tự khóa tài khoản của chính mình thông qua giao diện UI 12.
+
+---
+
+## 3. Bảng Ma trận Thao tác CRUD theo từng UI
+
+| Giao diện | Thao tác CRUD | Bảng CSDL tác động | Điều kiện lọc & Tham số nghiệp vụ | Kết quả trả về giao diện |
+|---|---|---|---|---|
+| **UI 1: Xác thực** (`LoginControl`) | **Read** (Đăng nhập) | `NguoiDung` | `TenDangNhap = @User AND MatKhauHash = @Hash` | Trả về `NguoiDungDTO` nếu hợp lệ; kiểm tra `TrangThai = 1`. Lưu `UserSession`. |
+| **UI 1: Xác thực** (`RegisterControl`) | **Create** (Đăng ký) | `NguoiDung` | `@TenDangNhap`, `@MatKhauHash`, `@HoTen`, `@Email`, `@SoDienThoai`<br>`VaiTro = N'KhachHang'`, `TrangThai = 1` | Thêm tài khoản mới vào CSDL; thông báo thành công và chuyển sang form Đăng nhập. |
+| **UI 1: Xác thực** (`RegisterControl`) | **Read** (Kiểm tra trùng) | `NguoiDung` | `TenDangNhap = @User OR Email = @Email` | Báo lỗi ngay nếu tên đăng nhập hoặc email đã tồn tại trước khi tạo. |
+| **UI 12: Quản lý người dùng** (`UserManageControl`) | **Read** (Duyệt danh sách) | `NguoiDung` | `@VaiTro` (N'Tất cả', N'KhachHang', N'QuanTriVien')<br>`@TuKhoa` (tìm theo `TenDangNhap` hoặc `HoTen`)<br>`ORDER BY MaNguoiDung DESC` | Danh sách `List<NguoiDungDTO>` nạp vào DataGridView danh sách người dùng. |
+| **UI 12: Quản lý người dùng** (`UserManageControl`) | **Update** (Khóa tài khoản) | `NguoiDung` | `MaNguoiDung = @UserId`<br>`TrangThai = 0` (Chặn không khóa chính mình) | Khóa tài khoản thành công; người dùng bị khóa sẽ không thể đăng nhập. |
+| **UI 12: Quản lý người dùng** (`UserManageControl`) | **Update** (Mở khóa tài khoản) | `NguoiDung` | `MaNguoiDung = @UserId`<br>`TrangThai = 1` | Khôi phục trạng thái hoạt động bình thường cho tài khoản. |
+| **UI 9: Dashboard** (`DashboardControl`) | **Read** (Tổng hợp chỉ số) | `DonHang`, `NguoiDung`, `SanPham` | `SUM(TongThanhToan)`, `COUNT(DonHang)`, `COUNT(NguoiDung)`, `COUNT(SanPham)` | Nạp các con số tổng quan vào 4 Metric Cards lớn trên Dashboard. |
+| **UI 9: Dashboard** (`DashboardControl`) | **Read** (Top bán chạy) | `ChiTietDonHang`, `SanPham` | `INNER JOIN`, `GROUP BY`, `ORDER BY SUM(SoLuong) DESC`, `TOP 5` | Hiển thị bảng 5 sản phẩm có doanh số bán ra cao nhất sàn. |
+
+---
+
+## 4. Quản lý Phiên làm việc tĩnh & Thiết kế Hướng đối tượng (OOP Design)
+
+### 4.1. Lớp Phiên làm việc tĩnh (`UserSession.cs`)
 ```csharp
 namespace DPMS.Shared
 {
@@ -43,9 +98,20 @@ namespace DPMS.Shared
         public static int CurrentUserId { get; set; } = 0;
         public static string CurrentUsername { get; set; } = string.Empty;
         public static string CurrentFullName { get; set; } = string.Empty;
-        public static string CurrentRole { get; set; } = string.Empty; // "Admin" hoặc "Customer"
+        public static string CurrentRole { get; set; } = string.Empty; // "QuanTriVien" hoặc "KhachHang"
+        public static decimal CurrentBalance { get; set; } = 0;
+
         public static bool IsLoggedIn => CurrentUserId > 0;
-        public static bool IsAdmin => CurrentRole.Equals("Admin", System.StringComparison.OrdinalIgnoreCase);
+        public static bool IsAdmin => CurrentRole.Equals("QuanTriVien", System.StringComparison.OrdinalIgnoreCase);
+
+        public static void SetSession(int id, string user, string fullName, string role, decimal balance)
+        {
+            CurrentUserId = id;
+            CurrentUsername = user;
+            CurrentFullName = fullName;
+            CurrentRole = role;
+            CurrentBalance = balance;
+        }
 
         public static void Clear()
         {
@@ -53,103 +119,146 @@ namespace DPMS.Shared
             CurrentUsername = string.Empty;
             CurrentFullName = string.Empty;
             CurrentRole = string.Empty;
+            CurrentBalance = 0;
         }
     }
 }
 ```
 
----
-
-## 3. Các câu lệnh SQL phục vụ CRUD phân hệ
-
-### 3.1. [CRUD 1] Xác thực & Đăng ký (`Auth`)
-```sql
--- 1. Đăng nhập: Kiểm tra tài khoản và mật khẩu
-SELECT UserId, Username, FullName, Role, IsActive
-FROM Users
-WHERE Username = @Username AND PasswordHash = @PasswordHash;
-
--- 2. Đăng ký tài khoản mới (Create)
-INSERT INTO Users (Username, PasswordHash, FullName, Email, PhoneNumber, Role, IsActive, CreatedAt)
-VALUES (@Username, @PasswordHash, @FullName, @Email, @PhoneNumber, 'Customer', 1, GETDATE());
-
--- 3. Kiểm tra trùng lặp Username hoặc Email trước khi đăng ký
-SELECT COUNT(1) FROM Users WHERE Username = @Username OR Email = @Email;
-```
-
-### 3.2. [CRUD 2] Quản lý Người dùng (`Users`)
-```sql
--- 1. Xem danh sách người dùng (Read)
-SELECT UserId, Username, FullName, Email, Role, IsActive, CreatedAt
-FROM Users
-WHERE (@Role IS NULL OR Role = @Role)
-  AND (@Keyword IS NULL OR Username LIKE '%' + @Keyword + '%' OR FullName LIKE '%' + @Keyword + '%')
-ORDER BY UserId DESC;
-
--- 2. Khóa tài khoản (Update)
-UPDATE Users
-SET IsActive = 0
-WHERE UserId = @UserId;
-
--- 3. Mở khóa tài khoản (Update)
-UPDATE Users
-SET IsActive = 1
-WHERE UserId = @UserId;
-```
-
-### 3.3. [Dashboard] Các câu lệnh thống kê tổng hợp (Aggregation)
-```sql
--- 1. Tổng doanh thu từ các đơn hoàn thành
-SELECT ISNULL(SUM(TotalAmount), 0) AS TotalRevenue
-FROM Orders
-WHERE Status = 'Completed';
-
--- 2. Tổng số đơn hàng đã đặt
-SELECT COUNT(1) AS TotalOrders
-FROM Orders;
-
--- 3. Tổng số khách hàng đã đăng ký
-SELECT COUNT(1) AS TotalCustomers
-FROM Users
-WHERE Role = 'Customer';
-
--- 4. Top 5 sản phẩm bán chạy nhất
-SELECT TOP 5 
-    p.Title,
-    SUM(oi.Quantity) AS TotalSold
-FROM OrderItems oi
-INNER JOIN Products p ON oi.ProductId = p.ProductId
-GROUP BY p.ProductId, p.Title
-ORDER BY TotalSold DESC;
-```
-
----
-
-## 4. Kịch bản xử lý trong C# WinForms
-
-### 4.1. Xử lý Đăng nhập & Phân quyền giao diện
+### 4.2. Thiết kế DTOs (`DPMS.Shared.DTOs`)
 ```csharp
-private void btnLogin_Click(object sender, EventArgs e)
+namespace DPMS.Shared.DTOs
 {
-    string user = txtUsername.Text.Trim();
-    string pass = txtPassword.Text.Trim();
-
-    var result = _authService.Login(user, pass);
-    if (result.Success)
+    // DTO thông tin tài khoản người dùng
+    public class NguoiDungDTO
     {
-        // Lưu thông tin vào Session
-        UserSession.CurrentUserId = result.User.UserId;
-        UserSession.CurrentUsername = result.User.Username;
-        UserSession.CurrentFullName = result.User.FullName;
-        UserSession.CurrentRole = result.User.Role;
-
-        MessageBox.Show($"Chào mừng {result.User.FullName} đã quay trở lại!", "Thành công");
-        MainForm.Instance.ApplyUserPermissions(); // Ẩn hiện menu Admin/User
-        MainForm.Instance.SwitchView(new StoreViewControl());
+        public int MaNguoiDung { get; set; }
+        public string TenDangNhap { get; set; }
+        public string HoTen { get; set; }
+        public string Email { get; set; }
+        public string SoDienThoai { get; set; }
+        public string VaiTro { get; set; }
+        public bool TrangThai { get; set; }
+        public decimal SoDuVi { get; set; }
+        public DateTime NgayTao { get; set; }
     }
-    else
+
+    // DTO đăng ký tài khoản mới
+    public class DangKyDTO
     {
-        MessageBox.Show(result.ErrorMessage, "Lỗi đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        public string TenDangNhap { get; set; }
+        public string MatKhau { get; set; }
+        public string HoTen { get; set; }
+        public string Email { get; set; }
+        public string SoDienThoai { get; set; }
+    }
+
+    // DTO tổng hợp chỉ số Dashboard
+    public class DashboardStatsDTO
+    {
+        public decimal TongDoanhThu { get; set; }
+        public int TongDonHang { get; set; }
+        public int TongKhachHang { get; set; }
+        public int TongSanPhamDangBan { get; set; }
+    }
+
+    // DTO top sản phẩm bán chạy
+    public class SanPhamBanChayDTO
+    {
+        public int MaSanPham { get; set; }
+        public string TenSanPham { get; set; }
+        public int SoLuongDaBan { get; set; }
+        public decimal DoanhThuUocTinh { get; set; }
     }
 }
 ```
+
+### 4.3. Hợp đồng Giao diện Dịch vụ (Service Interfaces)
+```csharp
+namespace DPMS.BLL.Interfaces
+{
+    // Nghiệp vụ Xác thực & Đăng nhập
+    public interface IAuthService
+    {
+        (bool Success, string Message, NguoiDungDTO User) Login(string username, string password);
+        (bool Success, string Message) Register(DangKyDTO dto);
+        bool CheckUsernameOrEmailExists(string username, string email);
+        string ComputeHashSHA256(string plainPassword);
+    }
+
+    // Nghiệp vụ Quản trị Người dùng (Admin)
+    public interface IUserManageService
+    {
+        List<NguoiDungDTO> GetUsers(string vaiTro = null, string tuKhoa = null);
+        bool SetUserStatus(int maNguoiDung, bool trangThai, int currentAdminId, out string errorMessage);
+    }
+
+    // Nghiệp vụ Thống kê Dashboard (Admin)
+    public interface IDashboardService
+    {
+        DashboardStatsDTO GetDashboardStats();
+        List<SanPhamBanChayDTO> GetTopSellingProducts(int topN = 5);
+        List<DonHangDTO> GetRecentOrders(int topN = 5);
+    }
+}
+```
+
+---
+
+## 5. Thiết kế Luồng Logic Xử lý (Logic Workflows)
+
+### Luồng 1: Quy trình Xác thực Đăng nhập & Phân quyền giao diện (UI 1)
+```text
+[Khách nhập Username & Password] -> Bấm [ Đăng nhập ]
+          |
+          v
+[BLL: Băm mật khẩu nhập vào bằng SHA-256]
+          |
+          v
+[DAL: Truy vấn NguoiDung theo TenDangNhap & MatKhauHash]
+  |-- Không khớp tài khoản/mật khẩu -> Báo lỗi: "Tên đăng nhập hoặc mật khẩu không chính xác!"
+  |-- Khớp bản ghi nhưng TrangThai == 0 -> Báo lỗi: "Tài khoản của bạn hiện đang bị khóa!"
+  |-- Hợp lệ ->
+          |
+          +--> Thiết lập UserSession (MaNguoiDung, TenDangNhap, HoTen, VaiTro, SoDuVi)
+          +--> Gọi MainForm.Instance.ApplyUserPermissions():
+                 * Nếu VaiTro == "QuanTriVien": Hiển thị toàn bộ menu Quản trị (Dashboard, Quản lý SP, Đơn hàng, Người dùng).
+                 * Nếu VaiTro == "KhachHang": Ẩn các menu Admin, chỉ hiện Store, Thư viện, Giỏ hàng, Ví, Hồ sơ.
+          +--> Chuyển view hiển thị màn hình chính (StoreViewControl hoặc DashboardControl).
+```
+
+---
+
+### Luồng 2: Quy trình Đăng ký tài khoản mới & Mã hóa mật khẩu (UI 1)
+1. **Presentation (`RegisterControl`):** Người dùng nhập thông tin: Tên đăng nhập, Mật khẩu, Nhập lại mật khẩu, Họ tên, Email, Số điện thoại $\rightarrow$ Bấm **[ Đăng ký ]**.
+2. **BLL (`AuthService.Register`):**
+   - Kiểm tra rỗng và ràng buộc độ dài tối thiểu (Mật khẩu $\ge$ 6 ký tự).
+   - Kiểm tra mật khẩu và xác nhận mật khẩu khớp nhau 100%.
+   - Gọi `CheckUsernameOrEmailExists`: Nếu trùng tên đăng nhập hoặc email thì trả về lỗi thông báo người dùng đổi giá trị khác.
+   - Băm mật khẩu bằng thuật toán SHA-256: `MatKhauHash = ComputeHashSHA256(dto.MatKhau)`.
+3. **DAL (`AuthRepository`):**
+   - Thực thi chèn bản ghi mới với `VaiTro = N'KhachHang'`, `TrangThai = 1`, `SoDuVi = 0`.
+4. **Presentation:** Hiển thị thông báo đăng ký thành công và tự động chuyển về giao diện `LoginControl` để người dùng đăng nhập.
+
+---
+
+### Luồng 3: Quản lý danh sách tài khoản & Khóa / Mở khóa người dùng (UI 12)
+1. **Presentation (`UserManageControl`):** Admin chọn một dòng tài khoản trên DataGridView và bấm **[ Khóa tài khoản ]** hoặc **[ Mở khóa ]**.
+2. **BLL (`UserManageService.SetUserStatus`):**
+   - Kiểm tra an toàn: `if (maNguoiDung == currentAdminId) return false;` (Chặn hành vi tự khóa tài khoản Quản trị viên đang thao tác).
+3. **DAL (`UserRepository`):**
+   - Thực thi cập nhật: `UPDATE NguoiDung SET TrangThai = @TrangThai WHERE MaNguoiDung = @MaNguoiDung`.
+4. **Presentation:** Nạp lại DataGridView danh sách người dùng và cập nhật màu sắc trạng thái (Xanh lá: Hoạt động, Đỏ: Bị khóa).
+
+---
+
+### Luồng 4: Tính toán và Làm mới Dashboard thống kê kinh doanh (UI 9)
+1. **Presentation (`DashboardControl`):** Màn hình được mở hoặc Admin bấm nút **[ 🔄 Làm mới dữ liệu ]**.
+2. **BLL & DAL (`DashboardService`):**
+   - Thực thi truy vấn tổng hợp đồng thời:
+     - Tính tổng doanh thu: `SUM(TongThanhToan)` từ các đơn hàng có trạng thái `'Hoàn thành'`.
+     - Đếm tổng số đơn hàng: `COUNT(1) FROM DonHang`.
+     - Đếm tổng số khách hàng: `COUNT(1) FROM NguoiDung WHERE VaiTro = N'KhachHang'`.
+     - Đếm tổng sản phẩm mở bán: `COUNT(1) FROM SanPham WHERE DangKinhDoanh = 1`.
+     - Lấy Top 5 sản phẩm bán chạy nhất gom nhóm theo số lượng bán và doanh thu.
+3. **Presentation:** Hiển thị số liệu lên 4 Card lớn có màu sắc gradient hiện đại, cập nhật bảng Top 5 sản phẩm bán chạy nhất.

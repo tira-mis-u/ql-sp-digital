@@ -16,9 +16,9 @@
 |  +-----+-------------------+--------------+---------------+---------------+--------------------+  |
 |  | Mã  | Tên khách hàng    | Tổng tiền    | Phương thức   | Trạng thái    | Ngày đặt           |  |
 |  +-----+-------------------+--------------+---------------+---------------+--------------------+  |
-|  | 1052| hieupm            | 450.000 đ    | MOMO          | Đang chờ (⏳) | 13/01/2026 10:20   |  |
-|  | 1051| thuanqt           | 1.200.000 đ  | BANK_QR       | Hoàn thành(✅)| 13/01/2026 09:15   |  |
-|  | 1050| trimn             | 150.000 đ    | MOMO          | Đã hủy (❌)   | 12/01/2026 18:30   |  |
+|  | 1052| hieupm            | 450.000 đ    | Ví tài khoản  | Đang chờ (⏳) | 13/01/2026 10:20   |  |
+|  | 1051| thuanqt           | 1.200.000 đ  | Ví tài khoản  | Hoàn thành(✅)| 13/01/2026 09:15   |  |
+|  | 1050| trimn             | 150.000 đ    | Ví tài khoản  | Đã hủy (❌)   | 12/01/2026 18:30   |  |
 |  +-----+-------------------+--------------+---------------+---------------+--------------------+  |
 |                                                                                                   |
 |  CHI TIẾT SẢN PHẨM TRONG ĐƠN ĐANG CHỌN (Đơn #1052):                                               |
@@ -45,9 +45,9 @@
 |  |---------------------------------------------------------------------------------------------|  |
 |  | Mã đơn | Ngày đặt           | Số món | Tổng thanh toán | Phương thức | Trạng thái            |  |
 |  |--------|--------------------|--------|-----------------|-------------|-----------------------|  |
-|  | #1052  | 13/01/2026 10:20   | 1 món  | 450.000 VNĐ     | Ví MoMo     | Đang xử lý (⏳)        |  |
-|  | #1015  | 05/01/2026 14:10   | 2 món  | 600.000 VNĐ     | Chuyển khoản| Đã hoàn thành (✅)    |  |
-|  | #980   | 20/12/2025 08:45   | 1 món  | 150.000 VNĐ     | Ví MoMo     | Đã hoàn thành (✅)    |  |
+|  | #1052  | 13/01/2026 10:20   | 1 món  | 450.000 VNĐ     | Ví DPMS     | Đang xử lý (⏳)        |  |
+|  | #1015  | 05/01/2026 14:10   | 2 món  | 600.000 VNĐ     | Ví DPMS     | Đã hoàn thành (✅)    |  |
+|  | #980   | 20/12/2025 08:45   | 1 món  | 150.000 VNĐ     | Ví DPMS     | Đã hoàn thành (✅)    |  |
 |  +---------------------------------------------------------------------------------------------+  |
 |                                                                                                   |
 |  [ Chi tiết đơn hàng #1015 ]                                                                      |
@@ -92,11 +92,11 @@
 |---|---|---|---|
 | `dgvAdminOrders` | `DataGridView` | UI 13 | Bảng đơn hàng Admin. |
 | `dgvAdminOrderItems` | `DataGridView` | UI 13 | Bảng chi tiết sản phẩm thuộc đơn. |
-| `btnApproveOrder` | `Button` | UI 13 | Duyệt đơn (`Completed`). |
-| `btnCancelOrder` | `Button` | UI 13 | Hủy đơn (`Cancelled`). |
+| `btnApproveOrder` | `Button` | UI 13 | Duyệt đơn (`N'Hoàn thành'`). |
+| `btnCancelOrder` | `Button` | UI 13 | Hủy đơn (`N'Đã hủy'`). |
 | `dgvMyOrders` | `DataGridView` | UI 7 | Lịch sử đơn hàng của cá nhân khách hàng. |
 | `lstLibraryProducts` | `ListBox` | UI 6 | Danh sách các sản phẩm đang sở hữu bên trái. |
 | `picLibBanner` | `PictureBox` | UI 6 | Ảnh minh họa sản phẩm đang chọn. |
 | `btnDownloadFile` | `Button` | UI 6 | Nút bấm kích hoạt mô phỏng tải file. |
 | `prgDownload` | `ProgressBar` | UI 6 | Thanh chạy tiến trình tải giả lập. |
-| `btnRemoveFromLib` | `Button` | UI 6 | Gỡ game khỏi thư viện (`Delete`). |
+| `btnRemoveFromLib` | `Button` | UI 6 | Gỡ game khỏi thư viện (Xóa bản ghi `SoHuuSanPham`). |
