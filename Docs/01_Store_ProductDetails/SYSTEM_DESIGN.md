@@ -1,7 +1,7 @@
 # THIẾT KẾ HỆ THỐNG (SYSTEM DESIGN) - NHÓM 1
 **Phân hệ:** Cửa hàng, Chi tiết sản phẩm & Đánh giá (Store, Product Details & Reviews)  
 **Màn hình phụ trách:** UI 2 (`StoreViewControl`), UI 3 (`ProductDetailControl`), UI 14 (`ProductReviewControl`)  
-**Thành viên phụ trách:** [Chưa phân công / Điền sau]  
+**Thành viên phụ trách:** Lê Nguyễn Minh Trí  
 **Kiến trúc áp dụng:** 3 tầng (Presentation - Business Logic - Data Access - SQL Server)
 
 ---

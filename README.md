@@ -34,11 +34,11 @@ Dự án hướng đến việc xây dựng một ứng dụng desktop cho phép
 <img width="20%" align="right" src="https://media.tenor.com/Xclc9qdBAUsAAAAM/work.gif">
 <img width="30%" align="right" src="https://raw.githubusercontent.com/BhavyaCodes/BhavyaCodes/master/.github/cat.gif">
 
-1. Phạm Trung Hiếu
-2. Trần Quốc Thuận
-3. Lê Nguyễn Minh Trí
-4. Phạm Văn Đam
-5. Nguyễn Quốc Trung
+1. Lê Nguyễn Minh Trí
+2. Nguyễn Quốc Trung
+3. Phạm Trung Hiếu
+4. Trần Quốc Thuận
+5. Phạm Văn Đam
 
 *Cùng với sự hỗ trợ của những con nô lệ trí tuệ nhân tạo.*
 
@@ -342,11 +342,11 @@ Dự án dự kiến triển khai trong 6 tuần.
 
 | STT | Thành viên phụ trách | Nhóm phụ trách | Danh sách 3 Chức năng / UI chính | Trách nhiệm chính |
 |:---:|---|---|---|---|
-| 1 | *[Chưa phân công / Điền sau]* | **Nhóm 1:** Store & Reviews | 1. **Store / Trang chủ (UI 2)**: Duyệt sản phẩm, tìm kiếm, lọc thể loại.<br>2. **Product Details (UI 3)**: Xem chi tiết cấu hình, mô tả, mua hàng.<br>3. **Product Reviews (UI 14)**: Đánh giá sao, viết nhận xét, xem phản hồi cộng đồng. | Phân tích yêu cầu, thiết kế kiến trúc hệ thống, phát triển phân hệ Cửa hàng & Đánh giá sản phẩm |
-| 2 | *[Chưa phân công / Điền sau]* | **Nhóm 2:** Cart & Wallet | 1. **Shopping Cart (UI 4)**: Quản lý giỏ hàng, cập nhật số lượng, thanh toán ví.<br>2. **My Wallet (UI 5)**: Xem số dư ví, nạp tiền các gói mệnh giá.<br>3. **Vouchers (UI 15)**: Quản lý mã giảm giá, áp dụng ưu đãi đơn hàng. | Thiết kế và phát triển luồng Giỏ hàng, mô phỏng Ví tài khoản & Hệ thống mã giảm giá |
-| 3 | *[Chưa phân công / Điền sau]* | **Nhóm 3:** Product & Admin | 1. **Product Management (UI 10)**: CRUD sản phẩm, giá bán, trạng thái.<br>2. **Category Management (UI 11)**: CRUD danh mục thể loại hàng.<br>3. **User Profile (UI 8)**: Quản lý hồ sơ cá nhân và đổi mật khẩu. | Thiết kế và phát triển phân hệ Quản trị Hàng hóa, Thể loại và Hồ sơ người dùng |
-| 4 | *[Chưa phân công / Điền sau]* | **Nhóm 4:** Auth & Dashboard | 1. **Login / Register (UI 1)**: Đăng ký, đăng nhập tài khoản, bảo mật.<br>2. **User Management (UI 12)**: Quản lý tài khoản, phân quyền, khóa tài khoản.<br>3. **Admin Dashboard (UI 9)**: Thống kê doanh thu, số đơn, người dùng. | Thiết kế và phát triển phân hệ Xác thực, Phân quyền và Báo cáo số liệu quản trị |
-| 5 | *[Chưa phân công / Điền sau]* | **Nhóm 5:** Orders & Library | 1. **Order Management (UI 13)**: Quản lý và duyệt trạng thái đơn hàng.<br>2. **Order History (UI 7)**: Tra cứu lịch sử mua hàng, chi tiết đơn.<br>3. **My Library (UI 6)**: Kho sản phẩm kỹ thuật số sở hữu, mô phỏng tải file. | Thiết kế và phát triển phân hệ Đơn hàng, Lịch sử mua sắm và Kho thư viện số |
+| 1 | **Lê Nguyễn Minh Trí** | **Nhóm 1:** Store & Reviews | 1. **Store / Trang chủ (UI 2)**: Duyệt sản phẩm, tìm kiếm, lọc thể loại.<br>2. **Product Details (UI 3)**: Xem chi tiết cấu hình, mô tả, mua hàng.<br>3. **Product Reviews (UI 14)**: Đánh giá sao, viết nhận xét, xem phản hồi cộng đồng. | Phân tích yêu cầu, thiết kế kiến trúc hệ thống, phát triển phân hệ Cửa hàng & Đánh giá sản phẩm |
+| 2 | **Nguyễn Quốc Trung** | **Nhóm 2:** Cart & Wallet | 1. **Shopping Cart (UI 4)**: Quản lý giỏ hàng, cập nhật số lượng, thanh toán ví.<br>2. **My Wallet (UI 5)**: Xem số dư ví, nạp tiền các gói mệnh giá.<br>3. **Vouchers (UI 15)**: Quản lý mã giảm giá, áp dụng ưu đãi đơn hàng. | Thiết kế và phát triển luồng Giỏ hàng, mô phỏng Ví tài khoản & Hệ thống mã giảm giá |
+| 3 | **Phạm Trung Hiếu** | **Nhóm 3:** Product & Admin | 1. **Product Management (UI 10)**: CRUD sản phẩm, giá bán, trạng thái.<br>2. **Category Management (UI 11)**: CRUD danh mục thể loại hàng.<br>3. **User Profile (UI 8)**: Quản lý hồ sơ cá nhân và đổi mật khẩu. | Thiết kế và phát triển phân hệ Quản trị Hàng hóa, Thể loại và Hồ sơ người dùng |
+| 4 | **Trần Quốc Thuận** | **Nhóm 4:** Auth & Dashboard | 1. **Login / Register (UI 1)**: Đăng ký, đăng nhập tài khoản, bảo mật.<br>2. **User Management (UI 12)**: Quản lý tài khoản, phân quyền, khóa tài khoản.<br>3. **Admin Dashboard (UI 9)**: Thống kê doanh thu, số đơn, người dùng. | Thiết kế và phát triển phân hệ Xác thực, Phân quyền và Báo cáo số liệu quản trị |
+| 5 | **Phạm Văn Đam** | **Nhóm 5:** Orders & Library | 1. **Order Management (UI 13)**: Quản lý và duyệt trạng thái đơn hàng.<br>2. **Order History (UI 7)**: Tra cứu lịch sử mua hàng, chi tiết đơn.<br>3. **My Library (UI 6)**: Kho sản phẩm kỹ thuật số sở hữu, mô phỏng tải file. | Thiết kế và phát triển phân hệ Đơn hàng, Lịch sử mua sắm và Kho thư viện số |
 
 ---
 

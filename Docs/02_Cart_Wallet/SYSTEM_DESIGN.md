@@ -1,7 +1,7 @@
 # THIẾT KẾ HỆ THỐNG (SYSTEM DESIGN) - NHÓM 2
 **Phân hệ:** Giỏ hàng, Ví tài khoản & Mã giảm giá (Cart, Steam Wallet & Vouchers)  
 **Màn hình phụ trách:** UI 4 (`CartControl`), UI 5 (`WalletControl`), UI 15 (`VoucherControl`)  
-**Thành viên phụ trách:** [Chưa phân công / Điền sau]  
+**Thành viên phụ trách:** Nguyễn Quốc Trung  
 **Kiến trúc áp dụng:** 3 tầng (Presentation - Business Logic - Data Access - SQL Server)  
 **Quy chuẩn cơ sở dữ liệu:** 100% PascalCase Tiếng Việt Chuẩn Chuyên Ngành CNTT
 

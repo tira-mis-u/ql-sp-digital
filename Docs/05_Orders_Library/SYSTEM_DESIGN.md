@@ -1,7 +1,7 @@
 # THIẾT KẾ HỆ THỐNG (SYSTEM DESIGN) - NHÓM 5
 **Phân hệ:** Quản lý đơn hàng & Thư viện số (Orders Management & Digital Library)  
 **Màn hình phụ trách:** UI 13 (`OrderManageControl`), UI 7 (`OrderHistoryControl`), UI 6 (`LibraryControl`)  
-**Thành viên phụ trách:** [Chưa phân công / Điền sau]  
+**Thành viên phụ trách:** Phạm Văn Đam  
 **Kiến trúc áp dụng:** 3 tầng (Presentation - Business Logic - Data Access - SQL Server)  
 **Quy chuẩn cơ sở dữ liệu:** 100% PascalCase Tiếng Việt Chuẩn Chuyên Ngành CNTT
 

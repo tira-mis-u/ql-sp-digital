@@ -1,7 +1,7 @@
 # THIẾT KẾ HỆ THỐNG (SYSTEM DESIGN) - NHÓM 3
 **Phân hệ:** Quản lý sản phẩm & Tệp số, Quản lý danh mục, Hồ sơ cá nhân (Products & Digital Files, Categories, User Profile)  
 **Màn hình phụ trách:** UI 10 (`ProductManageControl`), UI 11 (`CategoryManageControl`), UI 8 (`ProfileControl`)  
-**Thành viên phụ trách:** [Chưa phân công / Điền sau]  
+**Thành viên phụ trách:** Phạm Trung Hiếu  
 **Kiến trúc áp dụng:** 3 tầng (Presentation - Business Logic - Data Access - SQL Server)  
 **Quy chuẩn cơ sở dữ liệu:** 100% PascalCase Tiếng Việt Chuẩn Chuyên Ngành CNTT
 

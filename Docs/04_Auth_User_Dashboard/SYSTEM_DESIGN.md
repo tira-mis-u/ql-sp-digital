@@ -1,7 +1,7 @@
 # THIẾT KẾ HỆ THỐNG (SYSTEM DESIGN) - NHÓM 4
 **Phân hệ:** Xác thực, Quản trị người dùng & Dashboard thống kê (Auth, User Management & Admin Dashboard)  
 **Màn hình phụ trách:** UI 1 (`LoginControl`, `RegisterControl`), UI 12 (`UserManageControl`), UI 9 (`DashboardControl`)  
-**Thành viên phụ trách:** [Chưa phân công / Điền sau]  
+**Thành viên phụ trách:** Trần Quốc Thuận  
 **Kiến trúc áp dụng:** 3 tầng (Presentation - Business Logic - Data Access - SQL Server)  
 **Quy chuẩn cơ sở dữ liệu:** 100% PascalCase Tiếng Việt Chuẩn Chuyên Ngành CNTT
 
