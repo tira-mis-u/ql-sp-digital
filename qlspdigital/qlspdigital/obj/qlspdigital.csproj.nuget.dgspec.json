@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ADMIN\\source\\repos\\qlspdigital\\qlspdigital\\qlspdigital.csproj": {}
+    "C:\\Users\\ADMIN\\Desktop\\ql-sp-digital\\qlspdigital\\qlspdigital\\qlspdigital.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ADMIN\\source\\repos\\qlspdigital\\qlspdigital\\qlspdigital.csproj": {
+    "C:\\Users\\ADMIN\\Desktop\\ql-sp-digital\\qlspdigital\\qlspdigital\\qlspdigital.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ADMIN\\source\\repos\\qlspdigital\\qlspdigital\\qlspdigital.csproj",
+        "projectUniqueName": "C:\\Users\\ADMIN\\Desktop\\ql-sp-digital\\qlspdigital\\qlspdigital\\qlspdigital.csproj",
         "projectName": "qlspdigital",
-        "projectPath": "C:\\Users\\ADMIN\\source\\repos\\qlspdigital\\qlspdigital\\qlspdigital.csproj",
+        "projectPath": "C:\\Users\\ADMIN\\Desktop\\ql-sp-digital\\qlspdigital\\qlspdigital\\qlspdigital.csproj",
         "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ADMIN\\source\\repos\\qlspdigital\\qlspdigital\\obj\\",
+        "outputPath": "C:\\Users\\ADMIN\\Desktop\\ql-sp-digital\\qlspdigital\\qlspdigital\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -47,6 +47,12 @@
         "net10.0-windows": {
           "framework": "net10.0-windows7.0",
           "targetAlias": "net10.0-windows",
+          "dependencies": {
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[7.1.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

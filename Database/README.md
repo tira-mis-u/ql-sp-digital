@@ -52,3 +52,34 @@
   - Thêm ràng buộc hoặc sửa đổi quan hệ bảng.
   - Tối ưu hóa câu lệnh query cho bài tập lớn.
 - **Hành động:** Báo lên nhóm trao đổi hoặc ghi chú vào issue để cùng thống nhất điều chỉnh script `DPMS_Database_Master.sql` trước ngày nộp bài tập lớn!
+
+---
+
+## 5. Danh sách tài khoản thử nghiệm (Demo Accounts & Mật khẩu)
+
+> [!TIP]
+> **Mật khẩu dùng chung cho tất cả các tài khoản demo:** `123456`  
+> (Mật khẩu được băm bằng thuật toán SHA-256: `8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92`)
+
+| STT | Tên đăng nhập | Mật khẩu | Họ và tên | Vai trò (`VaiTro`) | Số dư ví ban đầu | Email | Ghi chú vai trò kiểm thử |
+|:---:|---|---|---|---|---:|---|---|
+| 1 | `admin` | `123456` | Quản Trị Viên Hệ Thống | `QuanTriVien` | 5.000.000 đ | `admin@dpms.com` | Quản trị toàn quyền, xem Dashboard doanh thu, CRUD sản phẩm, danh mục, user |
+| 2 | `hieu_pham` | `123456` | Phạm Trung Hiếu | `KhachHang` | 1.500.000 đ | `hieu@gmail.com` | Khách hàng VIP, đã có sẵn đơn hàng, đánh giá và voucher |
+| 3 | `thuan_tran` | `123456` | Trần Quốc Thuận | `KhachHang` | 850.000 đ | `thuan@gmail.com` | Khách hàng đã mua game Cyber Adventure RPG |
+| 4 | `tri_le` | `123456` | Lê Nguyễn Minh Trí | `KhachHang` | 200.000 đ | `tri@gmail.com` | Khách hàng mới, thử nạp tiền ví và áp mã giảm giá |
+| 5 | `dam_pham` | `123456` | Phạm Văn Đam | `KhachHang` | 600.000 đ | `dam@gmail.com` | Khách hàng thử nghiệm tải file phần mềm từ thư viện |
+| 6 | `trung_nguyen` | `123456` | Nguyễn Quốc Trung | `KhachHang` | 1.200.000 đ | `trung@gmail.com` | Khách hàng thử nghiệm giỏ hàng và quy trình checkout |
+
+### Mã giảm giá mẫu có sẵn trong hệ thống (Voucher Demo)
+- `WELCOME2026`: Giảm 20% cho đơn hàng đầu tiên từ 100.000đ (Giảm tối đa 100.000đ).
+- `SUMMERSALE`: Giảm thẳng 50.000đ tiền mặt cho giỏ hàng từ 300.000đ.
+- `PIXELSTUDIO10`: Giảm 10% tối đa 50.000đ khi mua sản phẩm của *Pixel Game Studio*.
+- `VIPMEGA100K`: Giảm trực tiếp 100.000đ cho đơn hàng thân thiết từ 500.000đ.
+
+### Chuỗi kết nối chuẩn trong WinForms C#
+Trong file [DatabaseHelper.cs](file:///c:/Users/ADMIN/Desktop/ql-sp-digital/qlspdigital/qlspdigital/Shared/DatabaseHelper.cs), sử dụng ký hiệu `@` (Verbatim String) để không cần escape dấu `\`:
+```csharp
+public static string ConnectionString { get; set; } =
+    @"Server=localhost\SQLEXPRESS01;Database=DPMS_Db;Integrated Security=True;TrustServerCertificate=True;";
+```
+*(Hệ thống đã tích hợp sẵn cơ chế tự động thử kết nối dự phòng sang `Server=.` hoặc `Server=localhost\SQLEXPRESS` nếu máy thành viên khác dùng instance khác).*

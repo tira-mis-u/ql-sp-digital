@@ -7,6 +7,23 @@
 
 ---
 
+## 0. Danh mục File & Thư mục phụ trách trực tiếp (Đường dẫn tương đối)
+
+| Phân tầng kiến trúc | Tên File / Thư mục cụ thể | Đường dẫn tương đối từ tài liệu này | Ý nghĩa chức năng |
+|---|---|---|---|
+| **Giao diện (Views)** | `OrderManageControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom5_Orders/OrderManageControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom5_Orders/OrderManageControl.cs) | UI 13: Admin theo dõi hóa đơn, duyệt đơn (tự động nạp vào Thư viện) hoặc hủy đơn |
+| **Giao diện (Views)** | `OrderHistoryControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom5_Orders/OrderHistoryControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom5_Orders/OrderHistoryControl.cs) | UI 7: Khách hàng xem lịch sử đơn hàng cá nhân & danh sách món đã mua |
+| **Giao diện (Views)** | `LibraryControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom5_Orders/LibraryControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom5_Orders/LibraryControl.cs) | UI 6: Kho game/phần mềm đã sở hữu, tải file về máy có ProgressBar, gỡ bỏ |
+| **Nghiệp vụ (BLL)** | `DonHangService.cs` | [`../../qlspdigital/qlspdigital/BLL/Nhom5_Orders/DonHangService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom5_Orders/DonHangService.cs) | Xử lý logic đơn hàng (`DonHangService`) & thư viện tải file (`ThuVienService`) |
+| **Truy vấn CSDL (DAL)** | `DonHangRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom5_Orders/DonHangRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom5_Orders/DonHangRepository.cs) | Lệnh ADO.NET CRUD đơn hàng, chi tiết đơn, và Transaction mua hàng ACID |
+| **Truy vấn CSDL (DAL)** | `ThuVienRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom5_Orders/DonHangRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom5_Orders/DonHangRepository.cs) | Lệnh ADO.NET SELECT kho `SoHuuSanPham`, UPDATE `SoLanTai`, DELETE gỡ khỏi kho |
+| **Dữ liệu truyền tải (DTO)** | `DonHangDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/DonHangDTO.cs`](../../qlspdigital/qlspdigital/DTOs/DonHangDTO.cs) | Định nghĩa cấu trúc `DonHangDTO` và `ChiTietDonHangDTO` |
+| **Dữ liệu truyền tải (DTO)** | `ThuVienItemDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/ThuVienItemDTO.cs`](../../qlspdigital/qlspdigital/DTOs/ThuVienItemDTO.cs) | Định nghĩa cấu trúc `ThuVienItemDTO` |
+| **CSDL Master SQL** | `DPMS_Database_Master.sql` | [`../../Database/DPMS_Database_Master.sql`](../../Database/DPMS_Database_Master.sql) | Bảng sử dụng: `DonHang`, `ChiTietDonHang`, `SoHuuSanPham`, `TepSanPham` |
+
+---
+
+
 ## 1. Kiến trúc phân tầng & Luồng tương tác
 
 ```text

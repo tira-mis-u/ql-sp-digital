@@ -12,12 +12,26 @@ Mỗi thư mục đại diện cho một phân hệ độc lập, bao gồm tr�
 > ### ⛔ QUY ĐỊNH BẮT BUỘC: KHÔNG ĐƯỢC VIẾT CODE VÀO THƯ MỤC `Docs/`
 > - **Thư mục `Docs/` chỉ là khung tài liệu kế hoạch, đặc tả và thiết kế kỹ thuật để tham khảo.**
 > - **TUYỆT ĐỐI KHÔNG** tạo file `.cs`, `.Designer.cs`, `.resx`, form hay file mã nguồn Visual Studio trong thư mục `Docs/`.
-> - **Vị trí viết code thực tế:** Mọi mã nguồn của 5 thành viên phải được triển khai đúng vào các project trong Solution Visual Studio (`DPMS.sln`):
->   - `DPMS.WinForms/Views/`: Nơi tạo các `UserControl` giao diện kéo thả theo file `UI_MOCKUP.md`.
->   - `DPMS.BLL/Services/`: Nơi viết logic nghiệp vụ theo `SYSTEM_DESIGN.md`.
->   - `DPMS.DAL/Repositories/`: Nơi viết các truy vấn ADO.NET SQL theo `SYSTEM_DESIGN.md`.
->   - `DPMS.Shared/DTOs/`: Nơi định nghĩa các class DTO truyền dữ liệu giữa các tầng.
->   - `Database/`: Nơi lưu trữ các file kịch bản SQL thực thi trên SQL Server Management Studio (SSMS).
+> - **Vị trí viết code thực tế:** Mọi mã nguồn của 5 thành viên được triển khai đúng vào solution C# WinForms tại thư mục tương đối [`../qlspdigital/qlspdigital/`](../qlspdigital/qlspdigital/):
+>   - `Views/`: Nơi chứa `MainForm.cs` và 15 `UserControl` giao diện phân theo từng nhóm ([`../qlspdigital/qlspdigital/Views/`](../qlspdigital/qlspdigital/Views/)).
+>   - `BLL/`: Nơi viết logic nghiệp vụ phân theo từng nhóm ([`../qlspdigital/qlspdigital/BLL/`](../qlspdigital/qlspdigital/BLL/)).
+>   - `DAL/`: Nơi viết các truy vấn ADO.NET SQL phân theo từng nhóm ([`../qlspdigital/qlspdigital/DAL/`](../qlspdigital/qlspdigital/DAL/)).
+>   - `DTOs/`: Nơi định nghĩa các class DTO truyền dữ liệu giữa các tầng ([`../qlspdigital/qlspdigital/DTOs/`](../qlspdigital/qlspdigital/DTOs/)).
+>   - `Shared/`: Nơi lưu các tiện ích dùng chung: kết nối CSDL `DatabaseHelper.cs`, phiên `UserSession.cs`, băm `SecurityHelper.cs` ([`../qlspdigital/qlspdigital/Shared/`](../qlspdigital/qlspdigital/Shared/)).
+>   - `Database/`: Nơi lưu trữ kịch bản SQL thực thi trên SSMS ([`../Database/DPMS_Database_Master.sql`](../Database/DPMS_Database_Master.sql)).
+
+---
+
+## Bảng tra cứu phân công File & Thư mục chi tiết cho 5 thành viên (Đường dẫn tương đối)
+
+| STT | Thành viên phụ trách | Phân hệ nhiệm vụ | Thư mục giao diện (Views & Controls) | Thư mục nghiệp vụ (BLL) | Thư mục truy vấn (DAL) | DTOs liên quan | Bảng CSDL thao tác |
+|:---:|---|---|---|---|---|---|---|
+| **1** | **Lê Nguyễn Minh Trí** | **Store & Reviews** (Cửa hàng, Chi tiết SP & Đánh giá) | [`../qlspdigital/qlspdigital/Views/Nhom1_Store/`](../qlspdigital/qlspdigital/Views/Nhom1_Store/)<br>- `StoreViewControl.cs` (UI 2)<br>- `ProductDetailControl.cs` (UI 3)<br>- `ProductReviewControl.cs` (UI 14)<br>[`../qlspdigital/qlspdigital/Controls/ProductCardControl.cs`](../qlspdigital/qlspdigital/Controls/ProductCardControl.cs) | [`../qlspdigital/qlspdigital/BLL/Nhom1_Store/`](../qlspdigital/qlspdigital/BLL/Nhom1_Store/)<br>- `SanPhamService.cs`<br>- `DanhGiaService.cs` | [`../qlspdigital/qlspdigital/DAL/Nhom1_Store/`](../qlspdigital/qlspdigital/DAL/Nhom1_Store/)<br>- `SanPhamRepository.cs`<br>- `DanhGiaRepository.cs` | `SanPhamDTO.cs`<br>`DanhMucDTO.cs`<br>`ThuVienItemDTO.cs` (`DanhGiaDTO`) | `SanPham`<br>`DanhMuc`<br>`NhaPhatHanh`<br>`DanhGia` |
+| **2** | **Nguyễn Quốc Trung** | **Cart & Wallet** (Giỏ hàng, Ví Steam Simulation & Voucher) | [`../qlspdigital/qlspdigital/Views/Nhom2_Cart/`](../qlspdigital/qlspdigital/Views/Nhom2_Cart/)<br>- `CartControl.cs` (UI 4)<br>- `WalletControl.cs` (UI 5)<br>- `VoucherControl.cs` (UI 15) | [`../qlspdigital/qlspdigital/BLL/Nhom2_Cart/`](../qlspdigital/qlspdigital/BLL/Nhom2_Cart/)<br>- `GioHangService.cs`<br>- `ViTaiKhoanService.cs`<br>- `MaGiamGiaService.cs`<br>- `ThanhToanService.cs` | [`../qlspdigital/qlspdigital/DAL/Nhom2_Cart/`](../qlspdigital/qlspdigital/DAL/Nhom2_Cart/)<br>- `GioHangRepository.cs`<br>- `ViTaiKhoanRepository.cs`<br>- `MaGiamGiaRepository.cs` | `GioHangItemDTO.cs`<br>`DonHangDTO.cs` (`ThanhToanDTO`) | `GioHang`<br>`NguoiDung.SoDuVi`<br>`MaGiamGia`<br>`MaGiamGiaNguoiDung`<br>`ThanhToan` |
+| **3** | **Phạm Trung Hiếu** | **Product & Profile** (Quản lý hàng hóa, Danh mục & Hồ sơ) | [`../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/`](../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/)<br>- `ProductManageControl.cs` (UI 10)<br>- `CategoryManageControl.cs` (UI 11)<br>- `ProfileControl.cs` (UI 8) | [`../qlspdigital/qlspdigital/BLL/Nhom3_ProductAdmin/`](../qlspdigital/qlspdigital/BLL/Nhom3_ProductAdmin/)<br>- `SanPhamAdminService.cs`<br>- `DanhMucService.cs`<br>- `HoSoService.cs` | [`../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/`](../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/)<br>- `SanPhamAdminRepository.cs`<br>- `DanhMucRepository.cs`<br>- `HoSoRepository.cs`<br>- `TepSanPhamRepository` | `SanPhamDTO.cs` (`TepSanPhamDTO`)<br>`DanhMucDTO.cs`<br>`NguoiDungDTO.cs` | `SanPham`<br>`TepSanPham`<br>`DanhMuc`<br>`NguoiDung` |
+| **4** | **Trần Quốc Thuận** | **Auth & Dashboard** (Xác thực, Quản lý tài khoản & Thống kê) | [`../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/`](../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/)<br>- `LoginControl.cs` (UI 1)<br>- `RegisterControl.cs` (UI 1)<br>- `UserManageControl.cs` (UI 12)<br>- `DashboardControl.cs` (UI 9) | [`../qlspdigital/qlspdigital/BLL/Nhom4_SystemAdmin/`](../qlspdigital/qlspdigital/BLL/Nhom4_SystemAdmin/)<br>- `AuthService.cs`<br>- `NguoiDungService.cs`<br>- `DashboardService.cs` | [`../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/`](../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/)<br>- `AuthRepository.cs`<br>- `NguoiDungRepository.cs`<br>- `DashboardRepository.cs` | `NguoiDungDTO.cs`<br>`ThuVienItemDTO.cs` (`DashboardStatsDTO`, `TopSanPhamDTO`) | `NguoiDung`<br>`DonHang`<br>`ChiTietDonHang`<br>`SanPham` |
+| **5** | **Phạm Văn Đam** | **Orders & Library** (Quản lý đơn hàng & Kho thư viện số) | [`../qlspdigital/qlspdigital/Views/Nhom5_Orders/`](../qlspdigital/qlspdigital/Views/Nhom5_Orders/)<br>- `OrderManageControl.cs` (UI 13)<br>- `OrderHistoryControl.cs` (UI 7)<br>- `LibraryControl.cs` (UI 6) | [`../qlspdigital/qlspdigital/BLL/Nhom5_Orders/`](../qlspdigital/qlspdigital/BLL/Nhom5_Orders/)<br>- `DonHangService.cs`<br>- `ThuVienService.cs` | [`../qlspdigital/qlspdigital/DAL/Nhom5_Orders/`](../qlspdigital/qlspdigital/DAL/Nhom5_Orders/)<br>- `DonHangRepository.cs`<br>- `ThuVienRepository.cs` | `DonHangDTO.cs` (`ChiTietDonHangDTO`)<br>`ThuVienItemDTO.cs` | `DonHang`<br>`ChiTietDonHang`<br>`SoHuuSanPham`<br>`TepSanPham` |
+
 
 ---
 

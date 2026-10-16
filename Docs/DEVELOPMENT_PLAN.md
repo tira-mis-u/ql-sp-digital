@@ -123,54 +123,73 @@ namespace DPMS.WinForms.Views.Main
 
 ---
 
-## 3. Cấu trúc thư mục mã nguồn WinForms
+## 3. Cấu trúc thư mục mã nguồn WinForms & Đường dẫn tương đối
 
-Để tránh xung đột Git giữa 5 người khi thiết kế giao diện (`.Designer.cs`), thư mục `DPMS.WinForms` được phân chia thành các thư mục độc lập theo module:
+Dự án được triển khai tập trung tại thư mục tương đối [`../qlspdigital/qlspdigital/`](../qlspdigital/qlspdigital/) với phân chia thư mục độc lập cho 5 thành viên nhằm tránh xung đột Git:
 
 ```text
-DPMS.WinForms/
+qlspdigital/qlspdigital/
 │
-├── Program.cs                               # Điểm khởi chạy ứng dụng: Application.Run(new MainForm())
+├── Program.cs                               # Điểm khởi chạy: Application.Run(new MainForm())
 │
-├── Assets/                                  # Tài nguyên tĩnh
-│   ├── Icons/                               # Icon định dạng .png / .ico
-│   ├── Images/                              # Logo, banner, ảnh placeholder
-│   └── Fonts/                               # Font chữ tùy biến (nếu có)
+├── Shared/                                  # Tiện ích dùng chung
+│   ├── DatabaseHelper.cs                    # Kết nối ADO.NET SQL Server (GetConnection, ExecuteQuery, ExecuteNonQuery)
+│   ├── UserSession.cs                       # Quản lý phiên làm việc tĩnh (Login, Logout, CurrentUserId, Balance)
+│   └── SecurityHelper.cs                    # Băm mật khẩu SHA-256 & FormatHelper (tiền tệ, ngày tháng)
 │
-├── Controls/                                # Các thành phần nhỏ tái sử dụng (Component)
-│   ├── ProductCardControl.cs                # Thẻ sản phẩm trên lưới Store
-│   └── RatingStarsControl.cs                # Điều khiển hiển thị đánh giá sao
+├── DTOs/                                    # Data Transfer Objects
+│   ├── NguoiDungDTO.cs                      # DTO người dùng & tài khoản
+│   ├── SanPhamDTO.cs                        # DTO sản phẩm & TepSanPhamDTO
+│   ├── DanhMucDTO.cs                        # DTO thể loại & NhaPhatHanhDTO
+│   ├── GioHangItemDTO.cs                    # DTO giỏ hàng & MaGiamGiaDTO
+│   ├── DonHangDTO.cs                        # DTO hóa đơn, ChiTietDonHangDTO & ThanhToanDTO
+│   └── ThuVienItemDTO.cs                    # DTO thư viện, DanhGiaDTO & DashboardStatsDTO
+│
+├── DAL/                                     # Data Access Layer (Truy vấn ADO.NET SQL)
+│   ├── Nhom1_Store/                         # [Lê Nguyễn Minh Trí]: SanPhamRepository.cs, DanhGiaRepository.cs
+│   ├── Nhom2_Cart/                          # [Nguyễn Quốc Trung]: GioHangRepository.cs, ViTaiKhoanRepository.cs, MaGiamGiaRepository.cs
+│   ├── Nhom3_ProductAdmin/                  # [Phạm Trung Hiếu]: SanPhamAdminRepository.cs, DanhMucRepository.cs, HoSoRepository.cs
+│   ├── Nhom4_SystemAdmin/                   # [Trần Quốc Thuận]: AuthRepository.cs, NguoiDungRepository.cs, DashboardRepository.cs
+│   └── Nhom5_Orders/                        # [Phạm Văn Đam]: DonHangRepository.cs, ThuVienRepository.cs
+│
+├── BLL/                                     # Business Logic Layer (Xử lý nghiệp vụ & Ràng buộc)
+│   ├── Nhom1_Store/                         # [Lê Nguyễn Minh Trí]: SanPhamService.cs, DanhGiaService.cs
+│   ├── Nhom2_Cart/                          # [Nguyễn Quốc Trung]: GioHangService.cs, ViTaiKhoanService.cs, MaGiamGiaService.cs, ThanhToanService.cs
+│   ├── Nhom3_ProductAdmin/                  # [Phạm Trung Hiếu]: SanPhamAdminService.cs, DanhMucService.cs, HoSoService.cs
+│   ├── Nhom4_SystemAdmin/                   # [Trần Quốc Thuận]: AuthService.cs, NguoiDungService.cs, DashboardService.cs
+│   └── Nhom5_Orders/                        # [Phạm Văn Đam]: DonHangService.cs, ThuVienService.cs
+│
+├── Controls/                                # Thành phần giao diện tái sử dụng
+│   └── ProductCardControl.cs                # Thẻ sản phẩm trên lưới Store (Steam Card style)
 │
 └── Views/                                   # 15 MÀN HÌNH CHỨC NĂNG
     │
     ├── Main/                                # Khung sườn tổng thể
-    │   ├── MainForm.cs                      # Form chính chứa Header, Sidebar và panelMainContent
-    │   └── MainForm.Designer.cs
+    │   └── MainForm.cs                      # Form chính chứa Header, Sidebar và panelMainContent
     │
-    ├── Store/                               # Phân hệ Cửa hàng, Xem sản phẩm & Đánh giá (Nhóm 1)
-    │   ├── StoreViewControl.cs              # UI 2: Trang chủ, lọc theo danh mục, tìm kiếm, lưới sản phẩm
-    │   ├── ProductDetailControl.cs          # UI 3: Chi tiết sản phẩm, ảnh mô tả, giá, xem điểm đánh giá
-    │   └── ProductReviewControl.cs          # UI 14: Đánh giá & Nhận xét sản phẩm (Reviews & Ratings)
+    ├── Nhom1_Store/                         # [Lê Nguyễn Minh Trí]
+    │   ├── StoreViewControl.cs              # UI 2: Trang chủ, lọc danh mục, tìm kiếm, lưới sản phẩm
+    │   ├── ProductDetailControl.cs          # UI 3: Chi tiết sản phẩm, cấu hình, giá, xem điểm đánh giá
+    │   └── ProductReviewControl.cs          # UI 14: Đánh giá & Nhận xét sản phẩm (1-5 sao)
     │
-    ├── Cart/                                # Phân hệ Mua hàng, Ví tài khoản & Voucher (Nhóm 2)
+    ├── Nhom2_Cart/                          # [Nguyễn Quốc Trung]
     │   ├── CartControl.cs                   # UI 4: Giỏ hàng, sửa số lượng, áp dụng voucher, thanh toán ví
     │   ├── WalletControl.cs                 # UI 5: Ví tài khoản, nạp tiền mô phỏng theo mệnh giá
-    │   └── VoucherControl.cs                # UI 15: Kho mã giảm giá, thu thập ưu đãi, xóa mã hết hạn
+    │   └── VoucherControl.cs                # UI 15: Kho mã giảm giá, thu thập ưu đãi, xóa voucher
     │
-    ├── ProductAdmin/                        # Phân hệ Quản trị Hàng hóa & Hồ sơ (Nhóm 3)
-    │   ├── ProductManageControl.cs          # UI 10: CRUD thông tin sản phẩm, giá, upload metadata file
+    ├── Nhom3_ProductAdmin/                  # [Phạm Trung Hiếu]
+    │   ├── ProductManageControl.cs          # UI 10: CRUD thông tin sản phẩm, giá, upload metadata tệp số
     │   ├── CategoryManageControl.cs         # UI 11: CRUD danh mục thể loại
     │   └── ProfileControl.cs                # UI 8: Xem và cập nhật thông tin cá nhân, đổi mật khẩu
     │
-    ├── SystemAdmin/                         # Phân hệ Quản trị Hệ thống & Báo cáo (Nhóm 4)
-    │   ├── DashboardControl.cs              # UI 9: Thống kê doanh thu, số đơn, sản phẩm bán chạy
+    ├── Nhom4_SystemAdmin/                   # [Trần Quốc Thuận]
+    │   ├── LoginControl.cs                  # UI 1: Đăng nhập hệ thống
+    │   ├── RegisterControl.cs               # UI 1: Đăng ký tài khoản
     │   ├── UserManageControl.cs             # UI 12: Danh sách tài khoản, phân quyền, khóa/mở tài khoản
-    │   └── Auth/
-    │       ├── LoginControl.cs              # UI 1: Đăng nhập
-    │       └── RegisterControl.cs           # UI 1: Đăng ký tài khoản
+    │   └── DashboardControl.cs              # UI 9: Thống kê doanh thu, số đơn, top sản phẩm bán chạy
     │
-    └── Orders/                              # Phân hệ Sở hữu & Đơn hàng (Nhóm 5)
-        ├── LibraryControl.cs                # UI 6: Kho sản phẩm đã sở hữu của khách, nút tải file
+    └── Nhom5_Orders/                        # [Phạm Văn Đam]
+        ├── LibraryControl.cs                # UI 6: Kho sản phẩm đã sở hữu của khách, nút tải file ProgressBar
         ├── OrderManageControl.cs            # UI 13: Quản trị viên theo dõi và duyệt đơn hàng
         └── OrderHistoryControl.cs           # UI 7: Khách hàng xem lịch sử đơn hàng cá nhân
 ```

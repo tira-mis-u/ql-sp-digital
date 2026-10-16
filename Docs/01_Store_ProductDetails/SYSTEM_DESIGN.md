@@ -6,6 +6,24 @@
 
 ---
 
+## 0. Danh mục File & Thư mục phụ trách trực tiếp (Đường dẫn tương đối)
+
+| Phân tầng kiến trúc | Tên File / Thư mục cụ thể | Đường dẫn tương đối từ tài liệu này | Ý nghĩa chức năng |
+|---|---|---|---|
+| **Giao diện (Views)** | `StoreViewControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom1_Store/StoreViewControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom1_Store/StoreViewControl.cs) | UI 2: Trang chủ Cửa hàng, tìm kiếm từ khóa, lọc theo danh mục |
+| **Giao diện (Views)** | `ProductDetailControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom1_Store/ProductDetailControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom1_Store/ProductDetailControl.cs) | UI 3: Chi tiết sản phẩm, thông số tệp, giá niêm yết, nút thêm giỏ |
+| **Giao diện (Views)** | `ProductReviewControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom1_Store/ProductReviewControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom1_Store/ProductReviewControl.cs) | UI 14: Đánh giá & Nhận xét sản phẩm 1-5 sao (CRUD Đánh giá) |
+| **Thành phần con (Controls)** | `ProductCardControl.cs` | [`../../qlspdigital/qlspdigital/Controls/ProductCardControl.cs`](../../qlspdigital/qlspdigital/Controls/ProductCardControl.cs) | Thẻ card hiển thị từng sản phẩm trên lưới Store |
+| **Nghiệp vụ (BLL)** | `SanPhamService.cs` | [`../../qlspdigital/qlspdigital/BLL/Nhom1_Store/SanPhamService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom1_Store/SanPhamService.cs) | Xử lý logic nghiệp vụ sản phẩm (`SanPhamService`) & Đánh giá (`DanhGiaService`) |
+| **Truy vấn CSDL (DAL)** | `SanPhamRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom1_Store/SanPhamRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom1_Store/SanPhamRepository.cs) | Lệnh ADO.NET SELECT lấy sản phẩm, lọc danh mục, tính điểm sao AVG |
+| **Truy vấn CSDL (DAL)** | `DanhGiaRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom1_Store/DanhGiaRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom1_Store/DanhGiaRepository.cs) | Lệnh ADO.NET CRUD trực tiếp bảng `DanhGia` (SELECT, INSERT, UPDATE, DELETE) |
+| **Dữ liệu truyền tải (DTO)** | `SanPhamDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/SanPhamDTO.cs`](../../qlspdigital/qlspdigital/DTOs/SanPhamDTO.cs) | Định nghĩa cấu trúc dữ liệu sản phẩm truyền giữa các tầng |
+| **Dữ liệu truyền tải (DTO)** | `ThuVienItemDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/ThuVienItemDTO.cs`](../../qlspdigital/qlspdigital/DTOs/ThuVienItemDTO.cs) | Định nghĩa cấu trúc `DanhGiaDTO` |
+| **CSDL Master SQL** | `DPMS_Database_Master.sql` | [`../../Database/DPMS_Database_Master.sql`](../../Database/DPMS_Database_Master.sql) | Bảng sử dụng: `SanPham`, `DanhMuc`, `NhaPhatHanh`, `DanhGia`, `NguoiDung` |
+
+---
+
+
 ## 1. Kiến trúc phân tầng & Luồng tương tác
 
 ```text

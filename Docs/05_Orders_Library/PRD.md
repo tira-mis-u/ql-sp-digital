@@ -1,9 +1,13 @@
 # PRD: PHÂN HỆ QUẢN LÝ ĐƠN HÀNG & THƯ VIỆN SỐ (ORDERS & LIBRARY)
 **Nhiệm vụ:** STT 5  
+**Thành viên phụ trách:** Phạm Văn Đam (Nhóm 5)  
 **Màn hình phụ trách:**  
-- **UI 13:** Quản lý đơn hàng Admin (`OrderManageControl`)
-- **UI 7:** Lịch sử đơn hàng cá nhân (`OrderHistoryControl`)
-- **UI 6:** Thư viện sản phẩm đã sở hữu (`LibraryControl`)
+- **UI 13:** Quản lý đơn hàng Admin ([`../../qlspdigital/qlspdigital/Views/Nhom5_Orders/OrderManageControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom5_Orders/OrderManageControl.cs))
+- **UI 7:** Lịch sử đơn hàng cá nhân ([`../../qlspdigital/qlspdigital/Views/Nhom5_Orders/OrderHistoryControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom5_Orders/OrderHistoryControl.cs))
+- **UI 6:** Thư viện sản phẩm đã sở hữu ([`../../qlspdigital/qlspdigital/Views/Nhom5_Orders/LibraryControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom5_Orders/LibraryControl.cs))
+**Mã nguồn nghiệp vụ & truy vấn:**
+- BLL Service: [`../../qlspdigital/qlspdigital/BLL/Nhom5_Orders/DonHangService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom5_Orders/DonHangService.cs)
+- DAL Repository: [`../../qlspdigital/qlspdigital/DAL/Nhom5_Orders/DonHangRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom5_Orders/DonHangRepository.cs)
 
 ---
 

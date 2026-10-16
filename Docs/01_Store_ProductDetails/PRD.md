@@ -1,9 +1,14 @@
 # PRD: PHÂN HỆ CỬA HÀNG, CHI TIẾT SẢN PHẨM & ĐÁNH GIÁ (STORE, PRODUCT DETAILS & REVIEWS)
 **Nhiệm vụ:** STT 1  
+**Thành viên phụ trách:** Lê Nguyễn Minh Trí (Nhóm 1)  
 **Màn hình phụ trách:**  
-- **UI 2:** Cửa hàng / Trang chủ (`StoreViewControl`)
-- **UI 3:** Chi tiết sản phẩm (`ProductDetailControl`)
-- **UI 14:** Quản lý Đánh giá & Nhận xét sản phẩm (`ProductReviewControl`)
+- **UI 2:** Cửa hàng / Trang chủ ([`../../qlspdigital/qlspdigital/Views/Nhom1_Store/StoreViewControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom1_Store/StoreViewControl.cs))
+- **UI 3:** Chi tiết sản phẩm ([`../../qlspdigital/qlspdigital/Views/Nhom1_Store/ProductDetailControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom1_Store/ProductDetailControl.cs))
+- **UI 14:** Quản lý Đánh giá & Nhận xét sản phẩm ([`../../qlspdigital/qlspdigital/Views/Nhom1_Store/ProductReviewControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom1_Store/ProductReviewControl.cs))
+- **Component dùng chung:** Thẻ sản phẩm Card ([`../../qlspdigital/qlspdigital/Controls/ProductCardControl.cs`](../../qlspdigital/qlspdigital/Controls/ProductCardControl.cs))
+**Mã nguồn nghiệp vụ & truy vấn:**
+- BLL Service: [`../../qlspdigital/qlspdigital/BLL/Nhom1_Store/SanPhamService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom1_Store/SanPhamService.cs)
+- DAL Repository: [`../../qlspdigital/qlspdigital/DAL/Nhom1_Store/SanPhamRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom1_Store/SanPhamRepository.cs), [`../../qlspdigital/qlspdigital/DAL/Nhom1_Store/DanhGiaRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom1_Store/DanhGiaRepository.cs)
 
 ---
 

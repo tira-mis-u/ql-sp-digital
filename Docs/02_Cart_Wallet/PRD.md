@@ -1,9 +1,13 @@
 # PRD: PHÂN HỆ GIỎ HÀNG, VÍ TÀI KHOẢN & MÃ GIẢM GIÁ (CART, STEAM WALLET & VOUCHERS)
 **Nhiệm vụ:** STT 2  
+**Thành viên phụ trách:** Nguyễn Quốc Trung (Nhóm 2)  
 **Màn hình phụ trách:**  
-- **UI 4:** Giỏ hàng & Thanh toán 1-Click (`CartControl`)
-- **UI 5:** Quản lý Ví tài khoản & Nạp tiền mô phỏng (`WalletControl`)
-- **UI 15:** Quản lý Mã giảm giá & Ưu đãi (`VoucherControl` - Bổ sung cho Nhóm 2)
+- **UI 4:** Giỏ hàng & Thanh toán 1-Click ([`../../qlspdigital/qlspdigital/Views/Nhom2_Cart/CartControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/CartControl.cs))
+- **UI 5:** Quản lý Ví tài khoản & Nạp tiền mô phỏng ([`../../qlspdigital/qlspdigital/Views/Nhom2_Cart/WalletControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/WalletControl.cs))
+- **UI 15:** Quản lý Mã giảm giá & Ưu đãi ([`../../qlspdigital/qlspdigital/Views/Nhom2_Cart/VoucherControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/VoucherControl.cs))
+**Mã nguồn nghiệp vụ & truy vấn:**
+- BLL Service: [`../../qlspdigital/qlspdigital/BLL/Nhom2_Cart/GioHangService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom2_Cart/GioHangService.cs)
+- DAL Repository: [`../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/GioHangRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/GioHangRepository.cs), [`../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/ViTaiKhoanRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/ViTaiKhoanRepository.cs), [`../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/MaGiamGiaRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/MaGiamGiaRepository.cs)
 
 ---
 

@@ -1,9 +1,13 @@
 # PRD: PHÂN HỆ QUẢN TRỊ SẢN PHẨM, DANH MỤC & HỒ SƠ CÁ NHÂN
-**Nhiệm vụ:** STT 3 (Lê Nguyễn Minh Trí phụ trách)  
+**Nhiệm vụ:** STT 3  
+**Thành viên phụ trách:** Phạm Trung Hiếu (Nhóm 3)  
 **Màn hình phụ trách:**  
-- **UI 10:** Quản lý sản phẩm & Tệp kỹ thuật số (`ProductManageControl`)
-- **UI 11:** Quản lý danh mục thể loại (`CategoryManageControl`)
-- **UI 8:** Hồ sơ cá nhân & Đổi mật khẩu (`ProfileControl`)
+- **UI 10:** Quản lý sản phẩm & Tệp kỹ thuật số ([`../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProductManageControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProductManageControl.cs))
+- **UI 11:** Quản lý danh mục thể loại ([`../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/CategoryManageControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/CategoryManageControl.cs))
+- **UI 8:** Hồ sơ cá nhân & Đổi mật khẩu ([`../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProfileControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProfileControl.cs))
+**Mã nguồn nghiệp vụ & truy vấn:**
+- BLL Service: [`../../qlspdigital/qlspdigital/BLL/Nhom3_ProductAdmin/SanPhamAdminService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom3_ProductAdmin/SanPhamAdminService.cs)
+- DAL Repository: [`../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/SanPhamAdminRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/SanPhamAdminRepository.cs), [`../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/DanhMucRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/DanhMucRepository.cs), [`../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/HoSoRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/HoSoRepository.cs)
 
 ---
 

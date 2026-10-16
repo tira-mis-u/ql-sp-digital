@@ -7,6 +7,25 @@
 
 ---
 
+## 0. Danh mục File & Thư mục phụ trách trực tiếp (Đường dẫn tương đối)
+
+| Phân tầng kiến trúc | Tên File / Thư mục cụ thể | Đường dẫn tương đối từ tài liệu này | Ý nghĩa chức năng |
+|---|---|---|---|
+| **Giao diện (Views)** | `ProductManageControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProductManageControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProductManageControl.cs) | UI 10: CRUD thông tin sản phẩm, giá bán, phiên bản, chọn tệp đính kèm |
+| **Giao diện (Views)** | `CategoryManageControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/CategoryManageControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/CategoryManageControl.cs) | UI 11: CRUD thể loại hàng hóa, đếm số SP trực thuộc, chặn xóa nếu có ràng buộc |
+| **Giao diện (Views)** | `ProfileControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProfileControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProfileControl.cs) | UI 8: Xem và cập nhật họ tên/email/SĐT, đổi mật khẩu băm SHA-256 |
+| **Nghiệp vụ (BLL)** | `SanPhamAdminService.cs` | [`../../qlspdigital/qlspdigital/BLL/Nhom3_ProductAdmin/SanPhamAdminService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom3_ProductAdmin/SanPhamAdminService.cs) | Xử lý logic sản phẩm (`SanPhamAdminService`), danh mục (`DanhMucService`) & hồ sơ (`HoSoService`) |
+| **Truy vấn CSDL (DAL)** | `SanPhamAdminRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/SanPhamAdminRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/SanPhamAdminRepository.cs) | Lệnh ADO.NET CRUD trực tiếp bảng `SanPham` (SELECT, INSERT, UPDATE, DELETE) |
+| **Truy vấn CSDL (DAL)** | `DanhMucRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/DanhMucRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/DanhMucRepository.cs) | Lệnh ADO.NET CRUD bảng `DanhMuc`, đếm `COUNT(sp)` |
+| **Truy vấn CSDL (DAL)** | `HoSoRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/HoSoRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/HoSoRepository.cs) | Lệnh ADO.NET UPDATE hồ sơ, đổi mật khẩu `NguoiDung` & metadata `TepSanPham` |
+| **Dữ liệu truyền tải (DTO)** | `SanPhamDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/SanPhamDTO.cs`](../../qlspdigital/qlspdigital/DTOs/SanPhamDTO.cs) | Định nghĩa cấu trúc `SanPhamDTO` và `TepSanPhamDTO` |
+| **Dữ liệu truyền tải (DTO)** | `DanhMucDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/DanhMucDTO.cs`](../../qlspdigital/qlspdigital/DTOs/DanhMucDTO.cs) | Định nghĩa cấu trúc `DanhMucDTO` |
+| **Dữ liệu truyền tải (DTO)** | `NguoiDungDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/NguoiDungDTO.cs`](../../qlspdigital/qlspdigital/DTOs/NguoiDungDTO.cs) | Định nghĩa cấu trúc `NguoiDungDTO` |
+| **CSDL Master SQL** | `DPMS_Database_Master.sql` | [`../../Database/DPMS_Database_Master.sql`](../../Database/DPMS_Database_Master.sql) | Bảng sử dụng: `SanPham`, `TepSanPham`, `DanhMuc`, `NguoiDung` |
+
+---
+
+
 ## 1. Kiến trúc phân tầng & Luồng tương tác
 
 ```text

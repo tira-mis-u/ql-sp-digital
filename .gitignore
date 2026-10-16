@@ -1,0 +1,12 @@
+## Visual Studio / .NET build artifacts
+[Bb]in/
+[Oo]bj/
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+
+# Temporary files
+*.tmp
+*.log

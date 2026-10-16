@@ -7,6 +7,26 @@
 
 ---
 
+## 0. Danh mục File & Thư mục phụ trách trực tiếp (Đường dẫn tương đối)
+
+| Phân tầng kiến trúc | Tên File / Thư mục cụ thể | Đường dẫn tương đối từ tài liệu này | Ý nghĩa chức năng |
+|---|---|---|---|
+| **Giao diện (Views)** | `LoginControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/LoginControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/LoginControl.cs) | UI 1: Đăng nhập hệ thống, kiểm tra phân quyền & trạng thái khóa |
+| **Giao diện (Views)** | `RegisterControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/RegisterControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/RegisterControl.cs) | UI 1: Đăng ký thành viên mới, kiểm tra trùng lặp, băm SHA-256 |
+| **Giao diện (Views)** | `UserManageControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/UserManageControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/UserManageControl.cs) | UI 12: Danh sách tài khoản người dùng, nút bấm Khóa / Mở khóa |
+| **Giao diện (Views)** | `DashboardControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/DashboardControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/DashboardControl.cs) | UI 9: Thống kê 4 thẻ chỉ số KPI tổng hợp và bảng Top 5 bán chạy |
+| **Nghiệp vụ (BLL)** | `AuthService.cs` | [`../../qlspdigital/qlspdigital/BLL/Nhom4_SystemAdmin/AuthService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom4_SystemAdmin/AuthService.cs) | Xử lý logic đăng nhập (`AuthService`), quản lý tài khoản (`NguoiDungService`) & thống kê (`DashboardService`) |
+| **Truy vấn CSDL (DAL)** | `AuthRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/AuthRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/AuthRepository.cs) | Lệnh ADO.NET SELECT/INSERT xác thực, kiểm tra username/email |
+| **Truy vấn CSDL (DAL)** | `NguoiDungRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/NguoiDungRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/NguoiDungRepository.cs) | Lệnh ADO.NET SELECT danh sách user, UPDATE trạng thái khóa `TrangThai = 0/1` |
+| **Truy vấn CSDL (DAL)** | `DashboardRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/NguoiDungRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/NguoiDungRepository.cs) | Lệnh ADO.NET tổng hợp `SUM(TongThanhToan)`, `COUNT(1)` và Top 5 bán chạy |
+| **Dữ liệu truyền tải (DTO)** | `NguoiDungDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/NguoiDungDTO.cs`](../../qlspdigital/qlspdigital/DTOs/NguoiDungDTO.cs) | Định nghĩa cấu trúc `NguoiDungDTO` |
+| **Dữ liệu truyền tải (DTO)** | `ThuVienItemDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/ThuVienItemDTO.cs`](../../qlspdigital/qlspdigital/DTOs/ThuVienItemDTO.cs) | Định nghĩa cấu trúc `DashboardStatsDTO` và `TopSanPhamDTO` |
+| **Tiện ích chung (Shared)** | `UserSession.cs` & `SecurityHelper.cs` | [`../../qlspdigital/qlspdigital/Shared/`](../../qlspdigital/qlspdigital/Shared/) | Quản lý phiên làm việc tĩnh `UserSession` và mã hóa SHA-256 `SecurityHelper` |
+| **CSDL Master SQL** | `DPMS_Database_Master.sql` | [`../../Database/DPMS_Database_Master.sql`](../../Database/DPMS_Database_Master.sql) | Bảng sử dụng: `NguoiDung`, `DonHang`, `ChiTietDonHang`, `SanPham` |
+
+---
+
+
 ## 1. Kiến trúc phân tầng & Luồng tương tác
 
 ```text

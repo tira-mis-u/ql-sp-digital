@@ -1,9 +1,14 @@
 # PRD: PHÂN HỆ XÁC THỰC, QUẢN TRỊ NGƯỜI DÙNG & DASHBOARD
 **Nhiệm vụ:** STT 4  
+**Thành viên phụ trách:** Trần Quốc Thuận (Nhóm 4)  
 **Màn hình phụ trách:**  
-- **UI 1:** Đăng nhập & Đăng ký tài khoản (`LoginControl`, `RegisterControl`)
-- **UI 12:** Quản lý người dùng (`UserManageControl`)
-- **UI 9:** Dashboard thống kê tổng quan (`DashboardControl`)
+- **UI 1:** Đăng nhập & Đăng ký ([`../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/LoginControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/LoginControl.cs), [`../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/RegisterControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/RegisterControl.cs))
+- **UI 12:** Quản lý người dùng ([`../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/UserManageControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/UserManageControl.cs))
+- **UI 9:** Dashboard thống kê tổng quan ([`../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/DashboardControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/DashboardControl.cs))
+**Mã nguồn nghiệp vụ, truy vấn & tiện ích:**
+- BLL Service: [`../../qlspdigital/qlspdigital/BLL/Nhom4_SystemAdmin/AuthService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom4_SystemAdmin/AuthService.cs)
+- DAL Repository: [`../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/AuthRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/AuthRepository.cs), [`../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/NguoiDungRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/NguoiDungRepository.cs)
+- Phiên tĩnh & bảo mật: [`../../qlspdigital/qlspdigital/Shared/UserSession.cs`](../../qlspdigital/qlspdigital/Shared/UserSession.cs), [`../../qlspdigital/qlspdigital/Shared/SecurityHelper.cs`](../../qlspdigital/qlspdigital/Shared/SecurityHelper.cs)
 
 ---
 

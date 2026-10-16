@@ -1,0 +1,187 @@
+﻿using System;
+using System.Data;
+using Microsoft.Data.SqlClient;
+using qlspdigital.DTOs;
+using qlspdigital.Shared;
+
+namespace qlspdigital.DAL.Nhom3_ProductAdmin
+{
+    // Repository quản lý hồ sơ cá nhân và đổi mật khẩu người dùng
+    // Thành viên phụ trách: Phạm Trung Hiếu (Nhóm 3)
+    public class HoSoRepository
+    {
+        // Lấy thông tin cá nhân của người dùng (Read)
+        public NguoiDungDTO? LayThongTinHoSo(int maNguoiDung)
+        {
+            string query = @"
+                SELECT MaNguoiDung, TenDangNhap, MatKhauHash, HoTen, Email, SoDienThoai, VaiTro, SoDuVi, TrangThai, NgayTao
+                FROM NguoiDung
+                WHERE MaNguoiDung = @MaNguoiDung";
+
+            SqlParameter[] parameters = { new SqlParameter("@MaNguoiDung", maNguoiDung) };
+            DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
+
+            if (dt.Rows.Count > 0)
+            {
+                DataRow row = dt.Rows[0];
+                return new NguoiDungDTO
+                {
+                    MaNguoiDung = Convert.ToInt32(row["MaNguoiDung"]),
+                    TenDangNhap = row["TenDangNhap"].ToString() ?? string.Empty,
+                    MatKhauHash = row["MatKhauHash"].ToString() ?? string.Empty,
+                    HoTen = row["HoTen"].ToString() ?? string.Empty,
+                    Email = row["Email"].ToString() ?? string.Empty,
+                    SoDienThoai = row["SoDienThoai"] != DBNull.Value ? row["SoDienThoai"].ToString() : null,
+                    VaiTro = row["VaiTro"].ToString() ?? "KhachHang",
+                    SoDuVi = Convert.ToDecimal(row["SoDuVi"]),
+                    TrangThai = Convert.ToBoolean(row["TrangThai"]),
+                    NgayTao = Convert.ToDateTime(row["NgayTao"])
+                };
+            }
+
+            return null;
+        }
+
+        // Cập nhật thông tin cá nhân (Update)
+        public bool CapNhatHoSo(int maNguoiDung, string hoTen, string email, string? soDienThoai, out string thongBao)
+        {
+            // Kiểm tra trùng email với tài khoản khác
+            string queryCheckEmail = "SELECT COUNT(1) FROM NguoiDung WHERE Email = @Email AND MaNguoiDung <> @MaNguoiDung";
+            SqlParameter[] pCheck =
+            {
+                new SqlParameter("@Email", email.Trim()),
+                new SqlParameter("@MaNguoiDung", maNguoiDung)
+            };
+
+            int count = Convert.ToInt32(DatabaseHelper.ExecuteScalar(queryCheckEmail, pCheck));
+            if (count > 0)
+            {
+                thongBao = "Email này đã được sử dụng bởi một tài khoản khác!";
+                return false;
+            }
+
+            string queryUpdate = @"
+                UPDATE NguoiDung
+                SET HoTen = @HoTen, Email = @Email, SoDienThoai = @SoDienThoai
+                WHERE MaNguoiDung = @MaNguoiDung";
+
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@HoTen", hoTen.Trim()),
+                new SqlParameter("@Email", email.Trim()),
+                new SqlParameter("@SoDienThoai", (object?)soDienThoai?.Trim() ?? DBNull.Value),
+                new SqlParameter("@MaNguoiDung", maNguoiDung)
+            };
+
+            int result = DatabaseHelper.ExecuteNonQuery(queryUpdate, parameters);
+            if (result > 0)
+            {
+                thongBao = "Cập nhật hồ sơ cá nhân thành công!";
+                return true;
+            }
+
+            thongBao = "Không thể cập nhật hồ sơ, vui lòng kiểm tra lại.";
+            return false;
+        }
+
+        // Đổi mật khẩu tài khoản (Update)
+        public bool DoiMatKhau(int maNguoiDung, string matKhauCu, string matKhauMoi, out string thongBao)
+        {
+            // Kiểm tra mật khẩu cũ
+            string queryCheckPass = "SELECT MatKhauHash FROM NguoiDung WHERE MaNguoiDung = @MaNguoiDung";
+            SqlParameter[] pCheck = { new SqlParameter("@MaNguoiDung", maNguoiDung) };
+            object? hashObj = DatabaseHelper.ExecuteScalar(queryCheckPass, pCheck);
+
+            if (hashObj == null)
+            {
+                thongBao = "Không tìm thấy thông tin tài khoản!";
+                return false;
+            }
+
+            string storedHash = hashObj.ToString() ?? string.Empty;
+            if (!SecurityHelper.VerifyPassword(matKhauCu, storedHash))
+            {
+                thongBao = "Mật khẩu hiện tại không chính xác!";
+                return false;
+            }
+
+            string newHash = SecurityHelper.ComputeSha256Hash(matKhauMoi);
+            string queryUpdate = "UPDATE NguoiDung SET MatKhauHash = @NewHash WHERE MaNguoiDung = @MaNguoiDung";
+            SqlParameter[] pUpdate =
+            {
+                new SqlParameter("@NewHash", newHash),
+                new SqlParameter("@MaNguoiDung", maNguoiDung)
+            };
+
+            int result = DatabaseHelper.ExecuteNonQuery(queryUpdate, pUpdate);
+            if (result > 0)
+            {
+                thongBao = "Đổi mật khẩu thành công!";
+                return true;
+            }
+
+            thongBao = "Đổi mật khẩu thất bại, vui lòng thử lại.";
+            return false;
+        }
+    }
+
+    // Repository quản lý metadata tệp kỹ thuật số
+    public class TepSanPhamRepository
+    {
+        public TepSanPhamDTO? LayTepTheoSanPham(int maSanPham)
+        {
+            string query = "SELECT * FROM TepSanPham WHERE MaSanPham = @MaSanPham";
+            SqlParameter[] parameters = { new SqlParameter("@MaSanPham", maSanPham) };
+            DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
+
+            if (dt.Rows.Count > 0)
+            {
+                DataRow row = dt.Rows[0];
+                return new TepSanPhamDTO
+                {
+                    MaTep = Convert.ToInt32(row["MaTep"]),
+                    MaSanPham = Convert.ToInt32(row["MaSanPham"]),
+                    TenTep = row["TenTep"].ToString() ?? string.Empty,
+                    DuongDanTep = row["DuongDanTep"].ToString() ?? string.Empty,
+                    DinhDangTep = row["DinhDangTep"].ToString() ?? ".zip",
+                    KichThuocByte = Convert.ToInt64(row["KichThuocByte"]),
+                    MaHashSHA256 = row["MaHashSHA256"] != DBNull.Value ? row["MaHashSHA256"].ToString() : null,
+                    PhienBan = row["PhienBan"].ToString() ?? "1.0.0",
+                    NgayTaiLen = Convert.ToDateTime(row["NgayTaiLen"])
+                };
+            }
+            return null;
+        }
+
+        public bool LuuThongTinTep(TepSanPhamDTO dto)
+        {
+            // Xóa tệp cũ nếu đã có và ghi đè
+            string query = @"
+                IF EXISTS (SELECT 1 FROM TepSanPham WHERE MaSanPham = @MaSanPham)
+                BEGIN
+                    UPDATE TepSanPham
+                    SET TenTep = @TenTep, DuongDanTep = @DuongDanTep, DinhDangTep = @DinhDangTep,
+                        KichThuocByte = @KichThuocByte, MaHashSHA256 = @MaHashSHA256, PhienBan = @PhienBan, NgayTaiLen = GETDATE()
+                    WHERE MaSanPham = @MaSanPham
+                END
+                ELSE
+                BEGIN
+                    INSERT INTO TepSanPham (MaSanPham, TenTep, DuongDanTep, DinhDangTep, KichThuocByte, MaHashSHA256, PhienBan, NgayTaiLen)
+                    VALUES (@MaSanPham, @TenTep, @DuongDanTep, @DinhDangTep, @KichThuocByte, @MaHashSHA256, @PhienBan, GETDATE())
+                END";
+
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@MaSanPham", dto.MaSanPham),
+                new SqlParameter("@TenTep", dto.TenTep),
+                new SqlParameter("@DuongDanTep", dto.DuongDanTep),
+                new SqlParameter("@DinhDangTep", dto.DinhDangTep),
+                new SqlParameter("@KichThuocByte", dto.KichThuocByte),
+                new SqlParameter("@MaHashSHA256", (object?)dto.MaHashSHA256 ?? DBNull.Value),
+                new SqlParameter("@PhienBan", dto.PhienBan)
+            };
+
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+        }
+    }
+}
