@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom4_SystemAdmin;
@@ -35,9 +35,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
             Panel panelCenter = new Panel
             {
-                Size = new Size(480, 560),
-                BackColor = Color.FromArgb(27, 40, 56),
-                Padding = new Padding(35)
+                Size = new Size(480, 480),
+                BackColor = Color.FromArgb(27, 40, 56)
             };
             panelCenter.Location = new Point((this.Width - panelCenter.Width) / 2, 40);
             this.Resize += (s, e) =>
@@ -48,14 +47,15 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             Label lblLogo = new Label
             {
                 Text = "📝 ĐĂNG KÝ THÀNH VIÊN",
-                Dock = DockStyle.Top,
-                Height = 40,
+                Location = new Point(0, 15),
+                Size = new Size(480, 35),
                 ForeColor = Color.FromArgb(102, 192, 244),
                 Font = new Font("Segoe UI", 16, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter
+                TextAlign = ContentAlignment.MiddleCenter,
+                UseMnemonic = false
             };
 
-            int y = 50;
+            int y = 55;
             AddInput(panelCenter, "Tên đăng nhập (*):", out txtUsername, ref y);
             AddInput(panelCenter, "Họ và tên (*):", out txtFullName, ref y);
             AddInput(panelCenter, "Địa chỉ Email (*):", out txtEmail, ref y);
@@ -66,13 +66,14 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             btnRegister = new Button
             {
                 Text = "TẠO TÀI KHOẢN MỚI",
-                Location = new Point(35, y + 10),
-                Size = new Size(410, 42),
+                Location = new Point(35, y + 8),
+                Size = new Size(410, 40),
                 BackColor = Color.FromArgb(92, 126, 16),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 10.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnRegister.FlatAppearance.BorderSize = 0;
             btnRegister.Click += BtnRegister_Click;
@@ -80,13 +81,14 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             btnBackToLogin = new Button
             {
                 Text = "← Đã có tài khoản? Quay lại Đăng nhập",
-                Location = new Point(35, y + 60),
-                Size = new Size(410, 32),
+                Location = new Point(35, y + 54),
+                Size = new Size(410, 30),
                 BackColor = Color.Transparent,
                 ForeColor = Color.FromArgb(102, 192, 244),
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Underline),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnBackToLogin.FlatAppearance.BorderSize = 0;
             btnBackToLogin.Click += (s, e) => OnNavigateToLogin?.Invoke();
@@ -100,19 +102,19 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
         private void AddInput(Panel panel, string label, out TextBox txt, ref int y, bool isPassword = false)
         {
-            Label lbl = new Label { Text = label, Location = new Point(35, y), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 9.5f) };
+            Label lbl = new Label { Text = label, Location = new Point(35, y), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 9.5f), UseMnemonic = false };
             txt = new TextBox
             {
-                Location = new Point(35, y + 22),
+                Location = new Point(35, y + 23),
                 Width = 410,
-                Font = new Font("Segoe UI", 10),
+                Font = new Font("Segoe UI", 9.5f),
                 BackColor = Color.FromArgb(18, 25, 35),
                 ForeColor = Color.White,
                 UseSystemPasswordChar = isPassword
             };
             panel.Controls.Add(lbl);
             panel.Controls.Add(txt);
-            y += 56;
+            y += 54;
         }
 
         private void BtnRegister_Click(object? sender, EventArgs e)

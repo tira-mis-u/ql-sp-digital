@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom1_Store;
@@ -43,6 +43,7 @@ namespace qlspdigital.Views.Nhom1_Store
 
         private void InitializeComponent()
         {
+            this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
             this.Dock = DockStyle.Fill;
             this.Padding = new Padding(25);
@@ -51,13 +52,14 @@ namespace qlspdigital.Views.Nhom1_Store
             btnBack = new Button
             {
                 Text = "← Quay lại Cửa hàng",
-                Size = new Size(160, 34),
-                Location = new Point(25, 20),
+                Size = new Size(200, 36),
+                Location = new Point(25, 18),
                 BackColor = Color.FromArgb(49, 98, 130),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnBack.FlatAppearance.BorderSize = 0;
             btnBack.Click += (s, e) => OnBackToStore?.Invoke();
@@ -66,7 +68,8 @@ namespace qlspdigital.Views.Nhom1_Store
             Panel panelTop = new Panel
             {
                 Location = new Point(25, 65),
-                Size = new Size(950, 160),
+                Size = new Size(1000, 175),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(27, 40, 56),
                 Padding = new Padding(20)
             };
@@ -74,55 +77,61 @@ namespace qlspdigital.Views.Nhom1_Store
             lblTitle = new Label
             {
                 Text = "Tên sản phẩm kỹ thuật số",
-                Location = new Point(20, 15),
-                Size = new Size(600, 40),
+                Location = new Point(20, 12),
+                Size = new Size(680, 45),
                 ForeColor = Color.White,
-                Font = new Font("Segoe UI", 16, FontStyle.Bold)
+                Font = new Font("Segoe UI", 16, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             lblCategory = new Label
             {
                 Text = "Thể loại: Game",
-                Location = new Point(22, 60),
+                Location = new Point(22, 58),
                 AutoSize = true,
                 ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 10, FontStyle.Bold)
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             lblPublisher = new Label
             {
                 Text = "Nhà phát hành: Studio",
-                Location = new Point(250, 60),
+                Location = new Point(22, 85),
                 AutoSize = true,
                 ForeColor = Color.FromArgb(199, 213, 224),
-                Font = new Font("Segoe UI", 10)
+                Font = new Font("Segoe UI", 10),
+                UseMnemonic = false
             };
 
             lblVersion = new Label
             {
                 Text = "Phiên bản: 1.0.0",
-                Location = new Point(22, 90),
+                Location = new Point(22, 112),
                 AutoSize = true,
                 ForeColor = Color.FromArgb(199, 213, 224),
-                Font = new Font("Segoe UI", 9.5f)
+                Font = new Font("Segoe UI", 9.5f),
+                UseMnemonic = false
             };
 
             lblSize = new Label
             {
                 Text = "Dung lượng: 0 MB",
-                Location = new Point(250, 90),
+                Location = new Point(260, 112),
                 AutoSize = true,
                 ForeColor = Color.FromArgb(199, 213, 224),
-                Font = new Font("Segoe UI", 9.5f)
+                Font = new Font("Segoe UI", 9.5f),
+                UseMnemonic = false
             };
 
             lblRating = new Label
             {
                 Text = "⭐ 5.0 / 5.0 (0 đánh giá)",
-                Location = new Point(22, 120),
+                Location = new Point(22, 138),
                 AutoSize = true,
                 ForeColor = Color.FromArgb(243, 156, 18),
-                Font = new Font("Segoe UI", 10, FontStyle.Bold)
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             // Khung mua hàng bên phải
@@ -141,7 +150,8 @@ namespace qlspdigital.Views.Nhom1_Store
                 Height = 35,
                 ForeColor = Color.FromArgb(164, 208, 7),
                 Font = new Font("Segoe UI", 15, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter
+                TextAlign = ContentAlignment.MiddleCenter,
+                UseMnemonic = false
             };
 
             btnAddToCart = new Button
@@ -153,7 +163,8 @@ namespace qlspdigital.Views.Nhom1_Store
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnAddToCart.FlatAppearance.BorderSize = 0;
             btnAddToCart.Click += BtnAddToCart_Click;
@@ -167,7 +178,8 @@ namespace qlspdigital.Views.Nhom1_Store
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Regular),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnReviews.FlatAppearance.BorderSize = 0;
             btnReviews.Click += (s, e) => OnViewReviews?.Invoke(_maSanPham);
@@ -187,8 +199,9 @@ namespace qlspdigital.Views.Nhom1_Store
             // Khung dưới: Mô tả chi tiết sản phẩm
             Panel panelBottom = new Panel
             {
-                Location = new Point(25, 240),
-                Size = new Size(950, 400),
+                Location = new Point(25, 255),
+                Size = new Size(1000, 470),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(27, 40, 56),
                 Padding = new Padding(20)
             };
@@ -199,7 +212,8 @@ namespace qlspdigital.Views.Nhom1_Store
                 Dock = DockStyle.Top,
                 Height = 30,
                 ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 11, FontStyle.Bold)
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             rtfDescription = new RichTextBox

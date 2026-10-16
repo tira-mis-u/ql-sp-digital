@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.Shared;
@@ -7,6 +7,7 @@ using qlspdigital.Views.Nhom2_Cart;
 using qlspdigital.Views.Nhom3_ProductAdmin;
 using qlspdigital.Views.Nhom4_SystemAdmin;
 using qlspdigital.Views.Nhom5_Orders;
+using qlspdigital.BLL.Nhom2_Cart;
 
 namespace qlspdigital.Views.Main
 {
@@ -67,8 +68,13 @@ namespace qlspdigital.Views.Main
             {
                 Dock = DockStyle.Top,
                 Height = 65,
-                BackColor = Color.FromArgb(27, 40, 56),
+                BackColor = Color.FromArgb(16, 24, 34),
                 Padding = new Padding(15, 10, 15, 10)
+            };
+            panelHeader.Paint += (s, e) =>
+            {
+                using var p = new Pen(Color.FromArgb(35, 48, 68), 1);
+                e.Graphics.DrawLine(p, 0, panelHeader.Height - 1, panelHeader.Width, panelHeader.Height - 1);
             };
 
             Label lblLogo = new Label
@@ -78,24 +84,15 @@ namespace qlspdigital.Views.Main
                 Width = 110,
                 ForeColor = Color.FromArgb(102, 192, 244),
                 Font = new Font("Segoe UI", 16, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleLeft
-            };
-
-            Label lblAppTitle = new Label
-            {
-                Text = "CỬA HÀNG PHÂN PHỐI SẢN PHẨM KỸ THUẬT SỐ",
-                Dock = DockStyle.Left,
-                Width = 380,
-                ForeColor = Color.FromArgb(199, 213, 224),
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleLeft
+                TextAlign = ContentAlignment.MiddleLeft,
+                UseMnemonic = false
             };
 
             // Vùng Header bên phải: Ví, User, Cart, Login/Logout
             Panel panelHeaderRight = new Panel
             {
                 Dock = DockStyle.Right,
-                Width = 620,
+                Width = 640,
                 Padding = new Padding(0, 5, 0, 5)
             };
 
@@ -103,26 +100,28 @@ namespace qlspdigital.Views.Main
             {
                 Text = "🔑 Đăng nhập",
                 Dock = DockStyle.Right,
-                Width = 110,
+                Width = 145,
                 BackColor = Color.FromArgb(49, 98, 130),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnHeaderAuth.FlatAppearance.BorderSize = 0;
             btnHeaderAuth.Click += BtnHeaderAuth_Click;
 
             btnHeaderCart = new Button
             {
-                Text = "🛒 Giỏ hàng",
+                Text = "🛒 Giỏ hàng (0)",
                 Dock = DockStyle.Right,
-                Width = 110,
+                Width = 145,
                 BackColor = Color.FromArgb(92, 126, 16),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnHeaderCart.FlatAppearance.BorderSize = 0;
             btnHeaderCart.Click += (s, e) => NavigateToCart();
@@ -131,10 +130,11 @@ namespace qlspdigital.Views.Main
             {
                 Text = "💰 Ví: 0 ₫",
                 Dock = DockStyle.Right,
-                Width = 180,
+                Width = 160,
                 ForeColor = Color.FromArgb(164, 208, 7),
                 Font = new Font("Segoe UI", 10.5f, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleRight
+                TextAlign = ContentAlignment.MiddleRight,
+                UseMnemonic = false
             };
 
             lblUserGreeting = new Label
@@ -144,23 +144,42 @@ namespace qlspdigital.Views.Main
                 ForeColor = Color.FromArgb(102, 192, 244),
                 Font = new Font("Segoe UI", 10, FontStyle.Bold),
                 TextAlign = ContentAlignment.MiddleRight,
-                Padding = new Padding(0, 0, 10, 0)
+                Padding = new Padding(0, 0, 10, 0),
+                UseMnemonic = false
             };
 
             panelHeaderRight.Controls.Add(lblUserGreeting);
             panelHeaderRight.Controls.Add(lblBalance);
             panelHeaderRight.Controls.Add(btnHeaderCart);
             panelHeaderRight.Controls.Add(btnHeaderAuth);
+            btnHeaderAuth.SendToBack();
+            btnHeaderCart.SendToBack();
+            lblBalance.SendToBack();
+            lblUserGreeting.BringToFront();
 
-            panelHeader.Controls.Add(panelHeaderRight);
+            Label lblAppTitle = new Label
+            {
+                Text = "CỬA HÀNG PHÂN PHỐI SẢN PHẨM KỸ THUẬT SỐ",
+                Dock = DockStyle.Fill,
+                ForeColor = Color.FromArgb(199, 213, 224),
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleLeft,
+                Padding = new Padding(15, 0, 0, 0),
+                UseMnemonic = false
+            };
+
             panelHeader.Controls.Add(lblAppTitle);
+            panelHeader.Controls.Add(panelHeaderRight);
             panelHeader.Controls.Add(lblLogo);
+            lblLogo.SendToBack();
+            panelHeaderRight.SendToBack();
+            lblAppTitle.BringToFront();
 
             // 2. THANH ĐIỀU HƯỚNG SIDEBAR BÊN TRÁI
             panelSidebar = new Panel
             {
                 Dock = DockStyle.Left,
-                Width = 220,
+                Width = 240,
                 BackColor = Color.FromArgb(18, 25, 35),
                 AutoScroll = true,
                 Padding = new Padding(10, 15, 10, 15)
@@ -173,7 +192,8 @@ namespace qlspdigital.Views.Main
                 Dock = DockStyle.Top,
                 Height = 25,
                 ForeColor = Color.FromArgb(161, 181, 196),
-                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold)
+                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             btnMenuStore = CreateMenuButton("🛒 Cửa hàng (Store)", (s, e) => NavigateToStore());
@@ -193,7 +213,8 @@ namespace qlspdigital.Views.Main
                 Height = 30,
                 ForeColor = Color.FromArgb(243, 156, 18),
                 Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
-                Padding = new Padding(0, 10, 0, 0)
+                Padding = new Padding(0, 10, 0, 0),
+                UseMnemonic = false
             };
 
             btnMenuDashboard = CreateMenuButton("📊 Thống kê Dashboard", (s, e) => NavigateToDashboard());
@@ -251,8 +272,13 @@ namespace qlspdigital.Views.Main
 
             this.Controls.Add(panelMainContent);
             this.Controls.Add(panelSidebar);
-            this.Controls.Add(panelHeader);
             this.Controls.Add(statusStrip);
+            this.Controls.Add(panelHeader);
+
+            statusStrip.SendToBack();
+            panelSidebar.SendToBack();
+            panelHeader.SendToBack();
+            panelMainContent.BringToFront();
 
             this.Load += MainForm_Load;
         }
@@ -270,7 +296,8 @@ namespace qlspdigital.Views.Main
                 Font = new Font("Segoe UI", 9.5f),
                 TextAlign = ContentAlignment.MiddleLeft,
                 Padding = new Padding(10, 0, 0, 0),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btn.FlatAppearance.BorderSize = 0;
             btn.MouseEnter += (s, e) => btn.BackColor = Color.FromArgb(42, 71, 94);
@@ -286,6 +313,19 @@ namespace qlspdigital.Views.Main
             {
                 lblBalance.Text = $"💰 Ví: {FormatHelper.FormatCurrency(bal)}";
             };
+            GioHangService.CartUpdated += UpdateCartBadge;
+        }
+
+        private void UpdateCartBadge()
+        {
+            int count = 0;
+            if (UserSession.IsLoggedIn)
+            {
+                var cartService = new GioHangService();
+                count = cartService.LayTongSoLuongItem(UserSession.CurrentUserId);
+            }
+            btnHeaderCart.Text = $"🛒 Giỏ hàng ({count})";
+            btnMenuCart.Text = $"🛍️ Giỏ hàng ({count})";
         }
 
         private void MainForm_Load(object? sender, EventArgs e)
@@ -349,6 +389,7 @@ namespace qlspdigital.Views.Main
                 btnMenuOrderManage.Visible = true;
                 btnMenuUserManage.Visible = true;
             }
+            UpdateCartBadge();
         }
 
         // ==========================================

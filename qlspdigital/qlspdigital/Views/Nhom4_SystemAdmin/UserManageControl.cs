@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom4_SystemAdmin;
@@ -19,6 +19,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
         private Button btnLock = null!;
         private Button btnUnlock = null!;
         private Button btnRefresh = null!;
+        private Panel panelFilter = null!;
+        private Panel panelBottomActions = null!;
 
         public UserManageControl()
         {
@@ -30,6 +32,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
         private void InitializeComponent()
         {
+            this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
             this.Dock = DockStyle.Fill;
             this.Padding = new Padding(25);
@@ -45,7 +48,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             };
 
             // 1. THANH LỌC VÀ TÌM KIẾM
-            Panel panelFilter = new Panel
+            panelFilter = new Panel
             {
                 Location = new Point(25, 55),
                 Size = new Size(950, 45),
@@ -53,26 +56,27 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
                 Padding = new Padding(12, 8, 12, 8)
             };
 
-            Label lblRole = new Label { Text = "Vai trò:", Location = new Point(12, 12), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 9.5f, FontStyle.Bold) };
-            cboRole = new ComboBox { Location = new Point(70, 9), Width = 150, DropDownStyle = ComboBoxStyle.DropDownList, Font = new Font("Segoe UI", 9.5f), BackColor = Color.FromArgb(18, 25, 35), ForeColor = Color.White };
+            Label lblRole = new Label { Text = "Vai trò:", Location = new Point(12, 12), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 9.5f, FontStyle.Bold), UseMnemonic = false };
+            cboRole = new ComboBox { Location = new Point(80, 9), Width = 140, DropDownStyle = ComboBoxStyle.DropDownList, Font = new Font("Segoe UI", 9.5f), BackColor = Color.FromArgb(18, 25, 35), ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
             cboRole.Items.AddRange(new string[] { "Tất cả", "QuanTriVien", "KhachHang" });
             cboRole.SelectedIndex = 0;
             cboRole.SelectedIndexChanged += (s, e) => LoadUsers();
 
-            Label lblSearch = new Label { Text = "Tìm kiếm:", Location = new Point(240, 12), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 9.5f, FontStyle.Bold) };
-            txtSearch = new TextBox { Location = new Point(315, 9), Width = 300, Font = new Font("Segoe UI", 9.5f), BackColor = Color.FromArgb(18, 25, 35), ForeColor = Color.White, PlaceholderText = "Tìm theo tên đăng nhập, họ tên, email..." };
+            Label lblSearch = new Label { Text = "Tìm kiếm:", Location = new Point(245, 12), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 9.5f, FontStyle.Bold), UseMnemonic = false };
+            txtSearch = new TextBox { Location = new Point(330, 9), Width = 300, Font = new Font("Segoe UI", 9.5f), BackColor = Color.FromArgb(18, 25, 35), ForeColor = Color.White, PlaceholderText = "Tìm theo tên đăng nhập, họ tên, email..." };
             txtSearch.TextChanged += (s, e) => LoadUsers();
 
             btnRefresh = new Button
             {
                 Text = "Làm mới",
-                Location = new Point(630, 7),
-                Size = new Size(90, 30),
+                Location = new Point(650, 7),
+                Size = new Size(95, 30),
                 BackColor = Color.FromArgb(49, 98, 130),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnRefresh.FlatAppearance.BorderSize = 0;
             btnRefresh.Click += (s, e) => { txtSearch.Clear(); cboRole.SelectedIndex = 0; LoadUsers(); };
@@ -87,7 +91,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             dgvUsers = new DataGridView
             {
                 Location = new Point(25, 110),
-                Size = new Size(950, 480),
+                Size = new Size(950, 520),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackgroundColor = Color.FromArgb(27, 40, 56),
                 ForeColor = Color.White,
                 GridColor = Color.FromArgb(42, 71, 94),
@@ -99,7 +104,9 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
             dgvUsers.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 35);
+            dgvUsers.DefaultCellStyle.ForeColor = Color.White;
             dgvUsers.DefaultCellStyle.SelectionBackColor = Color.FromArgb(49, 98, 130);
+            dgvUsers.DefaultCellStyle.SelectionForeColor = Color.White;
             dgvUsers.DefaultCellStyle.Font = new Font("Segoe UI", 9.5f);
             dgvUsers.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
             dgvUsers.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(102, 192, 244);
@@ -115,24 +122,54 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             dgvUsers.Columns.Add("SoDuVi", "Số dư ví");
             dgvUsers.Columns.Add("TrangThai", "Trạng thái");
 
-            dgvUsers.Columns["MaNguoiDung"].Width = 50;
-            dgvUsers.Columns["TenDangNhap"].Width = 130;
-            dgvUsers.Columns["HoTen"].Width = 160;
-            dgvUsers.Columns["VaiTro"].Width = 110;
-            dgvUsers.Columns["SoDuVi"].Width = 110;
-            dgvUsers.Columns["TrangThai"].Width = 110;
+            dgvUsers.Columns["MaNguoiDung"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvUsers.Columns["MaNguoiDung"].Width = 45;
+            dgvUsers.Columns["MaNguoiDung"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvUsers.Columns["TenDangNhap"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvUsers.Columns["TenDangNhap"].FillWeight = 26;
+
+            dgvUsers.Columns["HoTen"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvUsers.Columns["HoTen"].FillWeight = 36;
+
+            dgvUsers.Columns["Email"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvUsers.Columns["Email"].FillWeight = 38;
+
+            dgvUsers.Columns["SoDienThoai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvUsers.Columns["SoDienThoai"].Width = 110;
+            dgvUsers.Columns["SoDienThoai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvUsers.Columns["VaiTro"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvUsers.Columns["VaiTro"].Width = 115;
+            dgvUsers.Columns["VaiTro"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvUsers.Columns["SoDuVi"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvUsers.Columns["SoDuVi"].Width = 120;
+            dgvUsers.Columns["SoDuVi"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            dgvUsers.Columns["TrangThai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvUsers.Columns["TrangThai"].Width = 95;
+            dgvUsers.Columns["TrangThai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             // 3. CÁC NÚT THAO TÁC CẬP NHẬT TRẠNG THÁI (UPDATE)
+            panelBottomActions = new Panel
+            {
+                Location = new Point(25, 638),
+                Size = new Size(950, 50),
+                BackColor = Color.FromArgb(23, 26, 33)
+            };
+
             btnLock = new Button
             {
                 Text = "🔒 Khóa tài khoản",
-                Location = new Point(25, 605),
-                Size = new Size(160, 34),
+                Location = new Point(0, 5),
+                Size = new Size(180, 38),
                 BackColor = Color.FromArgb(180, 40, 40),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnLock.FlatAppearance.BorderSize = 0;
             btnLock.Click += (s, e) => ChangeStatus(false);
@@ -140,22 +177,58 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             btnUnlock = new Button
             {
                 Text = "🔓 Mở khóa tài khoản",
-                Location = new Point(200, 605),
-                Size = new Size(170, 34),
+                Location = new Point(195, 5),
+                Size = new Size(205, 38),
                 BackColor = Color.FromArgb(92, 126, 16),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnUnlock.FlatAppearance.BorderSize = 0;
             btnUnlock.Click += (s, e) => ChangeStatus(true);
 
-            this.Controls.Add(btnUnlock);
-            this.Controls.Add(btnLock);
+            panelBottomActions.Controls.Add(btnUnlock);
+            panelBottomActions.Controls.Add(btnLock);
+
+            this.Controls.Add(panelBottomActions);
             this.Controls.Add(dgvUsers);
             this.Controls.Add(panelFilter);
             this.Controls.Add(lblHeader);
+
+            panelBottomActions.BringToFront();
+            AdjustLayout();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (this.ClientSize.Width < 500 || panelFilter == null || dgvUsers == null || panelBottomActions == null || txtSearch == null || btnRefresh == null) return;
+            int totalW = this.ClientSize.Width;
+            int totalH = this.ClientSize.Height;
+
+            int fullW = totalW - 50;
+            panelFilter.Location = new Point(25, 55);
+            panelFilter.Size = new Size(fullW, 45);
+
+            int searchW = Math.Max(260, fullW - 470);
+            txtSearch.Size = new Size(searchW, txtSearch.Height);
+            btnRefresh.Location = new Point(txtSearch.Location.X + searchW + 15, 7);
+
+            int bottomH = 50;
+            int contentH = Math.Max(250, totalH - 110 - bottomH - 25);
+
+            dgvUsers.Location = new Point(25, 110);
+            dgvUsers.Size = new Size(fullW, contentH);
+
+            panelBottomActions.Location = new Point(25, 110 + contentH + 10);
+            panelBottomActions.Size = new Size(fullW, bottomH);
         }
 
         public void LoadUsers()

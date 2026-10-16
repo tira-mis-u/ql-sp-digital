@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom5_Orders;
@@ -14,6 +14,8 @@ namespace qlspdigital.Views.Nhom5_Orders
 
         private DataGridView dgvOrders = null!;
         private DataGridView dgvDetails = null!;
+        private Panel panelTop = null!;
+        private Panel panelDetail = null!;
         private Button btnRefresh = null!;
 
         public OrderHistoryControl()
@@ -26,12 +28,13 @@ namespace qlspdigital.Views.Nhom5_Orders
 
         private void InitializeComponent()
         {
+            this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
             this.Dock = DockStyle.Fill;
             this.Padding = new Padding(25);
 
             // Tiêu đề
-            Panel panelTop = new Panel
+            panelTop = new Panel
             {
                 Dock = DockStyle.Top,
                 Height = 45
@@ -43,7 +46,8 @@ namespace qlspdigital.Views.Nhom5_Orders
                 Dock = DockStyle.Left,
                 AutoSize = true,
                 ForeColor = Color.White,
-                Font = new Font("Segoe UI", 15, FontStyle.Bold)
+                Font = new Font("Segoe UI", 15, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             btnRefresh = new Button
@@ -55,7 +59,8 @@ namespace qlspdigital.Views.Nhom5_Orders
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnRefresh.FlatAppearance.BorderSize = 0;
             btnRefresh.Click += (s, e) => LoadHistory();
@@ -67,7 +72,8 @@ namespace qlspdigital.Views.Nhom5_Orders
             dgvOrders = new DataGridView
             {
                 Location = new Point(25, 65),
-                Size = new Size(580, 530),
+                Size = new Size(580, 615),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left,
                 BackgroundColor = Color.FromArgb(27, 40, 56),
                 ForeColor = Color.White,
                 GridColor = Color.FromArgb(42, 71, 94),
@@ -79,6 +85,7 @@ namespace qlspdigital.Views.Nhom5_Orders
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
             dgvOrders.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 35);
+            dgvOrders.DefaultCellStyle.ForeColor = Color.White;
             dgvOrders.DefaultCellStyle.SelectionBackColor = Color.FromArgb(49, 98, 130);
             dgvOrders.DefaultCellStyle.Font = new Font("Segoe UI", 9.5f);
             dgvOrders.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
@@ -93,18 +100,29 @@ namespace qlspdigital.Views.Nhom5_Orders
             dgvOrders.Columns.Add("NgayTao", "Thời gian");
 
             dgvOrders.Columns["MaDonHang"].Visible = false;
-            dgvOrders.Columns["MaDonHangCode"].Width = 160;
-            dgvOrders.Columns["TongThanhToan"].Width = 120;
-            dgvOrders.Columns["TrangThai"].Width = 110;
+
+            dgvOrders.Columns["MaDonHangCode"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvOrders.Columns["MaDonHangCode"].FillWeight = 100;
+
+            dgvOrders.Columns["TongThanhToan"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvOrders.Columns["TongThanhToan"].Width = 115;
+            dgvOrders.Columns["TongThanhToan"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            dgvOrders.Columns["TrangThai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvOrders.Columns["TrangThai"].Width = 100;
+            dgvOrders.Columns["TrangThai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvOrders.Columns["NgayTao"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dgvOrders.Columns["NgayTao"].Width = 140;
+            dgvOrders.Columns["NgayTao"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             dgvOrders.SelectionChanged += DgvOrders_SelectionChanged;
 
             // Bảng chi tiết sản phẩm thuộc đơn hàng
-            Panel panelDetail = new Panel
+            panelDetail = new Panel
             {
                 Location = new Point(625, 65),
-                Size = new Size(395, 530),
+                Size = new Size(390, 615),
                 BackColor = Color.FromArgb(27, 40, 56),
                 Padding = new Padding(15)
             };
@@ -115,7 +133,8 @@ namespace qlspdigital.Views.Nhom5_Orders
                 Dock = DockStyle.Top,
                 Height = 30,
                 ForeColor = Color.FromArgb(164, 208, 7),
-                Font = new Font("Segoe UI", 11, FontStyle.Bold)
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             dgvDetails = new DataGridView
@@ -132,6 +151,7 @@ namespace qlspdigital.Views.Nhom5_Orders
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
             dgvDetails.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 35);
+            dgvDetails.DefaultCellStyle.ForeColor = Color.White;
             dgvDetails.DefaultCellStyle.SelectionBackColor = Color.FromArgb(49, 98, 130);
             dgvDetails.DefaultCellStyle.Font = new Font("Segoe UI", 9.5f);
             dgvDetails.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
@@ -142,8 +162,17 @@ namespace qlspdigital.Views.Nhom5_Orders
             dgvDetails.Columns.Add("TenSanPham", "Tên sản phẩm");
             dgvDetails.Columns.Add("SoLuong", "SL");
             dgvDetails.Columns.Add("DonGia", "Đơn giá");
-            dgvDetails.Columns["SoLuong"].Width = 50;
-            dgvDetails.Columns["DonGia"].Width = 110;
+
+            dgvDetails.Columns["TenSanPham"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvDetails.Columns["TenSanPham"].FillWeight = 100;
+
+            dgvDetails.Columns["SoLuong"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvDetails.Columns["SoLuong"].Width = 45;
+            dgvDetails.Columns["SoLuong"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvDetails.Columns["DonGia"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvDetails.Columns["DonGia"].Width = 105;
+            dgvDetails.Columns["DonGia"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
             panelDetail.Controls.Add(dgvDetails);
             panelDetail.Controls.Add(lblDetailTitle);
@@ -151,6 +180,32 @@ namespace qlspdigital.Views.Nhom5_Orders
             this.Controls.Add(panelDetail);
             this.Controls.Add(dgvOrders);
             this.Controls.Add(panelTop);
+
+            this.Resize += (s, e) => AdjustLayout();
+            AdjustLayout();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (this.ClientSize.Width < 500 || dgvOrders == null || panelDetail == null) return;
+            int totalW = this.ClientSize.Width;
+            int totalH = this.ClientSize.Height;
+
+            int leftW = Math.Max(400, (int)((totalW - 65) * 0.58));
+            int rightW = totalW - 65 - leftW;
+            int contentH = Math.Max(250, totalH - 85);
+
+            dgvOrders.Location = new Point(25, 65);
+            dgvOrders.Size = new Size(leftW, contentH);
+
+            panelDetail.Location = new Point(25 + leftW + 15, 65);
+            panelDetail.Size = new Size(rightW, contentH);
         }
 
         public void LoadHistory()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom2_Cart;
@@ -33,6 +33,7 @@ namespace qlspdigital.Views.Nhom2_Cart
 
         private void InitializeComponent()
         {
+            this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
             this.Dock = DockStyle.Fill;
             this.Padding = new Padding(25);
@@ -44,7 +45,8 @@ namespace qlspdigital.Views.Nhom2_Cart
                 Location = new Point(25, 15),
                 AutoSize = true,
                 ForeColor = Color.White,
-                Font = new Font("Segoe UI", 15, FontStyle.Bold)
+                Font = new Font("Segoe UI", 15, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             // 1. KHUNG THẺ SỐ DƯ VÍ
@@ -52,6 +54,7 @@ namespace qlspdigital.Views.Nhom2_Cart
             {
                 Location = new Point(25, 55),
                 Size = new Size(950, 100),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(27, 40, 56),
                 Padding = new Padding(20)
             };
@@ -62,7 +65,8 @@ namespace qlspdigital.Views.Nhom2_Cart
                 Location = new Point(20, 15),
                 AutoSize = true,
                 ForeColor = Color.FromArgb(161, 181, 196),
-                Font = new Font("Segoe UI", 10, FontStyle.Bold)
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             lblBalance = new Label
@@ -71,7 +75,8 @@ namespace qlspdigital.Views.Nhom2_Cart
                 Location = new Point(20, 40),
                 AutoSize = true,
                 ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 24, FontStyle.Bold)
+                Font = new Font("Segoe UI", 24, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             Label lblNote = new Label
@@ -81,7 +86,8 @@ namespace qlspdigital.Views.Nhom2_Cart
                 Width = 400,
                 ForeColor = Color.FromArgb(199, 213, 224),
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Italic),
-                TextAlign = ContentAlignment.MiddleRight
+                TextAlign = ContentAlignment.MiddleRight,
+                UseMnemonic = false
             };
 
             panelCard.Controls.Add(lblNote);
@@ -93,6 +99,7 @@ namespace qlspdigital.Views.Nhom2_Cart
             {
                 Location = new Point(25, 170),
                 Size = new Size(950, 110),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(27, 40, 56),
                 Padding = new Padding(20)
             };
@@ -103,19 +110,20 @@ namespace qlspdigital.Views.Nhom2_Cart
                 Dock = DockStyle.Top,
                 Height = 25,
                 ForeColor = Color.FromArgb(164, 208, 7),
-                Font = new Font("Segoe UI", 10.5f, FontStyle.Bold)
+                Font = new Font("Segoe UI", 10.5f, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             btnTopUp50k = CreateTopUpButton("+ 50.000 ₫", 20, 48, 50000);
-            btnTopUp100k = CreateTopUpButton("+ 100.000 ₫", 160, 48, 100000);
-            btnTopUp200k = CreateTopUpButton("+ 200.000 ₫", 300, 48, 200000);
-            btnTopUp500k = CreateTopUpButton("+ 500.000 ₫", 440, 48, 500000);
+            btnTopUp100k = CreateTopUpButton("+ 100.000 ₫", 155, 48, 100000);
+            btnTopUp200k = CreateTopUpButton("+ 200.000 ₫", 290, 48, 200000);
+            btnTopUp500k = CreateTopUpButton("+ 500.000 ₫", 425, 48, 500000);
 
             // Nhập số tiền tùy ý
             txtCustomAmount = new TextBox
             {
-                Location = new Point(600, 51),
-                Width = 170,
+                Location = new Point(560, 48),
+                Size = new Size(165, 36),
                 Font = new Font("Segoe UI", 11),
                 BackColor = Color.FromArgb(18, 25, 35),
                 ForeColor = Color.White,
@@ -125,13 +133,14 @@ namespace qlspdigital.Views.Nhom2_Cart
             btnCustomTopUp = new Button
             {
                 Text = "Nạp số này",
-                Location = new Point(780, 48),
-                Size = new Size(130, 34),
+                Location = new Point(735, 48),
+                Size = new Size(135, 36),
                 BackColor = Color.FromArgb(49, 98, 130),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnCustomTopUp.FlatAppearance.BorderSize = 0;
             btnCustomTopUp.Click += (s, e) =>
@@ -161,13 +170,15 @@ namespace qlspdigital.Views.Nhom2_Cart
                 Location = new Point(25, 295),
                 AutoSize = true,
                 ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 11, FontStyle.Bold)
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             dgvTransactions = new DataGridView
             {
                 Location = new Point(25, 325),
-                Size = new Size(950, 320),
+                Size = new Size(950, 400),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackgroundColor = Color.FromArgb(27, 40, 56),
                 ForeColor = Color.White,
                 GridColor = Color.FromArgb(42, 71, 94),
@@ -179,7 +190,9 @@ namespace qlspdigital.Views.Nhom2_Cart
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
             dgvTransactions.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 35);
+            dgvTransactions.DefaultCellStyle.ForeColor = Color.White;
             dgvTransactions.DefaultCellStyle.SelectionBackColor = Color.FromArgb(49, 98, 130);
+            dgvTransactions.DefaultCellStyle.SelectionForeColor = Color.White;
             dgvTransactions.DefaultCellStyle.Font = new Font("Segoe UI", 9.5f);
             dgvTransactions.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
             dgvTransactions.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(102, 192, 244);
@@ -193,11 +206,27 @@ namespace qlspdigital.Views.Nhom2_Cart
             dgvTransactions.Columns.Add("TrangThai", "Trạng thái");
             dgvTransactions.Columns.Add("NgayTao", "Thời gian");
 
-            dgvTransactions.Columns["MaThanhToan"].Width = 80;
-            dgvTransactions.Columns["LoaiGiaoDich"].Width = 180;
-            dgvTransactions.Columns["SoTien"].Width = 140;
-            dgvTransactions.Columns["TrangThai"].Width = 120;
-            dgvTransactions.Columns["NgayTao"].Width = 160;
+            dgvTransactions.Columns["MaThanhToan"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvTransactions.Columns["MaThanhToan"].Width = 75;
+            dgvTransactions.Columns["MaThanhToan"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvTransactions.Columns["LoaiGiaoDich"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvTransactions.Columns["LoaiGiaoDich"].FillWeight = 45;
+
+            dgvTransactions.Columns["SoTien"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvTransactions.Columns["SoTien"].Width = 135;
+            dgvTransactions.Columns["SoTien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            dgvTransactions.Columns["PhuongThuc"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvTransactions.Columns["PhuongThuc"].FillWeight = 55;
+
+            dgvTransactions.Columns["TrangThai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvTransactions.Columns["TrangThai"].Width = 110;
+            dgvTransactions.Columns["TrangThai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvTransactions.Columns["NgayTao"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvTransactions.Columns["NgayTao"].Width = 150;
+            dgvTransactions.Columns["NgayTao"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             this.Controls.Add(dgvTransactions);
             this.Controls.Add(lblHistoryTitle);

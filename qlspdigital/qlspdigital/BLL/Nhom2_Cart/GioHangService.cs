@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using qlspdigital.DAL.Nhom2_Cart;
 using qlspdigital.DAL.Nhom5_Orders;
@@ -13,6 +13,13 @@ namespace qlspdigital.BLL.Nhom2_Cart
     {
         private readonly GioHangRepository _gioHangRepo;
 
+        public static event Action? CartUpdated;
+
+        public static void NotifyCartUpdated()
+        {
+            CartUpdated?.Invoke();
+        }
+
         public GioHangService()
         {
             _gioHangRepo = new GioHangRepository();
@@ -22,6 +29,15 @@ namespace qlspdigital.BLL.Nhom2_Cart
         {
             if (maNguoiDung <= 0) return new List<GioHangItemDTO>();
             return _gioHangRepo.LayGioHang(maNguoiDung);
+        }
+
+        public int LayTongSoLuongItem(int maNguoiDung)
+        {
+            if (maNguoiDung <= 0) return 0;
+            var list = _gioHangRepo.LayGioHang(maNguoiDung);
+            int sum = 0;
+            foreach (var item in list) sum += item.SoLuong;
+            return sum;
         }
 
         public bool ThemVaoGioHang(int maNguoiDung, int maSanPham, int soLuong, out string thongBao)
@@ -40,17 +56,22 @@ namespace qlspdigital.BLL.Nhom2_Cart
 
             bool ok = _gioHangRepo.ThemVaoGioHang(maNguoiDung, maSanPham, soLuong);
             thongBao = ok ? "Đã thêm sản phẩm vào giỏ hàng thành công!" : "Không thể thêm vào giỏ hàng.";
+            if (ok) NotifyCartUpdated();
             return ok;
         }
 
         public bool CapNhatSoLuong(int maGioHang, int soLuong)
         {
-            return _gioHangRepo.CapNhatSoLuong(maGioHang, soLuong);
+            bool ok = _gioHangRepo.CapNhatSoLuong(maGioHang, soLuong);
+            if (ok) NotifyCartUpdated();
+            return ok;
         }
 
         public bool XoaKhoiGioHang(int maGioHang)
         {
-            return _gioHangRepo.XoaKhoiGioHang(maGioHang);
+            bool ok = _gioHangRepo.XoaKhoiGioHang(maGioHang);
+            if (ok) NotifyCartUpdated();
+            return ok;
         }
 
         public decimal TinhTongTien(List<GioHangItemDTO> items)
@@ -208,6 +229,7 @@ namespace qlspdigital.BLL.Nhom2_Cart
                 // Đồng bộ số dư mới sau khi trừ ví
                 decimal balanceMoi = _viRepo.LaySoDuVi(maNguoiDung);
                 UserSession.UpdateBalance(balanceMoi);
+                GioHangService.NotifyCartUpdated();
             }
 
             return ok;

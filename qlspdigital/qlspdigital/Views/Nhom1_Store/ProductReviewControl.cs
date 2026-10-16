@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom1_Store;
@@ -25,6 +25,8 @@ namespace qlspdigital.Views.Nhom1_Store
         private Button btnBack = null!;
         private DataGridView dgvReviews = null!;
         private Label lblAverageScore = null!;
+        private Panel panelTop = null!;
+        private Panel panelForm = null!;
 
         public ProductReviewControl()
         {
@@ -37,6 +39,7 @@ namespace qlspdigital.Views.Nhom1_Store
 
         private void InitializeComponent()
         {
+            this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
             this.Dock = DockStyle.Fill;
             this.Padding = new Padding(25);
@@ -45,19 +48,20 @@ namespace qlspdigital.Views.Nhom1_Store
             btnBack = new Button
             {
                 Text = "← Quay lại Cửa hàng",
-                Size = new Size(160, 32),
-                Location = new Point(25, 15),
+                Size = new Size(195, 36),
+                Location = new Point(25, 12),
                 BackColor = Color.FromArgb(49, 98, 130),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnBack.FlatAppearance.BorderSize = 0;
             btnBack.Click += (s, e) => OnBackToStore?.Invoke();
 
             // Khung chọn sản phẩm
-            Panel panelTop = new Panel
+            panelTop = new Panel
             {
                 Location = new Point(25, 55),
                 Size = new Size(950, 50),
@@ -71,17 +75,19 @@ namespace qlspdigital.Views.Nhom1_Store
                 ForeColor = Color.White,
                 Location = new Point(15, 15),
                 AutoSize = true,
-                Font = new Font("Segoe UI", 10, FontStyle.Bold)
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             cboProduct = new ComboBox
             {
-                Location = new Point(230, 12),
-                Width = 350,
+                Location = new Point(275, 12),
+                Width = 280,
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Font = new Font("Segoe UI", 9.5f),
                 BackColor = Color.FromArgb(18, 25, 35),
-                ForeColor = Color.White
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat
             };
             cboProduct.SelectedIndexChanged += (s, e) =>
             {
@@ -99,7 +105,8 @@ namespace qlspdigital.Views.Nhom1_Store
                 ForeColor = Color.FromArgb(243, 156, 18),
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 TextAlign = ContentAlignment.MiddleRight,
-                Width = 250
+                Width = 350,
+                UseMnemonic = false
             };
 
             panelTop.Controls.Add(lblAverageScore);
@@ -107,7 +114,7 @@ namespace qlspdigital.Views.Nhom1_Store
             panelTop.Controls.Add(lblSelect);
 
             // Khung viết đánh giá (Form CRUD 1-5 sao)
-            Panel panelForm = new Panel
+            panelForm = new Panel
             {
                 Location = new Point(25, 115),
                 Size = new Size(950, 160),
@@ -121,7 +128,8 @@ namespace qlspdigital.Views.Nhom1_Store
                 Location = new Point(15, 12),
                 AutoSize = true,
                 ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 10.5f, FontStyle.Bold)
+                Font = new Font("Segoe UI", 10.5f, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             Label lblStarTitle = new Label
@@ -130,17 +138,19 @@ namespace qlspdigital.Views.Nhom1_Store
                 Location = new Point(15, 45),
                 AutoSize = true,
                 ForeColor = Color.White,
-                Font = new Font("Segoe UI", 9.5f)
+                Font = new Font("Segoe UI", 9.5f),
+                UseMnemonic = false
             };
 
             cboStar = new ComboBox
             {
-                Location = new Point(140, 42),
-                Width = 220,
+                Location = new Point(165, 42),
+                Width = 310,
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Font = new Font("Segoe UI", 9.5f),
                 BackColor = Color.FromArgb(18, 25, 35),
-                ForeColor = Color.FromArgb(243, 156, 18)
+                ForeColor = Color.FromArgb(243, 156, 18),
+                FlatStyle = FlatStyle.Flat
             };
             cboStar.Items.Add("⭐⭐⭐⭐⭐ (5/5) - Rất tích cực / Cực tốt");
             cboStar.Items.Add("⭐⭐⭐⭐ (4/5) - Hài lòng");
@@ -152,16 +162,17 @@ namespace qlspdigital.Views.Nhom1_Store
             Label lblCommentTitle = new Label
             {
                 Text = "Nội dung nhận xét:",
-                Location = new Point(15, 75),
+                Location = new Point(15, 78),
                 AutoSize = true,
                 ForeColor = Color.White,
-                Font = new Font("Segoe UI", 9.5f)
+                Font = new Font("Segoe UI", 9.5f),
+                UseMnemonic = false
             };
 
             txtComment = new TextBox
             {
-                Location = new Point(140, 75),
-                Size = new Size(620, 65),
+                Location = new Point(165, 75),
+                Size = new Size(595, 65),
                 Multiline = true,
                 ScrollBars = ScrollBars.Vertical,
                 BackColor = Color.FromArgb(18, 25, 35),
@@ -172,13 +183,14 @@ namespace qlspdigital.Views.Nhom1_Store
             btnSubmit = new Button
             {
                 Text = "Gửi nhận xét",
-                Location = new Point(780, 75),
-                Size = new Size(140, 32),
+                Location = new Point(775, 75),
+                Size = new Size(150, 32),
                 BackColor = Color.FromArgb(92, 126, 16),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnSubmit.FlatAppearance.BorderSize = 0;
             btnSubmit.Click += BtnSubmit_Click;
@@ -186,13 +198,14 @@ namespace qlspdigital.Views.Nhom1_Store
             btnDelete = new Button
             {
                 Text = "Xóa nhận xét",
-                Location = new Point(780, 112),
-                Size = new Size(140, 28),
+                Location = new Point(775, 112),
+                Size = new Size(150, 28),
                 BackColor = Color.FromArgb(180, 40, 40),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9, FontStyle.Regular),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnDelete.FlatAppearance.BorderSize = 0;
             btnDelete.Click += BtnDelete_Click;
@@ -209,7 +222,8 @@ namespace qlspdigital.Views.Nhom1_Store
             dgvReviews = new DataGridView
             {
                 Location = new Point(25, 290),
-                Size = new Size(950, 350),
+                Size = new Size(950, 440),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackgroundColor = Color.FromArgb(27, 40, 56),
                 ForeColor = Color.White,
                 GridColor = Color.FromArgb(42, 71, 94),
@@ -221,7 +235,9 @@ namespace qlspdigital.Views.Nhom1_Store
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
             dgvReviews.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 35);
+            dgvReviews.DefaultCellStyle.ForeColor = Color.White;
             dgvReviews.DefaultCellStyle.SelectionBackColor = Color.FromArgb(49, 98, 130);
+            dgvReviews.DefaultCellStyle.SelectionForeColor = Color.White;
             dgvReviews.DefaultCellStyle.Font = new Font("Segoe UI", 9.5f);
             dgvReviews.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
             dgvReviews.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(102, 192, 244);
@@ -233,14 +249,56 @@ namespace qlspdigital.Views.Nhom1_Store
             dgvReviews.Columns.Add("SoSao", "Số sao");
             dgvReviews.Columns.Add("BinhLuan", "Nhận xét");
             dgvReviews.Columns.Add("NgayTao", "Thời gian");
-            dgvReviews.Columns["HoTen"].Width = 160;
+            dgvReviews.Columns["HoTen"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvReviews.Columns["HoTen"].Width = 170;
+
+            dgvReviews.Columns["SoSao"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dgvReviews.Columns["SoSao"].Width = 90;
+            dgvReviews.Columns["SoSao"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvReviews.Columns["BinhLuan"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvReviews.Columns["BinhLuan"].FillWeight = 100;
+
+            dgvReviews.Columns["NgayTao"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dgvReviews.Columns["NgayTao"].Width = 140;
+            dgvReviews.Columns["NgayTao"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             this.Controls.Add(dgvReviews);
             this.Controls.Add(panelForm);
             this.Controls.Add(panelTop);
             this.Controls.Add(btnBack);
+
+            AdjustLayout();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (this.ClientSize.Width < 500 || panelTop == null || panelForm == null || dgvReviews == null || txtComment == null || btnSubmit == null) return;
+            int totalW = this.ClientSize.Width;
+            int totalH = this.ClientSize.Height;
+
+            int fullW = totalW - 50;
+            panelTop.Location = new Point(25, 55);
+            panelTop.Size = new Size(fullW, 50);
+
+            panelForm.Location = new Point(25, 115);
+            panelForm.Size = new Size(fullW, 160);
+
+            int formW = panelForm.ClientSize.Width;
+            int btnW = 150;
+            btnSubmit.Location = new Point(formW - btnW - 20, 75);
+            btnDelete.Location = new Point(formW - btnW - 20, 112);
+            txtComment.Size = new Size(Math.Max(250, formW - 165 - btnW - 40), 65);
+
+            int reviewH = Math.Max(250, totalH - 290 - 25);
+            dgvReviews.Location = new Point(25, 290);
+            dgvReviews.Size = new Size(fullW, reviewH);
         }
 
         private void LoadProductList()

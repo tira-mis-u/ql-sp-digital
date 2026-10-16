@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom4_SystemAdmin;
@@ -29,6 +29,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
         private void InitializeComponent()
         {
+            this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
             this.Dock = DockStyle.Fill;
             this.Padding = new Padding(25);
@@ -46,19 +47,21 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
                 Dock = DockStyle.Left,
                 AutoSize = true,
                 ForeColor = Color.White,
-                Font = new Font("Segoe UI", 15, FontStyle.Bold)
+                Font = new Font("Segoe UI", 15, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             btnRefresh = new Button
             {
-                Text = "🔄 Làm mới dữ liệu",
+                Text = "🔄 Làm mới",
                 Dock = DockStyle.Right,
-                Width = 160,
+                Width = 130,
                 BackColor = Color.FromArgb(49, 98, 130),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnRefresh.FlatAppearance.BorderSize = 0;
             btnRefresh.Click += (s, e) => LoadDashboardData();
@@ -66,25 +69,30 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             panelTopBar.Controls.Add(btnRefresh);
             panelTopBar.Controls.Add(lblHeader);
 
-            // 1. VÙNG 4 METRIC CARDS LỚN
-            Panel panelCards = new Panel
+            // 1. VÙNG 4 METRIC CARDS LỚN (CO GIÃN TỶ LỆ 25% ĐỀU NHAU)
+            TableLayoutPanel panelCards = new TableLayoutPanel
             {
                 Location = new Point(25, 65),
-                Size = new Size(950, 115)
+                Size = new Size(950, 115),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                ColumnCount = 4,
+                RowCount = 1
             };
+            panelCards.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25f));
+            panelCards.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25f));
+            panelCards.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25f));
+            panelCards.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25f));
+            panelCards.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
 
-            int cardWidth = 225;
-            int gap = 16;
+            Panel card1 = CreateMetricCard("TỔNG DOANH THU", "0 ₫", Color.FromArgb(164, 208, 7), out lblTotalRevenue, new Padding(0, 0, 8, 0));
+            Panel card2 = CreateMetricCard("ĐƠN HÀNG THÀNH CÔNG", "0 đơn", Color.FromArgb(102, 192, 244), out lblTotalOrders, new Padding(4, 0, 4, 0));
+            Panel card3 = CreateMetricCard("KHÁCH HÀNG ĐĂNG KÝ", "0 khách", Color.FromArgb(243, 156, 18), out lblTotalCustomers, new Padding(4, 0, 4, 0));
+            Panel card4 = CreateMetricCard("SẢN PHẨM MỞ BÁN", "0 sản phẩm", Color.FromArgb(155, 89, 182), out lblTotalProducts, new Padding(8, 0, 0, 0));
 
-            Panel card1 = CreateMetricCard("TỔNG DOANH THU", "0 ₫", Color.FromArgb(164, 208, 7), out lblTotalRevenue, 0, cardWidth);
-            Panel card2 = CreateMetricCard("ĐƠN HÀNG THÀNH CÔNG", "0 đơn", Color.FromArgb(102, 192, 244), out lblTotalOrders, (cardWidth + gap), cardWidth);
-            Panel card3 = CreateMetricCard("KHÁCH HÀNG ĐĂNG KÝ", "0 khách", Color.FromArgb(243, 156, 18), out lblTotalCustomers, (cardWidth + gap) * 2, cardWidth);
-            Panel card4 = CreateMetricCard("SẢN PHẨM MỞ BÁN", "0 sản phẩm", Color.FromArgb(155, 89, 182), out lblTotalProducts, (cardWidth + gap) * 3, cardWidth);
-
-            panelCards.Controls.Add(card4);
-            panelCards.Controls.Add(card3);
-            panelCards.Controls.Add(card2);
-            panelCards.Controls.Add(card1);
+            panelCards.Controls.Add(card1, 0, 0);
+            panelCards.Controls.Add(card2, 1, 0);
+            panelCards.Controls.Add(card3, 2, 0);
+            panelCards.Controls.Add(card4, 3, 0);
 
             // 2. BẢNG TOP 5 SẢN PHẨM BÁN CHẠY NHẤT
             Label lblTableTitle = new Label
@@ -93,13 +101,15 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
                 Location = new Point(25, 200),
                 AutoSize = true,
                 ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 12, FontStyle.Bold)
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             dgvTopProducts = new DataGridView
             {
                 Location = new Point(25, 235),
-                Size = new Size(950, 390),
+                Size = new Size(950, 500),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackgroundColor = Color.FromArgb(27, 40, 56),
                 ForeColor = Color.White,
                 GridColor = Color.FromArgb(42, 71, 94),
@@ -111,6 +121,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
             dgvTopProducts.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 35);
+            dgvTopProducts.DefaultCellStyle.ForeColor = Color.White;
             dgvTopProducts.DefaultCellStyle.SelectionBackColor = Color.FromArgb(49, 98, 130);
             dgvTopProducts.DefaultCellStyle.Font = new Font("Segoe UI", 10);
             dgvTopProducts.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
@@ -123,10 +134,20 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             dgvTopProducts.Columns.Add("SoLuongDaBan", "Số lượng đã bán");
             dgvTopProducts.Columns.Add("DoanhThu", "Doanh thu tích lũy");
 
-            dgvTopProducts.Columns["XepHang"].Width = 100;
-            dgvTopProducts.Columns["TenSanPham"].FillWeight = 50;
-            dgvTopProducts.Columns["SoLuongDaBan"].Width = 150;
-            dgvTopProducts.Columns["DoanhThu"].Width = 200;
+            dgvTopProducts.Columns["XepHang"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvTopProducts.Columns["XepHang"].Width = 80;
+            dgvTopProducts.Columns["XepHang"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvTopProducts.Columns["TenSanPham"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvTopProducts.Columns["TenSanPham"].FillWeight = 100;
+
+            dgvTopProducts.Columns["SoLuongDaBan"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvTopProducts.Columns["SoLuongDaBan"].Width = 135;
+            dgvTopProducts.Columns["SoLuongDaBan"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvTopProducts.Columns["DoanhThu"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvTopProducts.Columns["DoanhThu"].Width = 160;
+            dgvTopProducts.Columns["DoanhThu"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
             this.Controls.Add(dgvTopProducts);
             this.Controls.Add(lblTableTitle);
@@ -134,12 +155,12 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             this.Controls.Add(panelTopBar);
         }
 
-        private Panel CreateMetricCard(string title, string initialValue, Color accentColor, out Label lblValue, int x, int width)
+        private Panel CreateMetricCard(string title, string initialValue, Color accentColor, out Label lblValue, Padding margin)
         {
             Panel card = new Panel
             {
-                Location = new Point(x, 0),
-                Size = new Size(width, 110),
+                Dock = DockStyle.Fill,
+                Margin = margin,
                 BackColor = Color.FromArgb(27, 40, 56),
                 Padding = new Padding(15)
             };
@@ -150,7 +171,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
                 Dock = DockStyle.Top,
                 Height = 22,
                 ForeColor = Color.FromArgb(161, 181, 196),
-                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold)
+                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             lblValue = new Label
@@ -159,7 +181,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
                 Dock = DockStyle.Fill,
                 ForeColor = accentColor,
                 Font = new Font("Segoe UI", 15, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleLeft
+                TextAlign = ContentAlignment.MiddleLeft,
+                UseMnemonic = false
             };
 
             card.Controls.Add(lblValue);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom4_SystemAdmin;
@@ -50,7 +50,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
                 Height = 45,
                 ForeColor = Color.FromArgb(102, 192, 244),
                 Font = new Font("Segoe UI", 18, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter
+                TextAlign = ContentAlignment.MiddleCenter,
+                UseMnemonic = false
             };
 
             Label lblSub = new Label
@@ -60,11 +61,12 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
                 Height = 25,
                 ForeColor = Color.FromArgb(161, 181, 196),
                 Font = new Font("Segoe UI", 9.5f),
-                TextAlign = ContentAlignment.MiddleCenter
+                TextAlign = ContentAlignment.MiddleCenter,
+                UseMnemonic = false
             };
 
             // Username
-            Label lblUser = new Label { Text = "Tên đăng nhập:", Location = new Point(35, 100), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 10, FontStyle.Bold) };
+            Label lblUser = new Label { Text = "Tên đăng nhập:", Location = new Point(35, 100), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 10, FontStyle.Bold), UseMnemonic = false };
             txtUsername = new TextBox
             {
                 Location = new Point(35, 125),
@@ -76,7 +78,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             };
 
             // Password
-            Label lblPass = new Label { Text = "Mật khẩu:", Location = new Point(35, 175), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 10, FontStyle.Bold) };
+            Label lblPass = new Label { Text = "Mật khẩu:", Location = new Point(35, 175), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 10, FontStyle.Bold), UseMnemonic = false };
             txtPassword = new TextBox
             {
                 Location = new Point(35, 200),
@@ -99,7 +101,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnLogin.FlatAppearance.BorderSize = 0;
             btnLogin.Click += (s, e) => PerformLogin();
@@ -114,7 +117,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
                 ForeColor = Color.FromArgb(102, 192, 244),
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Underline),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnGoToRegister.FlatAppearance.BorderSize = 0;
             btnGoToRegister.Click += (s, e) => OnNavigateToRegister?.Invoke();
@@ -133,7 +137,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
                 Text = "💡 Tài khoản kiểm thử nhanh (Mật khẩu: 123456):\n• Admin: admin\n• Khách hàng: hieu_pham hoặc tri_le",
                 Dock = DockStyle.Fill,
                 ForeColor = Color.FromArgb(164, 208, 7),
-                Font = new Font("Segoe UI", 8.5f, FontStyle.Italic)
+                Font = new Font("Segoe UI", 8.5f, FontStyle.Italic),
+                UseMnemonic = false
             };
             panelDemo.Controls.Add(lblDemo);
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom1_Store;
@@ -40,6 +40,7 @@ namespace qlspdigital.Views.Nhom1_Store
 
         private void InitializeComponent()
         {
+            this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
             this.Dock = DockStyle.Fill;
 
@@ -48,8 +49,13 @@ namespace qlspdigital.Views.Nhom1_Store
             {
                 Dock = DockStyle.Top,
                 Height = 60,
-                BackColor = Color.FromArgb(27, 40, 56),
+                BackColor = Color.FromArgb(22, 32, 45),
                 Padding = new Padding(15, 12, 15, 12)
+            };
+            panelFilter.Paint += (s, e) =>
+            {
+                using var p = new Pen(Color.FromArgb(38, 54, 75), 1);
+                e.Graphics.DrawLine(p, 0, panelFilter.Height - 1, panelFilter.Width, panelFilter.Height - 1);
             };
 
             Label lblSearchTitle = new Label
@@ -57,18 +63,20 @@ namespace qlspdigital.Views.Nhom1_Store
                 Text = "🔍 Tìm kiếm:",
                 ForeColor = Color.FromArgb(199, 213, 224),
                 AutoSize = true,
-                Location = new Point(15, 18),
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold)
+                Location = new Point(15, 19),
+                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             txtSearch = new TextBox
             {
-                Location = new Point(105, 15),
-                Width = 240,
+                Location = new Point(130, 15),
+                Width = 190,
                 Font = new Font("Segoe UI", 10),
                 BackColor = Color.FromArgb(18, 25, 35),
                 ForeColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                PlaceholderText = "Nhập tên sản phẩm..."
             };
             txtSearch.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) LoadProducts(); };
 
@@ -77,32 +85,35 @@ namespace qlspdigital.Views.Nhom1_Store
                 Text = "📁 Thể loại:",
                 ForeColor = Color.FromArgb(199, 213, 224),
                 AutoSize = true,
-                Location = new Point(365, 18),
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold)
+                Location = new Point(335, 19),
+                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             cboCategory = new ComboBox
             {
                 Location = new Point(445, 15),
-                Width = 180,
+                Width = 185,
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                Font = new Font("Segoe UI", 10),
+                Font = new Font("Segoe UI", 9.5f),
                 BackColor = Color.FromArgb(18, 25, 35),
-                ForeColor = Color.White
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat
             };
             cboCategory.SelectedIndexChanged += (s, e) => LoadProducts();
 
             btnSearch = new Button
             {
                 Text = "Lọc dữ liệu",
-                Location = new Point(640, 14),
-                Width = 100,
+                Location = new Point(640, 15),
+                Width = 110,
                 Height = 30,
                 BackColor = Color.FromArgb(49, 98, 130),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnSearch.FlatAppearance.BorderSize = 0;
             btnSearch.Click += (s, e) => LoadProducts();
@@ -110,14 +121,15 @@ namespace qlspdigital.Views.Nhom1_Store
             btnRefresh = new Button
             {
                 Text = "Làm mới",
-                Location = new Point(750, 14),
-                Width = 90,
+                Location = new Point(760, 15),
+                Width = 95,
                 Height = 30,
                 BackColor = Color.FromArgb(60, 75, 90),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9, FontStyle.Regular),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnRefresh.FlatAppearance.BorderSize = 0;
             btnRefresh.Click += (s, e) =>
@@ -130,12 +142,11 @@ namespace qlspdigital.Views.Nhom1_Store
             lblTotalCount = new Label
             {
                 Text = "Hiển thị: 0 sản phẩm",
-                Dock = DockStyle.Right,
                 ForeColor = Color.FromArgb(102, 192, 244),
-                AutoSize = false,
-                Width = 200,
-                TextAlign = ContentAlignment.MiddleRight,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Italic)
+                AutoSize = true,
+                Location = new Point(870, 19),
+                Font = new Font("Segoe UI", 9.5f, FontStyle.Italic),
+                UseMnemonic = false
             };
 
             panelFilter.Controls.Add(lblTotalCount);

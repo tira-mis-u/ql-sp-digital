@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.DTOs;
@@ -29,16 +29,16 @@ namespace qlspdigital.Controls
 
         private void InitializeComponent()
         {
-            this.Size = new Size(240, 270);
+            this.Size = new Size(245, 305);
             this.BackColor = Color.FromArgb(30, 45, 62);
-            this.Margin = new Padding(12);
+            this.Margin = new Padding(10);
             this.Padding = new Padding(10);
 
             // Giả lập ảnh bìa game / phần mềm bằng Panel gradient
             panelHeader = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 110,
+                Height = 100,
                 BackColor = Color.FromArgb(23, 36, 50)
             };
 
@@ -48,7 +48,8 @@ namespace qlspdigital.Controls
                 Dock = DockStyle.Fill,
                 TextAlign = ContentAlignment.MiddleCenter,
                 ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 12, FontStyle.Bold)
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                UseMnemonic = false
             };
             panelHeader.Controls.Add(lblThumb);
 
@@ -56,11 +57,12 @@ namespace qlspdigital.Controls
             {
                 Text = "Tên sản phẩm",
                 Dock = DockStyle.Top,
-                Height = 40,
+                Height = 42,
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 10, FontStyle.Bold),
                 AutoEllipsis = true,
-                Padding = new Padding(0, 6, 0, 0)
+                Padding = new Padding(0, 4, 0, 0),
+                UseMnemonic = false
             };
 
             lblCategory = new Label
@@ -69,7 +71,9 @@ namespace qlspdigital.Controls
                 Dock = DockStyle.Top,
                 Height = 22,
                 ForeColor = Color.FromArgb(161, 181, 196),
-                Font = new Font("Segoe UI", 8.5f, FontStyle.Regular)
+                Font = new Font("Segoe UI", 8.5f, FontStyle.Regular),
+                AutoEllipsis = true,
+                UseMnemonic = false
             };
 
             lblRating = new Label
@@ -78,35 +82,38 @@ namespace qlspdigital.Controls
                 Dock = DockStyle.Top,
                 Height = 22,
                 ForeColor = Color.FromArgb(243, 156, 18),
-                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold)
+                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             lblPrice = new Label
             {
                 Text = "150.000 ₫",
                 Dock = DockStyle.Top,
-                Height = 28,
+                Height = 32,
                 ForeColor = Color.FromArgb(164, 208, 7),
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                Padding = new Padding(0, 4, 0, 0)
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                Padding = new Padding(0, 4, 0, 0),
+                UseMnemonic = false
             };
 
             Panel panelButtons = new Panel
             {
                 Dock = DockStyle.Bottom,
-                Height = 34
+                Height = 36
             };
 
             btnDetail = new Button
             {
                 Text = "Chi tiết",
-                Width = 90,
+                Width = 95,
                 Dock = DockStyle.Left,
                 BackColor = Color.FromArgb(49, 98, 130),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9, FontStyle.Regular),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnDetail.FlatAppearance.BorderSize = 0;
             btnDetail.Click += (s, e) => OnDetailClicked?.Invoke(MaSanPham);
@@ -119,7 +126,8 @@ namespace qlspdigital.Controls
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnAddToCart.FlatAppearance.BorderSize = 0;
             btnAddToCart.Click += (s, e) => OnAddToCartClicked?.Invoke(MaSanPham);

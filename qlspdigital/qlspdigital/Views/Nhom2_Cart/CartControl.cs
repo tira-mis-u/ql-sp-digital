@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom2_Cart;
@@ -19,6 +19,8 @@ namespace qlspdigital.Views.Nhom2_Cart
         public event Action? OnNavigateToWallet;
 
         private DataGridView dgvCart = null!;
+        private Panel panelBottomActions = null!;
+        private Panel panelSummary = null!;
         private TextBox txtVoucher = null!;
         private Button btnApplyVoucher = null!;
         private Label lblSubtotal = null!;
@@ -51,6 +53,7 @@ namespace qlspdigital.Views.Nhom2_Cart
 
         private void InitializeComponent()
         {
+            this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
             this.Dock = DockStyle.Fill;
             this.Padding = new Padding(25);
@@ -62,14 +65,16 @@ namespace qlspdigital.Views.Nhom2_Cart
                 Location = new Point(25, 15),
                 AutoSize = true,
                 ForeColor = Color.White,
-                Font = new Font("Segoe UI", 15, FontStyle.Bold)
+                Font = new Font("Segoe UI", 15, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             // 1. BẢNG DANH SÁCH GIỎ HÀNG
             dgvCart = new DataGridView
             {
                 Location = new Point(25, 55),
-                Size = new Size(650, 480),
+                Size = new Size(640, 550),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left,
                 BackgroundColor = Color.FromArgb(27, 40, 56),
                 ForeColor = Color.White,
                 GridColor = Color.FromArgb(42, 71, 94),
@@ -81,7 +86,9 @@ namespace qlspdigital.Views.Nhom2_Cart
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
             dgvCart.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 35);
+            dgvCart.DefaultCellStyle.ForeColor = Color.White;
             dgvCart.DefaultCellStyle.SelectionBackColor = Color.FromArgb(49, 98, 130);
+            dgvCart.DefaultCellStyle.SelectionForeColor = Color.White;
             dgvCart.DefaultCellStyle.Font = new Font("Segoe UI", 9.5f);
             dgvCart.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
             dgvCart.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(102, 192, 244);
@@ -95,22 +102,42 @@ namespace qlspdigital.Views.Nhom2_Cart
             dgvCart.Columns.Add("ThanhTien", "Thành tiền");
 
             dgvCart.Columns["MaGioHang"].Visible = false;
-            dgvCart.Columns["TenSanPham"].FillWeight = 45;
-            dgvCart.Columns["DonGia"].FillWeight = 20;
-            dgvCart.Columns["SoLuong"].FillWeight = 10;
-            dgvCart.Columns["ThanhTien"].FillWeight = 25;
+
+            dgvCart.Columns["TenSanPham"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvCart.Columns["TenSanPham"].FillWeight = 100;
+
+            dgvCart.Columns["DonGia"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvCart.Columns["DonGia"].Width = 110;
+            dgvCart.Columns["DonGia"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            dgvCart.Columns["SoLuong"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvCart.Columns["SoLuong"].Width = 55;
+            dgvCart.Columns["SoLuong"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvCart.Columns["ThanhTien"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvCart.Columns["ThanhTien"].Width = 120;
+            dgvCart.Columns["ThanhTien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            // Thanh thao tác dưới bảng giỏ hàng (chống đè lưới)
+            panelBottomActions = new Panel
+            {
+                Location = new Point(25, 618),
+                Size = new Size(640, 50),
+                BackColor = Color.FromArgb(23, 26, 33)
+            };
 
             // Nút xóa món khỏi giỏ dưới bảng
             Button btnRemoveItem = new Button
             {
                 Text = "🗑️ Xóa món đã chọn",
-                Location = new Point(25, 545),
-                Size = new Size(160, 32),
+                Location = new Point(0, 6),
+                Size = new Size(185, 36),
                 BackColor = Color.FromArgb(180, 40, 40),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnRemoveItem.FlatAppearance.BorderSize = 0;
             btnRemoveItem.Click += BtnRemoveItem_Click;
@@ -118,13 +145,14 @@ namespace qlspdigital.Views.Nhom2_Cart
             btnClearCart = new Button
             {
                 Text = "Xóa toàn bộ giỏ",
-                Location = new Point(195, 545),
-                Size = new Size(140, 32),
+                Location = new Point(195, 6),
+                Size = new Size(140, 36),
                 BackColor = Color.FromArgb(60, 75, 90),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9, FontStyle.Regular),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnClearCart.FlatAppearance.BorderSize = 0;
             btnClearCart.Click += (s, e) =>
@@ -137,11 +165,15 @@ namespace qlspdigital.Views.Nhom2_Cart
                 }
             };
 
+            panelBottomActions.Controls.Add(btnClearCart);
+            panelBottomActions.Controls.Add(btnRemoveItem);
+
             // 2. KHUNG THANH TOÁN BÊN PHẢI (ORDER SUMMARY)
-            Panel panelSummary = new Panel
+            panelSummary = new Panel
             {
-                Location = new Point(695, 55),
-                Size = new Size(330, 480),
+                Location = new Point(685, 55),
+                Size = new Size(330, 606),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right,
                 BackColor = Color.FromArgb(27, 40, 56),
                 Padding = new Padding(20)
             };
@@ -152,7 +184,8 @@ namespace qlspdigital.Views.Nhom2_Cart
                 Dock = DockStyle.Top,
                 Height = 30,
                 ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 11.5f, FontStyle.Bold)
+                Font = new Font("Segoe UI", 11.5f, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             // Khung voucher
@@ -169,30 +202,33 @@ namespace qlspdigital.Views.Nhom2_Cart
                 Dock = DockStyle.Top,
                 Height = 22,
                 ForeColor = Color.White,
-                Font = new Font("Segoe UI", 9.5f)
+                Font = new Font("Segoe UI", 9.5f),
+                UseMnemonic = false
             };
 
             txtVoucher = new TextBox
             {
-                Location = new Point(0, 30),
-                Width = 190,
+                Location = new Point(0, 28),
+                Width = 185,
                 Font = new Font("Segoe UI", 10),
                 BackColor = Color.FromArgb(18, 25, 35),
                 ForeColor = Color.White,
-                CharacterCasing = CharacterCasing.Upper
+                CharacterCasing = CharacterCasing.Upper,
+                PlaceholderText = "Nhập mã..."
             };
 
             btnApplyVoucher = new Button
             {
                 Text = "Áp dụng",
-                Location = new Point(200, 28),
+                Location = new Point(195, 28),
                 Width = 90,
                 Height = 28,
                 BackColor = Color.FromArgb(49, 98, 130),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnApplyVoucher.FlatAppearance.BorderSize = 0;
             btnApplyVoucher.Click += BtnApplyVoucher_Click;
@@ -208,7 +244,8 @@ namespace qlspdigital.Views.Nhom2_Cart
                 Dock = DockStyle.Top,
                 Height = 30,
                 ForeColor = Color.FromArgb(199, 213, 224),
-                Font = new Font("Segoe UI", 10)
+                Font = new Font("Segoe UI", 10),
+                UseMnemonic = false
             };
 
             lblDiscount = new Label
@@ -217,7 +254,8 @@ namespace qlspdigital.Views.Nhom2_Cart
                 Dock = DockStyle.Top,
                 Height = 30,
                 ForeColor = Color.FromArgb(243, 156, 18),
-                Font = new Font("Segoe UI", 10)
+                Font = new Font("Segoe UI", 10),
+                UseMnemonic = false
             };
 
             lblTotal = new Label
@@ -227,7 +265,8 @@ namespace qlspdigital.Views.Nhom2_Cart
                 Height = 45,
                 ForeColor = Color.FromArgb(164, 208, 7),
                 Font = new Font("Segoe UI", 13, FontStyle.Bold),
-                Padding = new Padding(0, 10, 0, 0)
+                Padding = new Padding(0, 10, 0, 0),
+                UseMnemonic = false
             };
 
             lblWalletBalance = new Label
@@ -236,19 +275,21 @@ namespace qlspdigital.Views.Nhom2_Cart
                 Dock = DockStyle.Top,
                 Height = 30,
                 ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 10, FontStyle.Bold)
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             btnDeposit = new Button
             {
                 Text = "💰 Nạp thêm tiền ví",
                 Dock = DockStyle.Top,
-                Height = 32,
+                Height = 34,
                 BackColor = Color.FromArgb(42, 71, 94),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9, FontStyle.Regular),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnDeposit.FlatAppearance.BorderSize = 0;
             btnDeposit.Click += (s, e) => OnNavigateToWallet?.Invoke();
@@ -262,7 +303,8 @@ namespace qlspdigital.Views.Nhom2_Cart
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnCheckout.FlatAppearance.BorderSize = 0;
             btnCheckout.Click += BtnCheckout_Click;
@@ -276,11 +318,44 @@ namespace qlspdigital.Views.Nhom2_Cart
             panelSummary.Controls.Add(panelVoucher);
             panelSummary.Controls.Add(lblSumTitle);
 
-            this.Controls.Add(btnClearCart);
-            this.Controls.Add(btnRemoveItem);
+            this.Controls.Add(panelBottomActions);
             this.Controls.Add(panelSummary);
             this.Controls.Add(dgvCart);
             this.Controls.Add(lblHeader);
+
+            panelBottomActions.BringToFront();
+
+            this.Resize += (s, e) => AdjustLayout();
+            AdjustLayout();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (this.ClientSize.Width < 500 || dgvCart == null || panelBottomActions == null || panelSummary == null) return;
+            int totalW = this.ClientSize.Width;
+            int totalH = this.ClientSize.Height;
+
+            int summaryW = 340;
+            int leftW = totalW - summaryW - 65; // margin 25 left + 15 gap + 25 right
+            int contentH = Math.Max(300, totalH - 125);
+
+            // Left grid
+            dgvCart.Location = new Point(25, 55);
+            dgvCart.Size = new Size(leftW, contentH);
+
+            // Left bottom actions
+            panelBottomActions.Location = new Point(25, 55 + contentH + 12);
+            panelBottomActions.Size = new Size(leftW, 48);
+
+            // Right Summary panel
+            panelSummary.Location = new Point(25 + leftW + 15, 55);
+            panelSummary.Size = new Size(summaryW, contentH + 60);
         }
 
         public void LoadCart()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -15,6 +15,7 @@ namespace qlspdigital.Views.Nhom5_Orders
         private readonly ThuVienService _libraryService;
 
         private DataGridView dgvLibrary = null!;
+        private Panel panelActions = null!;
         private Label lblSelectedTitle = null!;
         private Label lblVersion = null!;
         private Label lblSize = null!;
@@ -35,6 +36,7 @@ namespace qlspdigital.Views.Nhom5_Orders
 
         private void InitializeComponent()
         {
+            this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
             this.Dock = DockStyle.Fill;
             this.Padding = new Padding(25);
@@ -52,7 +54,8 @@ namespace qlspdigital.Views.Nhom5_Orders
                 Dock = DockStyle.Left,
                 AutoSize = true,
                 ForeColor = Color.White,
-                Font = new Font("Segoe UI", 15, FontStyle.Bold)
+                Font = new Font("Segoe UI", 15, FontStyle.Bold),
+                UseMnemonic = false
             };
 
             btnRefresh = new Button
@@ -76,7 +79,8 @@ namespace qlspdigital.Views.Nhom5_Orders
             dgvLibrary = new DataGridView
             {
                 Location = new Point(25, 65),
-                Size = new Size(580, 530),
+                Size = new Size(580, 620),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left,
                 BackgroundColor = Color.FromArgb(27, 40, 56),
                 ForeColor = Color.White,
                 GridColor = Color.FromArgb(42, 71, 94),
@@ -88,7 +92,9 @@ namespace qlspdigital.Views.Nhom5_Orders
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
             dgvLibrary.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 35);
+            dgvLibrary.DefaultCellStyle.ForeColor = Color.White;
             dgvLibrary.DefaultCellStyle.SelectionBackColor = Color.FromArgb(49, 98, 130);
+            dgvLibrary.DefaultCellStyle.SelectionForeColor = Color.White;
             dgvLibrary.DefaultCellStyle.Font = new Font("Segoe UI", 9.5f);
             dgvLibrary.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
             dgvLibrary.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(102, 192, 244);
@@ -102,18 +108,28 @@ namespace qlspdigital.Views.Nhom5_Orders
             dgvLibrary.Columns.Add("SoLanTai", "Lượt tải");
 
             dgvLibrary.Columns["MaSoHuu"].Visible = false;
-            dgvLibrary.Columns["TenSanPham"].FillWeight = 50;
-            dgvLibrary.Columns["TenDanhMuc"].Width = 110;
+
+            dgvLibrary.Columns["TenSanPham"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvLibrary.Columns["TenSanPham"].FillWeight = 65;
+
+            dgvLibrary.Columns["TenDanhMuc"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvLibrary.Columns["TenDanhMuc"].FillWeight = 35;
+
+            dgvLibrary.Columns["PhienBan"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dgvLibrary.Columns["PhienBan"].Width = 85;
+            dgvLibrary.Columns["PhienBan"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvLibrary.Columns["SoLanTai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dgvLibrary.Columns["SoLanTai"].Width = 75;
+            dgvLibrary.Columns["SoLanTai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             dgvLibrary.SelectionChanged += DgvLibrary_SelectionChanged;
 
             // 2. KHUNG HÀNH ĐỘNG TẢI TỆP VÀ GỠ BỎ BÊN PHẢI (UPDATE - DELETE)
-            Panel panelActions = new Panel
+            panelActions = new Panel
             {
                 Location = new Point(625, 65),
-                Size = new Size(395, 530),
+                Size = new Size(390, 620),
                 BackColor = Color.FromArgb(27, 40, 56),
                 Padding = new Padding(20)
             };
@@ -122,26 +138,28 @@ namespace qlspdigital.Views.Nhom5_Orders
             {
                 Text = "Chọn sản phẩm trong thư viện",
                 Location = new Point(20, 20),
-                Size = new Size(355, 60),
+                Size = new Size(350, 65),
                 ForeColor = Color.White,
-                Font = new Font("Segoe UI", 13, FontStyle.Bold)
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                UseMnemonic = false
             };
 
-            lblVersion = new Label { Text = "Phiên bản: ---", Location = new Point(20, 90), AutoSize = true, ForeColor = Color.FromArgb(199, 213, 224), Font = new Font("Segoe UI", 10) };
-            lblSize = new Label { Text = "Dung lượng tệp: ---", Location = new Point(20, 120), AutoSize = true, ForeColor = Color.FromArgb(199, 213, 224), Font = new Font("Segoe UI", 10) };
-            lblDownloadCount = new Label { Text = "Số lần đã tải: 0 lượt", Location = new Point(20, 150), AutoSize = true, ForeColor = Color.FromArgb(164, 208, 7), Font = new Font("Segoe UI", 10, FontStyle.Bold) };
+            lblVersion = new Label { Text = "Phiên bản: ---", Location = new Point(20, 90), AutoSize = true, ForeColor = Color.FromArgb(199, 213, 224), Font = new Font("Segoe UI", 10), UseMnemonic = false };
+            lblSize = new Label { Text = "Dung lượng tệp: ---", Location = new Point(20, 120), AutoSize = true, ForeColor = Color.FromArgb(199, 213, 224), Font = new Font("Segoe UI", 10), UseMnemonic = false };
+            lblDownloadCount = new Label { Text = "Số lần đã tải: 0 lượt", Location = new Point(20, 150), AutoSize = true, ForeColor = Color.FromArgb(164, 208, 7), Font = new Font("Segoe UI", 10, FontStyle.Bold), UseMnemonic = false };
 
             // Nút Tải xuống
             btnDownload = new Button
             {
                 Text = "⬇️ TẢI XUỐNG VỀ MÁY",
                 Location = new Point(20, 195),
-                Size = new Size(355, 45),
+                Size = new Size(350, 45),
                 BackColor = Color.FromArgb(92, 126, 16),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnDownload.FlatAppearance.BorderSize = 0;
             btnDownload.Click += BtnDownload_Click;
@@ -153,13 +171,14 @@ namespace qlspdigital.Views.Nhom5_Orders
                 Location = new Point(20, 255),
                 AutoSize = true,
                 ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Italic)
+                Font = new Font("Segoe UI", 9.5f, FontStyle.Italic),
+                UseMnemonic = false
             };
 
             prgDownload = new ProgressBar
             {
                 Location = new Point(20, 280),
-                Size = new Size(355, 22),
+                Size = new Size(350, 22),
                 Value = 0,
                 Maximum = 100
             };
@@ -168,13 +187,15 @@ namespace qlspdigital.Views.Nhom5_Orders
             btnUninstall = new Button
             {
                 Text = "🗑️ Gỡ khỏi Thư viện cá nhân",
-                Location = new Point(20, 460),
-                Size = new Size(355, 36),
+                Location = new Point(20, 550),
+                Size = new Size(350, 38),
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Left,
                 BackColor = Color.FromArgb(180, 40, 40),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                UseMnemonic = false
             };
             btnUninstall.FlatAppearance.BorderSize = 0;
             btnUninstall.Click += BtnUninstall_Click;
@@ -191,6 +212,38 @@ namespace qlspdigital.Views.Nhom5_Orders
             this.Controls.Add(panelActions);
             this.Controls.Add(dgvLibrary);
             this.Controls.Add(panelTop);
+
+            this.Resize += (s, e) => AdjustLayout();
+            AdjustLayout();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (this.ClientSize.Width < 500 || dgvLibrary == null || panelActions == null || lblSelectedTitle == null) return;
+            int totalW = this.ClientSize.Width;
+            int totalH = this.ClientSize.Height;
+
+            int actionW = 400;
+            int leftW = totalW - actionW - 65; // margin 25 left + 15 gap + 25 right
+            int contentH = Math.Max(300, totalH - 85);
+
+            dgvLibrary.Location = new Point(25, 65);
+            dgvLibrary.Size = new Size(leftW, contentH);
+
+            panelActions.Location = new Point(25 + leftW + 15, 65);
+            panelActions.Size = new Size(actionW, contentH);
+
+            int btnW = actionW - 40;
+            lblSelectedTitle.Width = btnW;
+            btnDownload.Width = btnW;
+            prgDownload.Width = btnW;
+            btnUninstall.Width = btnW;
         }
 
         public void LoadLibrary()
