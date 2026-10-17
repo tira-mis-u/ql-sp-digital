@@ -21,12 +21,17 @@ namespace qlspdigital.Views.Nhom2_Cart
         private Button btnTopUp500k = null!;
         private Button btnCustomTopUp = null!;
         private DataGridView dgvTransactions = null!;
+        private Panel panelCard = null!;
+        private Panel panelDeposit = null!;
+        private Label lblDepositTitle = null!;
+        private Label lblHistoryTitle = null!;
 
         public WalletControl()
         {
             _viService = new ViTaiKhoanService();
 
             InitializeComponent();
+            AdjustLayout();
             if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadWalletData();
 
@@ -53,10 +58,9 @@ namespace qlspdigital.Views.Nhom2_Cart
             lblHeader.UseMnemonic = false;
 
             // 1. KHUNG THẺ SỐ DƯ VÍ
-            Panel panelCard = new Panel();
+            panelCard = new Panel();
             panelCard.Location = new Point(25, 55);
             panelCard.Size = new Size(950, 100);
-            panelCard.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panelCard.BackColor = Color.FromArgb(27, 40, 56);
             panelCard.Padding = new Padding(20);
 
@@ -90,26 +94,25 @@ namespace qlspdigital.Views.Nhom2_Cart
             panelCard.Controls.Add(lblCardTitle);
 
             // 2. KHUNG NẠP TIỀN NHANH THEO MỆNH GIÁ CỐ ĐỊNH
-            Panel panelDeposit = new Panel();
+            panelDeposit = new Panel();
             panelDeposit.Location = new Point(25, 170);
-            panelDeposit.Size = new Size(950, 110);
-            panelDeposit.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            panelDeposit.Size = new Size(950, 125);
             panelDeposit.BackColor = Color.FromArgb(27, 40, 56);
-            panelDeposit.Padding = new Padding(20);
+            panelDeposit.Padding = new Padding(25, 18, 25, 18);
 
-            Label lblDepositTitle = new Label();
+            lblDepositTitle = new Label();
             lblDepositTitle.Text = "💳 NẠP TIỀN VÀO VÍ (CHỌN MỆNH GIÁ MÔ PHỎNG HOẶC NHẬP TÙY Ý)";
-            lblDepositTitle.Dock = DockStyle.Top;
-            lblDepositTitle.Height = 25;
-            lblDepositTitle.ForeColor = Color.FromArgb(164, 208, 7);
+            lblDepositTitle.Location = new Point(25, 18);
+            lblDepositTitle.AutoSize = true;
+            lblDepositTitle.ForeColor = Color.FromArgb(102, 192, 244);
             lblDepositTitle.Font = new Font("Segoe UI", 10.5f, FontStyle.Bold);
             lblDepositTitle.UseMnemonic = false;
 
             btnTopUp50k = new Button();
-            btnTopUp50k.Text = "+ 50.000 ₫";
-            btnTopUp50k.Location = new Point(20, 48);
-            btnTopUp50k.Size = new Size(125, 36);
-            btnTopUp50k.BackColor = Color.FromArgb(92, 126, 16);
+            btnTopUp50k.Text = "+ 50.000 đ";
+            btnTopUp50k.Location = new Point(25, 62);
+            btnTopUp50k.Size = new Size(130, 40);
+            btnTopUp50k.BackColor = Color.FromArgb(90, 160, 45);
             btnTopUp50k.ForeColor = Color.White;
             btnTopUp50k.FlatStyle = FlatStyle.Flat;
             btnTopUp50k.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
@@ -118,10 +121,10 @@ namespace qlspdigital.Views.Nhom2_Cart
             btnTopUp50k.Click += BtnTopUp50k_Click;
 
             btnTopUp100k = new Button();
-            btnTopUp100k.Text = "+ 100.000 ₫";
-            btnTopUp100k.Location = new Point(155, 48);
-            btnTopUp100k.Size = new Size(125, 36);
-            btnTopUp100k.BackColor = Color.FromArgb(92, 126, 16);
+            btnTopUp100k.Text = "+ 100.000 đ";
+            btnTopUp100k.Location = new Point(167, 62);
+            btnTopUp100k.Size = new Size(130, 40);
+            btnTopUp100k.BackColor = Color.FromArgb(90, 160, 45);
             btnTopUp100k.ForeColor = Color.White;
             btnTopUp100k.FlatStyle = FlatStyle.Flat;
             btnTopUp100k.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
@@ -130,10 +133,10 @@ namespace qlspdigital.Views.Nhom2_Cart
             btnTopUp100k.Click += BtnTopUp100k_Click;
 
             btnTopUp200k = new Button();
-            btnTopUp200k.Text = "+ 200.000 ₫";
-            btnTopUp200k.Location = new Point(290, 48);
-            btnTopUp200k.Size = new Size(125, 36);
-            btnTopUp200k.BackColor = Color.FromArgb(92, 126, 16);
+            btnTopUp200k.Text = "+ 200.000 đ";
+            btnTopUp200k.Location = new Point(309, 62);
+            btnTopUp200k.Size = new Size(130, 40);
+            btnTopUp200k.BackColor = Color.FromArgb(90, 160, 45);
             btnTopUp200k.ForeColor = Color.White;
             btnTopUp200k.FlatStyle = FlatStyle.Flat;
             btnTopUp200k.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
@@ -142,10 +145,10 @@ namespace qlspdigital.Views.Nhom2_Cart
             btnTopUp200k.Click += BtnTopUp200k_Click;
 
             btnTopUp500k = new Button();
-            btnTopUp500k.Text = "+ 500.000 ₫";
-            btnTopUp500k.Location = new Point(425, 48);
-            btnTopUp500k.Size = new Size(125, 36);
-            btnTopUp500k.BackColor = Color.FromArgb(92, 126, 16);
+            btnTopUp500k.Text = "+ 500.000 đ";
+            btnTopUp500k.Location = new Point(451, 62);
+            btnTopUp500k.Size = new Size(130, 40);
+            btnTopUp500k.BackColor = Color.FromArgb(90, 160, 45);
             btnTopUp500k.ForeColor = Color.White;
             btnTopUp500k.FlatStyle = FlatStyle.Flat;
             btnTopUp500k.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
@@ -155,17 +158,18 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             // Nhập số tiền tùy ý
             txtCustomAmount = new TextBox();
-            txtCustomAmount.Location = new Point(560, 48);
-            txtCustomAmount.Size = new Size(165, 36);
-            txtCustomAmount.Font = new Font("Segoe UI", 11);
+            txtCustomAmount.Location = new Point(605, 62);
+            txtCustomAmount.Size = new Size(180, 40);
+            txtCustomAmount.Font = new Font("Segoe UI", 10.5f);
             txtCustomAmount.BackColor = Color.FromArgb(18, 25, 35);
             txtCustomAmount.ForeColor = Color.White;
+            txtCustomAmount.BorderStyle = BorderStyle.FixedSingle;
             txtCustomAmount.PlaceholderText = "Nhập số tiền...";
 
             btnCustomTopUp = new Button();
             btnCustomTopUp.Text = "Nạp số này";
-            btnCustomTopUp.Location = new Point(735, 48);
-            btnCustomTopUp.Size = new Size(135, 36);
+            btnCustomTopUp.Location = new Point(797, 62);
+            btnCustomTopUp.Size = new Size(130, 40);
             btnCustomTopUp.BackColor = Color.FromArgb(49, 98, 130);
             btnCustomTopUp.ForeColor = Color.White;
             btnCustomTopUp.FlatStyle = FlatStyle.Flat;
@@ -184,18 +188,17 @@ namespace qlspdigital.Views.Nhom2_Cart
             panelDeposit.Controls.Add(lblDepositTitle);
 
             // 3. BẢNG LỊCH SỬ GIAO DỊCH BIẾN ĐỘNG SỐ DƯ
-            Label lblHistoryTitle = new Label();
+            lblHistoryTitle = new Label();
             lblHistoryTitle.Text = "📜 LỊCH SỬ BIẾN ĐỘNG SỐ DƯ & GIAO DỊCH";
-            lblHistoryTitle.Location = new Point(25, 295);
+            lblHistoryTitle.Location = new Point(25, 305);
             lblHistoryTitle.AutoSize = true;
             lblHistoryTitle.ForeColor = Color.FromArgb(102, 192, 244);
             lblHistoryTitle.Font = new Font("Segoe UI", 11, FontStyle.Bold);
             lblHistoryTitle.UseMnemonic = false;
 
             dgvTransactions = new DataGridView();
-            dgvTransactions.Location = new Point(25, 325);
-            dgvTransactions.Size = new Size(950, 400);
-            dgvTransactions.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvTransactions.Location = new Point(25, 345);
+            dgvTransactions.Size = new Size(950, 380);
             dgvTransactions.BackgroundColor = Color.FromArgb(27, 40, 56);
             dgvTransactions.ForeColor = Color.White;
             dgvTransactions.GridColor = Color.FromArgb(42, 71, 94);
@@ -212,6 +215,8 @@ namespace qlspdigital.Views.Nhom2_Cart
             dgvTransactions.DefaultCellStyle.Font = new Font("Segoe UI", 9.5f);
             dgvTransactions.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
             dgvTransactions.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(102, 192, 244);
+            dgvTransactions.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(30, 45, 62);
+            dgvTransactions.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(102, 192, 244);
             dgvTransactions.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             dgvTransactions.EnableHeadersVisualStyles = false;
 
@@ -222,26 +227,32 @@ namespace qlspdigital.Views.Nhom2_Cart
             dgvTransactions.Columns.Add("TrangThai", "Trạng thái");
             dgvTransactions.Columns.Add("NgayTao", "Thời gian");
 
-            dgvTransactions.Columns["MaThanhToan"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvTransactions.Columns["MaThanhToan"].Width = 75;
+            dgvTransactions.Columns["MaThanhToan"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvTransactions.Columns["MaThanhToan"].FillWeight = 10;
+            dgvTransactions.Columns["MaThanhToan"].MinimumWidth = 65;
             dgvTransactions.Columns["MaThanhToan"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             dgvTransactions.Columns["LoaiGiaoDich"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvTransactions.Columns["LoaiGiaoDich"].FillWeight = 45;
+            dgvTransactions.Columns["LoaiGiaoDich"].FillWeight = 24;
+            dgvTransactions.Columns["LoaiGiaoDich"].MinimumWidth = 110;
 
-            dgvTransactions.Columns["SoTien"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvTransactions.Columns["SoTien"].Width = 135;
+            dgvTransactions.Columns["SoTien"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvTransactions.Columns["SoTien"].FillWeight = 18;
+            dgvTransactions.Columns["SoTien"].MinimumWidth = 100;
             dgvTransactions.Columns["SoTien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
             dgvTransactions.Columns["PhuongThuc"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvTransactions.Columns["PhuongThuc"].FillWeight = 55;
+            dgvTransactions.Columns["PhuongThuc"].FillWeight = 20;
+            dgvTransactions.Columns["PhuongThuc"].MinimumWidth = 100;
 
-            dgvTransactions.Columns["TrangThai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvTransactions.Columns["TrangThai"].Width = 110;
+            dgvTransactions.Columns["TrangThai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvTransactions.Columns["TrangThai"].FillWeight = 14;
+            dgvTransactions.Columns["TrangThai"].MinimumWidth = 85;
             dgvTransactions.Columns["TrangThai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            dgvTransactions.Columns["NgayTao"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvTransactions.Columns["NgayTao"].Width = 150;
+            dgvTransactions.Columns["NgayTao"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvTransactions.Columns["NgayTao"].FillWeight = 14;
+            dgvTransactions.Columns["NgayTao"].MinimumWidth = 110;
             dgvTransactions.Columns["NgayTao"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             this.Controls.Add(dgvTransactions);
@@ -252,6 +263,73 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             this.ResumeLayout(false);
             this.PerformLayout();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (panelCard == null || panelDeposit == null || dgvTransactions == null || lblDepositTitle == null || lblHistoryTitle == null) return;
+            int totalW = Math.Max(600, this.ClientSize.Width);
+            int totalH = Math.Max(400, this.ClientSize.Height);
+            int fullW = totalW - 50;
+
+            panelCard.Location = new Point(25, 55);
+            panelCard.Size = new Size(fullW, 100);
+
+            panelDeposit.Location = new Point(25, 168);
+
+            lblDepositTitle.Location = new Point(25, 18);
+            int btnY = lblDepositTitle.Bottom + 14;
+            int btnH = 40;
+            btnTopUp50k.Height = btnH;
+            btnTopUp100k.Height = btnH;
+            btnTopUp200k.Height = btnH;
+            btnTopUp500k.Height = btnH;
+            txtCustomAmount.Height = btnH;
+            btnCustomTopUp.Height = btnH;
+
+            int pnlW = panelDeposit.ClientSize.Width;
+            if (btnCustomTopUp != null && txtCustomAmount != null && btnTopUp50k != null)
+            {
+                int gap = 10;
+                int customBtnW = 125;
+                // Ô nhập số tiền rộng rãi, thoải mái nhập liệu (260px - 360px)
+                int customTxtW = Math.Clamp((int)(pnlW * 0.28), 260, 360);
+                int fixedPresetSpace = pnlW - 50 - customTxtW - customBtnW - gap * 5;
+                int btnW = Math.Clamp(fixedPresetSpace / 4, 85, 125);
+
+                btnTopUp50k.Location = new Point(25, btnY);
+                btnTopUp50k.Width = btnW;
+
+                btnTopUp100k.Location = new Point(btnTopUp50k.Right + gap, btnY);
+                btnTopUp100k.Width = btnW;
+
+                btnTopUp200k.Location = new Point(btnTopUp100k.Right + gap, btnY);
+                btnTopUp200k.Width = btnW;
+
+                btnTopUp500k.Location = new Point(btnTopUp200k.Right + gap, btnY);
+                btnTopUp500k.Width = btnW;
+
+                txtCustomAmount.Location = new Point(btnTopUp500k.Right + gap + 6, btnY);
+                txtCustomAmount.Width = customTxtW;
+
+                btnCustomTopUp.Location = new Point(txtCustomAmount.Right + gap, btnY);
+                btnCustomTopUp.Width = customBtnW;
+            }
+
+            panelDeposit.Size = new Size(fullW, txtCustomAmount.Bottom + 16);
+
+            lblHistoryTitle.Location = new Point(25, panelDeposit.Bottom + 16);
+            int dgvY = lblHistoryTitle.Bottom + 10;
+            int contentH = Math.Max(150, totalH - dgvY - 25);
+
+            dgvTransactions.Location = new Point(25, dgvY);
+            dgvTransactions.Size = new Size(fullW, contentH);
         }
 
         private void BtnTopUp50k_Click(object? sender, EventArgs e) => NapTien(50000);

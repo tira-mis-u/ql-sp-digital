@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace qlspdigital.Shared
 {
@@ -9,7 +9,7 @@ namespace qlspdigital.Shared
     {
         public static int CurrentUserId { get; set; } = 0;
         public static string CurrentUsername { get; set; } = string.Empty;
-        public static string CurrentFullName { get; set; } = "Khách vãng lai";
+        public static string CurrentFullName { get; set; } = "Khách";
         public static string CurrentEmail { get; set; } = string.Empty;
         public static string CurrentRole { get; set; } = "KhachHang"; // "QuanTriVien" hoặc "KhachHang"
         public static decimal CurrentBalance { get; set; } = 0;
@@ -47,7 +47,7 @@ namespace qlspdigital.Shared
         {
             CurrentUserId = 0;
             CurrentUsername = string.Empty;
-            CurrentFullName = "Khách vãng lai";
+            CurrentFullName = "Khách";
             CurrentEmail = string.Empty;
             CurrentRole = "KhachHang";
             CurrentBalance = 0;

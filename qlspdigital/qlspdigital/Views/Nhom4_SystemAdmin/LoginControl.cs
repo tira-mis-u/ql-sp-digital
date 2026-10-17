@@ -40,8 +40,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             panelCenter.Size = new Size(450, 530);
             panelCenter.BackColor = Color.FromArgb(27, 40, 56);
             panelCenter.Padding = new Padding(35);
-            int targetW = Math.Max(1040, this.Width);
-            int targetH = Math.Max(700, this.Height);
+            int targetW = Math.Max(panelCenter.Width + 40, this.ClientSize.Width);
+            int targetH = Math.Max(panelCenter.Height + 40, this.ClientSize.Height);
             panelCenter.Location = new Point(Math.Max(20, (targetW - panelCenter.Width) / 2), Math.Max(20, (targetH - panelCenter.Height) / 2));
 
             Label lblLogo = new Label();
@@ -77,6 +77,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             txtUsername.Font = new Font("Segoe UI", 11);
             txtUsername.BackColor = Color.FromArgb(18, 25, 35);
             txtUsername.ForeColor = Color.White;
+            txtUsername.BorderStyle = BorderStyle.FixedSingle;
             txtUsername.Text = "admin"; // Gợi ý mặc định
 
             // Password
@@ -94,6 +95,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             txtPassword.Font = new Font("Segoe UI", 11);
             txtPassword.BackColor = Color.FromArgb(18, 25, 35);
             txtPassword.ForeColor = Color.White;
+            txtPassword.BorderStyle = BorderStyle.FixedSingle;
             txtPassword.UseSystemPasswordChar = true;
             txtPassword.Text = "123456"; // Gợi ý mặc định
             txtPassword.KeyDown += TxtPassword_KeyDown;
@@ -116,14 +118,16 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             btnGoToRegister = new Button();
             btnGoToRegister.Text = "Chưa có tài khoản? Đăng ký tại đây";
             btnGoToRegister.Location = new Point(35, 315);
-            btnGoToRegister.Size = new Size(380, 35);
+            btnGoToRegister.Size = new Size(380, 36);
             btnGoToRegister.BackColor = Color.Transparent;
             btnGoToRegister.ForeColor = Color.FromArgb(102, 192, 244);
             btnGoToRegister.FlatStyle = FlatStyle.Flat;
-            btnGoToRegister.Font = new Font("Segoe UI", 9.5f, FontStyle.Underline);
+            btnGoToRegister.Font = new Font("Segoe UI", 10f, FontStyle.Bold | FontStyle.Underline);
             btnGoToRegister.Cursor = Cursors.Hand;
             btnGoToRegister.UseMnemonic = false;
             btnGoToRegister.FlatAppearance.BorderSize = 0;
+            btnGoToRegister.FlatAppearance.MouseOverBackColor = Color.FromArgb(38, 54, 75);
+            btnGoToRegister.FlatAppearance.MouseDownBackColor = Color.FromArgb(28, 42, 60);
             btnGoToRegister.Click += BtnGoToRegister_Click;
 
             // Khung gợi ý tài khoản test cho Giảng viên / Nhóm
@@ -217,8 +221,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             base.OnResize(e);
             if (panelCenter != null)
             {
-                int w = Math.Max(1040, this.Width);
-                int h = Math.Max(700, this.Height);
+                int w = Math.Max(panelCenter.Width + 40, this.ClientSize.Width);
+                int h = Math.Max(panelCenter.Height + 40, this.ClientSize.Height);
                 panelCenter.Location = new Point(Math.Max(20, (w - panelCenter.Width) / 2), Math.Max(20, (h - panelCenter.Height) / 2));
             }
         }

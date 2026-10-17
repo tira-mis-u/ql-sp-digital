@@ -21,15 +21,15 @@ Toàn bộ ứng dụng sử dụng một cửa sổ duy nhất (`MainForm`), l�
 ### 2.1. Sơ đồ bố cục tổng thể
 ```text
 +-----------------------------------------------------------------------------------------------+
-|  [Logo DPMS]   CỬA HÀNG SẢN PHẨM KỸ THUẬT SỐ        [User] [💰 Ví: 500.000đ] [🛒 Cart]        |  <- HEADER
+|  [Logo DPMS]   CỬA HÀNG SẢN PHẨM KỸ THUẬT SỐ       [Khách/User] [🚪 Đăng xuất] [💰 Ví: 0đ]   |  <- HEADER
 +-----------------------+-----------------------------------------------------------------------+
 |                       |                                                                       |
-|  🔘 Cửa hàng (Store)  |                   VÙNG NỘI DUNG CHÍNH                                 |
-|  🔘 Đánh giá (Reviews)|                   (panelMainContent)                                |
+|  ▶️ Cửa hàng (Store)  |                   VÙNG NỘI DUNG CHÍNH                                 |
+|  🔘 Đánh giá (Reviews)|                   (panelMainContent)                                  |
 |  🔘 Giỏ hàng (Cart)   |                                                                       |
-|  🔘 Ví của tôi (Wallet)|  => Khi bấm menu bên trái, UserControl của từng người                |
-|  🔘 Khuyến mãi (Voucher)|    sẽ được tự động nạp và hiển thị tràn đầy vào đây.                |
-|  🔘 Thư viện (Library)|                                                                       |
+|  🔘 Ví của tôi (Wallet)|  => Khi bấm menu bên trái, UserControl của từng người                 |
+|  🔘 Khuyến mãi (Voucher)|    sẽ được tự động nạp và hiển thị tràn đầy vào đây.                 |
+|  🔘 Thư viện (Library)|     Nút được chọn sẽ kích hoạt trạng thái [ACTIVE] nổi bật.           |
 |  🔘 Lịch sử đơn hàng  |                                                                       |
 |  🔘 Quản trị (Admin)  |                                                                       |
 |  🔘 Cài đặt cá nhân   |                                                                       |
@@ -42,12 +42,20 @@ Toàn bộ ứng dụng sử dụng một cửa sổ duy nhất (`MainForm`), l�
 
 ### 2.2. Cách thức hoạt động
 1. **Khung sườn chính (`MainForm.cs`):** 
-   - Đóng vai trò làm khung vỏ (Shell).
-   - Chứa Header (Logo, trạng thái tài khoản, số dư ví `lblBalance`, nút giỏ hàng mini) và Sidebar (các nút menu điều hướng).
+   - Đóng vai trò làm khung vỏ (Shell) chuẩn Steam Dark Theme.
+   - **Thanh Header:** Chứa Logo, tiêu đề ứng dụng, lời chào tài khoản (mặc định hiển thị `"Khách"`, sau khi đăng nhập hiển thị tên người dùng), nút **Đăng nhập / Đăng xuất** (`btnHeaderAuth`), và số dư ví `lblBalance` ở góc phải ngoài cùng (đã hoán đổi vị trí với nút đăng xuất, hỗ trợ click chuột để chuyển nhanh sang Ví). Nút giỏ hàng mini trên header đã được lược bỏ vì Sidebar bên trái đã có sẵn mục Giỏ hàng.
+   - **Thanh Sidebar (Cơ chế Active/Selected State):**
+     + Quản lý tập trung qua phương thức `SetActiveMenu(Button? btn)`.
+     + Khi người dùng chuyển sang bất kỳ màn hình nào, nút Sidebar tương ứng sẽ được kích hoạt trạng thái **Selected (Active)** với màu nền xanh điểm nhấn (`Color.FromArgb(49, 98, 130)` / `#316282`) cùng phông chữ đậm màu trắng (`Font = FontStyle.Bold`, `ForeColor = Color.White`).
+     + Các nút không được chọn (Inactive) tự động hoàn nguyên màu nền tối (`#121923`) và chữ thường. Sự kiện rê chuột (`MouseEnter`/`MouseLeave`) giữ nguyên màu cho nút đang Active và chỉ tạo hiệu ứng hover nhẹ (`#2A475E`) cho các nút Inactive.
+   - **Đồng bộ Dark Mode Scrollbar & Titlebar (`ThemeHelper`):**
+     + Tích hợp Win32 API native `SetWindowTheme(ctrl.Handle, "DarkMode_Explorer", null)` và `DwmSetWindowAttribute` (`DWMWA_USE_IMMERSIVE_DARK_MODE`).
+     + Toàn bộ thanh cuộn của Form, Panel, DataGridView, FlowLayoutPanel và TextBox đều hiển thị theme tối hiện đại chuẩn Windows 10/11, xóa bỏ thanh cuộn màu trắng thô ráp.
    - Chứa một `Panel` trung tâm đặt tên là `panelMainContent` (thuộc tính `Dock = DockStyle.Fill`).
 2. **Các màn hình chức năng (`UserControl`):**
    - **15 màn hình chức năng** của 5 thành viên (mỗi người 3 màn hình độc lập) được thiết kế dưới dạng **`UserControl`** thay vì từng `Form` riêng lẻ trôi nổi.
    - Khi bấm nút trên Sidebar, `UserControl` tương ứng sẽ được nạp trực tiếp vào `panelMainContent`.
+   - Màn hình Đánh giá sản phẩm (`ProductReviewControl`) không cần nút quay lại cửa hàng vì người dùng có thể chuyển đổi tức thì giữa các phân hệ thông qua Sidebar cố định.
 
 ### 2.3. Mã nguồn khởi chạy & Chuyển đổi màn hình động
 Trong file `MainForm.cs`:

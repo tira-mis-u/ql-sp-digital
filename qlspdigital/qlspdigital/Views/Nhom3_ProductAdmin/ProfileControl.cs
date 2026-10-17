@@ -135,6 +135,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             txtFullName.Font = new Font("Segoe UI", 10);
             txtFullName.BackColor = Color.FromArgb(18, 25, 35);
             txtFullName.ForeColor = Color.White;
+            txtFullName.BorderStyle = BorderStyle.FixedSingle;
 
             Label lblEmail = new Label();
             lblEmail.Text = "Địa chỉ Email (*):";
@@ -150,6 +151,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             txtEmail.Font = new Font("Segoe UI", 10);
             txtEmail.BackColor = Color.FromArgb(18, 25, 35);
             txtEmail.ForeColor = Color.White;
+            txtEmail.BorderStyle = BorderStyle.FixedSingle;
 
             Label lblPhone = new Label();
             lblPhone.Text = "Số điện thoại:";
@@ -165,6 +167,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             txtPhone.Font = new Font("Segoe UI", 10);
             txtPhone.BackColor = Color.FromArgb(18, 25, 35);
             txtPhone.ForeColor = Color.White;
+            txtPhone.BorderStyle = BorderStyle.FixedSingle;
 
             btnUpdateProfile = new Button();
             btnUpdateProfile.Text = "Cập nhật hồ sơ";
@@ -173,7 +176,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             btnUpdateProfile.BackColor = Color.FromArgb(49, 98, 130);
             btnUpdateProfile.ForeColor = Color.White;
             btnUpdateProfile.FlatStyle = FlatStyle.Flat;
-            btnUpdateProfile.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            btnUpdateProfile.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             btnUpdateProfile.Cursor = Cursors.Hand;
             btnUpdateProfile.UseMnemonic = false;
             btnUpdateProfile.FlatAppearance.BorderSize = 0;
@@ -217,6 +220,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             txtOldPassword.Font = new Font("Segoe UI", 10);
             txtOldPassword.BackColor = Color.FromArgb(18, 25, 35);
             txtOldPassword.ForeColor = Color.White;
+            txtOldPassword.BorderStyle = BorderStyle.FixedSingle;
             txtOldPassword.UseSystemPasswordChar = true;
 
             Label lblNewPass = new Label();
@@ -233,6 +237,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             txtNewPassword.Font = new Font("Segoe UI", 10);
             txtNewPassword.BackColor = Color.FromArgb(18, 25, 35);
             txtNewPassword.ForeColor = Color.White;
+            txtNewPassword.BorderStyle = BorderStyle.FixedSingle;
             txtNewPassword.UseSystemPasswordChar = true;
 
             Label lblConfirmPass = new Label();
@@ -249,16 +254,17 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             txtConfirmPassword.Font = new Font("Segoe UI", 10);
             txtConfirmPassword.BackColor = Color.FromArgb(18, 25, 35);
             txtConfirmPassword.ForeColor = Color.White;
+            txtConfirmPassword.BorderStyle = BorderStyle.FixedSingle;
             txtConfirmPassword.UseSystemPasswordChar = true;
 
             btnChangePassword = new Button();
             btnChangePassword.Text = "Xác nhận đổi MK";
             btnChangePassword.Location = new Point(165, 215);
             btnChangePassword.Size = new Size(180, 38);
-            btnChangePassword.BackColor = Color.FromArgb(92, 126, 16);
+            btnChangePassword.BackColor = Color.FromArgb(90, 160, 45);
             btnChangePassword.ForeColor = Color.White;
             btnChangePassword.FlatStyle = FlatStyle.Flat;
-            btnChangePassword.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            btnChangePassword.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             btnChangePassword.Cursor = Cursors.Hand;
             btnChangePassword.UseMnemonic = false;
             btnChangePassword.FlatAppearance.BorderSize = 0;
@@ -321,8 +327,8 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
         private void AdjustLayout()
         {
             if (panelProfileForm == null || panelPasswordForm == null || panelInfo == null || panelSecurityBanner == null || txtFullName == null) return;
-            int totalW = Math.Max(1040, this.ClientSize.Width);
-            int totalH = Math.Max(700, this.ClientSize.Height);
+            int totalW = Math.Max(600, this.ClientSize.Width);
+            int totalH = Math.Max(400, this.ClientSize.Height);
 
             int fullW = totalW - 50;
 
@@ -360,7 +366,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
         {
             if (!UserSession.IsLoggedIn)
             {
-                lblUsername.Text = "Tài khoản: Khách vãng lai";
+                lblUsername.Text = "Tài khoản: Khách";
                 lblRole.Text = "Chưa đăng nhập";
                 lblBalance.Text = "0 ₫";
                 lblCreatedDate.Text = "---";

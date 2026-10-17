@@ -19,9 +19,12 @@ namespace qlspdigital.Views.Nhom5_Orders
         private Panel panelDetails = null!;
         private Panel panelBottomActions = null!;
         private ComboBox cboStatus = null!;
+        private Label lblStatus = null!;
+        private Label lblSearch = null!;
         private TextBox txtSearch = null!;
         private Button btnApprove = null!;
         private Button btnCancelOrder = null!;
+        private Button btnSearch = null!;
         private Button btnRefresh = null!;
 
         public OrderManageControl()
@@ -55,23 +58,23 @@ namespace qlspdigital.Views.Nhom5_Orders
             // 1. THANH LỌC VÀ TÌM KIẾM
             panelFilter = new Panel();
             panelFilter.Location = new Point(20, 45);
-            panelFilter.Size = new Size(1000, 42);
+            panelFilter.Size = new Size(1000, 50);
             panelFilter.BackColor = Color.FromArgb(27, 40, 56);
-            panelFilter.Padding = new Padding(10, 6, 10, 6);
+            panelFilter.Padding = new Padding(12, 8, 12, 8);
 
-            Label lblStatus = new Label();
+            lblStatus = new Label();
             lblStatus.Text = "Trạng thái:";
-            lblStatus.Location = new Point(10, 11);
+            lblStatus.Location = new Point(15, 15);
             lblStatus.AutoSize = true;
             lblStatus.ForeColor = Color.White;
             lblStatus.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             lblStatus.UseMnemonic = false;
 
             cboStatus = new ComboBox();
-            cboStatus.Location = new Point(110, 7);
-            cboStatus.Width = 145;
+            cboStatus.Location = new Point(105, 10);
+            cboStatus.Width = 150;
             cboStatus.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboStatus.Font = new Font("Segoe UI", 9.5f);
+            cboStatus.Font = new Font("Segoe UI", 10f);
             cboStatus.BackColor = Color.FromArgb(18, 25, 35);
             cboStatus.ForeColor = Color.White;
             cboStatus.FlatStyle = FlatStyle.Flat;
@@ -79,37 +82,52 @@ namespace qlspdigital.Views.Nhom5_Orders
             cboStatus.SelectedIndex = 0;
             cboStatus.SelectedIndexChanged += CboStatus_SelectedIndexChanged;
 
-            Label lblSearch = new Label();
+            lblSearch = new Label();
             lblSearch.Text = "Tìm kiếm:";
-            lblSearch.Location = new Point(275, 11);
+            lblSearch.Location = new Point(280, 15);
             lblSearch.AutoSize = true;
             lblSearch.ForeColor = Color.White;
             lblSearch.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             lblSearch.UseMnemonic = false;
 
             txtSearch = new TextBox();
-            txtSearch.Location = new Point(365, 7);
-            txtSearch.Width = 250;
-            txtSearch.Font = new Font("Segoe UI", 9.5f);
+            txtSearch.Location = new Point(365, 10);
+            txtSearch.Width = 320;
+            txtSearch.Font = new Font("Segoe UI", 10f);
             txtSearch.BackColor = Color.FromArgb(18, 25, 35);
             txtSearch.ForeColor = Color.White;
+            txtSearch.BorderStyle = BorderStyle.FixedSingle;
             txtSearch.PlaceholderText = "Mã đơn hàng, tên khách...";
             txtSearch.TextChanged += TxtSearch_TextChanged;
 
+            btnSearch = new Button();
+            btnSearch.Text = "🔍 Tìm";
+            btnSearch.Location = new Point(695, 9);
+            btnSearch.Size = new Size(80, 32);
+            btnSearch.BackColor = Color.FromArgb(49, 98, 130);
+            btnSearch.ForeColor = Color.White;
+            btnSearch.FlatStyle = FlatStyle.Flat;
+            btnSearch.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnSearch.Cursor = Cursors.Hand;
+            btnSearch.UseMnemonic = false;
+            btnSearch.FlatAppearance.BorderSize = 0;
+            btnSearch.Click += BtnSearch_Click;
+
             btnRefresh = new Button();
             btnRefresh.Text = "Làm mới";
-            btnRefresh.Location = new Point(630, 7);
-            btnRefresh.Size = new Size(95, 28);
-            btnRefresh.BackColor = Color.FromArgb(49, 98, 130);
+            btnRefresh.Location = new Point(785, 9);
+            btnRefresh.Size = new Size(100, 32);
+            btnRefresh.BackColor = Color.FromArgb(60, 75, 90);
             btnRefresh.ForeColor = Color.White;
             btnRefresh.FlatStyle = FlatStyle.Flat;
-            btnRefresh.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            btnRefresh.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             btnRefresh.Cursor = Cursors.Hand;
             btnRefresh.UseMnemonic = false;
             btnRefresh.FlatAppearance.BorderSize = 0;
             btnRefresh.Click += BtnRefresh_Click;
 
             panelFilter.Controls.Add(btnRefresh);
+            panelFilter.Controls.Add(btnSearch);
             panelFilter.Controls.Add(txtSearch);
             panelFilter.Controls.Add(lblSearch);
             panelFilter.Controls.Add(cboStatus);
@@ -119,7 +137,6 @@ namespace qlspdigital.Views.Nhom5_Orders
             dgvOrders = new DataGridView();
             dgvOrders.Location = new Point(20, 95);
             dgvOrders.Size = new Size(630, 535);
-            dgvOrders.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             dgvOrders.BackgroundColor = Color.FromArgb(27, 40, 56);
             dgvOrders.ForeColor = Color.White;
             dgvOrders.GridColor = Color.FromArgb(42, 71, 94);
@@ -136,6 +153,8 @@ namespace qlspdigital.Views.Nhom5_Orders
             dgvOrders.DefaultCellStyle.Font = new Font("Segoe UI", 9f);
             dgvOrders.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
             dgvOrders.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(102, 192, 244);
+            dgvOrders.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(30, 45, 62);
+            dgvOrders.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(102, 192, 244);
             dgvOrders.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
             dgvOrders.EnableHeadersVisualStyles = false;
 
@@ -148,22 +167,27 @@ namespace qlspdigital.Views.Nhom5_Orders
 
             dgvOrders.Columns["MaDonHang"].Visible = false;
 
-            dgvOrders.Columns["MaDonHangCode"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvOrders.Columns["MaDonHangCode"].Width = 150;
+            dgvOrders.Columns["MaDonHangCode"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvOrders.Columns["MaDonHangCode"].FillWeight = 20;
+            dgvOrders.Columns["MaDonHangCode"].MinimumWidth = 110;
 
             dgvOrders.Columns["TenKhachHang"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvOrders.Columns["TenKhachHang"].FillWeight = 100;
+            dgvOrders.Columns["TenKhachHang"].FillWeight = 32;
+            dgvOrders.Columns["TenKhachHang"].MinimumWidth = 130;
 
-            dgvOrders.Columns["TongThanhToan"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvOrders.Columns["TongThanhToan"].Width = 110;
+            dgvOrders.Columns["TongThanhToan"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvOrders.Columns["TongThanhToan"].FillWeight = 18;
+            dgvOrders.Columns["TongThanhToan"].MinimumWidth = 100;
             dgvOrders.Columns["TongThanhToan"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            dgvOrders.Columns["TrangThai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvOrders.Columns["TrangThai"].Width = 95;
+            dgvOrders.Columns["TrangThai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvOrders.Columns["TrangThai"].FillWeight = 14;
+            dgvOrders.Columns["TrangThai"].MinimumWidth = 85;
             dgvOrders.Columns["TrangThai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            dgvOrders.Columns["NgayTao"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvOrders.Columns["NgayTao"].Width = 135;
+            dgvOrders.Columns["NgayTao"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvOrders.Columns["NgayTao"].FillWeight = 16;
+            dgvOrders.Columns["NgayTao"].MinimumWidth = 110;
             dgvOrders.Columns["NgayTao"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             dgvOrders.SelectionChanged += DgvOrders_SelectionChanged;
@@ -200,7 +224,9 @@ namespace qlspdigital.Views.Nhom5_Orders
             dgvOrderDetails.DefaultCellStyle.SelectionForeColor = Color.White;
             dgvOrderDetails.DefaultCellStyle.Font = new Font("Segoe UI", 9f);
             dgvOrderDetails.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
-            dgvOrderDetails.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(164, 208, 7);
+            dgvOrderDetails.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(102, 192, 244);
+            dgvOrderDetails.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(30, 45, 62);
+            dgvOrderDetails.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(102, 192, 244);
             dgvOrderDetails.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
             dgvOrderDetails.EnableHeadersVisualStyles = false;
 
@@ -209,14 +235,17 @@ namespace qlspdigital.Views.Nhom5_Orders
             dgvOrderDetails.Columns.Add("DonGia", "Đơn giá");
 
             dgvOrderDetails.Columns["TenSanPham"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvOrderDetails.Columns["TenSanPham"].FillWeight = 100;
+            dgvOrderDetails.Columns["TenSanPham"].FillWeight = 55;
+            dgvOrderDetails.Columns["TenSanPham"].MinimumWidth = 100;
 
-            dgvOrderDetails.Columns["SoLuong"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvOrderDetails.Columns["SoLuong"].Width = 45;
+            dgvOrderDetails.Columns["SoLuong"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvOrderDetails.Columns["SoLuong"].FillWeight = 15;
+            dgvOrderDetails.Columns["SoLuong"].MinimumWidth = 40;
             dgvOrderDetails.Columns["SoLuong"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            dgvOrderDetails.Columns["DonGia"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvOrderDetails.Columns["DonGia"].Width = 100;
+            dgvOrderDetails.Columns["DonGia"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvOrderDetails.Columns["DonGia"].FillWeight = 30;
+            dgvOrderDetails.Columns["DonGia"].MinimumWidth = 85;
             dgvOrderDetails.Columns["DonGia"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
             panelDetails.Controls.Add(dgvOrderDetails);
@@ -230,9 +259,9 @@ namespace qlspdigital.Views.Nhom5_Orders
 
             btnApprove = new Button();
             btnApprove.Text = "✅ Duyệt đơn (Hoàn thành & Cấp Thư viện)";
-            btnApprove.Location = new Point(0, 5);
-            btnApprove.Size = new Size(380, 38);
-            btnApprove.BackColor = Color.FromArgb(92, 126, 16);
+            btnApprove.Location = new Point(0, 4);
+            btnApprove.Size = new Size(360, 40);
+            btnApprove.BackColor = Color.FromArgb(90, 160, 45);
             btnApprove.ForeColor = Color.White;
             btnApprove.FlatStyle = FlatStyle.Flat;
             btnApprove.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
@@ -243,8 +272,8 @@ namespace qlspdigital.Views.Nhom5_Orders
 
             btnCancelOrder = new Button();
             btnCancelOrder.Text = "❌ Hủy đơn hàng";
-            btnCancelOrder.Location = new Point(395, 5);
-            btnCancelOrder.Size = new Size(175, 38);
+            btnCancelOrder.Location = new Point(375, 4);
+            btnCancelOrder.Size = new Size(180, 40);
             btnCancelOrder.BackColor = Color.FromArgb(180, 40, 40);
             btnCancelOrder.ForeColor = Color.White;
             btnCancelOrder.FlatStyle = FlatStyle.Flat;
@@ -277,25 +306,45 @@ namespace qlspdigital.Views.Nhom5_Orders
 
         private void AdjustLayout()
         {
-            if (panelFilter == null || dgvOrders == null || panelDetails == null || panelBottomActions == null) return;
-            int totalW = Math.Max(1040, this.ClientSize.Width);
-            int totalH = Math.Max(700, this.ClientSize.Height);
+            if (panelFilter == null || dgvOrders == null || panelDetails == null || panelBottomActions == null || lblStatus == null || cboStatus == null || lblSearch == null || txtSearch == null || btnRefresh == null) return;
+            int totalW = Math.Max(600, this.ClientSize.Width);
+            int totalH = Math.Max(380, this.ClientSize.Height);
 
             panelFilter.Location = new Point(20, 45);
-            panelFilter.Size = new Size(totalW - 40, 42);
+            panelFilter.Size = new Size(totalW - 40, 50);
 
-            int leftW = Math.Max(400, (int)((totalW - 55) * 0.60));
-            int rightW = totalW - 55 - leftW;
-            int contentH = Math.Max(250, totalH - 165);
+            // Bố cục tuần tự tương đối - không bao giờ đè nhãn
+            lblStatus.Location = new Point(15, 15);
+            cboStatus.Location = new Point(lblStatus.Right + 12, 10);
+            lblSearch.Location = new Point(cboStatus.Right + 24, 15);
+            txtSearch.Location = new Point(lblSearch.Right + 12, 10);
 
-            dgvOrders.Location = new Point(20, 95);
+            int btnSearchW = 85;
+            int btnRefreshW = 100;
+            int filterW = panelFilter.ClientSize.Width;
+
+            btnRefresh.Location = new Point(filterW - btnRefreshW - 12, 9);
+            btnRefresh.Size = new Size(btnRefreshW, 32);
+
+            btnSearch.Location = new Point(btnRefresh.Left - btnSearchW - 10, 9);
+            btnSearch.Size = new Size(btnSearchW, 32);
+
+            int searchW = Math.Clamp(btnSearch.Left - txtSearch.Left - 15, 200, 560);
+            txtSearch.Size = new Size(searchW, 30);
+
+            int rightW = Math.Clamp((int)(totalW * 0.36), 300, 420);
+            int leftW = Math.Max(260, totalW - rightW - 55); // margin 20 left + 15 gap + 20 right
+            int bottomH = 48;
+            int contentH = Math.Max(180, totalH - 105 - bottomH - 18);
+
+            dgvOrders.Location = new Point(20, 105);
             dgvOrders.Size = new Size(leftW, contentH);
 
-            panelDetails.Location = new Point(20 + leftW + 15, 95);
+            panelDetails.Location = new Point(20 + leftW + 15, 105);
             panelDetails.Size = new Size(rightW, contentH);
 
-            panelBottomActions.Location = new Point(20, 95 + contentH + 12);
-            panelBottomActions.Size = new Size(totalW - 40, 50);
+            panelBottomActions.Location = new Point(20, 105 + contentH + 8);
+            panelBottomActions.Size = new Size(totalW - 40, bottomH);
         }
 
         public void LoadOrders()
@@ -362,6 +411,7 @@ namespace qlspdigital.Views.Nhom5_Orders
 
         private void CboStatus_SelectedIndexChanged(object? sender, EventArgs e) => LoadOrders();
         private void TxtSearch_TextChanged(object? sender, EventArgs e) => LoadOrders();
+        private void BtnSearch_Click(object? sender, EventArgs e) => LoadOrders();
         private void BtnRefresh_Click(object? sender, EventArgs e)
         {
             txtSearch.Clear();

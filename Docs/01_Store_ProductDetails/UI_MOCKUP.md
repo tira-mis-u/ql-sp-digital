@@ -100,7 +100,7 @@
 ### 3.1. Bố cục trực quan (Wireframe Layout)
 ```text
 +---------------------------------------------------------------------------------------------------+
-|  TRUNG TÂM ĐÁNH GIÁ & NHẬN XÉT SẢN PHẨM (REVIEWS & RATINGS)                   [ < Quay lại Store ] |
+|  TRUNG TÂM ĐÁNH GIÁ & NHẬN XÉT SẢN PHẨM (REVIEWS & RATINGS)                                       |
 +---------------------------------------------------------------------------------------------------+
 |  +--------------------------------------------+  +---------------------------------------------+  |
 |  | [ KHU VỰC ĐÁNH GIÁ CỦA BẠN ]               |  | [ ĐÁNH GIÁ CỘNG ĐỒNG CHO SẢN PHẨM ]         |  |
@@ -135,5 +135,6 @@
 | `btnSubmitReview` | `Button` | Nút gửi đánh giá mới (`INSERT INTO Reviews`). |
 | `btnUpdateReview` | `Button` | Nút lưu chỉnh sửa nhận xét (`UPDATE Reviews`). |
 | `btnDeleteReview` | `Button` | Nút xóa bài đánh giá của chính mình (`DELETE FROM Reviews`). |
-| `flowReviewsList` / `dgvReviews` | `FlowLayoutPanel` / `DataGridView` | Hiển thị danh sách các bài nhận xét của cộng đồng. |
-| `btnBackToStore` | `Button` | Quay lại màn hình Cửa hàng `StoreViewControl`. |
+| `flowReviewsList` / `dgvReviews` | `FlowLayoutPanel` / `DataGridView` | Hiển thị danh sách các bài nhận xét của cộng đồng (áp dụng Dark Mode scrollbar). |
+
+*(Lưu ý: Màn hình không cần nút quay lại cửa hàng vì người dùng có thể điều hướng trực tiếp và linh hoạt qua thanh menu Sidebar bên trái).*

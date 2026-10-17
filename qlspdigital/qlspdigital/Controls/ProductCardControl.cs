@@ -113,7 +113,7 @@ namespace qlspdigital.Controls
             btnAddToCart = new Button();
             btnAddToCart.Text = "+ Thêm giỏ";
             btnAddToCart.Dock = DockStyle.Fill;
-            btnAddToCart.BackColor = Color.FromArgb(92, 126, 16);
+            btnAddToCart.BackColor = Color.FromArgb(90, 160, 45);
             btnAddToCart.ForeColor = Color.White;
             btnAddToCart.FlatStyle = FlatStyle.Flat;
             btnAddToCart.Font = new Font("Segoe UI", 9, FontStyle.Bold);

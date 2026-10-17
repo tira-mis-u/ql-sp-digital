@@ -16,8 +16,11 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
         private DataGridView dgvUsers = null!;
         private TextBox txtSearch = null!;
         private ComboBox cboRole = null!;
+        private Label lblRole = null!;
+        private Label lblSearch = null!;
         private Button btnLock = null!;
         private Button btnUnlock = null!;
+        private Button btnSearch = null!;
         private Button btnRefresh = null!;
         private Panel panelFilter = null!;
         private Panel panelBottomActions = null!;
@@ -53,23 +56,23 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             // 1. THANH LỌC VÀ TÌM KIẾM
             panelFilter = new Panel();
             panelFilter.Location = new Point(25, 55);
-            panelFilter.Size = new Size(950, 45);
+            panelFilter.Size = new Size(950, 50);
             panelFilter.BackColor = Color.FromArgb(27, 40, 56);
             panelFilter.Padding = new Padding(12, 8, 12, 8);
 
-            Label lblRole = new Label();
+            lblRole = new Label();
             lblRole.Text = "Vai trò:";
-            lblRole.Location = new Point(12, 12);
+            lblRole.Location = new Point(15, 15);
             lblRole.AutoSize = true;
             lblRole.ForeColor = Color.White;
             lblRole.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             lblRole.UseMnemonic = false;
 
             cboRole = new ComboBox();
-            cboRole.Location = new Point(80, 9);
-            cboRole.Width = 140;
+            cboRole.Location = new Point(85, 10);
+            cboRole.Width = 145;
             cboRole.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboRole.Font = new Font("Segoe UI", 9.5f);
+            cboRole.Font = new Font("Segoe UI", 10f);
             cboRole.BackColor = Color.FromArgb(18, 25, 35);
             cboRole.ForeColor = Color.White;
             cboRole.FlatStyle = FlatStyle.Flat;
@@ -77,37 +80,52 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             cboRole.SelectedIndex = 0;
             cboRole.SelectedIndexChanged += CboRole_SelectedIndexChanged;
 
-            Label lblSearch = new Label();
+            lblSearch = new Label();
             lblSearch.Text = "Tìm kiếm:";
-            lblSearch.Location = new Point(245, 12);
+            lblSearch.Location = new Point(260, 15);
             lblSearch.AutoSize = true;
             lblSearch.ForeColor = Color.White;
             lblSearch.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             lblSearch.UseMnemonic = false;
 
             txtSearch = new TextBox();
-            txtSearch.Location = new Point(330, 9);
-            txtSearch.Width = 300;
-            txtSearch.Font = new Font("Segoe UI", 9.5f);
+            txtSearch.Location = new Point(345, 10);
+            txtSearch.Width = 340;
+            txtSearch.Font = new Font("Segoe UI", 10f);
             txtSearch.BackColor = Color.FromArgb(18, 25, 35);
             txtSearch.ForeColor = Color.White;
+            txtSearch.BorderStyle = BorderStyle.FixedSingle;
             txtSearch.PlaceholderText = "Tìm theo tên đăng nhập, họ tên, email...";
             txtSearch.TextChanged += TxtSearch_TextChanged;
 
+            btnSearch = new Button();
+            btnSearch.Text = "🔍 Tìm";
+            btnSearch.Location = new Point(695, 9);
+            btnSearch.Size = new Size(80, 32);
+            btnSearch.BackColor = Color.FromArgb(49, 98, 130);
+            btnSearch.ForeColor = Color.White;
+            btnSearch.FlatStyle = FlatStyle.Flat;
+            btnSearch.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnSearch.Cursor = Cursors.Hand;
+            btnSearch.UseMnemonic = false;
+            btnSearch.FlatAppearance.BorderSize = 0;
+            btnSearch.Click += BtnSearch_Click;
+
             btnRefresh = new Button();
             btnRefresh.Text = "Làm mới";
-            btnRefresh.Location = new Point(650, 7);
-            btnRefresh.Size = new Size(95, 30);
-            btnRefresh.BackColor = Color.FromArgb(49, 98, 130);
+            btnRefresh.Location = new Point(785, 9);
+            btnRefresh.Size = new Size(100, 32);
+            btnRefresh.BackColor = Color.FromArgb(60, 75, 90);
             btnRefresh.ForeColor = Color.White;
             btnRefresh.FlatStyle = FlatStyle.Flat;
-            btnRefresh.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            btnRefresh.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             btnRefresh.Cursor = Cursors.Hand;
             btnRefresh.UseMnemonic = false;
             btnRefresh.FlatAppearance.BorderSize = 0;
             btnRefresh.Click += BtnRefresh_Click;
 
             panelFilter.Controls.Add(btnRefresh);
+            panelFilter.Controls.Add(btnSearch);
             panelFilter.Controls.Add(txtSearch);
             panelFilter.Controls.Add(lblSearch);
             panelFilter.Controls.Add(cboRole);
@@ -117,7 +135,6 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             dgvUsers = new DataGridView();
             dgvUsers.Location = new Point(25, 110);
             dgvUsers.Size = new Size(950, 520);
-            dgvUsers.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvUsers.BackgroundColor = Color.FromArgb(27, 40, 56);
             dgvUsers.ForeColor = Color.White;
             dgvUsers.GridColor = Color.FromArgb(42, 71, 94);
@@ -134,6 +151,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             dgvUsers.DefaultCellStyle.Font = new Font("Segoe UI", 9.5f);
             dgvUsers.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
             dgvUsers.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(102, 192, 244);
+            dgvUsers.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(30, 45, 62);
+            dgvUsers.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(102, 192, 244);
             dgvUsers.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             dgvUsers.EnableHeadersVisualStyles = false;
 
@@ -146,33 +165,41 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             dgvUsers.Columns.Add("SoDuVi", "Số dư ví");
             dgvUsers.Columns.Add("TrangThai", "Trạng thái");
 
-            dgvUsers.Columns["MaNguoiDung"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvUsers.Columns["MaNguoiDung"].Width = 45;
+            dgvUsers.Columns["MaNguoiDung"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvUsers.Columns["MaNguoiDung"].FillWeight = 7;
+            dgvUsers.Columns["MaNguoiDung"].MinimumWidth = 45;
             dgvUsers.Columns["MaNguoiDung"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             dgvUsers.Columns["TenDangNhap"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvUsers.Columns["TenDangNhap"].FillWeight = 26;
+            dgvUsers.Columns["TenDangNhap"].FillWeight = 18;
+            dgvUsers.Columns["TenDangNhap"].MinimumWidth = 100;
 
             dgvUsers.Columns["HoTen"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvUsers.Columns["HoTen"].FillWeight = 36;
+            dgvUsers.Columns["HoTen"].FillWeight = 22;
+            dgvUsers.Columns["HoTen"].MinimumWidth = 110;
 
             dgvUsers.Columns["Email"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvUsers.Columns["Email"].FillWeight = 38;
+            dgvUsers.Columns["Email"].FillWeight = 23;
+            dgvUsers.Columns["Email"].MinimumWidth = 120;
 
-            dgvUsers.Columns["SoDienThoai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvUsers.Columns["SoDienThoai"].Width = 110;
+            dgvUsers.Columns["SoDienThoai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvUsers.Columns["SoDienThoai"].FillWeight = 11;
+            dgvUsers.Columns["SoDienThoai"].MinimumWidth = 85;
             dgvUsers.Columns["SoDienThoai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            dgvUsers.Columns["VaiTro"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvUsers.Columns["VaiTro"].Width = 115;
+            dgvUsers.Columns["VaiTro"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvUsers.Columns["VaiTro"].FillWeight = 10;
+            dgvUsers.Columns["VaiTro"].MinimumWidth = 80;
             dgvUsers.Columns["VaiTro"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            dgvUsers.Columns["SoDuVi"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvUsers.Columns["SoDuVi"].Width = 120;
+            dgvUsers.Columns["SoDuVi"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvUsers.Columns["SoDuVi"].FillWeight = 11;
+            dgvUsers.Columns["SoDuVi"].MinimumWidth = 90;
             dgvUsers.Columns["SoDuVi"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            dgvUsers.Columns["TrangThai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvUsers.Columns["TrangThai"].Width = 95;
+            dgvUsers.Columns["TrangThai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvUsers.Columns["TrangThai"].FillWeight = 10;
+            dgvUsers.Columns["TrangThai"].MinimumWidth = 75;
             dgvUsers.Columns["TrangThai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             // 3. CÁC NÚT THAO TÁC CẬP NHẬT TRẠNG THÁI (UPDATE)
@@ -198,7 +225,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             btnUnlock.Text = "🔓 Mở khóa tài khoản";
             btnUnlock.Location = new Point(195, 5);
             btnUnlock.Size = new Size(205, 38);
-            btnUnlock.BackColor = Color.FromArgb(92, 126, 16);
+            btnUnlock.BackColor = Color.FromArgb(90, 160, 45);
             btnUnlock.ForeColor = Color.White;
             btnUnlock.FlatStyle = FlatStyle.Flat;
             btnUnlock.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
@@ -229,25 +256,38 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
         private void AdjustLayout()
         {
-            if (panelFilter == null || dgvUsers == null || panelBottomActions == null || txtSearch == null || btnRefresh == null) return;
-            int totalW = Math.Max(1040, this.ClientSize.Width);
-            int totalH = Math.Max(700, this.ClientSize.Height);
+            if (panelFilter == null || dgvUsers == null || panelBottomActions == null || txtSearch == null || btnRefresh == null || lblRole == null || lblSearch == null || cboRole == null) return;
+            int totalW = Math.Max(600, this.ClientSize.Width);
+            int totalH = Math.Max(380, this.ClientSize.Height);
 
             int fullW = totalW - 50;
             panelFilter.Location = new Point(25, 55);
-            panelFilter.Size = new Size(fullW, 45);
+            panelFilter.Size = new Size(fullW, 50);
 
-            int searchW = Math.Max(260, fullW - 470);
-            txtSearch.Size = new Size(searchW, txtSearch.Height);
-            btnRefresh.Location = new Point(txtSearch.Location.X + searchW + 15, 7);
+            // Bố cục tuần tự tương đối - không bao giờ chồng lấn nhãn
+            lblRole.Location = new Point(15, 15);
+            cboRole.Location = new Point(lblRole.Right + 12, 10);
+            lblSearch.Location = new Point(cboRole.Right + 24, 15);
+            txtSearch.Location = new Point(lblSearch.Right + 12, 10);
 
-            int bottomH = 50;
-            int contentH = Math.Max(250, totalH - 110 - bottomH - 25);
+            int btnSearchW = 85;
+            int btnRefreshW = 100;
+            int searchW = Math.Clamp(fullW - txtSearch.Left - btnSearchW - btnRefreshW - 45, 200, 520);
+            txtSearch.Size = new Size(searchW, 30);
 
-            dgvUsers.Location = new Point(25, 110);
+            btnSearch.Location = new Point(txtSearch.Right + 10, 9);
+            btnSearch.Size = new Size(btnSearchW, 32);
+
+            btnRefresh.Location = new Point(btnSearch.Right + 10, 9);
+            btnRefresh.Size = new Size(btnRefreshW, 32);
+
+            int bottomH = 46;
+            int contentH = Math.Max(180, totalH - 115 - bottomH - 18);
+
+            dgvUsers.Location = new Point(25, 115);
             dgvUsers.Size = new Size(fullW, contentH);
 
-            panelBottomActions.Location = new Point(25, 110 + contentH + 10);
+            panelBottomActions.Location = new Point(25, 115 + contentH + 8);
             panelBottomActions.Size = new Size(fullW, bottomH);
         }
 
@@ -302,6 +342,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
         private void CboRole_SelectedIndexChanged(object? sender, EventArgs e) => LoadUsers();
         private void TxtSearch_TextChanged(object? sender, EventArgs e) => LoadUsers();
+        private void BtnSearch_Click(object? sender, EventArgs e) => LoadUsers();
         private void BtnRefresh_Click(object? sender, EventArgs e)
         {
             txtSearch.Clear();

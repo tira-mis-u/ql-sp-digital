@@ -18,7 +18,7 @@ Cung cấp cho khách hàng trải nghiệm duyệt danh mục, tìm kiếm sả
 ---
 
 ## 2. Người dùng mục tiêu & Vai trò
-- **Khách hàng vãng lai / Đã đăng nhập:** Duyệt danh sách sản phẩm, lọc theo thể loại, tìm kiếm theo tên, xem trang chi tiết và đọc các đánh giá của cộng đồng.
+- **Khách / Đã đăng nhập:** Duyệt danh sách sản phẩm, lọc theo thể loại, tìm kiếm theo tên, xem trang chi tiết và đọc các đánh giá của cộng đồng.
 - **Khách hàng đã đăng nhập:**
   - Viết đánh giá mới (chấm điểm từ 1 đến 5 sao và viết nhận xét chi tiết) cho các sản phẩm đã sở hữu.
   - Quản lý các bài đánh giá của chính mình: xem lại, chỉnh sửa nội dung, đổi số sao, hoặc xóa đánh giá.

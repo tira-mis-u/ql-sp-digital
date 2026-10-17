@@ -21,6 +21,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
 
         private TextBox txtSearch = null!;
         private Button btnSearch = null!;
+        private Label lblSearch = null!;
 
         private TextBox txtId = null!;
         private TextBox txtName = null!;
@@ -71,34 +72,35 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             // 1. THANH TÌM KIẾM SẢN PHẨM
             panelSearch = new Panel();
             panelSearch.Location = new Point(20, 45);
-            panelSearch.Size = new Size(490, 40);
+            panelSearch.Size = new Size(490, 42);
             panelSearch.BackColor = Color.FromArgb(27, 40, 56);
             panelSearch.Padding = new Padding(10, 6, 10, 6);
 
-            Label lblSearch = new Label();
+            lblSearch = new Label();
             lblSearch.Text = "Tìm kiếm:";
             lblSearch.ForeColor = Color.White;
-            lblSearch.Location = new Point(10, 10);
+            lblSearch.Location = new Point(12, 12);
             lblSearch.AutoSize = true;
             lblSearch.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             lblSearch.UseMnemonic = false;
 
             txtSearch = new TextBox();
-            txtSearch.Location = new Point(95, 7);
+            txtSearch.Location = new Point(95, 8);
             txtSearch.Width = 295;
-            txtSearch.Font = new Font("Segoe UI", 9.5f);
+            txtSearch.Font = new Font("Segoe UI", 10f);
             txtSearch.BackColor = Color.FromArgb(18, 25, 35);
             txtSearch.ForeColor = Color.White;
+            txtSearch.BorderStyle = BorderStyle.FixedSingle;
             txtSearch.TextChanged += TxtSearch_TextChanged;
 
             btnSearch = new Button();
             btnSearch.Text = "Tìm";
-            btnSearch.Location = new Point(395, 5);
-            btnSearch.Size = new Size(85, 28);
+            btnSearch.Location = new Point(395, 7);
+            btnSearch.Size = new Size(85, 30);
             btnSearch.BackColor = Color.FromArgb(49, 98, 130);
             btnSearch.ForeColor = Color.White;
             btnSearch.FlatStyle = FlatStyle.Flat;
-            btnSearch.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            btnSearch.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             btnSearch.Cursor = Cursors.Hand;
             btnSearch.UseMnemonic = false;
             btnSearch.FlatAppearance.BorderSize = 0;
@@ -128,6 +130,8 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             dgvProducts.DefaultCellStyle.Font = new Font("Segoe UI", 9f);
             dgvProducts.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
             dgvProducts.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(102, 192, 244);
+            dgvProducts.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(30, 45, 62);
+            dgvProducts.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(102, 192, 244);
             dgvProducts.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
             dgvProducts.EnableHeadersVisualStyles = false;
 
@@ -138,26 +142,32 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             dgvProducts.Columns.Add("DungLuongMB", "Dung lượng");
             dgvProducts.Columns.Add("TrangThai", "Mở bán");
 
-            dgvProducts.Columns["MaSanPham"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvProducts.Columns["MaSanPham"].Width = 45;
+            dgvProducts.Columns["MaSanPham"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvProducts.Columns["MaSanPham"].FillWeight = 8;
+            dgvProducts.Columns["MaSanPham"].MinimumWidth = 45;
             dgvProducts.Columns["MaSanPham"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             dgvProducts.Columns["TenSanPham"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvProducts.Columns["TenSanPham"].FillWeight = 62;
+            dgvProducts.Columns["TenSanPham"].FillWeight = 36;
+            dgvProducts.Columns["TenSanPham"].MinimumWidth = 140;
 
             dgvProducts.Columns["TenDanhMuc"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvProducts.Columns["TenDanhMuc"].FillWeight = 38;
+            dgvProducts.Columns["TenDanhMuc"].FillWeight = 18;
+            dgvProducts.Columns["TenDanhMuc"].MinimumWidth = 95;
 
-            dgvProducts.Columns["GiaBan"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvProducts.Columns["GiaBan"].Width = 110;
+            dgvProducts.Columns["GiaBan"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvProducts.Columns["GiaBan"].FillWeight = 18;
+            dgvProducts.Columns["GiaBan"].MinimumWidth = 95;
             dgvProducts.Columns["GiaBan"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            dgvProducts.Columns["DungLuongMB"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvProducts.Columns["DungLuongMB"].Width = 95;
+            dgvProducts.Columns["DungLuongMB"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvProducts.Columns["DungLuongMB"].FillWeight = 10;
+            dgvProducts.Columns["DungLuongMB"].MinimumWidth = 80;
             dgvProducts.Columns["DungLuongMB"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            dgvProducts.Columns["TrangThai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvProducts.Columns["TrangThai"].Width = 85;
+            dgvProducts.Columns["TrangThai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvProducts.Columns["TrangThai"].FillWeight = 10;
+            dgvProducts.Columns["TrangThai"].MinimumWidth = 75;
             dgvProducts.Columns["TrangThai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             dgvProducts.SelectionChanged += DgvProducts_SelectionChanged;
@@ -189,9 +199,10 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             txtId = new TextBox();
             txtId.Location = new Point(155, 47);
             txtId.Width = 285;
-            txtId.Font = new Font("Segoe UI", 9.5f);
+            txtId.Font = new Font("Segoe UI", 10f);
             txtId.BackColor = Color.FromArgb(18, 25, 35);
             txtId.ForeColor = Color.White;
+            txtId.BorderStyle = BorderStyle.FixedSingle;
             txtId.ReadOnly = true;
 
             Label lblFieldName = new Label();
@@ -199,60 +210,64 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             lblFieldName.Location = new Point(20, 85);
             lblFieldName.AutoSize = true;
             lblFieldName.ForeColor = Color.White;
-            lblFieldName.Font = new Font("Segoe UI", 9f);
+            lblFieldName.Font = new Font("Segoe UI", 9.5f);
             lblFieldName.UseMnemonic = false;
 
             txtName = new TextBox();
             txtName.Location = new Point(155, 82);
             txtName.Width = 285;
-            txtName.Font = new Font("Segoe UI", 9.5f);
+            txtName.Font = new Font("Segoe UI", 10f);
             txtName.BackColor = Color.FromArgb(18, 25, 35);
             txtName.ForeColor = Color.White;
+            txtName.BorderStyle = BorderStyle.FixedSingle;
 
             Label lblFieldPrice = new Label();
             lblFieldPrice.Text = "Đơn giá (VNĐ):";
             lblFieldPrice.Location = new Point(20, 120);
             lblFieldPrice.AutoSize = true;
             lblFieldPrice.ForeColor = Color.White;
-            lblFieldPrice.Font = new Font("Segoe UI", 9f);
+            lblFieldPrice.Font = new Font("Segoe UI", 9.5f);
             lblFieldPrice.UseMnemonic = false;
 
             txtPrice = new TextBox();
             txtPrice.Location = new Point(155, 117);
             txtPrice.Width = 285;
-            txtPrice.Font = new Font("Segoe UI", 9.5f);
+            txtPrice.Font = new Font("Segoe UI", 10f);
             txtPrice.BackColor = Color.FromArgb(18, 25, 35);
             txtPrice.ForeColor = Color.White;
+            txtPrice.BorderStyle = BorderStyle.FixedSingle;
 
             Label lblFieldSize = new Label();
             lblFieldSize.Text = "Dung lượng (MB):";
             lblFieldSize.Location = new Point(20, 155);
             lblFieldSize.AutoSize = true;
             lblFieldSize.ForeColor = Color.White;
-            lblFieldSize.Font = new Font("Segoe UI", 9f);
+            lblFieldSize.Font = new Font("Segoe UI", 9.5f);
             lblFieldSize.UseMnemonic = false;
 
             txtSize = new TextBox();
             txtSize.Location = new Point(155, 152);
             txtSize.Width = 285;
-            txtSize.Font = new Font("Segoe UI", 9.5f);
+            txtSize.Font = new Font("Segoe UI", 10f);
             txtSize.BackColor = Color.FromArgb(18, 25, 35);
             txtSize.ForeColor = Color.White;
+            txtSize.BorderStyle = BorderStyle.FixedSingle;
 
             Label lblFieldVersion = new Label();
             lblFieldVersion.Text = "Phiên bản:";
             lblFieldVersion.Location = new Point(20, 190);
             lblFieldVersion.AutoSize = true;
             lblFieldVersion.ForeColor = Color.White;
-            lblFieldVersion.Font = new Font("Segoe UI", 9f);
+            lblFieldVersion.Font = new Font("Segoe UI", 9.5f);
             lblFieldVersion.UseMnemonic = false;
 
             txtVersion = new TextBox();
             txtVersion.Location = new Point(155, 187);
             txtVersion.Width = 285;
-            txtVersion.Font = new Font("Segoe UI", 9.5f);
+            txtVersion.Font = new Font("Segoe UI", 10f);
             txtVersion.BackColor = Color.FromArgb(18, 25, 35);
             txtVersion.ForeColor = Color.White;
+            txtVersion.BorderStyle = BorderStyle.FixedSingle;
 
             // Danh mục ComboBox
             Label lblCat = new Label();
@@ -260,14 +275,14 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             lblCat.Location = new Point(20, 225);
             lblCat.AutoSize = true;
             lblCat.ForeColor = Color.White;
-            lblCat.Font = new Font("Segoe UI", 9f);
+            lblCat.Font = new Font("Segoe UI", 9.5f);
             lblCat.UseMnemonic = false;
 
             cboCategory = new ComboBox();
             cboCategory.Location = new Point(155, 222);
             cboCategory.Width = 285;
             cboCategory.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboCategory.Font = new Font("Segoe UI", 9.5f);
+            cboCategory.Font = new Font("Segoe UI", 10f);
             cboCategory.BackColor = Color.FromArgb(18, 25, 35);
             cboCategory.ForeColor = Color.White;
             cboCategory.FlatStyle = FlatStyle.Flat;
@@ -288,25 +303,26 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             lblFile.Location = new Point(20, 290);
             lblFile.AutoSize = true;
             lblFile.ForeColor = Color.White;
-            lblFile.Font = new Font("Segoe UI", 9f);
+            lblFile.Font = new Font("Segoe UI", 9.5f);
             lblFile.UseMnemonic = false;
 
             txtFilePath = new TextBox();
             txtFilePath.Location = new Point(155, 287);
             txtFilePath.Width = 195;
-            txtFilePath.Font = new Font("Segoe UI", 9f);
+            txtFilePath.Font = new Font("Segoe UI", 10f);
             txtFilePath.BackColor = Color.FromArgb(18, 25, 35);
             txtFilePath.ForeColor = Color.White;
+            txtFilePath.BorderStyle = BorderStyle.FixedSingle;
             txtFilePath.ReadOnly = true;
 
             btnBrowseFile = new Button();
             btnBrowseFile.Text = "Chọn...";
-            btnBrowseFile.Location = new Point(355, 286);
-            btnBrowseFile.Size = new Size(85, 26);
+            btnBrowseFile.Location = new Point(355, 285);
+            btnBrowseFile.Size = new Size(85, 28);
             btnBrowseFile.BackColor = Color.FromArgb(49, 98, 130);
             btnBrowseFile.ForeColor = Color.White;
             btnBrowseFile.FlatStyle = FlatStyle.Flat;
-            btnBrowseFile.Font = new Font("Segoe UI", 8.5f);
+            btnBrowseFile.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
             btnBrowseFile.Cursor = Cursors.Hand;
             btnBrowseFile.UseMnemonic = false;
             btnBrowseFile.FlatAppearance.BorderSize = 0;
@@ -326,19 +342,20 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             txtDescription.Size = new Size(420, 115);
             txtDescription.Multiline = true;
             txtDescription.ScrollBars = ScrollBars.Vertical;
-            txtDescription.Font = new Font("Segoe UI", 9.5f);
+            txtDescription.Font = new Font("Segoe UI", 10f);
             txtDescription.BackColor = Color.FromArgb(18, 25, 35);
             txtDescription.ForeColor = Color.White;
+            txtDescription.BorderStyle = BorderStyle.FixedSingle;
 
             // Các nút bấm Thao tác CRUD
             btnNew = new Button();
             btnNew.Text = "+ Thêm mới";
             btnNew.Location = new Point(20, 480);
-            btnNew.Size = new Size(130, 36);
+            btnNew.Size = new Size(130, 38);
             btnNew.BackColor = Color.FromArgb(60, 75, 90);
             btnNew.ForeColor = Color.White;
             btnNew.FlatStyle = FlatStyle.Flat;
-            btnNew.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            btnNew.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             btnNew.Cursor = Cursors.Hand;
             btnNew.UseMnemonic = false;
             btnNew.FlatAppearance.BorderSize = 0;
@@ -347,8 +364,8 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             btnSave = new Button();
             btnSave.Text = "💾 Lưu";
             btnSave.Location = new Point(165, 480);
-            btnSave.Size = new Size(140, 36);
-            btnSave.BackColor = Color.FromArgb(92, 126, 16);
+            btnSave.Size = new Size(140, 38);
+            btnSave.BackColor = Color.FromArgb(90, 160, 45);
             btnSave.ForeColor = Color.White;
             btnSave.FlatStyle = FlatStyle.Flat;
             btnSave.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
@@ -360,7 +377,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             btnDelete = new Button();
             btnDelete.Text = "🗑️ Xóa";
             btnDelete.Location = new Point(320, 480);
-            btnDelete.Size = new Size(120, 36);
+            btnDelete.Size = new Size(120, 38);
             btnDelete.BackColor = Color.FromArgb(180, 40, 40);
             btnDelete.ForeColor = Color.White;
             btnDelete.FlatStyle = FlatStyle.Flat;
@@ -411,18 +428,20 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
         private void AdjustLayout()
         {
             if (panelForm == null || dgvProducts == null || txtDescription == null || btnNew == null || txtId == null) return;
-            int totalW = Math.Max(1040, this.ClientSize.Width);
-            int totalH = Math.Max(700, this.ClientSize.Height);
+            int totalW = Math.Max(700, this.ClientSize.Width);
+            int totalH = Math.Max(400, this.ClientSize.Height);
 
-            int rightW = Math.Clamp((int)(totalW * 0.42), 440, 680);
-            int leftW = totalW - rightW - 65; // margin 25 left + 15 gap + 25 right
-            int contentH = Math.Max(300, totalH - 120);
+            int rightW = Math.Clamp((int)(totalW * 0.44), 420, 600);
+            int leftW = Math.Max(260, totalW - rightW - 65); // margin 25 left + 15 gap + 25 right
+            int contentH = Math.Max(220, totalH - 120);
 
             // 1. Search Bar
             panelSearch.Location = new Point(25, 55);
             panelSearch.Size = new Size(leftW, 42);
-            txtSearch.Width = Math.Max(150, leftW - 195);
-            btnSearch.Location = new Point(leftW - 90, 6);
+            lblSearch.Location = new Point(12, 12);
+            txtSearch.Location = new Point(lblSearch.Right + 12, 8);
+            btnSearch.Location = new Point(leftW - 95, 6);
+            txtSearch.Width = Math.Max(120, btnSearch.Left - txtSearch.Left - 12);
 
             // 2. DataGridView
             dgvProducts.Location = new Point(25, 105);
@@ -444,11 +463,11 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             btnBrowseFile.Location = new Point(155 + txtFilePath.Width + 10, txtFilePath.Top - 1);
             txtDescription.Width = rightW - 40;
 
-            // Dynamically stretch textarea vertically and pin buttons to bottom of panelForm
+            // Dynamically stretch textarea vertically and pin buttons cleanly
             int formH = panelForm.ClientSize.Height;
-            int btnY = Math.Max(txtDescription.Top + 120, formH - 50);
-            int descH = Math.Max(100, btnY - txtDescription.Top - 12);
+            int descH = Math.Clamp(formH - txtDescription.Top - 65, 75, 180);
             txtDescription.Height = descH;
+            int btnY = txtDescription.Bottom + 12;
 
             int btnW = Math.Max(90, (rightW - 40 - 20) / 3);
             btnNew.Location = new Point(20, btnY);

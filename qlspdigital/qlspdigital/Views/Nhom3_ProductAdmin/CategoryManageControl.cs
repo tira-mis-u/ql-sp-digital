@@ -56,7 +56,6 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             dgvCategories = new DataGridView();
             dgvCategories.Location = new Point(25, 60);
             dgvCategories.Size = new Size(490, 615);
-            dgvCategories.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             dgvCategories.BackgroundColor = Color.FromArgb(27, 40, 56);
             dgvCategories.ForeColor = Color.White;
             dgvCategories.GridColor = Color.FromArgb(42, 71, 94);
@@ -73,6 +72,8 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             dgvCategories.DefaultCellStyle.Font = new Font("Segoe UI", 9.5f);
             dgvCategories.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
             dgvCategories.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(102, 192, 244);
+            dgvCategories.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(30, 45, 62);
+            dgvCategories.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(102, 192, 244);
             dgvCategories.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             dgvCategories.EnableHeadersVisualStyles = false;
 
@@ -82,22 +83,27 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             dgvCategories.Columns.Add("SoLuongSanPham", "Số SP");
             dgvCategories.Columns.Add("TrangThai", "Hiệu lực");
 
-            dgvCategories.Columns["MaDanhMuc"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvCategories.Columns["MaDanhMuc"].Width = 45;
+            dgvCategories.Columns["MaDanhMuc"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvCategories.Columns["MaDanhMuc"].FillWeight = 10;
+            dgvCategories.Columns["MaDanhMuc"].MinimumWidth = 45;
             dgvCategories.Columns["MaDanhMuc"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             dgvCategories.Columns["TenDanhMuc"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvCategories.Columns["TenDanhMuc"].FillWeight = 40;
+            dgvCategories.Columns["TenDanhMuc"].FillWeight = 35;
+            dgvCategories.Columns["TenDanhMuc"].MinimumWidth = 110;
 
             dgvCategories.Columns["MoTa"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvCategories.Columns["MoTa"].FillWeight = 60;
+            dgvCategories.Columns["MoTa"].FillWeight = 35;
+            dgvCategories.Columns["MoTa"].MinimumWidth = 120;
 
-            dgvCategories.Columns["SoLuongSanPham"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvCategories.Columns["SoLuongSanPham"].Width = 65;
+            dgvCategories.Columns["SoLuongSanPham"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvCategories.Columns["SoLuongSanPham"].FillWeight = 10;
+            dgvCategories.Columns["SoLuongSanPham"].MinimumWidth = 60;
             dgvCategories.Columns["SoLuongSanPham"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            dgvCategories.Columns["TrangThai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvCategories.Columns["TrangThai"].Width = 90;
+            dgvCategories.Columns["TrangThai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvCategories.Columns["TrangThai"].FillWeight = 10;
+            dgvCategories.Columns["TrangThai"].MinimumWidth = 75;
             dgvCategories.Columns["TrangThai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             dgvCategories.SelectionChanged += DgvCategories_SelectionChanged;
@@ -128,9 +134,10 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             txtId = new TextBox();
             txtId.Location = new Point(145, 57);
             txtId.Width = 295;
-            txtId.Font = new Font("Segoe UI", 9.5f);
+            txtId.Font = new Font("Segoe UI", 10f);
             txtId.BackColor = Color.FromArgb(18, 25, 35);
             txtId.ForeColor = Color.White;
+            txtId.BorderStyle = BorderStyle.FixedSingle;
             txtId.ReadOnly = true;
 
             Label lblName = new Label();
@@ -144,9 +151,10 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             txtName = new TextBox();
             txtName.Location = new Point(145, 102);
             txtName.Width = 295;
-            txtName.Font = new Font("Segoe UI", 9.5f);
+            txtName.Font = new Font("Segoe UI", 10f);
             txtName.BackColor = Color.FromArgb(18, 25, 35);
             txtName.ForeColor = Color.White;
+            txtName.BorderStyle = BorderStyle.FixedSingle;
 
             Label lblDesc = new Label();
             lblDesc.Text = "Mô tả diễn giải thể loại:";
@@ -161,9 +169,10 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             txtDescription.Size = new Size(420, 130);
             txtDescription.Multiline = true;
             txtDescription.ScrollBars = ScrollBars.Vertical;
-            txtDescription.Font = new Font("Segoe UI", 9.5f);
+            txtDescription.Font = new Font("Segoe UI", 10f);
             txtDescription.BackColor = Color.FromArgb(18, 25, 35);
             txtDescription.ForeColor = Color.White;
+            txtDescription.BorderStyle = BorderStyle.FixedSingle;
 
             chkActive = new CheckBox();
             chkActive.Text = "Kích hoạt hiển thị trên Store";
@@ -177,11 +186,11 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             btnNew = new Button();
             btnNew.Text = "+ Thêm mới";
             btnNew.Location = new Point(20, 365);
-            btnNew.Size = new Size(130, 36);
+            btnNew.Size = new Size(130, 38);
             btnNew.BackColor = Color.FromArgb(60, 75, 90);
             btnNew.ForeColor = Color.White;
             btnNew.FlatStyle = FlatStyle.Flat;
-            btnNew.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            btnNew.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             btnNew.Cursor = Cursors.Hand;
             btnNew.UseMnemonic = false;
             btnNew.FlatAppearance.BorderSize = 0;
@@ -190,8 +199,8 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             btnSave = new Button();
             btnSave.Text = "💾 Lưu";
             btnSave.Location = new Point(165, 365);
-            btnSave.Size = new Size(140, 36);
-            btnSave.BackColor = Color.FromArgb(92, 126, 16);
+            btnSave.Size = new Size(140, 38);
+            btnSave.BackColor = Color.FromArgb(90, 160, 45);
             btnSave.ForeColor = Color.White;
             btnSave.FlatStyle = FlatStyle.Flat;
             btnSave.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
@@ -203,7 +212,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             btnDelete = new Button();
             btnDelete.Text = "🗑️ Xóa";
             btnDelete.Location = new Point(320, 365);
-            btnDelete.Size = new Size(120, 36);
+            btnDelete.Size = new Size(120, 38);
             btnDelete.BackColor = Color.FromArgb(180, 40, 40);
             btnDelete.ForeColor = Color.White;
             btnDelete.FlatStyle = FlatStyle.Flat;
@@ -242,12 +251,12 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
         private void AdjustLayout()
         {
             if (panelForm == null || dgvCategories == null || txtDescription == null || btnNew == null || chkActive == null || txtId == null) return;
-            int totalW = Math.Max(1040, this.ClientSize.Width);
-            int totalH = Math.Max(700, this.ClientSize.Height);
+            int totalW = Math.Max(600, this.ClientSize.Width);
+            int totalH = Math.Max(380, this.ClientSize.Height);
 
-            int rightW = Math.Clamp((int)(totalW * 0.42), 440, 680);
-            int leftW = totalW - rightW - 65; // margin 25 left + 15 gap + 25 right
-            int contentH = Math.Max(300, totalH - 85);
+            int rightW = Math.Clamp((int)(totalW * 0.40), 380, 520);
+            int leftW = Math.Max(260, totalW - rightW - 65); // margin 25 left + 15 gap + 25 right
+            int contentH = Math.Max(220, totalH - 85);
 
             // 1. DataGridView
             dgvCategories.Location = new Point(25, 60);
@@ -258,12 +267,17 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             panelForm.Size = new Size(rightW, contentH);
 
             int formW = panelForm.ClientSize.Width;
+            int formH = panelForm.ClientSize.Height;
             int inputW = Math.Max(200, formW - 145 - 25);
             txtId.Width = inputW;
             txtName.Width = inputW;
-            txtDescription.Size = new Size(Math.Max(200, formW - 40), 130);
+            txtDescription.Width = Math.Max(200, formW - 40);
 
-            int btnY = 365;
+            int descH = Math.Clamp(formH - 280, 65, 180);
+            txtDescription.Height = descH;
+            chkActive.Location = new Point(20, txtDescription.Bottom + 8);
+            int btnY = chkActive.Bottom + 12;
+
             int btnW = Math.Max(90, (formW - 40 - 20) / 3);
             btnNew.Location = new Point(20, btnY);
             btnNew.Size = new Size(btnW, 36);

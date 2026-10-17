@@ -41,14 +41,14 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             // Tiêu đề + Nút làm mới
             Panel panelTopBar = new Panel();
             panelTopBar.Dock = DockStyle.Top;
-            panelTopBar.Height = 45;
+            panelTopBar.Height = 42;
 
             Label lblHeader = new Label();
             lblHeader.Text = "📊 BÁO CÁO THỐNG KÊ KINH DOANH (ADMIN DASHBOARD)";
             lblHeader.Dock = DockStyle.Left;
             lblHeader.AutoSize = true;
             lblHeader.ForeColor = Color.White;
-            lblHeader.Font = new Font("Segoe UI", 15, FontStyle.Bold);
+            lblHeader.Font = new Font("Segoe UI", 14, FontStyle.Bold);
             lblHeader.UseMnemonic = false;
 
             btnRefresh = new Button();
@@ -69,7 +69,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
             // 1. VÙNG 4 METRIC CARDS LỚN (CO GIÃN TỶ LỆ 25% ĐỀU NHAU)
             TableLayoutPanel panelCards = new TableLayoutPanel();
-            panelCards.Location = new Point(25, 65);
+            panelCards.Location = new Point(25, 90);
             panelCards.Size = new Size(950, 115);
             panelCards.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panelCards.ColumnCount = 4;
@@ -192,15 +192,15 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             // 2. BẢNG TOP 5 SẢN PHẨM BÁN CHẠY NHẤT
             Label lblTableTitle = new Label();
             lblTableTitle.Text = "🔥 TOP 5 SẢN PHẨM BÁN CHẠY NHẤT HỆ THỐNG";
-            lblTableTitle.Location = new Point(25, 200);
+            lblTableTitle.Location = new Point(25, 218);
             lblTableTitle.AutoSize = true;
             lblTableTitle.ForeColor = Color.FromArgb(102, 192, 244);
             lblTableTitle.Font = new Font("Segoe UI", 12, FontStyle.Bold);
             lblTableTitle.UseMnemonic = false;
 
             dgvTopProducts = new DataGridView();
-            dgvTopProducts.Location = new Point(25, 235);
-            dgvTopProducts.Size = new Size(950, 500);
+            dgvTopProducts.Location = new Point(25, 250);
+            dgvTopProducts.Size = new Size(950, 420);
             dgvTopProducts.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvTopProducts.BackgroundColor = Color.FromArgb(27, 40, 56);
             dgvTopProducts.ForeColor = Color.White;
@@ -217,6 +217,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             dgvTopProducts.DefaultCellStyle.Font = new Font("Segoe UI", 10);
             dgvTopProducts.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
             dgvTopProducts.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(102, 192, 244);
+            dgvTopProducts.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(30, 45, 62);
+            dgvTopProducts.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(102, 192, 244);
             dgvTopProducts.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             dgvTopProducts.EnableHeadersVisualStyles = false;
 
@@ -225,19 +227,23 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             dgvTopProducts.Columns.Add("SoLuongDaBan", "Số lượng đã bán");
             dgvTopProducts.Columns.Add("DoanhThu", "Doanh thu tích lũy");
 
-            dgvTopProducts.Columns["XepHang"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvTopProducts.Columns["XepHang"].Width = 80;
+            dgvTopProducts.Columns["XepHang"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvTopProducts.Columns["XepHang"].FillWeight = 12;
+            dgvTopProducts.Columns["XepHang"].MinimumWidth = 75;
             dgvTopProducts.Columns["XepHang"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             dgvTopProducts.Columns["TenSanPham"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvTopProducts.Columns["TenSanPham"].FillWeight = 100;
+            dgvTopProducts.Columns["TenSanPham"].FillWeight = 48;
+            dgvTopProducts.Columns["TenSanPham"].MinimumWidth = 180;
 
-            dgvTopProducts.Columns["SoLuongDaBan"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvTopProducts.Columns["SoLuongDaBan"].Width = 135;
+            dgvTopProducts.Columns["SoLuongDaBan"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvTopProducts.Columns["SoLuongDaBan"].FillWeight = 20;
+            dgvTopProducts.Columns["SoLuongDaBan"].MinimumWidth = 130;
             dgvTopProducts.Columns["SoLuongDaBan"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            dgvTopProducts.Columns["DoanhThu"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvTopProducts.Columns["DoanhThu"].Width = 160;
+            dgvTopProducts.Columns["DoanhThu"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvTopProducts.Columns["DoanhThu"].FillWeight = 20;
+            dgvTopProducts.Columns["DoanhThu"].MinimumWidth = 150;
             dgvTopProducts.Columns["DoanhThu"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
             this.Controls.Add(dgvTopProducts);

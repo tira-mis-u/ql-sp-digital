@@ -42,8 +42,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             panelCenter = new Panel();
             panelCenter.Size = new Size(480, 480);
             panelCenter.BackColor = Color.FromArgb(27, 40, 56);
-            int targetW = Math.Max(1040, this.Width);
-            int targetH = Math.Max(700, this.Height);
+            int targetW = Math.Max(panelCenter.Width + 40, this.ClientSize.Width);
+            int targetH = Math.Max(panelCenter.Height + 40, this.ClientSize.Height);
             panelCenter.Location = new Point(Math.Max(20, (targetW - panelCenter.Width) / 2), Math.Max(20, (targetH - panelCenter.Height) / 2));
 
             Label lblLogo = new Label();
@@ -66,9 +66,10 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             txtUsername = new TextBox();
             txtUsername.Location = new Point(35, 78);
             txtUsername.Width = 410;
-            txtUsername.Font = new Font("Segoe UI", 9.5f);
+            txtUsername.Font = new Font("Segoe UI", 10f);
             txtUsername.BackColor = Color.FromArgb(18, 25, 35);
             txtUsername.ForeColor = Color.White;
+            txtUsername.BorderStyle = BorderStyle.FixedSingle;
 
             Label lblFullName = new Label();
             lblFullName.Text = "Họ và tên (*):";
@@ -81,9 +82,10 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             txtFullName = new TextBox();
             txtFullName.Location = new Point(35, 132);
             txtFullName.Width = 410;
-            txtFullName.Font = new Font("Segoe UI", 9.5f);
+            txtFullName.Font = new Font("Segoe UI", 10f);
             txtFullName.BackColor = Color.FromArgb(18, 25, 35);
             txtFullName.ForeColor = Color.White;
+            txtFullName.BorderStyle = BorderStyle.FixedSingle;
 
             Label lblEmail = new Label();
             lblEmail.Text = "Địa chỉ Email (*):";
@@ -96,9 +98,10 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             txtEmail = new TextBox();
             txtEmail.Location = new Point(35, 186);
             txtEmail.Width = 410;
-            txtEmail.Font = new Font("Segoe UI", 9.5f);
+            txtEmail.Font = new Font("Segoe UI", 10f);
             txtEmail.BackColor = Color.FromArgb(18, 25, 35);
             txtEmail.ForeColor = Color.White;
+            txtEmail.BorderStyle = BorderStyle.FixedSingle;
 
             Label lblPhone = new Label();
             lblPhone.Text = "Số điện thoại:";
@@ -111,9 +114,10 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             txtPhone = new TextBox();
             txtPhone.Location = new Point(35, 240);
             txtPhone.Width = 410;
-            txtPhone.Font = new Font("Segoe UI", 9.5f);
+            txtPhone.Font = new Font("Segoe UI", 10f);
             txtPhone.BackColor = Color.FromArgb(18, 25, 35);
             txtPhone.ForeColor = Color.White;
+            txtPhone.BorderStyle = BorderStyle.FixedSingle;
 
             Label lblPassword = new Label();
             lblPassword.Text = "Mật khẩu (*):";
@@ -126,9 +130,10 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             txtPassword = new TextBox();
             txtPassword.Location = new Point(35, 294);
             txtPassword.Width = 410;
-            txtPassword.Font = new Font("Segoe UI", 9.5f);
+            txtPassword.Font = new Font("Segoe UI", 10f);
             txtPassword.BackColor = Color.FromArgb(18, 25, 35);
             txtPassword.ForeColor = Color.White;
+            txtPassword.BorderStyle = BorderStyle.FixedSingle;
             txtPassword.UseSystemPasswordChar = true;
 
             Label lblConfirmPassword = new Label();
@@ -142,16 +147,17 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             txtConfirmPassword = new TextBox();
             txtConfirmPassword.Location = new Point(35, 348);
             txtConfirmPassword.Width = 410;
-            txtConfirmPassword.Font = new Font("Segoe UI", 9.5f);
+            txtConfirmPassword.Font = new Font("Segoe UI", 10f);
             txtConfirmPassword.BackColor = Color.FromArgb(18, 25, 35);
             txtConfirmPassword.ForeColor = Color.White;
+            txtConfirmPassword.BorderStyle = BorderStyle.FixedSingle;
             txtConfirmPassword.UseSystemPasswordChar = true;
 
             btnRegister = new Button();
             btnRegister.Text = "TẠO TÀI KHOẢN MỚI";
             btnRegister.Location = new Point(35, 387);
             btnRegister.Size = new Size(410, 40);
-            btnRegister.BackColor = Color.FromArgb(92, 126, 16);
+            btnRegister.BackColor = Color.FromArgb(90, 160, 45);
             btnRegister.ForeColor = Color.White;
             btnRegister.FlatStyle = FlatStyle.Flat;
             btnRegister.Font = new Font("Segoe UI", 10.5f, FontStyle.Bold);
@@ -163,14 +169,16 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             btnBackToLogin = new Button();
             btnBackToLogin.Text = "← Đã có tài khoản? Quay lại Đăng nhập";
             btnBackToLogin.Location = new Point(35, 433);
-            btnBackToLogin.Size = new Size(410, 30);
+            btnBackToLogin.Size = new Size(410, 34);
             btnBackToLogin.BackColor = Color.Transparent;
             btnBackToLogin.ForeColor = Color.FromArgb(102, 192, 244);
             btnBackToLogin.FlatStyle = FlatStyle.Flat;
-            btnBackToLogin.Font = new Font("Segoe UI", 9.5f, FontStyle.Underline);
+            btnBackToLogin.Font = new Font("Segoe UI", 10f, FontStyle.Bold | FontStyle.Underline);
             btnBackToLogin.Cursor = Cursors.Hand;
             btnBackToLogin.UseMnemonic = false;
             btnBackToLogin.FlatAppearance.BorderSize = 0;
+            btnBackToLogin.FlatAppearance.MouseOverBackColor = Color.FromArgb(38, 54, 75);
+            btnBackToLogin.FlatAppearance.MouseDownBackColor = Color.FromArgb(28, 42, 60);
             btnBackToLogin.Click += BtnBackToLogin_Click;
 
             panelCenter.Controls.Add(btnBackToLogin);
@@ -200,8 +208,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             base.OnResize(e);
             if (panelCenter != null)
             {
-                int w = Math.Max(1040, this.Width);
-                int h = Math.Max(700, this.Height);
+                int w = Math.Max(panelCenter.Width + 40, this.ClientSize.Width);
+                int h = Math.Max(panelCenter.Height + 40, this.ClientSize.Height);
                 panelCenter.Location = new Point(Math.Max(20, (w - panelCenter.Width) / 2), Math.Max(20, (h - panelCenter.Height) / 2));
             }
         }

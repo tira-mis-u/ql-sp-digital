@@ -32,6 +32,7 @@ namespace qlspdigital.Views.Nhom1_Store
         private Button btnBack = null!;
         private Button btnAddToCart = null!;
         private Button btnReviews = null!;
+        private Panel panelTop = null!;
 
         public ProductDetailControl()
         {
@@ -66,7 +67,7 @@ namespace qlspdigital.Views.Nhom1_Store
             btnBack.Click += BtnBack_Click;
 
             // Khung trên: Thông tin chính sản phẩm
-            Panel panelTop = new Panel();
+            panelTop = new Panel();
             panelTop.Location = new Point(25, 55);
             panelTop.Size = new Size(1000, 175);
             panelTop.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -141,7 +142,7 @@ namespace qlspdigital.Views.Nhom1_Store
             btnAddToCart.Text = "🛒 Thêm vào Giỏ hàng";
             btnAddToCart.Dock = DockStyle.Top;
             btnAddToCart.Height = 40;
-            btnAddToCart.BackColor = Color.FromArgb(92, 126, 16);
+            btnAddToCart.BackColor = Color.FromArgb(90, 160, 45);
             btnAddToCart.ForeColor = Color.White;
             btnAddToCart.FlatStyle = FlatStyle.Flat;
             btnAddToCart.Font = new Font("Segoe UI", 10, FontStyle.Bold);
@@ -153,11 +154,11 @@ namespace qlspdigital.Views.Nhom1_Store
             btnReviews = new Button();
             btnReviews.Text = "💬 Đánh giá & Nhận xét";
             btnReviews.Dock = DockStyle.Bottom;
-            btnReviews.Height = 35;
+            btnReviews.Height = 38;
             btnReviews.BackColor = Color.FromArgb(49, 98, 130);
             btnReviews.ForeColor = Color.White;
             btnReviews.FlatStyle = FlatStyle.Flat;
-            btnReviews.Font = new Font("Segoe UI", 9.5f, FontStyle.Regular);
+            btnReviews.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             btnReviews.Cursor = Cursors.Hand;
             btnReviews.UseMnemonic = false;
             btnReviews.FlatAppearance.BorderSize = 0;
@@ -207,6 +208,15 @@ namespace qlspdigital.Views.Nhom1_Store
             this.Controls.Add(btnBack);
 
             this.ResumeLayout(false);
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            if (lblTitle != null && panelTop != null)
+            {
+                lblTitle.Width = Math.Max(200, panelTop.ClientSize.Width - 310);
+            }
         }
 
         public void LoadProductDetail(int maSanPham)

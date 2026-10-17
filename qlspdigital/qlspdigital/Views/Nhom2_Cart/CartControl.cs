@@ -78,7 +78,6 @@ namespace qlspdigital.Views.Nhom2_Cart
             dgvCart = new DataGridView();
             dgvCart.Location = new Point(25, 55);
             dgvCart.Size = new Size(640, 550);
-            dgvCart.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             dgvCart.BackgroundColor = Color.FromArgb(27, 40, 56);
             dgvCart.ForeColor = Color.White;
             dgvCart.GridColor = Color.FromArgb(42, 71, 94);
@@ -95,6 +94,8 @@ namespace qlspdigital.Views.Nhom2_Cart
             dgvCart.DefaultCellStyle.Font = new Font("Segoe UI", 9.5f);
             dgvCart.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 45, 62);
             dgvCart.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(102, 192, 244);
+            dgvCart.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(30, 45, 62);
+            dgvCart.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(102, 192, 244);
             dgvCart.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             dgvCart.EnableHeadersVisualStyles = false;
 
@@ -107,18 +108,22 @@ namespace qlspdigital.Views.Nhom2_Cart
             dgvCart.Columns["MaGioHang"].Visible = false;
 
             dgvCart.Columns["TenSanPham"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvCart.Columns["TenSanPham"].FillWeight = 100;
+            dgvCart.Columns["TenSanPham"].FillWeight = 46;
+            dgvCart.Columns["TenSanPham"].MinimumWidth = 150;
 
-            dgvCart.Columns["DonGia"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvCart.Columns["DonGia"].Width = 110;
+            dgvCart.Columns["DonGia"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvCart.Columns["DonGia"].FillWeight = 22;
+            dgvCart.Columns["DonGia"].MinimumWidth = 95;
             dgvCart.Columns["DonGia"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            dgvCart.Columns["SoLuong"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvCart.Columns["SoLuong"].Width = 55;
+            dgvCart.Columns["SoLuong"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvCart.Columns["SoLuong"].FillWeight = 10;
+            dgvCart.Columns["SoLuong"].MinimumWidth = 45;
             dgvCart.Columns["SoLuong"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            dgvCart.Columns["ThanhTien"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvCart.Columns["ThanhTien"].Width = 120;
+            dgvCart.Columns["ThanhTien"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvCart.Columns["ThanhTien"].FillWeight = 22;
+            dgvCart.Columns["ThanhTien"].MinimumWidth = 110;
             dgvCart.Columns["ThanhTien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
             // Thanh thao tác dưới bảng giỏ hàng (chống đè lưới)
@@ -130,12 +135,12 @@ namespace qlspdigital.Views.Nhom2_Cart
             // Nút xóa món khỏi giỏ dưới bảng
             Button btnRemoveItem = new Button();
             btnRemoveItem.Text = "🗑️ Xóa món đã chọn";
-            btnRemoveItem.Location = new Point(0, 6);
-            btnRemoveItem.Size = new Size(185, 36);
+            btnRemoveItem.Location = new Point(0, 5);
+            btnRemoveItem.Size = new Size(185, 38);
             btnRemoveItem.BackColor = Color.FromArgb(180, 40, 40);
             btnRemoveItem.ForeColor = Color.White;
             btnRemoveItem.FlatStyle = FlatStyle.Flat;
-            btnRemoveItem.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            btnRemoveItem.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             btnRemoveItem.Cursor = Cursors.Hand;
             btnRemoveItem.UseMnemonic = false;
             btnRemoveItem.FlatAppearance.BorderSize = 0;
@@ -143,12 +148,12 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             btnClearCart = new Button();
             btnClearCart.Text = "Xóa toàn bộ giỏ";
-            btnClearCart.Location = new Point(195, 6);
-            btnClearCart.Size = new Size(140, 36);
+            btnClearCart.Location = new Point(195, 5);
+            btnClearCart.Size = new Size(150, 38);
             btnClearCart.BackColor = Color.FromArgb(60, 75, 90);
             btnClearCart.ForeColor = Color.White;
             btnClearCart.FlatStyle = FlatStyle.Flat;
-            btnClearCart.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+            btnClearCart.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             btnClearCart.Cursor = Cursors.Hand;
             btnClearCart.UseMnemonic = false;
             btnClearCart.FlatAppearance.BorderSize = 0;
@@ -161,7 +166,6 @@ namespace qlspdigital.Views.Nhom2_Cart
             panelSummary = new Panel();
             panelSummary.Location = new Point(685, 55);
             panelSummary.Size = new Size(330, 606);
-            panelSummary.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             panelSummary.BackColor = Color.FromArgb(27, 40, 56);
             panelSummary.Padding = new Padding(20);
 
@@ -188,23 +192,24 @@ namespace qlspdigital.Views.Nhom2_Cart
             lblVoucherTitle.UseMnemonic = false;
 
             txtVoucher = new TextBox();
-            txtVoucher.Location = new Point(0, 28);
-            txtVoucher.Width = 185;
+            txtVoucher.Location = new Point(0, 27);
+            txtVoucher.Width = 190;
             txtVoucher.Font = new Font("Segoe UI", 10);
             txtVoucher.BackColor = Color.FromArgb(18, 25, 35);
             txtVoucher.ForeColor = Color.White;
+            txtVoucher.BorderStyle = BorderStyle.FixedSingle;
             txtVoucher.CharacterCasing = CharacterCasing.Upper;
             txtVoucher.PlaceholderText = "Nhập mã...";
 
             btnApplyVoucher = new Button();
             btnApplyVoucher.Text = "Áp dụng";
-            btnApplyVoucher.Location = new Point(195, 28);
-            btnApplyVoucher.Width = 90;
-            btnApplyVoucher.Height = 28;
+            btnApplyVoucher.Location = new Point(200, 26);
+            btnApplyVoucher.Width = 100;
+            btnApplyVoucher.Height = 32;
             btnApplyVoucher.BackColor = Color.FromArgb(49, 98, 130);
             btnApplyVoucher.ForeColor = Color.White;
             btnApplyVoucher.FlatStyle = FlatStyle.Flat;
-            btnApplyVoucher.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            btnApplyVoucher.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             btnApplyVoucher.Cursor = Cursors.Hand;
             btnApplyVoucher.UseMnemonic = false;
             btnApplyVoucher.FlatAppearance.BorderSize = 0;
@@ -251,11 +256,11 @@ namespace qlspdigital.Views.Nhom2_Cart
             btnDeposit = new Button();
             btnDeposit.Text = "💰 Nạp thêm tiền ví";
             btnDeposit.Dock = DockStyle.Top;
-            btnDeposit.Height = 34;
+            btnDeposit.Height = 36;
             btnDeposit.BackColor = Color.FromArgb(42, 71, 94);
             btnDeposit.ForeColor = Color.White;
             btnDeposit.FlatStyle = FlatStyle.Flat;
-            btnDeposit.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+            btnDeposit.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             btnDeposit.Cursor = Cursors.Hand;
             btnDeposit.UseMnemonic = false;
             btnDeposit.FlatAppearance.BorderSize = 0;
@@ -264,11 +269,11 @@ namespace qlspdigital.Views.Nhom2_Cart
             btnCheckout = new Button();
             btnCheckout.Text = "⚡ THANH TOÁN 1-CLICK\n(Trừ số dư Ví)";
             btnCheckout.Dock = DockStyle.Bottom;
-            btnCheckout.Height = 55;
-            btnCheckout.BackColor = Color.FromArgb(92, 126, 16);
+            btnCheckout.Height = 58;
+            btnCheckout.BackColor = Color.FromArgb(90, 160, 45);
             btnCheckout.ForeColor = Color.White;
             btnCheckout.FlatStyle = FlatStyle.Flat;
-            btnCheckout.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            btnCheckout.Font = new Font("Segoe UI", 10.5f, FontStyle.Bold);
             btnCheckout.Cursor = Cursors.Hand;
             btnCheckout.UseMnemonic = false;
             btnCheckout.FlatAppearance.BorderSize = 0;
@@ -303,24 +308,36 @@ namespace qlspdigital.Views.Nhom2_Cart
         private void AdjustLayout()
         {
             if (dgvCart == null || panelBottomActions == null || panelSummary == null) return;
-            int totalW = Math.Max(1040, this.ClientSize.Width);
-            int totalH = Math.Max(700, this.ClientSize.Height);
+            int totalW = Math.Max(600, this.ClientSize.Width);
+            int totalH = Math.Max(380, this.ClientSize.Height);
 
-            int summaryW = 340;
-            int leftW = totalW - summaryW - 65; // margin 25 left + 15 gap + 25 right
-            int contentH = Math.Max(300, totalH - 125);
+            int summaryW = Math.Clamp((int)(totalW * 0.34), 320, 380);
+            int leftW = Math.Max(260, totalW - summaryW - 65); // margin 25 left + 15 gap + 25 right
+            int bottomH = 46;
+            int contentH = Math.Max(180, totalH - 55 - bottomH - 22);
 
             // Left grid
             dgvCart.Location = new Point(25, 55);
             dgvCart.Size = new Size(leftW, contentH);
 
             // Left bottom actions
-            panelBottomActions.Location = new Point(25, 55 + contentH + 12);
-            panelBottomActions.Size = new Size(leftW, 48);
+            panelBottomActions.Location = new Point(25, 55 + contentH + 8);
+            panelBottomActions.Size = new Size(leftW, bottomH);
 
             // Right Summary panel
             panelSummary.Location = new Point(25 + leftW + 15, 55);
-            panelSummary.Size = new Size(summaryW, contentH + 60);
+            panelSummary.Size = new Size(summaryW, Math.Max(380, contentH + bottomH + 8));
+
+            // Responsive voucher box inside panelSummary
+            if (txtVoucher != null && btnApplyVoucher != null)
+            {
+                int pnlW = panelSummary.ClientSize.Width - 40;
+                int btnW = 95;
+                int txtW = Math.Max(120, pnlW - btnW - 10);
+                txtVoucher.Width = txtW;
+                btnApplyVoucher.Location = new Point(txtW + 10, 28);
+                btnApplyVoucher.Width = btnW;
+            }
         }
 
         public void LoadCart()
