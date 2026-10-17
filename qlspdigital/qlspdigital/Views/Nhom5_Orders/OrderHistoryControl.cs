@@ -48,17 +48,17 @@ namespace qlspdigital.Views.Nhom5_Orders
             btnRefresh = new Button();
             lblHeader = new Label();
             dgvOrders = new DataGridView();
-            panelDetail = new Panel();
-            dgvDetails = new DataGridView();
-            lblDetailTitle = new Label();
-            dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn3 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn4 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn5 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn6 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn7 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn8 = new DataGridViewTextBoxColumn();
+            panelDetail = new Panel();
+            dgvDetails = new DataGridView();
+            dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn3 = new DataGridViewTextBoxColumn();
+            lblDetailTitle = new Label();
             panelTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvOrders).BeginInit();
             panelDetail.SuspendLayout();
@@ -90,7 +90,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             btnRefresh.Name = "btnRefresh";
             btnRefresh.Size = new Size(137, 60);
             btnRefresh.TabIndex = 0;
-            btnRefresh.Text = "🔄 Làm mới";
+            btnRefresh.Text = "Làm mới";
             btnRefresh.UseMnemonic = false;
             btnRefresh.UseVisualStyleBackColor = false;
             btnRefresh.Click += BtnRefresh_Click;
@@ -103,9 +103,9 @@ namespace qlspdigital.Views.Nhom5_Orders
             lblHeader.ForeColor = Color.White;
             lblHeader.Location = new Point(0, 0);
             lblHeader.Name = "lblHeader";
-            lblHeader.Size = new Size(572, 35);
+            lblHeader.Size = new Size(530, 35);
             lblHeader.TabIndex = 1;
-            lblHeader.Text = "📜 LỊCH SỬ GIAO DỊCH & HÓA ĐƠN CÁ NHÂN";
+            lblHeader.Text = "LỊCH SỬ GIAO DỊCH & HÓA ĐƠN CÁ NHÂN";
             lblHeader.UseMnemonic = false;
             // 
             // dgvOrders
@@ -144,6 +144,42 @@ namespace qlspdigital.Views.Nhom5_Orders
             dgvOrders.Size = new Size(663, 820);
             dgvOrders.TabIndex = 1;
             dgvOrders.SelectionChanged += DgvOrders_SelectionChanged;
+            // 
+            // dataGridViewTextBoxColumn4
+            // 
+            dataGridViewTextBoxColumn4.HeaderText = "ID";
+            dataGridViewTextBoxColumn4.MinimumWidth = 6;
+            dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            dataGridViewTextBoxColumn4.ReadOnly = true;
+            dataGridViewTextBoxColumn4.Visible = false;
+            // 
+            // dataGridViewTextBoxColumn5
+            // 
+            dataGridViewTextBoxColumn5.HeaderText = "Mã đơn hàng";
+            dataGridViewTextBoxColumn5.MinimumWidth = 6;
+            dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
+            dataGridViewTextBoxColumn5.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn6
+            // 
+            dataGridViewTextBoxColumn6.HeaderText = "Tổng tiền";
+            dataGridViewTextBoxColumn6.MinimumWidth = 6;
+            dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
+            dataGridViewTextBoxColumn6.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn7
+            // 
+            dataGridViewTextBoxColumn7.HeaderText = "Trạng thái";
+            dataGridViewTextBoxColumn7.MinimumWidth = 6;
+            dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
+            dataGridViewTextBoxColumn7.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn8
+            // 
+            dataGridViewTextBoxColumn8.HeaderText = "Thời gian";
+            dataGridViewTextBoxColumn8.MinimumWidth = 6;
+            dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
+            dataGridViewTextBoxColumn8.ReadOnly = true;
             // 
             // panelDetail
             // 
@@ -194,18 +230,6 @@ namespace qlspdigital.Views.Nhom5_Orders
             dgvDetails.Size = new Size(412, 740);
             dgvDetails.TabIndex = 0;
             // 
-            // lblDetailTitle
-            // 
-            lblDetailTitle.Dock = DockStyle.Top;
-            lblDetailTitle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            lblDetailTitle.ForeColor = Color.FromArgb(164, 208, 7);
-            lblDetailTitle.Location = new Point(17, 20);
-            lblDetailTitle.Name = "lblDetailTitle";
-            lblDetailTitle.Size = new Size(412, 40);
-            lblDetailTitle.TabIndex = 1;
-            lblDetailTitle.Text = "CÁC MÓN HÀNG TRONG HÓA ĐƠN";
-            lblDetailTitle.UseMnemonic = false;
-            // 
             // dataGridViewTextBoxColumn1
             // 
             dataGridViewTextBoxColumn1.HeaderText = "Tên sản phẩm";
@@ -227,40 +251,17 @@ namespace qlspdigital.Views.Nhom5_Orders
             dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
             dataGridViewTextBoxColumn3.ReadOnly = true;
             // 
-            // dataGridViewTextBoxColumn4
+            // lblDetailTitle
             // 
-            dataGridViewTextBoxColumn4.HeaderText = "ID";
-            dataGridViewTextBoxColumn4.MinimumWidth = 6;
-            dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            dataGridViewTextBoxColumn4.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn5
-            // 
-            dataGridViewTextBoxColumn5.HeaderText = "Mã đơn hàng";
-            dataGridViewTextBoxColumn5.MinimumWidth = 6;
-            dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            dataGridViewTextBoxColumn5.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn6
-            // 
-            dataGridViewTextBoxColumn6.HeaderText = "Tổng tiền";
-            dataGridViewTextBoxColumn6.MinimumWidth = 6;
-            dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
-            dataGridViewTextBoxColumn6.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn7
-            // 
-            dataGridViewTextBoxColumn7.HeaderText = "Trạng thái";
-            dataGridViewTextBoxColumn7.MinimumWidth = 6;
-            dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
-            dataGridViewTextBoxColumn7.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn8
-            // 
-            dataGridViewTextBoxColumn8.HeaderText = "Thời gian";
-            dataGridViewTextBoxColumn8.MinimumWidth = 6;
-            dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
-            dataGridViewTextBoxColumn8.ReadOnly = true;
+            lblDetailTitle.Dock = DockStyle.Top;
+            lblDetailTitle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblDetailTitle.ForeColor = Color.FromArgb(164, 208, 7);
+            lblDetailTitle.Location = new Point(17, 20);
+            lblDetailTitle.Name = "lblDetailTitle";
+            lblDetailTitle.Size = new Size(412, 40);
+            lblDetailTitle.TabIndex = 1;
+            lblDetailTitle.Text = "CÁC MÓN HÀNG TRONG HÓA ĐƠN";
+            lblDetailTitle.UseMnemonic = false;
             // 
             // OrderHistoryControl
             // 
@@ -327,9 +328,19 @@ namespace qlspdigital.Views.Nhom5_Orders
 
         private void DgvOrders_SelectionChanged(object? sender, EventArgs e)
         {
-            if (dgvOrders.SelectedRows.Count == 0) return;
+            if (dgvOrders.SelectedRows.Count == 0)
+            {
+                dgvDetails.Rows.Clear();
+                return;
+            }
 
-            int orderId = Convert.ToInt32(dgvOrders.SelectedRows[0].Cells["MaDonHang"].Value);
+            var row = dgvOrders.SelectedRows[0];
+            if (row == null || row.Index < 0) return;
+
+            var val = (dgvOrders.Columns.Contains("MaDonHang") ? row.Cells["MaDonHang"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            if (val == null) return;
+
+            int orderId = Convert.ToInt32(val);
             dgvDetails.Rows.Clear();
 
             var details = _orderService.LayChiTietDonHang(orderId);

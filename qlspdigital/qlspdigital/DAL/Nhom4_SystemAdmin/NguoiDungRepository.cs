@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
@@ -32,7 +32,8 @@ namespace qlspdigital.DAL.Nhom4_SystemAdmin
             if (!string.IsNullOrWhiteSpace(tuKhoa))
             {
                 query += " AND (TenDangNhap LIKE @TuKhoa OR HoTen LIKE @TuKhoa OR Email LIKE @TuKhoa)";
-                parameters.Add(new SqlParameter("@TuKhoa", $"%{tuKhoa.Trim()}%"));
+                string safeKey = tuKhoa.Trim().Replace("[", "[[]");
+                parameters.Add(new SqlParameter("@TuKhoa", $"%{safeKey}%"));
             }
 
             query += " ORDER BY MaNguoiDung DESC";
@@ -97,19 +98,23 @@ namespace qlspdigital.DAL.Nhom4_SystemAdmin
 
             // 1. Tổng doanh thu (SUM các đơn hàng đã Hoàn thành)
             string qDoanhThu = "SELECT ISNULL(SUM(TongThanhToan), 0) FROM DonHang WHERE TrangThaiDonHang = N'Hoàn thành'";
-            stats.TongDoanhThu = Convert.ToDecimal(DatabaseHelper.ExecuteScalar(qDoanhThu) ?? 0);
+            object? oDoanhThu = DatabaseHelper.ExecuteScalar(qDoanhThu);
+            stats.TongDoanhThu = (oDoanhThu != null && oDoanhThu != DBNull.Value) ? Convert.ToDecimal(oDoanhThu) : 0m;
 
             // 2. Tổng số đơn hàng thành công
             string qDonHang = "SELECT COUNT(1) FROM DonHang WHERE TrangThaiDonHang = N'Hoàn thành'";
-            stats.TongDonHang = Convert.ToInt32(DatabaseHelper.ExecuteScalar(qDonHang) ?? 0);
+            object? oDonHang = DatabaseHelper.ExecuteScalar(qDonHang);
+            stats.TongDonHang = (oDonHang != null && oDonHang != DBNull.Value) ? Convert.ToInt32(oDonHang) : 0;
 
             // 3. Tổng số khách hàng
             string qKhachHang = "SELECT COUNT(1) FROM NguoiDung WHERE VaiTro = 'KhachHang'";
-            stats.TongKhachHang = Convert.ToInt32(DatabaseHelper.ExecuteScalar(qKhachHang) ?? 0);
+            object? oKhachHang = DatabaseHelper.ExecuteScalar(qKhachHang);
+            stats.TongKhachHang = (oKhachHang != null && oKhachHang != DBNull.Value) ? Convert.ToInt32(oKhachHang) : 0;
 
             // 4. Tổng số sản phẩm đang mở bán
             string qSanPham = "SELECT COUNT(1) FROM SanPham WHERE DangKinhDoanh = 1";
-            stats.TongSanPham = Convert.ToInt32(DatabaseHelper.ExecuteScalar(qSanPham) ?? 0);
+            object? oSanPham = DatabaseHelper.ExecuteScalar(qSanPham);
+            stats.TongSanPham = (oSanPham != null && oSanPham != DBNull.Value) ? Convert.ToInt32(oSanPham) : 0;
 
             return stats;
         }

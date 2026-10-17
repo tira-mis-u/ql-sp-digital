@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
@@ -81,7 +81,8 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
         {
             string queryCheck = "SELECT COUNT(1) FROM SanPham WHERE MaDanhMuc = @MaDanhMuc";
             SqlParameter[] pCheck = { new SqlParameter("@MaDanhMuc", maDanhMuc) };
-            int count = Convert.ToInt32(DatabaseHelper.ExecuteScalar(queryCheck, pCheck));
+            object? resCount = DatabaseHelper.ExecuteScalar(queryCheck, pCheck);
+            int count = (resCount != null && resCount != DBNull.Value) ? Convert.ToInt32(resCount) : 0;
 
             if (count > 0)
             {

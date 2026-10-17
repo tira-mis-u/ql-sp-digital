@@ -47,7 +47,7 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             // Tiêu đề
             Label lblHeader = new Label();
-            lblHeader.Text = "🎁 KHO MÃ ƯU ĐÃI & VOUCHER GIẢM GIÁ";
+            lblHeader.Text = "KHO MÃ ƯU ĐÃI & VOUCHER GIẢM GIÁ";
             lblHeader.Location = new Point(25, 15);
             lblHeader.AutoSize = true;
             lblHeader.ForeColor = Color.White;
@@ -80,7 +80,7 @@ namespace qlspdigital.Views.Nhom2_Cart
             txtVoucherCode.PlaceholderText = "Nhập mã code...";
 
             btnCollect = new Button();
-            btnCollect.Text = "🎁 Thu thập mã";
+            btnCollect.Text = "Thu thập mã";
             btnCollect.Location = new Point(335, 38);
             btnCollect.Size = new Size(160, 34);
             btnCollect.BackColor = Color.FromArgb(90, 160, 45);
@@ -93,7 +93,7 @@ namespace qlspdigital.Views.Nhom2_Cart
             btnCollect.Click += BtnCollect_Click;
 
             btnGoToCart = new Button();
-            btnGoToCart.Text = "🛍️ Đến giỏ hàng để mua sắm ngay";
+            btnGoToCart.Text = "Đến giỏ hàng để mua sắm ngay";
             btnGoToCart.Location = new Point(510, 38);
             btnGoToCart.Size = new Size(310, 34);
             btnGoToCart.BackColor = Color.FromArgb(49, 98, 130);
@@ -112,7 +112,7 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             // 2. BẢNG DANH SÁCH VOUCHER
             lblListTitle = new Label();
-            lblListTitle.Text = "📋 DANH SÁCH MÃ GIẢM GIÁ KHẢ DỤNG TRÊN HỆ THỐNG";
+            lblListTitle.Text = "DANH SÁCH MÃ GIẢM GIÁ KHẢ DỤNG TRÊN HỆ THỐNG";
             lblListTitle.Location = new Point(25, 155);
             lblListTitle.AutoSize = true;
             lblListTitle.ForeColor = Color.FromArgb(102, 192, 244);
@@ -190,7 +190,7 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             // Nút xóa voucher khỏi kho
             btnDelete = new Button();
-            btnDelete.Text = "🗑️ Xóa mã khỏi kho cá nhân";
+            btnDelete.Text = "Xóa mã khỏi kho cá nhân";
             btnDelete.Location = new Point(0, 4);
             btnDelete.Size = new Size(260, 40);
             btnDelete.BackColor = Color.FromArgb(180, 40, 40);
@@ -296,6 +296,18 @@ namespace qlspdigital.Views.Nhom2_Cart
             }
 
             string code = txtVoucherCode.Text.Trim();
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                MessageBox.Show("Vui lòng nhập mã voucher cần thu thập!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (code.Length > 50)
+            {
+                MessageBox.Show("Mã voucher không hợp lệ (vượt quá 50 ký tự)!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             if (_voucherService.ThuThapVoucher(UserSession.CurrentUserId, code, out string msg))
             {
                 MessageBox.Show(msg, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -318,7 +330,11 @@ namespace qlspdigital.Views.Nhom2_Cart
                 return;
             }
 
-            int voucherId = Convert.ToInt32(dgvVouchers.SelectedRows[0].Cells["MaGiamGiaId"].Value);
+            var row = dgvVouchers.SelectedRows[0];
+            if (row == null || row.Index < 0) return;
+            var val = (dgvVouchers.Columns.Contains("MaGiamGiaId") ? row.Cells["MaGiamGiaId"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            if (val == null) return;
+            int voucherId = Convert.ToInt32(val);
             if (_voucherService.XoaVoucherCaNhan(voucherId, UserSession.CurrentUserId))
             {
                 MessageBox.Show("Đã xóa voucher khỏi kho cá nhân của bạn!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);

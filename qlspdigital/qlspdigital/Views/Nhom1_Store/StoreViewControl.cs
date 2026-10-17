@@ -63,7 +63,7 @@ namespace qlspdigital.Views.Nhom1_Store
             panelFilter.Paint += PanelFilter_Paint;
 
             lblSearchTitle = new Label();
-            lblSearchTitle.Text = "🔍 Tìm kiếm:";
+            lblSearchTitle.Text = "Tìm kiếm:";
             lblSearchTitle.ForeColor = Color.FromArgb(199, 213, 224);
             lblSearchTitle.AutoSize = true;
             lblSearchTitle.Location = new Point(20, 22);
@@ -80,28 +80,10 @@ namespace qlspdigital.Views.Nhom1_Store
             txtSearch.PlaceholderText = "Nhập tên sản phẩm...";
             txtSearch.KeyDown += TxtSearch_KeyDown;
 
-            lblCategoryTitle = new Label();
-            lblCategoryTitle.Text = "📁 Thể loại:";
-            lblCategoryTitle.ForeColor = Color.FromArgb(199, 213, 224);
-            lblCategoryTitle.AutoSize = true;
-            lblCategoryTitle.Location = new Point(495, 22);
-            lblCategoryTitle.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
-            lblCategoryTitle.UseMnemonic = false;
-
-            cboCategory = new ComboBox();
-            cboCategory.Location = new Point(600, 15);
-            cboCategory.Width = 220;
-            cboCategory.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboCategory.Font = new Font("Segoe UI", 10f);
-            cboCategory.BackColor = Color.FromArgb(18, 25, 35);
-            cboCategory.ForeColor = Color.White;
-            cboCategory.FlatStyle = FlatStyle.Flat;
-            cboCategory.SelectedIndexChanged += CboCategory_SelectedIndexChanged;
-
             btnSearch = new Button();
-            btnSearch.Text = "Lọc dữ liệu";
-            btnSearch.Location = new Point(840, 15);
-            btnSearch.Width = 115;
+            btnSearch.Text = "Tìm kiếm";
+            btnSearch.Location = new Point(475, 15);
+            btnSearch.Width = 105;
             btnSearch.Height = 34;
             btnSearch.BackColor = Color.FromArgb(49, 98, 130);
             btnSearch.ForeColor = Color.White;
@@ -112,10 +94,28 @@ namespace qlspdigital.Views.Nhom1_Store
             btnSearch.FlatAppearance.BorderSize = 0;
             btnSearch.Click += BtnSearch_Click;
 
+            lblCategoryTitle = new Label();
+            lblCategoryTitle.Text = "Thể loại:";
+            lblCategoryTitle.ForeColor = Color.FromArgb(199, 213, 224);
+            lblCategoryTitle.AutoSize = true;
+            lblCategoryTitle.Location = new Point(600, 22);
+            lblCategoryTitle.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            lblCategoryTitle.UseMnemonic = false;
+
+            cboCategory = new ComboBox();
+            cboCategory.Location = new Point(675, 15);
+            cboCategory.Width = 200;
+            cboCategory.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboCategory.Font = new Font("Segoe UI", 10f);
+            cboCategory.BackColor = Color.FromArgb(18, 25, 35);
+            cboCategory.ForeColor = Color.White;
+            cboCategory.FlatStyle = FlatStyle.Flat;
+            cboCategory.SelectedIndexChanged += CboCategory_SelectedIndexChanged;
+
             btnRefresh = new Button();
             btnRefresh.Text = "Làm mới";
-            btnRefresh.Location = new Point(965, 15);
-            btnRefresh.Width = 100;
+            btnRefresh.Location = new Point(890, 15);
+            btnRefresh.Width = 95;
             btnRefresh.Height = 34;
             btnRefresh.BackColor = Color.FromArgb(50, 65, 80);
             btnRefresh.ForeColor = Color.White;
@@ -130,15 +130,15 @@ namespace qlspdigital.Views.Nhom1_Store
             lblTotalCount.Text = "Hiển thị: 0 sản phẩm";
             lblTotalCount.ForeColor = Color.FromArgb(102, 192, 244);
             lblTotalCount.AutoSize = true;
-            lblTotalCount.Location = new Point(1090, 22);
+            lblTotalCount.Location = new Point(1000, 22);
             lblTotalCount.Font = new Font("Segoe UI", 10f, FontStyle.Italic);
             lblTotalCount.UseMnemonic = false;
 
             panelFilter.Controls.Add(lblTotalCount);
             panelFilter.Controls.Add(btnRefresh);
-            panelFilter.Controls.Add(btnSearch);
             panelFilter.Controls.Add(cboCategory);
             panelFilter.Controls.Add(lblCategoryTitle);
+            panelFilter.Controls.Add(btnSearch);
             panelFilter.Controls.Add(txtSearch);
             panelFilter.Controls.Add(lblSearchTitle);
             panelFilter.ResumeLayout(false);
@@ -174,24 +174,31 @@ namespace qlspdigital.Views.Nhom1_Store
 
             // Bố cục tuần tự theo toạ độ tương đối (Geometric relative flow)
             lblSearchTitle.Location = new Point(20, 22);
-            txtSearch.Location = new Point(lblSearchTitle.Right + 14, 15);
+            txtSearch.Location = new Point(lblSearchTitle.Right + 12, 15);
 
-            // Tính toán độ rộng co giãn hài hòa cho thanh tìm kiếm và thể loại
-            int availableForInputs = Math.Max(320, lblTotalCount.Left - 30 - 20 - lblSearchTitle.Width - 14 - lblCategoryTitle.Width - 30 - 115 - 15 - 100 - 20);
-            int searchW = Math.Clamp((int)(availableForInputs * 0.58), 280, 520);
-            int catW = Math.Clamp((int)(availableForInputs * 0.42), 200, 300);
+            int btnSearchW = 105;
+            int btnRefreshW = 95;
+            int rightBoundary = lblTotalCount.Left - 25;
+            int nonInputSpace = 20 + lblSearchTitle.Width + 12 + btnSearchW + 22 + lblCategoryTitle.Width + 12 + btnRefreshW + 14;
+            int availableForInputs = Math.Max(320, rightBoundary - nonInputSpace);
+
+            int searchW = Math.Clamp((int)(availableForInputs * 0.58), 220, 480);
+            int catW = Math.Clamp((int)(availableForInputs * 0.42), 170, 260);
 
             txtSearch.Size = new Size(searchW, 34);
 
-            lblCategoryTitle.Location = new Point(txtSearch.Right + 30, 22);
-            cboCategory.Location = new Point(lblCategoryTitle.Right + 14, 15);
+            // Nút "Tìm kiếm" đặt ngay cạnh ô input tìm kiếm
+            btnSearch.Location = new Point(txtSearch.Right + 10, 15);
+            btnSearch.Size = new Size(btnSearchW, 34);
+
+            // Thể loại đặt kế tiếp nút tìm kiếm
+            lblCategoryTitle.Location = new Point(btnSearch.Right + 22, 22);
+            cboCategory.Location = new Point(lblCategoryTitle.Right + 12, 15);
             cboCategory.Size = new Size(catW, 34);
 
-            btnSearch.Location = new Point(cboCategory.Right + 20, 15);
-            btnSearch.Size = new Size(115, 34);
-
-            btnRefresh.Location = new Point(btnSearch.Right + 12, 15);
-            btnRefresh.Size = new Size(100, 34);
+            // Nút làm mới sau danh mục
+            btnRefresh.Location = new Point(cboCategory.Right + 14, 15);
+            btnRefresh.Size = new Size(btnRefreshW, 34);
         }
 
         private void LoadCategories()

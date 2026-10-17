@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
@@ -59,6 +59,12 @@ namespace qlspdigital.DAL.Nhom2_Cart
         // Thu thập voucher vào kho cá nhân bằng mã code (Create)
         public bool ThuThapVoucher(int maNguoiDung, string maCode, out string thongBao)
         {
+            if (string.IsNullOrWhiteSpace(maCode))
+            {
+                thongBao = "Vui lòng nhập mã voucher!";
+                return false;
+            }
+
             string queryFind = @"
                 SELECT MaGiamGiaId, SoLuongConLai, NgayKetThuc, KichHoat
                 FROM MaGiamGia
@@ -99,7 +105,8 @@ namespace qlspdigital.DAL.Nhom2_Cart
                 new SqlParameter("@MaGiamGiaId", maGiamGiaId)
             };
 
-            if (DatabaseHelper.ExecuteScalar(queryCheck, pCheck) != null)
+            object? chkExist = DatabaseHelper.ExecuteScalar(queryCheck, pCheck);
+            if (chkExist != null && chkExist != DBNull.Value)
             {
                 thongBao = "Bạn đã lưu voucher này trong kho rồi!";
                 return false;
@@ -133,6 +140,12 @@ namespace qlspdigital.DAL.Nhom2_Cart
         {
             voucher = null;
             tienGiam = 0;
+
+            if (string.IsNullOrWhiteSpace(maCode))
+            {
+                thongBao = "Vui lòng nhập mã giảm giá!";
+                return false;
+            }
 
             string query = @"
                 SELECT mgg.*, ISNULL(mnd.DaSuDung, 0) AS DaSuDung

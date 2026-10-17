@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using qlspdigital.DTOs;
@@ -53,7 +53,8 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
                 new SqlParameter("@MaNguoiDung", maNguoiDung)
             };
 
-            int count = Convert.ToInt32(DatabaseHelper.ExecuteScalar(queryCheckEmail, pCheck));
+            object? resCount = DatabaseHelper.ExecuteScalar(queryCheckEmail, pCheck);
+            int count = (resCount != null && resCount != DBNull.Value) ? Convert.ToInt32(resCount) : 0;
             if (count > 0)
             {
                 thongBao = "Email này đã được sử dụng bởi một tài khoản khác!";
@@ -92,7 +93,7 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
             SqlParameter[] pCheck = { new SqlParameter("@MaNguoiDung", maNguoiDung) };
             object? hashObj = DatabaseHelper.ExecuteScalar(queryCheckPass, pCheck);
 
-            if (hashObj == null)
+            if (hashObj == null || hashObj == DBNull.Value)
             {
                 thongBao = "Không tìm thấy thông tin tài khoản!";
                 return false;

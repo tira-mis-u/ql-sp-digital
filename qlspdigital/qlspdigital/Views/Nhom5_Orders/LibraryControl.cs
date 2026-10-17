@@ -95,7 +95,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             btnRefresh.Name = "btnRefresh";
             btnRefresh.Size = new Size(160, 60);
             btnRefresh.TabIndex = 0;
-            btnRefresh.Text = "🔄 Làm mới kho";
+            btnRefresh.Text = "Làm mới kho";
             btnRefresh.UseVisualStyleBackColor = false;
             btnRefresh.Click += BtnRefresh_Click;
             // 
@@ -109,7 +109,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             lblHeader.Name = "lblHeader";
             lblHeader.Size = new Size(699, 35);
             lblHeader.TabIndex = 1;
-            lblHeader.Text = "🎮 KHO THƯ VIỆN SẢN PHẨM ĐÃ SỞ HỮU (MY LIBRARY)";
+            lblHeader.Text = "KHO THƯ VIỆN SẢN PHẨM ĐÃ SỞ HỮU (MY LIBRARY)";
             lblHeader.UseMnemonic = false;
             // 
             // dgvLibrary
@@ -181,7 +181,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             btnUninstall.Name = "btnUninstall";
             btnUninstall.Size = new Size(400, 51);
             btnUninstall.TabIndex = 0;
-            btnUninstall.Text = "🗑️ Gỡ khỏi Thư viện cá nhân";
+            btnUninstall.Text = "Gỡ khỏi Thư viện cá nhân";
             btnUninstall.UseMnemonic = false;
             btnUninstall.UseVisualStyleBackColor = false;
             btnUninstall.Click += BtnUninstall_Click;
@@ -219,7 +219,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             btnDownload.Name = "btnDownload";
             btnDownload.Size = new Size(400, 60);
             btnDownload.TabIndex = 3;
-            btnDownload.Text = "⬇️ TẢI XUỐNG VỀ MÁY";
+            btnDownload.Text = "TẢI XUỐNG VỀ MÁY";
             btnDownload.UseMnemonic = false;
             btnDownload.UseVisualStyleBackColor = false;
             btnDownload.Click += BtnDownload_Click;
@@ -275,35 +275,36 @@ namespace qlspdigital.Views.Nhom5_Orders
             // 
             dataGridViewTextBoxColumn1.HeaderText = "ID";
             dataGridViewTextBoxColumn1.MinimumWidth = 6;
-            dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            dataGridViewTextBoxColumn1.Name = "MaSoHuu";
             dataGridViewTextBoxColumn1.ReadOnly = true;
+            dataGridViewTextBoxColumn1.Visible = false;
             // 
             // dataGridViewTextBoxColumn2
             // 
             dataGridViewTextBoxColumn2.HeaderText = "Tên sản phẩm";
             dataGridViewTextBoxColumn2.MinimumWidth = 6;
-            dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            dataGridViewTextBoxColumn2.Name = "TenSanPham";
             dataGridViewTextBoxColumn2.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn3
             // 
             dataGridViewTextBoxColumn3.HeaderText = "Thể loại";
             dataGridViewTextBoxColumn3.MinimumWidth = 6;
-            dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            dataGridViewTextBoxColumn3.Name = "TenDanhMuc";
             dataGridViewTextBoxColumn3.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn4
             // 
             dataGridViewTextBoxColumn4.HeaderText = "Phiên bản";
             dataGridViewTextBoxColumn4.MinimumWidth = 6;
-            dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            dataGridViewTextBoxColumn4.Name = "PhienBan";
             dataGridViewTextBoxColumn4.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn5
             // 
             dataGridViewTextBoxColumn5.HeaderText = "Lượt tải";
             dataGridViewTextBoxColumn5.MinimumWidth = 6;
-            dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
+            dataGridViewTextBoxColumn5.Name = "SoLanTai";
             dataGridViewTextBoxColumn5.ReadOnly = true;
             // 
             // LibraryControl
@@ -385,11 +386,29 @@ namespace qlspdigital.Views.Nhom5_Orders
             }
         }
 
+        private int GetSelectedSoHuuId()
+        {
+            if (dgvLibrary.SelectedRows.Count == 0) return 0;
+            var row = dgvLibrary.SelectedRows[0];
+            if (row == null || row.Index < 0) return 0;
+            var val = (dgvLibrary.Columns.Contains("MaSoHuu") ? row.Cells["MaSoHuu"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            return val != null ? Convert.ToInt32(val) : 0;
+        }
+
+        private string GetSelectedProductName()
+        {
+            if (dgvLibrary.SelectedRows.Count == 0) return string.Empty;
+            var row = dgvLibrary.SelectedRows[0];
+            if (row == null || row.Index < 0) return string.Empty;
+            var val = (dgvLibrary.Columns.Contains("TenSanPham") ? row.Cells["TenSanPham"].Value : null) ?? (row.Cells.Count > 1 ? row.Cells[1].Value : null);
+            return val?.ToString() ?? string.Empty;
+        }
+
         private void DgvLibrary_SelectionChanged(object? sender, EventArgs e)
         {
-            if (dgvLibrary.SelectedRows.Count == 0) return;
+            int soHuuId = GetSelectedSoHuuId();
+            if (soHuuId == 0) return;
 
-            int soHuuId = Convert.ToInt32(dgvLibrary.SelectedRows[0].Cells["MaSoHuu"].Value);
             var list = _libraryService.LayKhoThuVien(UserSession.CurrentUserId);
             var item = list.Find(x => x.MaSoHuu == soHuuId);
 
@@ -406,13 +425,13 @@ namespace qlspdigital.Views.Nhom5_Orders
         {
             if (!UserSession.IsLoggedIn) return;
 
-            if (dgvLibrary.SelectedRows.Count == 0)
+            int soHuuId = GetSelectedSoHuuId();
+            if (soHuuId == 0)
             {
                 MessageBox.Show("Vui lòng chọn sản phẩm cần tải!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            int soHuuId = Convert.ToInt32(dgvLibrary.SelectedRows[0].Cells["MaSoHuu"].Value);
             var list = _libraryService.LayKhoThuVien(UserSession.CurrentUserId);
             var item = list.Find(x => x.MaSoHuu == soHuuId);
 
@@ -453,14 +472,14 @@ namespace qlspdigital.Views.Nhom5_Orders
         {
             if (!UserSession.IsLoggedIn) return;
 
-            if (dgvLibrary.SelectedRows.Count == 0)
+            int soHuuId = GetSelectedSoHuuId();
+            if (soHuuId == 0)
             {
                 MessageBox.Show("Vui lòng chọn sản phẩm cần gỡ khỏi Thư viện!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            int soHuuId = Convert.ToInt32(dgvLibrary.SelectedRows[0].Cells["MaSoHuu"].Value);
-            string name = dgvLibrary.SelectedRows[0].Cells["TenSanPham"].Value?.ToString() ?? string.Empty;
+            string name = GetSelectedProductName();
 
             if (MessageBox.Show($"Bạn có chắc chắn muốn gỡ [{name}] khỏi Thư viện của mình?", "Xác nhận gỡ", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {

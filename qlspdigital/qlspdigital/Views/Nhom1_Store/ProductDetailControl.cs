@@ -54,7 +54,7 @@ namespace qlspdigital.Views.Nhom1_Store
 
             // Nút quay lại
             btnBack = new Button();
-            btnBack.Text = "← Quay lại Cửa hàng";
+            btnBack.Text = "Quay lại Cửa hàng";
             btnBack.Size = new Size(200, 36);
             btnBack.Location = new Point(25, 18);
             btnBack.BackColor = Color.FromArgb(49, 98, 130);
@@ -139,7 +139,7 @@ namespace qlspdigital.Views.Nhom1_Store
             lblPrice.UseMnemonic = false;
 
             btnAddToCart = new Button();
-            btnAddToCart.Text = "🛒 Thêm vào Giỏ hàng";
+            btnAddToCart.Text = "Thêm vào Giỏ hàng";
             btnAddToCart.Dock = DockStyle.Top;
             btnAddToCart.Height = 40;
             btnAddToCart.BackColor = Color.FromArgb(90, 160, 45);
@@ -152,7 +152,7 @@ namespace qlspdigital.Views.Nhom1_Store
             btnAddToCart.Click += BtnAddToCart_Click;
 
             btnReviews = new Button();
-            btnReviews.Text = "💬 Đánh giá & Nhận xét";
+            btnReviews.Text = "Đánh giá & Nhận xét";
             btnReviews.Dock = DockStyle.Bottom;
             btnReviews.Height = 38;
             btnReviews.BackColor = Color.FromArgb(49, 98, 130);
@@ -178,14 +178,14 @@ namespace qlspdigital.Views.Nhom1_Store
 
             // Khung dưới: Mô tả chi tiết sản phẩm
             Panel panelBottom = new Panel();
-            panelBottom.Location = new Point(25, 255);
-            panelBottom.Size = new Size(1000, 470);
+            panelBottom.Location = new Point(25, 245);
+            panelBottom.Size = new Size(1000, 420);
             panelBottom.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             panelBottom.BackColor = Color.FromArgb(27, 40, 56);
             panelBottom.Padding = new Padding(20);
 
             Label lblDescTitle = new Label();
-            lblDescTitle.Text = "📖 GIỚI THIỆU & ĐẶC TẢ TÍNH NĂNG SẢN PHẨM";
+            lblDescTitle.Text = "GIỚI THIỆU & ĐẶC TẢ TÍNH NĂNG SẢN PHẨM";
             lblDescTitle.Dock = DockStyle.Top;
             lblDescTitle.Height = 30;
             lblDescTitle.ForeColor = Color.FromArgb(102, 192, 244);

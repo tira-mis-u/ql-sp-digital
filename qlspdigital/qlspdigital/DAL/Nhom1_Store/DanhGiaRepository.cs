@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
@@ -97,7 +97,7 @@ namespace qlspdigital.DAL.Nhom1_Store
                 new SqlParameter("@MaNguoiDung", dto.MaNguoiDung),
                 new SqlParameter("@MaSanPham", dto.MaSanPham),
                 new SqlParameter("@SoSao", dto.SoSao),
-                new SqlParameter("@BinhLuan", dto.BinhLuan)
+                new SqlParameter("@BinhLuan", dto.BinhLuan ?? string.Empty)
             };
 
             return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
@@ -114,7 +114,7 @@ namespace qlspdigital.DAL.Nhom1_Store
             SqlParameter[] parameters =
             {
                 new SqlParameter("@SoSao", dto.SoSao),
-                new SqlParameter("@BinhLuan", dto.BinhLuan),
+                new SqlParameter("@BinhLuan", dto.BinhLuan ?? string.Empty),
                 new SqlParameter("@MaDanhGia", dto.MaDanhGia),
                 new SqlParameter("@MaNguoiDung", dto.MaNguoiDung)
             };

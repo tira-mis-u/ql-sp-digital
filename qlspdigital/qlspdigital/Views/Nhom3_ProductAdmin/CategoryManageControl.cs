@@ -46,7 +46,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
 
             // Tiêu đề
             Label lblHeader = new Label();
-            lblHeader.Text = "📁 QUẢN LÝ THỂ LOẠI / DANH MỤC HÀNG HÓA";
+            lblHeader.Text = "QUẢN LÝ THỂ LOẠI / DANH MỤC HÀNG HÓA";
             lblHeader.Location = new Point(25, 15);
             lblHeader.AutoSize = true;
             lblHeader.ForeColor = Color.White;
@@ -197,7 +197,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             btnNew.Click += BtnNew_Click;
 
             btnSave = new Button();
-            btnSave.Text = "💾 Lưu";
+            btnSave.Text = "Lưu";
             btnSave.Location = new Point(165, 365);
             btnSave.Size = new Size(140, 38);
             btnSave.BackColor = Color.FromArgb(90, 160, 45);
@@ -210,7 +210,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             btnSave.Click += BtnSave_Click;
 
             btnDelete = new Button();
-            btnDelete.Text = "🗑️ Xóa";
+            btnDelete.Text = "Xóa";
             btnDelete.Location = new Point(320, 365);
             btnDelete.Size = new Size(120, 38);
             btnDelete.BackColor = Color.FromArgb(180, 40, 40);
@@ -303,7 +303,12 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
         {
             if (dgvCategories.SelectedRows.Count == 0) return;
 
-            int id = Convert.ToInt32(dgvCategories.SelectedRows[0].Cells["MaDanhMuc"].Value);
+            var row = dgvCategories.SelectedRows[0];
+            if (row == null || row.Index < 0) return;
+
+            var val = (dgvCategories.Columns.Contains("MaDanhMuc") ? row.Cells["MaDanhMuc"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            if (val == null) return;
+            int id = Convert.ToInt32(val);
             var list = _danhMucService.LayTatCaDanhMuc();
             var dm = list.Find(x => x.MaDanhMuc == id);
             if (dm != null)
@@ -329,6 +334,12 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             if (string.IsNullOrWhiteSpace(txtName.Text))
             {
                 MessageBox.Show("Vui lòng nhập tên danh mục!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (txtName.Text.Trim().Length > 100)
+            {
+                MessageBox.Show("Tên danh mục không được vượt quá 100 ký tự!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 

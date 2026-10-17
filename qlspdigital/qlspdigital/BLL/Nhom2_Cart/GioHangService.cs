@@ -54,6 +54,12 @@ namespace qlspdigital.BLL.Nhom2_Cart
                 return false;
             }
 
+            if (new ThuVienRepository().DaSoHuu(maNguoiDung, maSanPham))
+            {
+                thongBao = "Bạn đã sở hữu sản phẩm này trong Thư viện rồi! Không cần mua lại.";
+                return false;
+            }
+
             bool ok = _gioHangRepo.ThemVaoGioHang(maNguoiDung, maSanPham, soLuong);
             thongBao = ok ? "Đã thêm sản phẩm vào giỏ hàng thành công!" : "Không thể thêm vào giỏ hàng.";
             if (ok) NotifyCartUpdated();
@@ -110,9 +116,15 @@ namespace qlspdigital.BLL.Nhom2_Cart
                 return false;
             }
 
-            if (soTien <= 0)
+            if (soTien < 10000)
             {
-                thongBao = "Mệnh giá nạp phải lớn hơn 0!";
+                thongBao = "Mệnh giá nạp tối thiểu là 10.000 ₫!";
+                return false;
+            }
+
+            if (soTien > 50000000)
+            {
+                thongBao = "Mệnh giá nạp tối đa mỗi lần là 50.000.000 ₫!";
                 return false;
             }
 

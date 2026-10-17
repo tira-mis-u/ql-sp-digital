@@ -44,7 +44,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             panelTopBar.Height = 42;
 
             Label lblHeader = new Label();
-            lblHeader.Text = "📊 BÁO CÁO THỐNG KÊ KINH DOANH (ADMIN DASHBOARD)";
+            lblHeader.Text = "BÁO CÁO THỐNG KÊ KINH DOANH (ADMIN DASHBOARD)";
             lblHeader.Dock = DockStyle.Left;
             lblHeader.AutoSize = true;
             lblHeader.ForeColor = Color.White;
@@ -52,7 +52,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             lblHeader.UseMnemonic = false;
 
             btnRefresh = new Button();
-            btnRefresh.Text = "🔄 Làm mới";
+            btnRefresh.Text = "Làm mới";
             btnRefresh.Dock = DockStyle.Right;
             btnRefresh.Width = 130;
             btnRefresh.BackColor = Color.FromArgb(49, 98, 130);
@@ -191,7 +191,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
             // 2. BẢNG TOP 5 SẢN PHẨM BÁN CHẠY NHẤT
             Label lblTableTitle = new Label();
-            lblTableTitle.Text = "🔥 TOP 5 SẢN PHẨM BÁN CHẠY NHẤT HỆ THỐNG";
+            lblTableTitle.Text = "TOP 5 SẢN PHẨM BÁN CHẠY NHẤT HỆ THỐNG";
             lblTableTitle.Location = new Point(25, 218);
             lblTableTitle.AutoSize = true;
             lblTableTitle.ForeColor = Color.FromArgb(102, 192, 244);

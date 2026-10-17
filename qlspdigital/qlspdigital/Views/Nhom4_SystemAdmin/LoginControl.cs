@@ -45,7 +45,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             panelCenter.Location = new Point(Math.Max(20, (targetW - panelCenter.Width) / 2), Math.Max(20, (targetH - panelCenter.Height) / 2));
 
             Label lblLogo = new Label();
-            lblLogo.Text = "⚡ DPMS LOGIN";
+            lblLogo.Text = "DPMS LOGIN";
             lblLogo.Dock = DockStyle.Top;
             lblLogo.Height = 45;
             lblLogo.ForeColor = Color.FromArgb(102, 192, 244);
@@ -138,7 +138,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             panelDemo.Padding = new Padding(10);
 
             Label lblDemo = new Label();
-            lblDemo.Text = "💡 Phím tắt kiểm thử phân quyền (Pass: 123456):";
+            lblDemo.Text = "Phím tắt kiểm thử phân quyền (Pass: 123456):";
             lblDemo.Location = new Point(10, 8);
             lblDemo.Size = new Size(360, 20);
             lblDemo.ForeColor = Color.FromArgb(164, 208, 7);
@@ -146,7 +146,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             lblDemo.UseMnemonic = false;
 
             Button btnDemoAdmin = new Button();
-            btnDemoAdmin.Text = "⚡ Demo Admin";
+            btnDemoAdmin.Text = "Demo Admin";
             btnDemoAdmin.Location = new Point(10, 32);
             btnDemoAdmin.Size = new Size(175, 36);
             btnDemoAdmin.BackColor = Color.FromArgb(217, 119, 6);
@@ -159,7 +159,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             btnDemoAdmin.Click += BtnDemoAdmin_Click;
 
             Button btnDemoCustomer = new Button();
-            btnDemoCustomer.Text = "⚡ Demo Khách Hàng";
+            btnDemoCustomer.Text = "Demo Khách Hàng";
             btnDemoCustomer.Location = new Point(195, 32);
             btnDemoCustomer.Size = new Size(175, 36);
             btnDemoCustomer.BackColor = Color.FromArgb(16, 120, 70);

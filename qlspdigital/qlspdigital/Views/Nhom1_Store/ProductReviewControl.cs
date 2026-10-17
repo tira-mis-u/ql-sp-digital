@@ -95,7 +95,7 @@ namespace qlspdigital.Views.Nhom1_Store
             panelForm.Padding = new Padding(15);
 
             Label lblFormTitle = new Label();
-            lblFormTitle.Text = "✍️ VIẾT HOẶC CHỈNH SỬA ĐÁNH GIÁ CỦA BẠN";
+            lblFormTitle.Text = "VIẾT HOẶC CHỈNH SỬA ĐÁNH GIÁ CỦA BẠN";
             lblFormTitle.Location = new Point(15, 14);
             lblFormTitle.AutoSize = true;
             lblFormTitle.ForeColor = Color.FromArgb(102, 192, 244);
@@ -371,8 +371,20 @@ namespace qlspdigital.Views.Nhom1_Store
                 return;
             }
 
-            int star = 5 - cboStar.SelectedIndex;
+            int star = Math.Clamp(cboStar.SelectedIndex >= 0 ? 5 - cboStar.SelectedIndex : 5, 1, 5);
             string comment = txtComment.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(comment))
+            {
+                MessageBox.Show("Vui lòng nhập nội dung nhận xét của bạn!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (comment.Length > 2000)
+            {
+                MessageBox.Show("Nội dung nhận xét không được vượt quá 2000 ký tự!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             if (_danhGiaService.LuuDanhGia(UserSession.CurrentUserId, _maSanPhamHienTai, star, comment, out string msg))
             {

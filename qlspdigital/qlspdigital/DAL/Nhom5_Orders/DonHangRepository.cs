@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
@@ -36,7 +36,8 @@ namespace qlspdigital.DAL.Nhom5_Orders
             if (!string.IsNullOrWhiteSpace(tuKhoa))
             {
                 query += " AND (dh.MaDonHangCode LIKE @TuKhoa OR nd.HoTen LIKE @TuKhoa)";
-                parameters.Add(new SqlParameter("@TuKhoa", $"%{tuKhoa.Trim()}%"));
+                string safeKey = tuKhoa.Trim().Replace("[", "[[]");
+                parameters.Add(new SqlParameter("@TuKhoa", $"%{safeKey}%"));
             }
 
             query += " ORDER BY dh.NgayTao DESC";
@@ -199,8 +200,8 @@ namespace qlspdigital.DAL.Nhom5_Orders
                             cmdDeduct.ExecuteNonQuery();
                         }
 
-                        // 3. Tạo mã đơn hàng duy nhất: ORD-yyyyMMdd-XXXX
-                        string orderCode = $"ORD-{DateTime.Now:yyyyMMdd}-{new Random().Next(1000, 9999)}";
+                        // 3. Tạo mã đơn hàng duy nhất: ORD-yyyyMMddHHmmss-XXXX
+                        string orderCode = $"ORD-{DateTime.Now:yyyyMMddHHmmss}-{Guid.NewGuid().ToString("N")[..4].ToUpper()}";
                         maDonHangCode = orderCode;
 
                         // 4. Tạo bản ghi DonHang
@@ -218,7 +219,15 @@ namespace qlspdigital.DAL.Nhom5_Orders
                             cmdOrder.Parameters.AddWithValue("@TamTinh", tamTinh);
                             cmdOrder.Parameters.AddWithValue("@TienGiamGia", tienGiam);
                             cmdOrder.Parameters.AddWithValue("@TongThanhToan", tongThanhToan);
-                            newOrderId = Convert.ToInt32(cmdOrder.ExecuteScalar());
+
+                            object? resId = cmdOrder.ExecuteScalar();
+                            if (resId == null || resId == DBNull.Value)
+                            {
+                                trans.Rollback();
+                                thongBao = "Không thể khởi tạo mã định danh đơn hàng mới.";
+                                return false;
+                            }
+                            newOrderId = Convert.ToInt32(resId);
                         }
 
                         // 5. Thêm chi tiết đơn hàng & cấp vào SoHuuSanPham
@@ -392,6 +401,20 @@ namespace qlspdigital.DAL.Nhom5_Orders
             };
 
             return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+        }
+
+        // Kiểm tra người dùng đã sở hữu sản phẩm này trong Thư viện chưa
+        public bool DaSoHuu(int maNguoiDung, int maSanPham)
+        {
+            string query = "SELECT COUNT(1) FROM SoHuuSanPham WHERE MaNguoiDung = @MaNguoiDung AND MaSanPham = @MaSanPham";
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@MaNguoiDung", maNguoiDung),
+                new SqlParameter("@MaSanPham", maSanPham)
+            };
+
+            object? res = DatabaseHelper.ExecuteScalar(query, parameters);
+            return res != null && res != DBNull.Value && Convert.ToInt32(res) > 0;
         }
     }
 }

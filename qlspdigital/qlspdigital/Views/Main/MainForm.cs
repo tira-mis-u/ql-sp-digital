@@ -95,7 +95,7 @@ namespace qlspdigital.Views.Main
             panelHeaderRight.Padding = new Padding(0, 5, 0, 5);
 
             lblBalance = new Label();
-            lblBalance.Text = "💰 Ví: 0 ₫";
+            lblBalance.Text = "Ví: 0 ₫";
             lblBalance.Dock = DockStyle.Right;
             lblBalance.Width = 160;
             lblBalance.ForeColor = Color.FromArgb(164, 208, 7);
@@ -106,7 +106,7 @@ namespace qlspdigital.Views.Main
             lblBalance.Click += LblBalance_Click;
 
             btnHeaderAuth = new Button();
-            btnHeaderAuth.Text = "🔑 Đăng nhập";
+            btnHeaderAuth.Text = "Đăng nhập";
             btnHeaderAuth.Dock = DockStyle.Right;
             btnHeaderAuth.Width = 145;
             btnHeaderAuth.BackColor = Color.FromArgb(49, 98, 130);
@@ -527,7 +527,7 @@ namespace qlspdigital.Views.Main
             UserSession.SessionChanged += UpdateUserInterfaceSession;
             UserSession.BalanceChanged += (bal) =>
             {
-                lblBalance.Text = $"💰 Ví: {FormatHelper.FormatCurrency(bal)}";
+                lblBalance.Text = $"Ví: {FormatHelper.FormatCurrency(bal)}";
             };
             GioHangService.CartUpdated += UpdateCartBadge;
         }
@@ -584,16 +584,16 @@ namespace qlspdigital.Views.Main
 
             if (UserSession.IsLoggedIn)
             {
-                lblUserGreeting.Text = $"👤 {UserSession.CurrentFullName} ({(UserSession.IsAdmin ? "Admin" : "Khách Hàng")})";
-                lblBalance.Text = $"💰 Ví: {FormatHelper.FormatCurrency(UserSession.CurrentBalance)}";
-                btnHeaderAuth.Text = "🚪 Đăng xuất";
+                lblUserGreeting.Text = $"{UserSession.CurrentFullName} ({(UserSession.IsAdmin ? "Admin" : "Khách Hàng")})";
+                lblBalance.Text = $"Ví: {FormatHelper.FormatCurrency(UserSession.CurrentBalance)}";
+                btnHeaderAuth.Text = "Đăng xuất";
                 btnHeaderAuth.BackColor = Color.FromArgb(180, 40, 40);
             }
             else
             {
                 lblUserGreeting.Text = "Khách";
-                lblBalance.Text = "💰 Ví: 0 ₫";
-                btnHeaderAuth.Text = "🔑 Đăng nhập";
+                lblBalance.Text = "Ví: 0 ₫";
+                btnHeaderAuth.Text = "Đăng nhập";
                 btnHeaderAuth.BackColor = Color.FromArgb(49, 98, 130);
             }
 

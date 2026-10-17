@@ -47,7 +47,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             panelCenter.Location = new Point(Math.Max(20, (targetW - panelCenter.Width) / 2), Math.Max(20, (targetH - panelCenter.Height) / 2));
 
             Label lblLogo = new Label();
-            lblLogo.Text = "📝 ĐĂNG KÝ THÀNH VIÊN";
+            lblLogo.Text = "ĐĂNG KÝ THÀNH VIÊN";
             lblLogo.Location = new Point(0, 15);
             lblLogo.Size = new Size(480, 35);
             lblLogo.ForeColor = Color.FromArgb(102, 192, 244);
@@ -167,7 +167,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             btnRegister.Click += BtnRegister_Click;
 
             btnBackToLogin = new Button();
-            btnBackToLogin.Text = "← Đã có tài khoản? Quay lại Đăng nhập";
+            btnBackToLogin.Text = "Đã có tài khoản? Quay lại Đăng nhập";
             btnBackToLogin.Location = new Point(35, 433);
             btnBackToLogin.Size = new Size(410, 34);
             btnBackToLogin.BackColor = Color.Transparent;

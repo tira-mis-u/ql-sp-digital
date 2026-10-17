@@ -50,7 +50,7 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             // Tiêu đề
             Label lblHeader = new Label();
-            lblHeader.Text = "💰 VÍ TÀI KHOẢN DPMS (STEAM WALLET SIMULATION)";
+            lblHeader.Text = "VÍ TÀI KHOẢN DPMS (STEAM WALLET SIMULATION)";
             lblHeader.Location = new Point(25, 15);
             lblHeader.AutoSize = true;
             lblHeader.ForeColor = Color.White;
@@ -81,7 +81,7 @@ namespace qlspdigital.Views.Nhom2_Cart
             lblBalance.UseMnemonic = false;
 
             Label lblNote = new Label();
-            lblNote.Text = "⚡ Số dư ví dùng để thanh toán 1-Click tức thì mọi trò chơi và tài nguyên số trên hệ thống.";
+            lblNote.Text = "Số dư ví dùng để thanh toán 1-Click tức thì mọi trò chơi và tài nguyên số trên hệ thống.";
             lblNote.Dock = DockStyle.Right;
             lblNote.Width = 400;
             lblNote.ForeColor = Color.FromArgb(199, 213, 224);
@@ -101,7 +101,7 @@ namespace qlspdigital.Views.Nhom2_Cart
             panelDeposit.Padding = new Padding(25, 18, 25, 18);
 
             lblDepositTitle = new Label();
-            lblDepositTitle.Text = "💳 NẠP TIỀN VÀO VÍ (CHỌN MỆNH GIÁ MÔ PHỎNG HOẶC NHẬP TÙY Ý)";
+            lblDepositTitle.Text = "NẠP TIỀN VÀO VÍ (CHỌN MỆNH GIÁ MÔ PHỎNG HOẶC NHẬP TÙY Ý)";
             lblDepositTitle.Location = new Point(25, 18);
             lblDepositTitle.AutoSize = true;
             lblDepositTitle.ForeColor = Color.FromArgb(102, 192, 244);
@@ -189,7 +189,7 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             // 3. BẢNG LỊCH SỬ GIAO DỊCH BIẾN ĐỘNG SỐ DƯ
             lblHistoryTitle = new Label();
-            lblHistoryTitle.Text = "📜 LỊCH SỬ BIẾN ĐỘNG SỐ DƯ & GIAO DỊCH";
+            lblHistoryTitle.Text = "LỊCH SỬ BIẾN ĐỘNG SỐ DƯ & GIAO DỊCH";
             lblHistoryTitle.Location = new Point(25, 305);
             lblHistoryTitle.AutoSize = true;
             lblHistoryTitle.ForeColor = Color.FromArgb(102, 192, 244);
@@ -339,14 +339,25 @@ namespace qlspdigital.Views.Nhom2_Cart
 
         private void BtnCustomTopUp_Click(object? sender, EventArgs e)
         {
-            if (decimal.TryParse(txtCustomAmount.Text.Trim(), out decimal val) && val > 0)
-            {
-                NapTien(val);
-            }
-            else
+            if (!decimal.TryParse(txtCustomAmount.Text.Trim(), out decimal val) || val <= 0)
             {
                 MessageBox.Show("Vui lòng nhập số tiền hợp lệ (> 0)!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
+
+            if (val < 10000)
+            {
+                MessageBox.Show("Số tiền nạp tối thiểu là 10.000 ₫!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (val > 50000000)
+            {
+                MessageBox.Show("Số tiền nạp tối đa mỗi lần là 50.000.000 ₫!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            NapTien(val);
         }
 
         public void LoadWalletData()

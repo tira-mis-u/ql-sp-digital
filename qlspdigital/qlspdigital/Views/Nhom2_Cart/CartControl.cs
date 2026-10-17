@@ -67,7 +67,7 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             // Tiêu đề
             Label lblHeader = new Label();
-            lblHeader.Text = "🛒 GIỎ HÀNG SẢN PHẨM SỐ CỦA BẠN";
+            lblHeader.Text = "GIỎ HÀNG SẢN PHẨM SỐ CỦA BẠN";
             lblHeader.Location = new Point(25, 15);
             lblHeader.AutoSize = true;
             lblHeader.ForeColor = Color.White;
@@ -134,7 +134,7 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             // Nút xóa món khỏi giỏ dưới bảng
             Button btnRemoveItem = new Button();
-            btnRemoveItem.Text = "🗑️ Xóa món đã chọn";
+            btnRemoveItem.Text = "Xóa món đã chọn";
             btnRemoveItem.Location = new Point(0, 5);
             btnRemoveItem.Size = new Size(185, 38);
             btnRemoveItem.BackColor = Color.FromArgb(180, 40, 40);
@@ -254,7 +254,7 @@ namespace qlspdigital.Views.Nhom2_Cart
             lblWalletBalance.UseMnemonic = false;
 
             btnDeposit = new Button();
-            btnDeposit.Text = "💰 Nạp thêm tiền ví";
+            btnDeposit.Text = "Nạp thêm tiền ví";
             btnDeposit.Dock = DockStyle.Top;
             btnDeposit.Height = 36;
             btnDeposit.BackColor = Color.FromArgb(42, 71, 94);
@@ -267,7 +267,7 @@ namespace qlspdigital.Views.Nhom2_Cart
             btnDeposit.Click += BtnDeposit_Click;
 
             btnCheckout = new Button();
-            btnCheckout.Text = "⚡ THANH TOÁN 1-CLICK\n(Trừ số dư Ví)";
+            btnCheckout.Text = "THANH TOÁN 1-CLICK\n(Trừ số dư Ví)";
             btnCheckout.Dock = DockStyle.Bottom;
             btnCheckout.Height = 58;
             btnCheckout.BackColor = Color.FromArgb(90, 160, 45);
@@ -398,6 +398,12 @@ namespace qlspdigital.Views.Nhom2_Cart
                 return;
             }
 
+            if (code.Length > 50)
+            {
+                MessageBox.Show("Mã ưu đãi không hợp lệ (vượt quá 50 ký tự)!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             if (!UserSession.IsLoggedIn)
             {
                 MessageBox.Show("Vui lòng đăng nhập để áp dụng voucher!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -428,7 +434,11 @@ namespace qlspdigital.Views.Nhom2_Cart
                 return;
             }
 
-            int maGioHang = Convert.ToInt32(dgvCart.SelectedRows[0].Cells["MaGioHang"].Value);
+            var row = dgvCart.SelectedRows[0];
+            if (row == null || row.Index < 0) return;
+            var val = (dgvCart.Columns.Contains("MaGioHang") ? row.Cells["MaGioHang"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            if (val == null) return;
+            int maGioHang = Convert.ToInt32(val);
             if (_gioHangService.XoaKhoiGioHang(maGioHang))
             {
                 LoadCart();

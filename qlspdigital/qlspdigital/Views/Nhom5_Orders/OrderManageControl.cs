@@ -49,7 +49,7 @@ namespace qlspdigital.Views.Nhom5_Orders
 
             // Tiêu đề
             Label lblHeader = new Label();
-            lblHeader.Text = "📑 QUẢN LÝ VÀ THEO DÕI ĐƠN HÀNG TOÀN SÀN";
+            lblHeader.Text = "QUẢN LÝ VÀ THEO DÕI ĐƠN HÀNG TOÀN SÀN";
             lblHeader.Location = new Point(20, 10);
             lblHeader.AutoSize = true;
             lblHeader.ForeColor = Color.White;
@@ -101,9 +101,9 @@ namespace qlspdigital.Views.Nhom5_Orders
             txtSearch.TextChanged += TxtSearch_TextChanged;
 
             btnSearch = new Button();
-            btnSearch.Text = "🔍 Tìm";
+            btnSearch.Text = "Tìm kiếm";
             btnSearch.Location = new Point(695, 9);
-            btnSearch.Size = new Size(80, 32);
+            btnSearch.Size = new Size(100, 32);
             btnSearch.BackColor = Color.FromArgb(49, 98, 130);
             btnSearch.ForeColor = Color.White;
             btnSearch.FlatStyle = FlatStyle.Flat;
@@ -115,7 +115,7 @@ namespace qlspdigital.Views.Nhom5_Orders
 
             btnRefresh = new Button();
             btnRefresh.Text = "Làm mới";
-            btnRefresh.Location = new Point(785, 9);
+            btnRefresh.Location = new Point(805, 9);
             btnRefresh.Size = new Size(100, 32);
             btnRefresh.BackColor = Color.FromArgb(60, 75, 90);
             btnRefresh.ForeColor = Color.White;
@@ -258,7 +258,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             panelBottomActions.BackColor = Color.FromArgb(23, 26, 33);
 
             btnApprove = new Button();
-            btnApprove.Text = "✅ Duyệt đơn (Hoàn thành & Cấp Thư viện)";
+            btnApprove.Text = "Duyệt đơn (Hoàn thành & Cấp Thư viện)";
             btnApprove.Location = new Point(0, 4);
             btnApprove.Size = new Size(360, 40);
             btnApprove.BackColor = Color.FromArgb(90, 160, 45);
@@ -271,7 +271,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             btnApprove.Click += BtnApprove_Click;
 
             btnCancelOrder = new Button();
-            btnCancelOrder.Text = "❌ Hủy đơn hàng";
+            btnCancelOrder.Text = "Hủy đơn hàng";
             btnCancelOrder.Location = new Point(375, 4);
             btnCancelOrder.Size = new Size(180, 40);
             btnCancelOrder.BackColor = Color.FromArgb(180, 40, 40);
@@ -319,18 +319,18 @@ namespace qlspdigital.Views.Nhom5_Orders
             lblSearch.Location = new Point(cboStatus.Right + 24, 15);
             txtSearch.Location = new Point(lblSearch.Right + 12, 10);
 
-            int btnSearchW = 85;
+            int btnSearchW = 100;
             int btnRefreshW = 100;
             int filterW = panelFilter.ClientSize.Width;
 
-            btnRefresh.Location = new Point(filterW - btnRefreshW - 12, 9);
-            btnRefresh.Size = new Size(btnRefreshW, 32);
+            int searchW = Math.Clamp(filterW - txtSearch.Left - btnSearchW - btnRefreshW - 40, 180, 520);
+            txtSearch.Size = new Size(searchW, 30);
 
-            btnSearch.Location = new Point(btnRefresh.Left - btnSearchW - 10, 9);
+            btnSearch.Location = new Point(txtSearch.Right + 10, 9);
             btnSearch.Size = new Size(btnSearchW, 32);
 
-            int searchW = Math.Clamp(btnSearch.Left - txtSearch.Left - 15, 200, 560);
-            txtSearch.Size = new Size(searchW, 30);
+            btnRefresh.Location = new Point(btnSearch.Right + 10, 9);
+            btnRefresh.Size = new Size(btnRefreshW, 32);
 
             int rightW = Math.Clamp((int)(totalW * 0.36), 300, 420);
             int leftW = Math.Max(260, totalW - rightW - 55); // margin 20 left + 15 gap + 20 right
@@ -371,9 +371,19 @@ namespace qlspdigital.Views.Nhom5_Orders
 
         private void DgvOrders_SelectionChanged(object? sender, EventArgs e)
         {
-            if (dgvOrders.SelectedRows.Count == 0) return;
+            if (dgvOrders.SelectedRows.Count == 0)
+            {
+                dgvOrderDetails.Rows.Clear();
+                return;
+            }
 
-            int orderId = Convert.ToInt32(dgvOrders.SelectedRows[0].Cells["MaDonHang"].Value);
+            var row = dgvOrders.SelectedRows[0];
+            if (row == null || row.Index < 0) return;
+
+            var val = (dgvOrders.Columns.Contains("MaDonHang") ? row.Cells["MaDonHang"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            if (val == null) return;
+
+            int orderId = Convert.ToInt32(val);
             dgvOrderDetails.Rows.Clear();
 
             var details = _orderService.LayChiTietDonHang(orderId);
@@ -391,8 +401,15 @@ namespace qlspdigital.Views.Nhom5_Orders
                 return;
             }
 
-            int orderId = Convert.ToInt32(dgvOrders.SelectedRows[0].Cells["MaDonHang"].Value);
-            string code = dgvOrders.SelectedRows[0].Cells["MaDonHangCode"].Value?.ToString() ?? string.Empty;
+            var row = dgvOrders.SelectedRows[0];
+            if (row == null || row.Index < 0) return;
+
+            var val = (dgvOrders.Columns.Contains("MaDonHang") ? row.Cells["MaDonHang"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            if (val == null) return;
+
+            int orderId = Convert.ToInt32(val);
+            string code = (dgvOrders.Columns.Contains("MaDonHangCode") ? row.Cells["MaDonHangCode"].Value : null)?.ToString()
+                ?? (row.Cells.Count > 1 ? row.Cells[1].Value?.ToString() : string.Empty) ?? string.Empty;
 
             if (MessageBox.Show($"Bạn có chắc muốn chuyển đơn [{code}] sang '{status}'?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {

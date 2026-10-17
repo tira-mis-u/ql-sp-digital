@@ -62,7 +62,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
 
             // Tiêu đề
             Label lblHeader = new Label();
-            lblHeader.Text = "📦 QUẢN TRỊ KHO HÀNG HÓA & TỆP KỸ THUẬT SỐ";
+            lblHeader.Text = "QUẢN TRỊ KHO HÀNG HÓA & TỆP KỸ THUẬT SỐ";
             lblHeader.Location = new Point(20, 10);
             lblHeader.AutoSize = true;
             lblHeader.ForeColor = Color.White;
@@ -86,7 +86,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
 
             txtSearch = new TextBox();
             txtSearch.Location = new Point(95, 8);
-            txtSearch.Width = 295;
+            txtSearch.Width = 285;
             txtSearch.Font = new Font("Segoe UI", 10f);
             txtSearch.BackColor = Color.FromArgb(18, 25, 35);
             txtSearch.ForeColor = Color.White;
@@ -94,9 +94,9 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             txtSearch.TextChanged += TxtSearch_TextChanged;
 
             btnSearch = new Button();
-            btnSearch.Text = "Tìm";
-            btnSearch.Location = new Point(395, 7);
-            btnSearch.Size = new Size(85, 30);
+            btnSearch.Text = "Tìm kiếm";
+            btnSearch.Location = new Point(385, 7);
+            btnSearch.Size = new Size(95, 30);
             btnSearch.BackColor = Color.FromArgb(49, 98, 130);
             btnSearch.ForeColor = Color.White;
             btnSearch.FlatStyle = FlatStyle.Flat;
@@ -362,7 +362,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             btnNew.Click += BtnNew_Click;
 
             btnSave = new Button();
-            btnSave.Text = "💾 Lưu";
+            btnSave.Text = "Lưu";
             btnSave.Location = new Point(165, 480);
             btnSave.Size = new Size(140, 38);
             btnSave.BackColor = Color.FromArgb(90, 160, 45);
@@ -375,7 +375,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             btnSave.Click += BtnSave_Click;
 
             btnDelete = new Button();
-            btnDelete.Text = "🗑️ Xóa";
+            btnDelete.Text = "Xóa";
             btnDelete.Location = new Point(320, 480);
             btnDelete.Size = new Size(120, 38);
             btnDelete.BackColor = Color.FromArgb(180, 40, 40);
@@ -440,7 +440,8 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             panelSearch.Size = new Size(leftW, 42);
             lblSearch.Location = new Point(12, 12);
             txtSearch.Location = new Point(lblSearch.Right + 12, 8);
-            btnSearch.Location = new Point(leftW - 95, 6);
+            btnSearch.Size = new Size(95, 30);
+            btnSearch.Location = new Point(leftW - 105, 6);
             txtSearch.Width = Math.Max(120, btnSearch.Left - txtSearch.Left - 12);
 
             // 2. DataGridView
@@ -512,7 +513,12 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
         {
             if (dgvProducts.SelectedRows.Count == 0) return;
 
-            int id = Convert.ToInt32(dgvProducts.SelectedRows[0].Cells["MaSanPham"].Value);
+            var row = dgvProducts.SelectedRows[0];
+            if (row == null || row.Index < 0) return;
+
+            var val = (dgvProducts.Columns.Contains("MaSanPham") ? row.Cells["MaSanPham"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            if (val == null) return;
+            int id = Convert.ToInt32(val);
             var list = _spAdminService.LayDanhSachSanPham();
             var sp = list.Find(x => x.MaSanPham == id);
 
@@ -575,13 +581,29 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
                 return;
             }
 
-            if (!decimal.TryParse(txtPrice.Text.Trim(), out decimal price) || price < 0)
+            if (txtName.Text.Trim().Length > 200)
             {
-                MessageBox.Show("Giá bán không hợp lệ!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Tên sản phẩm không được vượt quá 200 ký tự!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            decimal.TryParse(txtSize.Text.Trim(), out decimal size);
+            if (!decimal.TryParse(txtPrice.Text.Trim(), out decimal price) || price < 0 || price > 1000000000m)
+            {
+                MessageBox.Show("Giá bán không hợp lệ (phải từ 0 đến 1.000.000.000 ₫)!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!decimal.TryParse(txtSize.Text.Trim(), out decimal size) || size < 0 || size > 1000000m)
+            {
+                MessageBox.Show("Dung lượng không hợp lệ (phải từ 0 đến 1.000.000 MB)!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (txtVersion.Text.Trim().Length > 50)
+            {
+                MessageBox.Show("Phiên bản không được vượt quá 50 ký tự!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             int catId = 1;
             if (cboCategory.SelectedItem is CategoryItem ci) catId = ci.Id;

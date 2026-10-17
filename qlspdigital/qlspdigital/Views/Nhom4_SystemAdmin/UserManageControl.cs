@@ -47,7 +47,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
             // Tiêu đề
             Label lblHeader = new Label();
-            lblHeader.Text = "👥 QUẢN TRỊ DANH SÁCH TÀI KHOẢN NGƯỜI DÙNG";
+            lblHeader.Text = "QUẢN TRỊ DANH SÁCH TÀI KHOẢN NGƯỜI DÙNG";
             lblHeader.Location = new Point(25, 15);
             lblHeader.AutoSize = true;
             lblHeader.ForeColor = Color.White;
@@ -99,9 +99,9 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             txtSearch.TextChanged += TxtSearch_TextChanged;
 
             btnSearch = new Button();
-            btnSearch.Text = "🔍 Tìm";
+            btnSearch.Text = "Tìm kiếm";
             btnSearch.Location = new Point(695, 9);
-            btnSearch.Size = new Size(80, 32);
+            btnSearch.Size = new Size(100, 32);
             btnSearch.BackColor = Color.FromArgb(49, 98, 130);
             btnSearch.ForeColor = Color.White;
             btnSearch.FlatStyle = FlatStyle.Flat;
@@ -113,7 +113,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
             btnRefresh = new Button();
             btnRefresh.Text = "Làm mới";
-            btnRefresh.Location = new Point(785, 9);
+            btnRefresh.Location = new Point(805, 9);
             btnRefresh.Size = new Size(100, 32);
             btnRefresh.BackColor = Color.FromArgb(60, 75, 90);
             btnRefresh.ForeColor = Color.White;
@@ -209,7 +209,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             panelBottomActions.BackColor = Color.FromArgb(23, 26, 33);
 
             btnLock = new Button();
-            btnLock.Text = "🔒 Khóa tài khoản";
+            btnLock.Text = "Khóa tài khoản";
             btnLock.Location = new Point(0, 5);
             btnLock.Size = new Size(180, 38);
             btnLock.BackColor = Color.FromArgb(180, 40, 40);
@@ -222,7 +222,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             btnLock.Click += BtnLock_Click;
 
             btnUnlock = new Button();
-            btnUnlock.Text = "🔓 Mở khóa tài khoản";
+            btnUnlock.Text = "Mở khóa tài khoản";
             btnUnlock.Location = new Point(195, 5);
             btnUnlock.Size = new Size(205, 38);
             btnUnlock.BackColor = Color.FromArgb(90, 160, 45);
@@ -270,9 +270,9 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             lblSearch.Location = new Point(cboRole.Right + 24, 15);
             txtSearch.Location = new Point(lblSearch.Right + 12, 10);
 
-            int btnSearchW = 85;
+            int btnSearchW = 100;
             int btnRefreshW = 100;
-            int searchW = Math.Clamp(fullW - txtSearch.Left - btnSearchW - btnRefreshW - 45, 200, 520);
+            int searchW = Math.Clamp(fullW - txtSearch.Left - btnSearchW - btnRefreshW - 45, 180, 520);
             txtSearch.Size = new Size(searchW, 30);
 
             btnSearch.Location = new Point(txtSearch.Right + 10, 9);
@@ -321,8 +321,13 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
                 return;
             }
 
-            int id = Convert.ToInt32(dgvUsers.SelectedRows[0].Cells["MaNguoiDung"].Value);
-            string username = dgvUsers.SelectedRows[0].Cells["TenDangNhap"].Value?.ToString() ?? string.Empty;
+            var row = dgvUsers.SelectedRows[0];
+            if (row == null || row.Index < 0) return;
+            var val = (dgvUsers.Columns.Contains("MaNguoiDung") ? row.Cells["MaNguoiDung"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            if (val == null) return;
+            int id = Convert.ToInt32(val);
+            string username = (dgvUsers.Columns.Contains("TenDangNhap") ? row.Cells["TenDangNhap"].Value : null)?.ToString()
+                ?? (row.Cells.Count > 1 ? row.Cells[1].Value?.ToString() : string.Empty) ?? string.Empty;
 
             string actionText = newStatus ? "Mở khóa" : "Khóa";
             if (MessageBox.Show($"Bạn có chắc chắn muốn {actionText} tài khoản [{username}]?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)

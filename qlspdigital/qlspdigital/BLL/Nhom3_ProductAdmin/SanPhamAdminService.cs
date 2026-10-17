@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using qlspdigital.DAL.Nhom3_ProductAdmin;
 using qlspdigital.DTOs;
@@ -120,17 +120,32 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
                 return false;
             }
 
-            if (dm.MaDanhMuc > 0)
+            try
             {
-                bool ok = _repo.CapNhatDanhMuc(dm);
-                thongBao = ok ? "Cập nhật danh mục thành công!" : "Cập nhật thất bại.";
-                return ok;
+                if (dm.MaDanhMuc > 0)
+                {
+                    bool ok = _repo.CapNhatDanhMuc(dm);
+                    thongBao = ok ? "Cập nhật danh mục thành công!" : "Cập nhật thất bại.";
+                    return ok;
+                }
+                else
+                {
+                    bool ok = _repo.ThemDanhMuc(dm);
+                    thongBao = ok ? "Thêm danh mục mới thành công!" : "Thêm danh mục thất bại.";
+                    return ok;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                bool ok = _repo.ThemDanhMuc(dm);
-                thongBao = ok ? "Thêm danh mục mới thành công!" : "Thêm danh mục thất bại.";
-                return ok;
+                if (ex.Message.Contains("UNIQUE") || ex.Message.Contains("trùng") || ex.Message.Contains("duplicate"))
+                {
+                    thongBao = $"Tên danh mục [{dm.TenDanhMuc}] đã tồn tại trong hệ thống!";
+                }
+                else
+                {
+                    thongBao = "Lỗi lưu danh mục: " + ex.Message;
+                }
+                return false;
             }
         }
 
@@ -164,9 +179,21 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(email) || !email.Contains("@"))
+            if (hoTen.Trim().Length > 100)
             {
-                thongBao = "Địa chỉ email không hợp lệ!";
+                thongBao = "Họ tên không được vượt quá 100 ký tự!";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(email) || !email.Contains("@") || email.Trim().Length > 100)
+            {
+                thongBao = "Địa chỉ email không hợp lệ (phải chứa '@' và dưới 100 ký tự)!";
+                return false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(soDienThoai) && soDienThoai.Trim().Length > 20)
+            {
+                thongBao = "Số điện thoại không được vượt quá 20 ký tự!";
                 return false;
             }
 
@@ -184,6 +211,12 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
             if (matKhauMoi.Length < 6)
             {
                 thongBao = "Mật khẩu mới phải có tối thiểu 6 ký tự!";
+                return false;
+            }
+
+            if (matKhauCu.Equals(matKhauMoi))
+            {
+                thongBao = "Mật khẩu mới không được trùng với mật khẩu hiện tại!";
                 return false;
             }
 

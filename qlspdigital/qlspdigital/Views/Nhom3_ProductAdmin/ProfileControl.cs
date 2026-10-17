@@ -55,7 +55,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
 
             // Tiêu đề
             Label lblHeader = new Label();
-            lblHeader.Text = "👤 HỒ SƠ TÀI KHOẢN & CÀI ĐẶT BẢO MẬT";
+            lblHeader.Text = "HỒ SƠ TÀI KHOẢN & CÀI ĐẶT BẢO MẬT";
             lblHeader.Location = new Point(25, 15);
             lblHeader.AutoSize = true;
             lblHeader.ForeColor = Color.White;
@@ -114,7 +114,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             panelProfileForm.Padding = new Padding(20);
 
             Label lblForm1 = new Label();
-            lblForm1.Text = "📝 THAY ĐỔI THÔNG TIN CÁ NHÂN";
+            lblForm1.Text = "THAY ĐỔI THÔNG TIN CÁ NHÂN";
             lblForm1.Location = new Point(20, 15);
             lblForm1.AutoSize = true;
             lblForm1.ForeColor = Color.FromArgb(102, 192, 244);
@@ -199,7 +199,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             panelPasswordForm.Padding = new Padding(20);
 
             Label lblForm2 = new Label();
-            lblForm2.Text = "🔒 ĐỔI MẬT KHẨU BẢO MẬT";
+            lblForm2.Text = "ĐỔI MẬT KHẨU BẢO MẬT";
             lblForm2.Location = new Point(20, 15);
             lblForm2.AutoSize = true;
             lblForm2.ForeColor = Color.FromArgb(164, 208, 7);
@@ -287,7 +287,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             panelSecurityBanner.Padding = new Padding(20);
 
             Label lblSecurityTitle = new Label();
-            lblSecurityTitle.Text = "🛡️ NGUYÊN TẮC BẢO MẬT TÀI KHOẢN DIGITAL STEAM";
+            lblSecurityTitle.Text = "NGUYÊN TẮC BẢO MẬT TÀI KHOẢN DIGITAL STEAM";
             lblSecurityTitle.Location = new Point(20, 12);
             lblSecurityTitle.AutoSize = true;
             lblSecurityTitle.ForeColor = Color.FromArgb(102, 192, 244);

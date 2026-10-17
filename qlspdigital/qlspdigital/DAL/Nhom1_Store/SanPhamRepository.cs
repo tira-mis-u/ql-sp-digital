@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
@@ -33,7 +33,8 @@ namespace qlspdigital.DAL.Nhom1_Store
             if (!string.IsNullOrWhiteSpace(tuKhoa))
             {
                 query += " AND sp.TenSanPham LIKE @TuKhoa";
-                parameters.Add(new SqlParameter("@TuKhoa", $"%{tuKhoa.Trim()}%"));
+                string safeKey = tuKhoa.Trim().Replace("[", "[[]");
+                parameters.Add(new SqlParameter("@TuKhoa", $"%{safeKey}%"));
             }
 
             if (maDanhMuc.HasValue && maDanhMuc.Value > 0)

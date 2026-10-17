@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using qlspdigital.DAL.Nhom4_SystemAdmin;
 using qlspdigital.DTOs;
@@ -42,6 +42,18 @@ namespace qlspdigital.BLL.Nhom4_SystemAdmin
                 return false;
             }
 
+            if (tenDangNhap.Length > 50)
+            {
+                thongBao = "Tên đăng nhập không được vượt quá 50 ký tự!";
+                return false;
+            }
+
+            if (tenDangNhap.Any(char.IsWhiteSpace))
+            {
+                thongBao = "Tên đăng nhập không được chứa khoảng trắng!";
+                return false;
+            }
+
             if (string.IsNullOrWhiteSpace(matKhau) || matKhau.Length < 6)
             {
                 thongBao = "Mật khẩu phải có độ dài tối thiểu 6 ký tự!";
@@ -60,9 +72,21 @@ namespace qlspdigital.BLL.Nhom4_SystemAdmin
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(email) || !email.Contains("@"))
+            if (hoTen.Trim().Length > 100)
             {
-                thongBao = "Địa chỉ email không đúng định dạng!";
+                thongBao = "Họ tên không được vượt quá 100 ký tự!";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(email) || !email.Contains("@") || email.Trim().Length > 100)
+            {
+                thongBao = "Địa chỉ email không hợp lệ (phải chứa '@' và dưới 100 ký tự)!";
+                return false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(soDienThoai) && soDienThoai.Trim().Length > 20)
+            {
+                thongBao = "Số điện thoại không được vượt quá 20 ký tự!";
                 return false;
             }
 
