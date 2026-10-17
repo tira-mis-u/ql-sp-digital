@@ -9,7 +9,7 @@ namespace qlspdigital.Views.Nhom5_Orders
 {
     // UI 13: Quản lý và duyệt đơn hàng toàn hệ thống (Admin)
     // Thành viên phụ trách: Phạm Văn Đam (Nhóm 5)
-    public class OrderManageControl : UserControl
+    public partial class OrderManageControl : UserControl
     {
         private readonly DonHangService _orderService;
 
@@ -29,59 +29,85 @@ namespace qlspdigital.Views.Nhom5_Orders
             _orderService = new DonHangService();
 
             InitializeComponent();
+            AdjustLayout();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadOrders();
         }
 
         private void InitializeComponent()
         {
+            this.SuspendLayout();
+
+            this.AutoScaleDimensions = new SizeF(7F, 15F);
+            this.AutoScaleMode = AutoScaleMode.Font;
             this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
-            this.Dock = DockStyle.Fill;
             this.Padding = new Padding(20);
 
             // Tiêu đề
-            Label lblHeader = new Label
-            {
-                Text = "📑 QUẢN LÝ VÀ THEO DÕI ĐƠN HÀNG TOÀN SÀN",
-                Location = new Point(20, 10),
-                AutoSize = true,
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 14, FontStyle.Bold)
-            };
+            Label lblHeader = new Label();
+            lblHeader.Text = "📑 QUẢN LÝ VÀ THEO DÕI ĐƠN HÀNG TOÀN SÀN";
+            lblHeader.Location = new Point(20, 10);
+            lblHeader.AutoSize = true;
+            lblHeader.ForeColor = Color.White;
+            lblHeader.Font = new Font("Segoe UI", 14, FontStyle.Bold);
 
             // 1. THANH LỌC VÀ TÌM KIẾM
-            panelFilter = new Panel
-            {
-                Location = new Point(20, 45),
-                Size = new Size(1000, 42),
-                BackColor = Color.FromArgb(27, 40, 56),
-                Padding = new Padding(10, 6, 10, 6)
-            };
+            panelFilter = new Panel();
+            panelFilter.Location = new Point(20, 45);
+            panelFilter.Size = new Size(1000, 42);
+            panelFilter.BackColor = Color.FromArgb(27, 40, 56);
+            panelFilter.Padding = new Padding(10, 6, 10, 6);
 
-            Label lblStatus = new Label { Text = "Trạng thái:", Location = new Point(10, 11), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 9.5f, FontStyle.Bold), UseMnemonic = false };
-            cboStatus = new ComboBox { Location = new Point(110, 7), Width = 145, DropDownStyle = ComboBoxStyle.DropDownList, Font = new Font("Segoe UI", 9.5f), BackColor = Color.FromArgb(18, 25, 35), ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
+            Label lblStatus = new Label();
+            lblStatus.Text = "Trạng thái:";
+            lblStatus.Location = new Point(10, 11);
+            lblStatus.AutoSize = true;
+            lblStatus.ForeColor = Color.White;
+            lblStatus.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            lblStatus.UseMnemonic = false;
+
+            cboStatus = new ComboBox();
+            cboStatus.Location = new Point(110, 7);
+            cboStatus.Width = 145;
+            cboStatus.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboStatus.Font = new Font("Segoe UI", 9.5f);
+            cboStatus.BackColor = Color.FromArgb(18, 25, 35);
+            cboStatus.ForeColor = Color.White;
+            cboStatus.FlatStyle = FlatStyle.Flat;
             cboStatus.Items.AddRange(new string[] { "Tất cả", "Hoàn thành", "Chờ xử lý", "Đã hủy" });
             cboStatus.SelectedIndex = 0;
-            cboStatus.SelectedIndexChanged += (s, e) => LoadOrders();
+            cboStatus.SelectedIndexChanged += CboStatus_SelectedIndexChanged;
 
-            Label lblSearch = new Label { Text = "Tìm kiếm:", Location = new Point(275, 11), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 9.5f, FontStyle.Bold), UseMnemonic = false };
-            txtSearch = new TextBox { Location = new Point(365, 7), Width = 250, Font = new Font("Segoe UI", 9.5f), BackColor = Color.FromArgb(18, 25, 35), ForeColor = Color.White, PlaceholderText = "Mã đơn hàng, tên khách..." };
-            txtSearch.TextChanged += (s, e) => LoadOrders();
+            Label lblSearch = new Label();
+            lblSearch.Text = "Tìm kiếm:";
+            lblSearch.Location = new Point(275, 11);
+            lblSearch.AutoSize = true;
+            lblSearch.ForeColor = Color.White;
+            lblSearch.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            lblSearch.UseMnemonic = false;
 
-            btnRefresh = new Button
-            {
-                Text = "Làm mới",
-                Location = new Point(630, 7),
-                Size = new Size(95, 28),
-                BackColor = Color.FromArgb(49, 98, 130),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            txtSearch = new TextBox();
+            txtSearch.Location = new Point(365, 7);
+            txtSearch.Width = 250;
+            txtSearch.Font = new Font("Segoe UI", 9.5f);
+            txtSearch.BackColor = Color.FromArgb(18, 25, 35);
+            txtSearch.ForeColor = Color.White;
+            txtSearch.PlaceholderText = "Mã đơn hàng, tên khách...";
+            txtSearch.TextChanged += TxtSearch_TextChanged;
+
+            btnRefresh = new Button();
+            btnRefresh.Text = "Làm mới";
+            btnRefresh.Location = new Point(630, 7);
+            btnRefresh.Size = new Size(95, 28);
+            btnRefresh.BackColor = Color.FromArgb(49, 98, 130);
+            btnRefresh.ForeColor = Color.White;
+            btnRefresh.FlatStyle = FlatStyle.Flat;
+            btnRefresh.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            btnRefresh.Cursor = Cursors.Hand;
+            btnRefresh.UseMnemonic = false;
             btnRefresh.FlatAppearance.BorderSize = 0;
-            btnRefresh.Click += (s, e) => { txtSearch.Clear(); cboStatus.SelectedIndex = 0; LoadOrders(); };
+            btnRefresh.Click += BtnRefresh_Click;
 
             panelFilter.Controls.Add(btnRefresh);
             panelFilter.Controls.Add(txtSearch);
@@ -90,21 +116,19 @@ namespace qlspdigital.Views.Nhom5_Orders
             panelFilter.Controls.Add(lblStatus);
 
             // 2. BẢNG DANH SÁCH ĐƠN HÀNG (READ)
-            dgvOrders = new DataGridView
-            {
-                Location = new Point(20, 95),
-                Size = new Size(630, 535),
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left,
-                BackgroundColor = Color.FromArgb(27, 40, 56),
-                ForeColor = Color.White,
-                GridColor = Color.FromArgb(42, 71, 94),
-                BorderStyle = BorderStyle.None,
-                RowHeadersVisible = false,
-                AllowUserToAddRows = false,
-                ReadOnly = true,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-            };
+            dgvOrders = new DataGridView();
+            dgvOrders.Location = new Point(20, 95);
+            dgvOrders.Size = new Size(630, 535);
+            dgvOrders.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            dgvOrders.BackgroundColor = Color.FromArgb(27, 40, 56);
+            dgvOrders.ForeColor = Color.White;
+            dgvOrders.GridColor = Color.FromArgb(42, 71, 94);
+            dgvOrders.BorderStyle = BorderStyle.None;
+            dgvOrders.RowHeadersVisible = false;
+            dgvOrders.AllowUserToAddRows = false;
+            dgvOrders.ReadOnly = true;
+            dgvOrders.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvOrders.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvOrders.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 35);
             dgvOrders.DefaultCellStyle.ForeColor = Color.White;
             dgvOrders.DefaultCellStyle.SelectionBackColor = Color.FromArgb(49, 98, 130);
@@ -122,9 +146,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             dgvOrders.Columns.Add("TrangThai", "Trạng thái");
             dgvOrders.Columns.Add("NgayTao", "Ngày đặt");
 
-            dgvOrders.Columns["MaDonHang"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvOrders.Columns["MaDonHang"].Width = 45;
-            dgvOrders.Columns["MaDonHang"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvOrders.Columns["MaDonHang"].Visible = false;
 
             dgvOrders.Columns["MaDonHangCode"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dgvOrders.Columns["MaDonHangCode"].Width = 150;
@@ -147,37 +169,31 @@ namespace qlspdigital.Views.Nhom5_Orders
             dgvOrders.SelectionChanged += DgvOrders_SelectionChanged;
 
             // 3. BẢNG CHI TIẾT CÁC MÓN TRONG ĐƠN HÀNG
-            panelDetails = new Panel
-            {
-                Location = new Point(670, 95),
-                Size = new Size(350, 535),
-                BackColor = Color.FromArgb(27, 40, 56),
-                Padding = new Padding(15)
-            };
+            panelDetails = new Panel();
+            panelDetails.Location = new Point(670, 95);
+            panelDetails.Size = new Size(350, 535);
+            panelDetails.BackColor = Color.FromArgb(27, 40, 56);
+            panelDetails.Padding = new Padding(15);
 
-            Label lblDetailTitle = new Label
-            {
-                Text = "CHI TIẾT MẶT HÀNG TRONG ĐƠN",
-                Dock = DockStyle.Top,
-                Height = 25,
-                ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 10.5f, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            Label lblDetailTitle = new Label();
+            lblDetailTitle.Text = "CHI TIẾT MẶT HÀNG TRONG ĐƠN";
+            lblDetailTitle.Dock = DockStyle.Top;
+            lblDetailTitle.Height = 25;
+            lblDetailTitle.ForeColor = Color.FromArgb(102, 192, 244);
+            lblDetailTitle.Font = new Font("Segoe UI", 10.5f, FontStyle.Bold);
+            lblDetailTitle.UseMnemonic = false;
 
-            dgvOrderDetails = new DataGridView
-            {
-                Dock = DockStyle.Fill,
-                BackgroundColor = Color.FromArgb(18, 25, 35),
-                ForeColor = Color.White,
-                GridColor = Color.FromArgb(42, 71, 94),
-                BorderStyle = BorderStyle.None,
-                RowHeadersVisible = false,
-                AllowUserToAddRows = false,
-                ReadOnly = true,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-            };
+            dgvOrderDetails = new DataGridView();
+            dgvOrderDetails.Dock = DockStyle.Fill;
+            dgvOrderDetails.BackgroundColor = Color.FromArgb(18, 25, 35);
+            dgvOrderDetails.ForeColor = Color.White;
+            dgvOrderDetails.GridColor = Color.FromArgb(42, 71, 94);
+            dgvOrderDetails.BorderStyle = BorderStyle.None;
+            dgvOrderDetails.RowHeadersVisible = false;
+            dgvOrderDetails.AllowUserToAddRows = false;
+            dgvOrderDetails.ReadOnly = true;
+            dgvOrderDetails.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvOrderDetails.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvOrderDetails.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 35);
             dgvOrderDetails.DefaultCellStyle.ForeColor = Color.White;
             dgvOrderDetails.DefaultCellStyle.SelectionBackColor = Color.FromArgb(49, 98, 130);
@@ -207,42 +223,36 @@ namespace qlspdigital.Views.Nhom5_Orders
             panelDetails.Controls.Add(lblDetailTitle);
 
             // 4. CÁC NÚT DUYỆT ĐƠN / HỦY ĐƠN (UPDATE)
-            panelBottomActions = new Panel
-            {
-                Location = new Point(20, 642),
-                Size = new Size(1000, 50),
-                BackColor = Color.FromArgb(23, 26, 33)
-            };
+            panelBottomActions = new Panel();
+            panelBottomActions.Location = new Point(20, 642);
+            panelBottomActions.Size = new Size(1000, 50);
+            panelBottomActions.BackColor = Color.FromArgb(23, 26, 33);
 
-            btnApprove = new Button
-            {
-                Text = "✅ Duyệt đơn (Hoàn thành & Cấp Thư viện)",
-                Location = new Point(0, 5),
-                Size = new Size(380, 38),
-                BackColor = Color.FromArgb(92, 126, 16),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnApprove = new Button();
+            btnApprove.Text = "✅ Duyệt đơn (Hoàn thành & Cấp Thư viện)";
+            btnApprove.Location = new Point(0, 5);
+            btnApprove.Size = new Size(380, 38);
+            btnApprove.BackColor = Color.FromArgb(92, 126, 16);
+            btnApprove.ForeColor = Color.White;
+            btnApprove.FlatStyle = FlatStyle.Flat;
+            btnApprove.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnApprove.Cursor = Cursors.Hand;
+            btnApprove.UseMnemonic = false;
             btnApprove.FlatAppearance.BorderSize = 0;
-            btnApprove.Click += (s, e) => ChangeOrderStatus("Hoàn thành");
+            btnApprove.Click += BtnApprove_Click;
 
-            btnCancelOrder = new Button
-            {
-                Text = "❌ Hủy đơn hàng",
-                Location = new Point(395, 5),
-                Size = new Size(175, 38),
-                BackColor = Color.FromArgb(180, 40, 40),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnCancelOrder = new Button();
+            btnCancelOrder.Text = "❌ Hủy đơn hàng";
+            btnCancelOrder.Location = new Point(395, 5);
+            btnCancelOrder.Size = new Size(175, 38);
+            btnCancelOrder.BackColor = Color.FromArgb(180, 40, 40);
+            btnCancelOrder.ForeColor = Color.White;
+            btnCancelOrder.FlatStyle = FlatStyle.Flat;
+            btnCancelOrder.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnCancelOrder.Cursor = Cursors.Hand;
+            btnCancelOrder.UseMnemonic = false;
             btnCancelOrder.FlatAppearance.BorderSize = 0;
-            btnCancelOrder.Click += (s, e) => ChangeOrderStatus("Đã hủy");
+            btnCancelOrder.Click += BtnCancelOrder_Click;
 
             panelBottomActions.Controls.Add(btnCancelOrder);
             panelBottomActions.Controls.Add(btnApprove);
@@ -255,8 +265,8 @@ namespace qlspdigital.Views.Nhom5_Orders
 
             panelBottomActions.BringToFront();
 
-            this.Resize += (s, e) => AdjustLayout();
-            AdjustLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         protected override void OnResize(EventArgs e)
@@ -267,9 +277,9 @@ namespace qlspdigital.Views.Nhom5_Orders
 
         private void AdjustLayout()
         {
-            if (this.ClientSize.Width < 500 || panelFilter == null || dgvOrders == null || panelDetails == null || panelBottomActions == null) return;
-            int totalW = this.ClientSize.Width;
-            int totalH = this.ClientSize.Height;
+            if (panelFilter == null || dgvOrders == null || panelDetails == null || panelBottomActions == null) return;
+            int totalW = Math.Max(1040, this.ClientSize.Width);
+            int totalH = Math.Max(700, this.ClientSize.Height);
 
             panelFilter.Location = new Point(20, 45);
             panelFilter.Size = new Size(totalW - 40, 42);
@@ -349,5 +359,16 @@ namespace qlspdigital.Views.Nhom5_Orders
                 }
             }
         }
+
+        private void CboStatus_SelectedIndexChanged(object? sender, EventArgs e) => LoadOrders();
+        private void TxtSearch_TextChanged(object? sender, EventArgs e) => LoadOrders();
+        private void BtnRefresh_Click(object? sender, EventArgs e)
+        {
+            txtSearch.Clear();
+            cboStatus.SelectedIndex = 0;
+            LoadOrders();
+        }
+        private void BtnApprove_Click(object? sender, EventArgs e) => ChangeOrderStatus("Hoàn thành");
+        private void BtnCancelOrder_Click(object? sender, EventArgs e) => ChangeOrderStatus("Đã hủy");
     }
 }

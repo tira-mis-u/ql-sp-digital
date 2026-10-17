@@ -9,7 +9,7 @@ namespace qlspdigital.Views.Nhom1_Store
 {
     // UI 14: Đánh giá & Nhận xét sản phẩm (Steam Reviews style)
     // Thành viên phụ trách: Lê Nguyễn Minh Trí (Nhóm 1)
-    public class ProductReviewControl : UserControl
+    public partial class ProductReviewControl : UserControl
     {
         private readonly SanPhamService _sanPhamService;
         private readonly DanhGiaService _danhGiaService;
@@ -34,124 +34,104 @@ namespace qlspdigital.Views.Nhom1_Store
             _danhGiaService = new DanhGiaService();
 
             InitializeComponent();
+            AdjustLayout();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadProductList();
         }
 
         private void InitializeComponent()
         {
+            this.SuspendLayout();
+
+            this.AutoScaleDimensions = new SizeF(7F, 15F);
+            this.AutoScaleMode = AutoScaleMode.Font;
             this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
-            this.Dock = DockStyle.Fill;
             this.Padding = new Padding(25);
 
             // Nút quay lại
-            btnBack = new Button
-            {
-                Text = "← Quay lại Cửa hàng",
-                Size = new Size(195, 36),
-                Location = new Point(25, 12),
-                BackColor = Color.FromArgb(49, 98, 130),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnBack = new Button();
+            btnBack.Text = "← Quay lại Cửa hàng";
+            btnBack.Size = new Size(195, 36);
+            btnBack.Location = new Point(25, 12);
+            btnBack.BackColor = Color.FromArgb(49, 98, 130);
+            btnBack.ForeColor = Color.White;
+            btnBack.FlatStyle = FlatStyle.Flat;
+            btnBack.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnBack.Cursor = Cursors.Hand;
+            btnBack.UseMnemonic = false;
             btnBack.FlatAppearance.BorderSize = 0;
-            btnBack.Click += (s, e) => OnBackToStore?.Invoke();
+            btnBack.Click += BtnBack_Click;
 
             // Khung chọn sản phẩm
-            panelTop = new Panel
-            {
-                Location = new Point(25, 55),
-                Size = new Size(950, 50),
-                BackColor = Color.FromArgb(27, 40, 56),
-                Padding = new Padding(15, 10, 15, 10)
-            };
+            panelTop = new Panel();
+            panelTop.Location = new Point(25, 55);
+            panelTop.Size = new Size(950, 50);
+            panelTop.BackColor = Color.FromArgb(27, 40, 56);
+            panelTop.Padding = new Padding(15, 10, 15, 10);
 
-            Label lblSelect = new Label
-            {
-                Text = "Chọn sản phẩm xem đánh giá:",
-                ForeColor = Color.White,
-                Location = new Point(15, 15),
-                AutoSize = true,
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            Label lblSelect = new Label();
+            lblSelect.Text = "Chọn sản phẩm xem đánh giá:";
+            lblSelect.ForeColor = Color.White;
+            lblSelect.Location = new Point(15, 15);
+            lblSelect.AutoSize = true;
+            lblSelect.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            lblSelect.UseMnemonic = false;
 
-            cboProduct = new ComboBox
-            {
-                Location = new Point(275, 12),
-                Width = 280,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                Font = new Font("Segoe UI", 9.5f),
-                BackColor = Color.FromArgb(18, 25, 35),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat
-            };
-            cboProduct.SelectedIndexChanged += (s, e) =>
-            {
-                if (cboProduct.SelectedItem is ProductComboItem item)
-                {
-                    _maSanPhamHienTai = item.Id;
-                    LoadReviews();
-                }
-            };
+            cboProduct = new ComboBox();
+            cboProduct.Location = new Point(275, 12);
+            cboProduct.Width = 280;
+            cboProduct.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboProduct.Font = new Font("Segoe UI", 9.5f);
+            cboProduct.BackColor = Color.FromArgb(18, 25, 35);
+            cboProduct.ForeColor = Color.White;
+            cboProduct.FlatStyle = FlatStyle.Flat;
+            cboProduct.SelectedIndexChanged += CboProduct_SelectedIndexChanged;
 
-            lblAverageScore = new Label
-            {
-                Text = "Điểm TB: ⭐ 5.0 / 5.0",
-                Dock = DockStyle.Right,
-                ForeColor = Color.FromArgb(243, 156, 18),
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleRight,
-                Width = 350,
-                UseMnemonic = false
-            };
+            lblAverageScore = new Label();
+            lblAverageScore.Text = "Điểm TB: ⭐ 5.0 / 5.0";
+            lblAverageScore.Dock = DockStyle.Right;
+            lblAverageScore.ForeColor = Color.FromArgb(243, 156, 18);
+            lblAverageScore.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            lblAverageScore.TextAlign = ContentAlignment.MiddleRight;
+            lblAverageScore.Width = 350;
+            lblAverageScore.UseMnemonic = false;
 
             panelTop.Controls.Add(lblAverageScore);
             panelTop.Controls.Add(cboProduct);
             panelTop.Controls.Add(lblSelect);
 
             // Khung viết đánh giá (Form CRUD 1-5 sao)
-            panelForm = new Panel
-            {
-                Location = new Point(25, 115),
-                Size = new Size(950, 160),
-                BackColor = Color.FromArgb(27, 40, 56),
-                Padding = new Padding(15)
-            };
+            panelForm = new Panel();
+            panelForm.Location = new Point(25, 115);
+            panelForm.Size = new Size(950, 160);
+            panelForm.BackColor = Color.FromArgb(27, 40, 56);
+            panelForm.Padding = new Padding(15);
 
-            Label lblFormTitle = new Label
-            {
-                Text = "✍️ VIẾT HOẶC CHỈNH SỬA ĐÁNH GIÁ CỦA BẠN",
-                Location = new Point(15, 12),
-                AutoSize = true,
-                ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 10.5f, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            Label lblFormTitle = new Label();
+            lblFormTitle.Text = "✍️ VIẾT HOẶC CHỈNH SỬA ĐÁNH GIÁ CỦA BẠN";
+            lblFormTitle.Location = new Point(15, 12);
+            lblFormTitle.AutoSize = true;
+            lblFormTitle.ForeColor = Color.FromArgb(102, 192, 244);
+            lblFormTitle.Font = new Font("Segoe UI", 10.5f, FontStyle.Bold);
+            lblFormTitle.UseMnemonic = false;
 
-            Label lblStarTitle = new Label
-            {
-                Text = "Mức độ hài lòng:",
-                Location = new Point(15, 45),
-                AutoSize = true,
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 9.5f),
-                UseMnemonic = false
-            };
+            Label lblStarTitle = new Label();
+            lblStarTitle.Text = "Mức độ hài lòng:";
+            lblStarTitle.Location = new Point(15, 45);
+            lblStarTitle.AutoSize = true;
+            lblStarTitle.ForeColor = Color.White;
+            lblStarTitle.Font = new Font("Segoe UI", 9.5f);
+            lblStarTitle.UseMnemonic = false;
 
-            cboStar = new ComboBox
-            {
-                Location = new Point(165, 42),
-                Width = 310,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                Font = new Font("Segoe UI", 9.5f),
-                BackColor = Color.FromArgb(18, 25, 35),
-                ForeColor = Color.FromArgb(243, 156, 18),
-                FlatStyle = FlatStyle.Flat
-            };
+            cboStar = new ComboBox();
+            cboStar.Location = new Point(165, 42);
+            cboStar.Width = 310;
+            cboStar.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboStar.Font = new Font("Segoe UI", 9.5f);
+            cboStar.BackColor = Color.FromArgb(18, 25, 35);
+            cboStar.ForeColor = Color.FromArgb(243, 156, 18);
+            cboStar.FlatStyle = FlatStyle.Flat;
             cboStar.Items.Add("⭐⭐⭐⭐⭐ (5/5) - Rất tích cực / Cực tốt");
             cboStar.Items.Add("⭐⭐⭐⭐ (4/5) - Hài lòng");
             cboStar.Items.Add("⭐⭐⭐ (3/5) - Bình thường");
@@ -159,54 +139,46 @@ namespace qlspdigital.Views.Nhom1_Store
             cboStar.Items.Add("⭐ (1/5) - Rất tệ / Không khuyến nghị");
             cboStar.SelectedIndex = 0;
 
-            Label lblCommentTitle = new Label
-            {
-                Text = "Nội dung nhận xét:",
-                Location = new Point(15, 78),
-                AutoSize = true,
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 9.5f),
-                UseMnemonic = false
-            };
+            Label lblCommentTitle = new Label();
+            lblCommentTitle.Text = "Nội dung nhận xét:";
+            lblCommentTitle.Location = new Point(15, 78);
+            lblCommentTitle.AutoSize = true;
+            lblCommentTitle.ForeColor = Color.White;
+            lblCommentTitle.Font = new Font("Segoe UI", 9.5f);
+            lblCommentTitle.UseMnemonic = false;
 
-            txtComment = new TextBox
-            {
-                Location = new Point(165, 75),
-                Size = new Size(595, 65),
-                Multiline = true,
-                ScrollBars = ScrollBars.Vertical,
-                BackColor = Color.FromArgb(18, 25, 35),
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 9.5f)
-            };
+            txtComment = new TextBox();
+            txtComment.Location = new Point(165, 75);
+            txtComment.Size = new Size(595, 65);
+            txtComment.Multiline = true;
+            txtComment.ScrollBars = ScrollBars.Vertical;
+            txtComment.BackColor = Color.FromArgb(18, 25, 35);
+            txtComment.ForeColor = Color.White;
+            txtComment.Font = new Font("Segoe UI", 9.5f);
 
-            btnSubmit = new Button
-            {
-                Text = "Gửi nhận xét",
-                Location = new Point(775, 75),
-                Size = new Size(150, 32),
-                BackColor = Color.FromArgb(92, 126, 16),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnSubmit = new Button();
+            btnSubmit.Text = "Gửi nhận xét";
+            btnSubmit.Location = new Point(775, 75);
+            btnSubmit.Size = new Size(150, 32);
+            btnSubmit.BackColor = Color.FromArgb(92, 126, 16);
+            btnSubmit.ForeColor = Color.White;
+            btnSubmit.FlatStyle = FlatStyle.Flat;
+            btnSubmit.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnSubmit.Cursor = Cursors.Hand;
+            btnSubmit.UseMnemonic = false;
             btnSubmit.FlatAppearance.BorderSize = 0;
             btnSubmit.Click += BtnSubmit_Click;
 
-            btnDelete = new Button
-            {
-                Text = "Xóa nhận xét",
-                Location = new Point(775, 112),
-                Size = new Size(150, 28),
-                BackColor = Color.FromArgb(180, 40, 40),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9, FontStyle.Regular),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnDelete = new Button();
+            btnDelete.Text = "Xóa nhận xét";
+            btnDelete.Location = new Point(775, 112);
+            btnDelete.Size = new Size(150, 28);
+            btnDelete.BackColor = Color.FromArgb(180, 40, 40);
+            btnDelete.ForeColor = Color.White;
+            btnDelete.FlatStyle = FlatStyle.Flat;
+            btnDelete.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+            btnDelete.Cursor = Cursors.Hand;
+            btnDelete.UseMnemonic = false;
             btnDelete.FlatAppearance.BorderSize = 0;
             btnDelete.Click += BtnDelete_Click;
 
@@ -219,21 +191,19 @@ namespace qlspdigital.Views.Nhom1_Store
             panelForm.Controls.Add(lblFormTitle);
 
             // Bảng danh sách đánh giá của cộng đồng (Read)
-            dgvReviews = new DataGridView
-            {
-                Location = new Point(25, 290),
-                Size = new Size(950, 440),
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
-                BackgroundColor = Color.FromArgb(27, 40, 56),
-                ForeColor = Color.White,
-                GridColor = Color.FromArgb(42, 71, 94),
-                BorderStyle = BorderStyle.None,
-                RowHeadersVisible = false,
-                AllowUserToAddRows = false,
-                ReadOnly = true,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-            };
+            dgvReviews = new DataGridView();
+            dgvReviews.Location = new Point(25, 290);
+            dgvReviews.Size = new Size(950, 440);
+            dgvReviews.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvReviews.BackgroundColor = Color.FromArgb(27, 40, 56);
+            dgvReviews.ForeColor = Color.White;
+            dgvReviews.GridColor = Color.FromArgb(42, 71, 94);
+            dgvReviews.BorderStyle = BorderStyle.None;
+            dgvReviews.RowHeadersVisible = false;
+            dgvReviews.AllowUserToAddRows = false;
+            dgvReviews.ReadOnly = true;
+            dgvReviews.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvReviews.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvReviews.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 35);
             dgvReviews.DefaultCellStyle.ForeColor = Color.White;
             dgvReviews.DefaultCellStyle.SelectionBackColor = Color.FromArgb(49, 98, 130);
@@ -268,7 +238,8 @@ namespace qlspdigital.Views.Nhom1_Store
             this.Controls.Add(panelTop);
             this.Controls.Add(btnBack);
 
-            AdjustLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         protected override void OnResize(EventArgs e)
@@ -279,9 +250,9 @@ namespace qlspdigital.Views.Nhom1_Store
 
         private void AdjustLayout()
         {
-            if (this.ClientSize.Width < 500 || panelTop == null || panelForm == null || dgvReviews == null || txtComment == null || btnSubmit == null) return;
-            int totalW = this.ClientSize.Width;
-            int totalH = this.ClientSize.Height;
+            if (panelTop == null || panelForm == null || dgvReviews == null || txtComment == null || btnSubmit == null) return;
+            int totalW = Math.Max(1040, this.ClientSize.Width);
+            int totalH = Math.Max(700, this.ClientSize.Height);
 
             int fullW = totalW - 50;
             panelTop.Location = new Point(25, 55);
@@ -417,6 +388,20 @@ namespace qlspdigital.Views.Nhom1_Store
                     btnSubmit.Text = "Gửi nhận xét";
                     LoadReviews();
                 }
+            }
+        }
+
+        private void BtnBack_Click(object? sender, EventArgs e)
+        {
+            OnBackToStore?.Invoke();
+        }
+
+        private void CboProduct_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (cboProduct.SelectedItem is ProductComboItem item)
+            {
+                _maSanPhamHienTai = item.Id;
+                LoadReviews();
             }
         }
 

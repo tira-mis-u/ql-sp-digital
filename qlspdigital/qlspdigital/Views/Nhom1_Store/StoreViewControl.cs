@@ -12,7 +12,7 @@ namespace qlspdigital.Views.Nhom1_Store
 {
     // UI 2: Trang chủ Cửa hàng số - Tìm kiếm, lọc theo danh mục & lưới sản phẩm
     // Thành viên phụ trách: Lê Nguyễn Minh Trí (Nhóm 1)
-    public class StoreViewControl : UserControl
+    public partial class StoreViewControl : UserControl
     {
         private readonly SanPhamService _sanPhamService;
         private readonly DanhMucService _danhMucService;
@@ -34,120 +34,101 @@ namespace qlspdigital.Views.Nhom1_Store
             _gioHangService = new GioHangService();
 
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadCategories();
             LoadProducts();
         }
 
         private void InitializeComponent()
         {
+            this.SuspendLayout();
+
+            this.AutoScaleDimensions = new SizeF(7F, 15F);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.Name = "StoreViewControl";
             this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
-            this.Dock = DockStyle.Fill;
 
             // 1. THANH CÔNG CỤ LỌC & TÌM KIẾM
-            Panel panelFilter = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 60,
-                BackColor = Color.FromArgb(22, 32, 45),
-                Padding = new Padding(15, 12, 15, 12)
-            };
-            panelFilter.Paint += (s, e) =>
-            {
-                using var p = new Pen(Color.FromArgb(38, 54, 75), 1);
-                e.Graphics.DrawLine(p, 0, panelFilter.Height - 1, panelFilter.Width, panelFilter.Height - 1);
-            };
+            Panel panelFilter = new Panel();
+            panelFilter.SuspendLayout();
+            panelFilter.Dock = DockStyle.Top;
+            panelFilter.Height = 60;
+            panelFilter.BackColor = Color.FromArgb(22, 32, 45);
+            panelFilter.Padding = new Padding(15, 12, 15, 12);
+            panelFilter.Paint += PanelFilter_Paint;
 
-            Label lblSearchTitle = new Label
-            {
-                Text = "🔍 Tìm kiếm:",
-                ForeColor = Color.FromArgb(199, 213, 224),
-                AutoSize = true,
-                Location = new Point(15, 19),
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            Label lblSearchTitle = new Label();
+            lblSearchTitle.Text = "🔍 Tìm kiếm:";
+            lblSearchTitle.ForeColor = Color.FromArgb(199, 213, 224);
+            lblSearchTitle.AutoSize = true;
+            lblSearchTitle.Location = new Point(15, 19);
+            lblSearchTitle.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            lblSearchTitle.UseMnemonic = false;
 
-            txtSearch = new TextBox
-            {
-                Location = new Point(130, 15),
-                Width = 190,
-                Font = new Font("Segoe UI", 10),
-                BackColor = Color.FromArgb(18, 25, 35),
-                ForeColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle,
-                PlaceholderText = "Nhập tên sản phẩm..."
-            };
-            txtSearch.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) LoadProducts(); };
+            txtSearch = new TextBox();
+            txtSearch.Location = new Point(130, 15);
+            txtSearch.Width = 190;
+            txtSearch.Font = new Font("Segoe UI", 10);
+            txtSearch.BackColor = Color.FromArgb(18, 25, 35);
+            txtSearch.ForeColor = Color.White;
+            txtSearch.BorderStyle = BorderStyle.FixedSingle;
+            txtSearch.PlaceholderText = "Nhập tên sản phẩm...";
+            txtSearch.KeyDown += TxtSearch_KeyDown;
 
-            Label lblCategoryTitle = new Label
-            {
-                Text = "📁 Thể loại:",
-                ForeColor = Color.FromArgb(199, 213, 224),
-                AutoSize = true,
-                Location = new Point(335, 19),
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            Label lblCategoryTitle = new Label();
+            lblCategoryTitle.Text = "📁 Thể loại:";
+            lblCategoryTitle.ForeColor = Color.FromArgb(199, 213, 224);
+            lblCategoryTitle.AutoSize = true;
+            lblCategoryTitle.Location = new Point(335, 19);
+            lblCategoryTitle.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            lblCategoryTitle.UseMnemonic = false;
 
-            cboCategory = new ComboBox
-            {
-                Location = new Point(445, 15),
-                Width = 185,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                Font = new Font("Segoe UI", 9.5f),
-                BackColor = Color.FromArgb(18, 25, 35),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat
-            };
-            cboCategory.SelectedIndexChanged += (s, e) => LoadProducts();
+            cboCategory = new ComboBox();
+            cboCategory.Location = new Point(445, 15);
+            cboCategory.Width = 185;
+            cboCategory.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboCategory.Font = new Font("Segoe UI", 9.5f);
+            cboCategory.BackColor = Color.FromArgb(18, 25, 35);
+            cboCategory.ForeColor = Color.White;
+            cboCategory.FlatStyle = FlatStyle.Flat;
+            cboCategory.SelectedIndexChanged += CboCategory_SelectedIndexChanged;
 
-            btnSearch = new Button
-            {
-                Text = "Lọc dữ liệu",
-                Location = new Point(640, 15),
-                Width = 110,
-                Height = 30,
-                BackColor = Color.FromArgb(49, 98, 130),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnSearch = new Button();
+            btnSearch.Text = "Lọc dữ liệu";
+            btnSearch.Location = new Point(640, 15);
+            btnSearch.Width = 110;
+            btnSearch.Height = 30;
+            btnSearch.BackColor = Color.FromArgb(49, 98, 130);
+            btnSearch.ForeColor = Color.White;
+            btnSearch.FlatStyle = FlatStyle.Flat;
+            btnSearch.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            btnSearch.Cursor = Cursors.Hand;
+            btnSearch.UseMnemonic = false;
             btnSearch.FlatAppearance.BorderSize = 0;
-            btnSearch.Click += (s, e) => LoadProducts();
+            btnSearch.Click += BtnSearch_Click;
 
-            btnRefresh = new Button
-            {
-                Text = "Làm mới",
-                Location = new Point(760, 15),
-                Width = 95,
-                Height = 30,
-                BackColor = Color.FromArgb(60, 75, 90),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9, FontStyle.Regular),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnRefresh = new Button();
+            btnRefresh.Text = "Làm mới";
+            btnRefresh.Location = new Point(760, 15);
+            btnRefresh.Width = 95;
+            btnRefresh.Height = 30;
+            btnRefresh.BackColor = Color.FromArgb(60, 75, 90);
+            btnRefresh.ForeColor = Color.White;
+            btnRefresh.FlatStyle = FlatStyle.Flat;
+            btnRefresh.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+            btnRefresh.Cursor = Cursors.Hand;
+            btnRefresh.UseMnemonic = false;
             btnRefresh.FlatAppearance.BorderSize = 0;
-            btnRefresh.Click += (s, e) =>
-            {
-                txtSearch.Clear();
-                if (cboCategory.Items.Count > 0) cboCategory.SelectedIndex = 0;
-                LoadProducts();
-            };
+            btnRefresh.Click += BtnRefresh_Click;
 
-            lblTotalCount = new Label
-            {
-                Text = "Hiển thị: 0 sản phẩm",
-                ForeColor = Color.FromArgb(102, 192, 244),
-                AutoSize = true,
-                Location = new Point(870, 19),
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Italic),
-                UseMnemonic = false
-            };
+            lblTotalCount = new Label();
+            lblTotalCount.Text = "Hiển thị: 0 sản phẩm";
+            lblTotalCount.ForeColor = Color.FromArgb(102, 192, 244);
+            lblTotalCount.AutoSize = true;
+            lblTotalCount.Location = new Point(870, 19);
+            lblTotalCount.Font = new Font("Segoe UI", 9.5f, FontStyle.Italic);
+            lblTotalCount.UseMnemonic = false;
 
             panelFilter.Controls.Add(lblTotalCount);
             panelFilter.Controls.Add(btnRefresh);
@@ -156,18 +137,20 @@ namespace qlspdigital.Views.Nhom1_Store
             panelFilter.Controls.Add(lblCategoryTitle);
             panelFilter.Controls.Add(txtSearch);
             panelFilter.Controls.Add(lblSearchTitle);
+            panelFilter.ResumeLayout(false);
+            panelFilter.PerformLayout();
 
             // 2. VÙNG LƯỚI THẺ SẢN PHẨM
-            flowProducts = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                AutoScroll = true,
-                BackColor = Color.FromArgb(23, 26, 33),
-                Padding = new Padding(20)
-            };
+            flowProducts = new FlowLayoutPanel();
+            flowProducts.Dock = DockStyle.Fill;
+            flowProducts.AutoScroll = true;
+            flowProducts.BackColor = Color.FromArgb(23, 26, 33);
+            flowProducts.Padding = new Padding(20);
 
             this.Controls.Add(flowProducts);
             this.Controls.Add(panelFilter);
+
+            this.ResumeLayout(false);
         }
 
         private void LoadCategories()
@@ -261,6 +244,37 @@ namespace qlspdigital.Views.Nhom1_Store
             {
                 MessageBox.Show("Lỗi kết nối cơ sở dữ liệu: " + ex.Message, "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void PanelFilter_Paint(object? sender, PaintEventArgs e)
+        {
+            if (sender is Panel pnl)
+            {
+                using var p = new Pen(Color.FromArgb(38, 54, 75), 1);
+                e.Graphics.DrawLine(p, 0, pnl.Height - 1, pnl.Width, pnl.Height - 1);
+            }
+        }
+
+        private void TxtSearch_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) LoadProducts();
+        }
+
+        private void CboCategory_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            LoadProducts();
+        }
+
+        private void BtnSearch_Click(object? sender, EventArgs e)
+        {
+            LoadProducts();
+        }
+
+        private void BtnRefresh_Click(object? sender, EventArgs e)
+        {
+            txtSearch.Clear();
+            if (cboCategory.Items.Count > 0) cboCategory.SelectedIndex = 0;
+            LoadProducts();
         }
 
         private class ComboBoxItem

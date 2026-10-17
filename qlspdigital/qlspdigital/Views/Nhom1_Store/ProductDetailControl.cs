@@ -10,7 +10,7 @@ namespace qlspdigital.Views.Nhom1_Store
 {
     // UI 3: Màn hình Xem chi tiết sản phẩm kỹ thuật số
     // Thành viên phụ trách: Lê Nguyễn Minh Trí (Nhóm 1)
-    public class ProductDetailControl : UserControl
+    public partial class ProductDetailControl : UserControl
     {
         private readonly SanPhamService _sanPhamService;
         private readonly GioHangService _gioHangService;
@@ -43,146 +43,125 @@ namespace qlspdigital.Views.Nhom1_Store
 
         private void InitializeComponent()
         {
+            this.SuspendLayout();
+
+            this.AutoScaleDimensions = new SizeF(7F, 15F);
+            this.AutoScaleMode = AutoScaleMode.Font;
             this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
-            this.Dock = DockStyle.Fill;
             this.Padding = new Padding(25);
 
             // Nút quay lại
-            btnBack = new Button
-            {
-                Text = "← Quay lại Cửa hàng",
-                Size = new Size(200, 36),
-                Location = new Point(25, 18),
-                BackColor = Color.FromArgb(49, 98, 130),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnBack = new Button();
+            btnBack.Text = "← Quay lại Cửa hàng";
+            btnBack.Size = new Size(200, 36);
+            btnBack.Location = new Point(25, 18);
+            btnBack.BackColor = Color.FromArgb(49, 98, 130);
+            btnBack.ForeColor = Color.White;
+            btnBack.FlatStyle = FlatStyle.Flat;
+            btnBack.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnBack.Cursor = Cursors.Hand;
+            btnBack.UseMnemonic = false;
             btnBack.FlatAppearance.BorderSize = 0;
-            btnBack.Click += (s, e) => OnBackToStore?.Invoke();
+            btnBack.Click += BtnBack_Click;
 
-            // Khung trên: Tiêu đề + Giá + Nút bấm hành động
-            Panel panelTop = new Panel
-            {
-                Location = new Point(25, 65),
-                Size = new Size(1000, 175),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
-                BackColor = Color.FromArgb(27, 40, 56),
-                Padding = new Padding(20)
-            };
+            // Khung trên: Thông tin chính sản phẩm
+            Panel panelTop = new Panel();
+            panelTop.Location = new Point(25, 55);
+            panelTop.Size = new Size(1000, 175);
+            panelTop.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            panelTop.BackColor = Color.FromArgb(27, 40, 56);
+            panelTop.Padding = new Padding(20);
 
-            lblTitle = new Label
-            {
-                Text = "Tên sản phẩm kỹ thuật số",
-                Location = new Point(20, 12),
-                Size = new Size(680, 45),
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 16, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            lblTitle = new Label();
+            lblTitle.Text = "Tên sản phẩm kỹ thuật số";
+            lblTitle.Location = new Point(20, 12);
+            lblTitle.Size = new Size(680, 45);
+            lblTitle.ForeColor = Color.White;
+            lblTitle.Font = new Font("Segoe UI", 16, FontStyle.Bold);
+            lblTitle.UseMnemonic = false;
 
-            lblCategory = new Label
-            {
-                Text = "Thể loại: Game",
-                Location = new Point(22, 58),
-                AutoSize = true,
-                ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            lblCategory = new Label();
+            lblCategory.Text = "Thể loại: Game";
+            lblCategory.Location = new Point(22, 58);
+            lblCategory.AutoSize = true;
+            lblCategory.ForeColor = Color.FromArgb(102, 192, 244);
+            lblCategory.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            lblCategory.UseMnemonic = false;
 
-            lblPublisher = new Label
-            {
-                Text = "Nhà phát hành: Studio",
-                Location = new Point(22, 85),
-                AutoSize = true,
-                ForeColor = Color.FromArgb(199, 213, 224),
-                Font = new Font("Segoe UI", 10),
-                UseMnemonic = false
-            };
+            lblPublisher = new Label();
+            lblPublisher.Text = "Nhà phát hành: Studio";
+            lblPublisher.Location = new Point(22, 85);
+            lblPublisher.AutoSize = true;
+            lblPublisher.ForeColor = Color.FromArgb(199, 213, 224);
+            lblPublisher.Font = new Font("Segoe UI", 10);
+            lblPublisher.UseMnemonic = false;
 
-            lblVersion = new Label
-            {
-                Text = "Phiên bản: 1.0.0",
-                Location = new Point(22, 112),
-                AutoSize = true,
-                ForeColor = Color.FromArgb(199, 213, 224),
-                Font = new Font("Segoe UI", 9.5f),
-                UseMnemonic = false
-            };
+            lblVersion = new Label();
+            lblVersion.Text = "Phiên bản: 1.0.0";
+            lblVersion.Location = new Point(22, 112);
+            lblVersion.AutoSize = true;
+            lblVersion.ForeColor = Color.FromArgb(199, 213, 224);
+            lblVersion.Font = new Font("Segoe UI", 9.5f);
+            lblVersion.UseMnemonic = false;
 
-            lblSize = new Label
-            {
-                Text = "Dung lượng: 0 MB",
-                Location = new Point(260, 112),
-                AutoSize = true,
-                ForeColor = Color.FromArgb(199, 213, 224),
-                Font = new Font("Segoe UI", 9.5f),
-                UseMnemonic = false
-            };
+            lblSize = new Label();
+            lblSize.Text = "Dung lượng: 0 MB";
+            lblSize.Location = new Point(260, 112);
+            lblSize.AutoSize = true;
+            lblSize.ForeColor = Color.FromArgb(199, 213, 224);
+            lblSize.Font = new Font("Segoe UI", 9.5f);
+            lblSize.UseMnemonic = false;
 
-            lblRating = new Label
-            {
-                Text = "⭐ 5.0 / 5.0 (0 đánh giá)",
-                Location = new Point(22, 138),
-                AutoSize = true,
-                ForeColor = Color.FromArgb(243, 156, 18),
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            lblRating = new Label();
+            lblRating.Text = "⭐ 5.0 / 5.0 (0 đánh giá)";
+            lblRating.Location = new Point(22, 138);
+            lblRating.AutoSize = true;
+            lblRating.ForeColor = Color.FromArgb(243, 156, 18);
+            lblRating.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            lblRating.UseMnemonic = false;
 
             // Khung mua hàng bên phải
-            Panel panelBuy = new Panel
-            {
-                Dock = DockStyle.Right,
-                Width = 280,
-                BackColor = Color.FromArgb(18, 25, 35),
-                Padding = new Padding(15)
-            };
+            Panel panelBuy = new Panel();
+            panelBuy.Dock = DockStyle.Right;
+            panelBuy.Width = 280;
+            panelBuy.BackColor = Color.FromArgb(18, 25, 35);
+            panelBuy.Padding = new Padding(15);
 
-            lblPrice = new Label
-            {
-                Text = "150.000 ₫",
-                Dock = DockStyle.Top,
-                Height = 35,
-                ForeColor = Color.FromArgb(164, 208, 7),
-                Font = new Font("Segoe UI", 15, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter,
-                UseMnemonic = false
-            };
+            lblPrice = new Label();
+            lblPrice.Text = "150.000 ₫";
+            lblPrice.Dock = DockStyle.Top;
+            lblPrice.Height = 35;
+            lblPrice.ForeColor = Color.FromArgb(164, 208, 7);
+            lblPrice.Font = new Font("Segoe UI", 15, FontStyle.Bold);
+            lblPrice.TextAlign = ContentAlignment.MiddleCenter;
+            lblPrice.UseMnemonic = false;
 
-            btnAddToCart = new Button
-            {
-                Text = "🛒 Thêm vào Giỏ hàng",
-                Dock = DockStyle.Top,
-                Height = 40,
-                BackColor = Color.FromArgb(92, 126, 16),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnAddToCart = new Button();
+            btnAddToCart.Text = "🛒 Thêm vào Giỏ hàng";
+            btnAddToCart.Dock = DockStyle.Top;
+            btnAddToCart.Height = 40;
+            btnAddToCart.BackColor = Color.FromArgb(92, 126, 16);
+            btnAddToCart.ForeColor = Color.White;
+            btnAddToCart.FlatStyle = FlatStyle.Flat;
+            btnAddToCart.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            btnAddToCart.Cursor = Cursors.Hand;
+            btnAddToCart.UseMnemonic = false;
             btnAddToCart.FlatAppearance.BorderSize = 0;
             btnAddToCart.Click += BtnAddToCart_Click;
 
-            btnReviews = new Button
-            {
-                Text = "💬 Đánh giá & Nhận xét",
-                Dock = DockStyle.Bottom,
-                Height = 35,
-                BackColor = Color.FromArgb(49, 98, 130),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Regular),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnReviews = new Button();
+            btnReviews.Text = "💬 Đánh giá & Nhận xét";
+            btnReviews.Dock = DockStyle.Bottom;
+            btnReviews.Height = 35;
+            btnReviews.BackColor = Color.FromArgb(49, 98, 130);
+            btnReviews.ForeColor = Color.White;
+            btnReviews.FlatStyle = FlatStyle.Flat;
+            btnReviews.Font = new Font("Segoe UI", 9.5f, FontStyle.Regular);
+            btnReviews.Cursor = Cursors.Hand;
+            btnReviews.UseMnemonic = false;
             btnReviews.FlatAppearance.BorderSize = 0;
-            btnReviews.Click += (s, e) => OnViewReviews?.Invoke(_maSanPham);
+            btnReviews.Click += BtnReviews_Click;
 
             panelBuy.Controls.Add(btnReviews);
             panelBuy.Controls.Add(btnAddToCart);
@@ -197,34 +176,28 @@ namespace qlspdigital.Views.Nhom1_Store
             panelTop.Controls.Add(lblTitle);
 
             // Khung dưới: Mô tả chi tiết sản phẩm
-            Panel panelBottom = new Panel
-            {
-                Location = new Point(25, 255),
-                Size = new Size(1000, 470),
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
-                BackColor = Color.FromArgb(27, 40, 56),
-                Padding = new Padding(20)
-            };
+            Panel panelBottom = new Panel();
+            panelBottom.Location = new Point(25, 255);
+            panelBottom.Size = new Size(1000, 470);
+            panelBottom.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            panelBottom.BackColor = Color.FromArgb(27, 40, 56);
+            panelBottom.Padding = new Padding(20);
 
-            Label lblDescTitle = new Label
-            {
-                Text = "📖 GIỚI THIỆU & ĐẶC TẢ TÍNH NĂNG SẢN PHẨM",
-                Dock = DockStyle.Top,
-                Height = 30,
-                ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            Label lblDescTitle = new Label();
+            lblDescTitle.Text = "📖 GIỚI THIỆU & ĐẶC TẢ TÍNH NĂNG SẢN PHẨM";
+            lblDescTitle.Dock = DockStyle.Top;
+            lblDescTitle.Height = 30;
+            lblDescTitle.ForeColor = Color.FromArgb(102, 192, 244);
+            lblDescTitle.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            lblDescTitle.UseMnemonic = false;
 
-            rtfDescription = new RichTextBox
-            {
-                Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(18, 25, 35),
-                ForeColor = Color.FromArgb(220, 220, 220),
-                Font = new Font("Segoe UI", 10.5f),
-                BorderStyle = BorderStyle.None,
-                ReadOnly = true
-            };
+            rtfDescription = new RichTextBox();
+            rtfDescription.Dock = DockStyle.Fill;
+            rtfDescription.BackColor = Color.FromArgb(18, 25, 35);
+            rtfDescription.ForeColor = Color.FromArgb(220, 220, 220);
+            rtfDescription.Font = new Font("Segoe UI", 10.5f);
+            rtfDescription.BorderStyle = BorderStyle.None;
+            rtfDescription.ReadOnly = true;
 
             panelBottom.Controls.Add(rtfDescription);
             panelBottom.Controls.Add(lblDescTitle);
@@ -232,6 +205,8 @@ namespace qlspdigital.Views.Nhom1_Store
             this.Controls.Add(panelBottom);
             this.Controls.Add(panelTop);
             this.Controls.Add(btnBack);
+
+            this.ResumeLayout(false);
         }
 
         public void LoadProductDetail(int maSanPham)
@@ -273,6 +248,16 @@ namespace qlspdigital.Views.Nhom1_Store
             {
                 MessageBox.Show(msg, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void BtnBack_Click(object? sender, EventArgs e)
+        {
+            OnBackToStore?.Invoke();
+        }
+
+        private void BtnReviews_Click(object? sender, EventArgs e)
+        {
+            OnViewReviews?.Invoke(_maSanPham);
         }
     }
 }

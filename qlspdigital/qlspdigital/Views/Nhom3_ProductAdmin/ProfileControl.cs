@@ -8,7 +8,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
 {
     // UI 8: Xem và cập nhật Hồ sơ cá nhân, Đổi mật khẩu bảo mật
     // Thành viên phụ trách: Phạm Trung Hiếu (Nhóm 3)
-    public class ProfileControl : UserControl
+    public partial class ProfileControl : UserControl
     {
         private readonly HoSoService _hoSoService;
 
@@ -38,40 +38,68 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             _hoSoService = new HoSoService();
 
             InitializeComponent();
+            AdjustLayout();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadProfile();
         }
 
         private void InitializeComponent()
         {
+            this.SuspendLayout();
+
+            this.AutoScaleDimensions = new SizeF(7F, 15F);
+            this.AutoScaleMode = AutoScaleMode.Font;
             this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
-            this.Dock = DockStyle.Fill;
             this.Padding = new Padding(25);
 
             // Tiêu đề
-            Label lblHeader = new Label
-            {
-                Text = "👤 HỒ SƠ TÀI KHOẢN & CÀI ĐẶT BẢO MẬT",
-                Location = new Point(25, 15),
-                AutoSize = true,
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 15, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            Label lblHeader = new Label();
+            lblHeader.Text = "👤 HỒ SƠ TÀI KHOẢN & CÀI ĐẶT BẢO MẬT";
+            lblHeader.Location = new Point(25, 15);
+            lblHeader.AutoSize = true;
+            lblHeader.ForeColor = Color.White;
+            lblHeader.Font = new Font("Segoe UI", 15, FontStyle.Bold);
+            lblHeader.UseMnemonic = false;
 
             // 1. KHUNG TỔNG QUAN TÀI KHOẢN
-            panelInfo = new Panel
-            {
-                Location = new Point(25, 55),
-                Size = new Size(980, 90),
-                BackColor = Color.FromArgb(27, 40, 56),
-                Padding = new Padding(20)
-            };
+            panelInfo = new Panel();
+            panelInfo.Location = new Point(25, 55);
+            panelInfo.Size = new Size(980, 90);
+            panelInfo.BackColor = Color.FromArgb(27, 40, 56);
+            panelInfo.Padding = new Padding(20);
 
-            lblUsername = new Label { Text = "Tài khoản: ---", Location = new Point(20, 15), AutoSize = true, ForeColor = Color.FromArgb(102, 192, 244), Font = new Font("Segoe UI", 11, FontStyle.Bold), UseMnemonic = false };
-            lblRole = new Label { Text = "Quyền hạn: ---", Location = new Point(320, 15), AutoSize = true, ForeColor = Color.FromArgb(199, 213, 224), Font = new Font("Segoe UI", 10.5f), UseMnemonic = false };
-            lblBalance = new Label { Text = "Số dư ví: 0 ₫", Location = new Point(20, 50), AutoSize = true, ForeColor = Color.FromArgb(164, 208, 7), Font = new Font("Segoe UI", 12, FontStyle.Bold), UseMnemonic = false };
-            lblCreatedDate = new Label { Text = "Ngày tham gia: ---", Location = new Point(320, 50), AutoSize = true, ForeColor = Color.FromArgb(161, 181, 196), Font = new Font("Segoe UI", 9.5f), UseMnemonic = false };
+            lblUsername = new Label();
+            lblUsername.Text = "Tài khoản: ---";
+            lblUsername.Location = new Point(20, 15);
+            lblUsername.AutoSize = true;
+            lblUsername.ForeColor = Color.FromArgb(102, 192, 244);
+            lblUsername.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            lblUsername.UseMnemonic = false;
+
+            lblRole = new Label();
+            lblRole.Text = "Quyền hạn: ---";
+            lblRole.Location = new Point(320, 15);
+            lblRole.AutoSize = true;
+            lblRole.ForeColor = Color.FromArgb(199, 213, 224);
+            lblRole.Font = new Font("Segoe UI", 10.5f);
+            lblRole.UseMnemonic = false;
+
+            lblBalance = new Label();
+            lblBalance.Text = "Số dư ví: 0 ₫";
+            lblBalance.Location = new Point(20, 50);
+            lblBalance.AutoSize = true;
+            lblBalance.ForeColor = Color.FromArgb(164, 208, 7);
+            lblBalance.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+            lblBalance.UseMnemonic = false;
+
+            lblCreatedDate = new Label();
+            lblCreatedDate.Text = "Ngày tham gia: ---";
+            lblCreatedDate.Location = new Point(320, 50);
+            lblCreatedDate.AutoSize = true;
+            lblCreatedDate.ForeColor = Color.FromArgb(161, 181, 196);
+            lblCreatedDate.Font = new Font("Segoe UI", 9.5f);
+            lblCreatedDate.UseMnemonic = false;
 
             panelInfo.Controls.Add(lblCreatedDate);
             panelInfo.Controls.Add(lblBalance);
@@ -79,37 +107,75 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             panelInfo.Controls.Add(lblUsername);
 
             // 2. KHUNG FORM CẬP NHẬT THÔNG TIN LIÊN HỆ
-            panelProfileForm = new Panel
-            {
-                Location = new Point(25, 160),
-                Size = new Size(480, 275),
-                BackColor = Color.FromArgb(27, 40, 56),
-                Padding = new Padding(20)
-            };
+            panelProfileForm = new Panel();
+            panelProfileForm.Location = new Point(25, 160);
+            panelProfileForm.Size = new Size(480, 275);
+            panelProfileForm.BackColor = Color.FromArgb(27, 40, 56);
+            panelProfileForm.Padding = new Padding(20);
 
-            Label lblForm1 = new Label { Text = "📝 THAY ĐỔI THÔNG TIN CÁ NHÂN", Location = new Point(20, 15), AutoSize = true, ForeColor = Color.FromArgb(102, 192, 244), Font = new Font("Segoe UI", 11, FontStyle.Bold), UseMnemonic = false };
+            Label lblForm1 = new Label();
+            lblForm1.Text = "📝 THAY ĐỔI THÔNG TIN CÁ NHÂN";
+            lblForm1.Location = new Point(20, 15);
+            lblForm1.AutoSize = true;
+            lblForm1.ForeColor = Color.FromArgb(102, 192, 244);
+            lblForm1.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            lblForm1.UseMnemonic = false;
 
-            Label lblName = new Label { Text = "Họ và tên (*):", Location = new Point(20, 60), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 9.5f), UseMnemonic = false };
-            txtFullName = new TextBox { Location = new Point(165, 57), Width = 285, Font = new Font("Segoe UI", 10), BackColor = Color.FromArgb(18, 25, 35), ForeColor = Color.White };
+            Label lblName = new Label();
+            lblName.Text = "Họ và tên (*):";
+            lblName.Location = new Point(20, 60);
+            lblName.AutoSize = true;
+            lblName.ForeColor = Color.White;
+            lblName.Font = new Font("Segoe UI", 9.5f);
+            lblName.UseMnemonic = false;
 
-            Label lblEmail = new Label { Text = "Địa chỉ Email (*):", Location = new Point(20, 110), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 9.5f), UseMnemonic = false };
-            txtEmail = new TextBox { Location = new Point(165, 107), Width = 285, Font = new Font("Segoe UI", 10), BackColor = Color.FromArgb(18, 25, 35), ForeColor = Color.White };
+            txtFullName = new TextBox();
+            txtFullName.Location = new Point(165, 57);
+            txtFullName.Width = 285;
+            txtFullName.Font = new Font("Segoe UI", 10);
+            txtFullName.BackColor = Color.FromArgb(18, 25, 35);
+            txtFullName.ForeColor = Color.White;
 
-            Label lblPhone = new Label { Text = "Số điện thoại:", Location = new Point(20, 160), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 9.5f), UseMnemonic = false };
-            txtPhone = new TextBox { Location = new Point(165, 157), Width = 285, Font = new Font("Segoe UI", 10), BackColor = Color.FromArgb(18, 25, 35), ForeColor = Color.White };
+            Label lblEmail = new Label();
+            lblEmail.Text = "Địa chỉ Email (*):";
+            lblEmail.Location = new Point(20, 110);
+            lblEmail.AutoSize = true;
+            lblEmail.ForeColor = Color.White;
+            lblEmail.Font = new Font("Segoe UI", 9.5f);
+            lblEmail.UseMnemonic = false;
 
-            btnUpdateProfile = new Button
-            {
-                Text = "Cập nhật hồ sơ",
-                Location = new Point(165, 215),
-                Size = new Size(180, 38),
-                BackColor = Color.FromArgb(49, 98, 130),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            txtEmail = new TextBox();
+            txtEmail.Location = new Point(165, 107);
+            txtEmail.Width = 285;
+            txtEmail.Font = new Font("Segoe UI", 10);
+            txtEmail.BackColor = Color.FromArgb(18, 25, 35);
+            txtEmail.ForeColor = Color.White;
+
+            Label lblPhone = new Label();
+            lblPhone.Text = "Số điện thoại:";
+            lblPhone.Location = new Point(20, 160);
+            lblPhone.AutoSize = true;
+            lblPhone.ForeColor = Color.White;
+            lblPhone.Font = new Font("Segoe UI", 9.5f);
+            lblPhone.UseMnemonic = false;
+
+            txtPhone = new TextBox();
+            txtPhone.Location = new Point(165, 157);
+            txtPhone.Width = 285;
+            txtPhone.Font = new Font("Segoe UI", 10);
+            txtPhone.BackColor = Color.FromArgb(18, 25, 35);
+            txtPhone.ForeColor = Color.White;
+
+            btnUpdateProfile = new Button();
+            btnUpdateProfile.Text = "Cập nhật hồ sơ";
+            btnUpdateProfile.Location = new Point(165, 215);
+            btnUpdateProfile.Size = new Size(180, 38);
+            btnUpdateProfile.BackColor = Color.FromArgb(49, 98, 130);
+            btnUpdateProfile.ForeColor = Color.White;
+            btnUpdateProfile.FlatStyle = FlatStyle.Flat;
+            btnUpdateProfile.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            btnUpdateProfile.Cursor = Cursors.Hand;
+            btnUpdateProfile.UseMnemonic = false;
             btnUpdateProfile.FlatAppearance.BorderSize = 0;
             btnUpdateProfile.Click += BtnUpdateProfile_Click;
 
@@ -123,37 +189,78 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             panelProfileForm.Controls.Add(lblForm1);
 
             // 3. KHUNG FORM ĐỔI MẬT KHẨU
-            panelPasswordForm = new Panel
-            {
-                Location = new Point(525, 160),
-                Size = new Size(480, 275),
-                BackColor = Color.FromArgb(27, 40, 56),
-                Padding = new Padding(20)
-            };
+            panelPasswordForm = new Panel();
+            panelPasswordForm.Location = new Point(525, 160);
+            panelPasswordForm.Size = new Size(480, 275);
+            panelPasswordForm.BackColor = Color.FromArgb(27, 40, 56);
+            panelPasswordForm.Padding = new Padding(20);
 
-            Label lblForm2 = new Label { Text = "🔒 ĐỔI MẬT KHẨU BẢO MẬT", Location = new Point(20, 15), AutoSize = true, ForeColor = Color.FromArgb(164, 208, 7), Font = new Font("Segoe UI", 11, FontStyle.Bold), UseMnemonic = false };
+            Label lblForm2 = new Label();
+            lblForm2.Text = "🔒 ĐỔI MẬT KHẨU BẢO MẬT";
+            lblForm2.Location = new Point(20, 15);
+            lblForm2.AutoSize = true;
+            lblForm2.ForeColor = Color.FromArgb(164, 208, 7);
+            lblForm2.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            lblForm2.UseMnemonic = false;
 
-            Label lblOldPass = new Label { Text = "Mật khẩu cũ:", Location = new Point(20, 60), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 9.5f), UseMnemonic = false };
-            txtOldPassword = new TextBox { Location = new Point(165, 57), Width = 285, Font = new Font("Segoe UI", 10), BackColor = Color.FromArgb(18, 25, 35), ForeColor = Color.White, UseSystemPasswordChar = true };
+            Label lblOldPass = new Label();
+            lblOldPass.Text = "Mật khẩu cũ:";
+            lblOldPass.Location = new Point(20, 60);
+            lblOldPass.AutoSize = true;
+            lblOldPass.ForeColor = Color.White;
+            lblOldPass.Font = new Font("Segoe UI", 9.5f);
+            lblOldPass.UseMnemonic = false;
 
-            Label lblNewPass = new Label { Text = "Mật khẩu mới:", Location = new Point(20, 110), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 9.5f), UseMnemonic = false };
-            txtNewPassword = new TextBox { Location = new Point(165, 107), Width = 285, Font = new Font("Segoe UI", 10), BackColor = Color.FromArgb(18, 25, 35), ForeColor = Color.White, UseSystemPasswordChar = true };
+            txtOldPassword = new TextBox();
+            txtOldPassword.Location = new Point(165, 57);
+            txtOldPassword.Width = 285;
+            txtOldPassword.Font = new Font("Segoe UI", 10);
+            txtOldPassword.BackColor = Color.FromArgb(18, 25, 35);
+            txtOldPassword.ForeColor = Color.White;
+            txtOldPassword.UseSystemPasswordChar = true;
 
-            Label lblConfirmPass = new Label { Text = "Nhập lại MK mới:", Location = new Point(20, 160), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 9.5f), UseMnemonic = false };
-            txtConfirmPassword = new TextBox { Location = new Point(165, 157), Width = 285, Font = new Font("Segoe UI", 10), BackColor = Color.FromArgb(18, 25, 35), ForeColor = Color.White, UseSystemPasswordChar = true };
+            Label lblNewPass = new Label();
+            lblNewPass.Text = "Mật khẩu mới:";
+            lblNewPass.Location = new Point(20, 110);
+            lblNewPass.AutoSize = true;
+            lblNewPass.ForeColor = Color.White;
+            lblNewPass.Font = new Font("Segoe UI", 9.5f);
+            lblNewPass.UseMnemonic = false;
 
-            btnChangePassword = new Button
-            {
-                Text = "Xác nhận đổi MK",
-                Location = new Point(165, 215),
-                Size = new Size(180, 38),
-                BackColor = Color.FromArgb(92, 126, 16),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            txtNewPassword = new TextBox();
+            txtNewPassword.Location = new Point(165, 107);
+            txtNewPassword.Width = 285;
+            txtNewPassword.Font = new Font("Segoe UI", 10);
+            txtNewPassword.BackColor = Color.FromArgb(18, 25, 35);
+            txtNewPassword.ForeColor = Color.White;
+            txtNewPassword.UseSystemPasswordChar = true;
+
+            Label lblConfirmPass = new Label();
+            lblConfirmPass.Text = "Nhập lại MK mới:";
+            lblConfirmPass.Location = new Point(20, 160);
+            lblConfirmPass.AutoSize = true;
+            lblConfirmPass.ForeColor = Color.White;
+            lblConfirmPass.Font = new Font("Segoe UI", 9.5f);
+            lblConfirmPass.UseMnemonic = false;
+
+            txtConfirmPassword = new TextBox();
+            txtConfirmPassword.Location = new Point(165, 157);
+            txtConfirmPassword.Width = 285;
+            txtConfirmPassword.Font = new Font("Segoe UI", 10);
+            txtConfirmPassword.BackColor = Color.FromArgb(18, 25, 35);
+            txtConfirmPassword.ForeColor = Color.White;
+            txtConfirmPassword.UseSystemPasswordChar = true;
+
+            btnChangePassword = new Button();
+            btnChangePassword.Text = "Xác nhận đổi MK";
+            btnChangePassword.Location = new Point(165, 215);
+            btnChangePassword.Size = new Size(180, 38);
+            btnChangePassword.BackColor = Color.FromArgb(92, 126, 16);
+            btnChangePassword.ForeColor = Color.White;
+            btnChangePassword.FlatStyle = FlatStyle.Flat;
+            btnChangePassword.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            btnChangePassword.Cursor = Cursors.Hand;
+            btnChangePassword.UseMnemonic = false;
             btnChangePassword.FlatAppearance.BorderSize = 0;
             btnChangePassword.Click += BtnChangePassword_Click;
 
@@ -167,36 +274,30 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             panelPasswordForm.Controls.Add(lblForm2);
 
             // 4. KHUNG BẢO MẬT & ĐIỀU KHOẢN TÀI KHOẢN (TRÁNH TRỐNG DƯỚI)
-            panelSecurityBanner = new Panel
-            {
-                Location = new Point(25, 450),
-                Size = new Size(980, 225),
-                BackColor = Color.FromArgb(27, 40, 56),
-                Padding = new Padding(20)
-            };
+            panelSecurityBanner = new Panel();
+            panelSecurityBanner.Location = new Point(25, 450);
+            panelSecurityBanner.Size = new Size(980, 225);
+            panelSecurityBanner.BackColor = Color.FromArgb(27, 40, 56);
+            panelSecurityBanner.Padding = new Padding(20);
 
-            Label lblSecurityTitle = new Label
-            {
-                Text = "🛡️ NGUYÊN TẮC BẢO MẬT TÀI KHOẢN DIGITAL STEAM",
-                Location = new Point(20, 12),
-                AutoSize = true,
-                ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            Label lblSecurityTitle = new Label();
+            lblSecurityTitle.Text = "🛡️ NGUYÊN TẮC BẢO MẬT TÀI KHOẢN DIGITAL STEAM";
+            lblSecurityTitle.Location = new Point(20, 12);
+            lblSecurityTitle.AutoSize = true;
+            lblSecurityTitle.ForeColor = Color.FromArgb(102, 192, 244);
+            lblSecurityTitle.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            lblSecurityTitle.UseMnemonic = false;
 
-            lblSecurityContent = new Label
-            {
-                Text = "• Mật khẩu nên có độ dài tối thiểu 6 ký tự, bao gồm cả chữ cái và số để đảm bảo tính an toàn cao nhất.\n" +
-                       "• Không chia sẻ thông tin tài khoản hoặc mã License sản phẩm cho bất kỳ ai. Nhân viên hệ thống không bao giờ hỏi mật khẩu của bạn.\n" +
-                       "• Tất cả giao dịch mua phần mềm số và nạp tiền ví được lưu trữ an toàn và bảo chứng bởi hệ thống hóa đơn điện tử.\n" +
-                       "• Khi có nhu cầu hỗ trợ kỹ thuật hoặc khôi phục quyền truy cập, vui lòng liên hệ Ban Quản Trị qua Email hệ thống.",
-                Location = new Point(20, 38),
-                Size = new Size(940, 85),
-                ForeColor = Color.FromArgb(199, 213, 224),
-                Font = new Font("Segoe UI", 9.25f),
-                UseMnemonic = false
-            };
+            lblSecurityContent = new Label();
+            lblSecurityContent.Text = "• Mật khẩu nên có độ dài tối thiểu 6 ký tự, bao gồm cả chữ cái và số để đảm bảo tính an toàn cao nhất.\n" +
+                                   "• Không chia sẻ thông tin tài khoản hoặc mã License sản phẩm cho bất kỳ ai. Nhân viên hệ thống không bao giờ hỏi mật khẩu của bạn.\n" +
+                                   "• Tất cả giao dịch mua phần mềm số và nạp tiền ví được lưu trữ an toàn và bảo chứng bởi hệ thống hóa đơn điện tử.\n" +
+                                   "• Khi có nhu cầu hỗ trợ kỹ thuật hoặc khôi phục quyền truy cập, vui lòng liên hệ Ban Quản Trị qua Email hệ thống.";
+            lblSecurityContent.Location = new Point(20, 38);
+            lblSecurityContent.Size = new Size(940, 85);
+            lblSecurityContent.ForeColor = Color.FromArgb(199, 213, 224);
+            lblSecurityContent.Font = new Font("Segoe UI", 9.25f);
+            lblSecurityContent.UseMnemonic = false;
 
             panelSecurityBanner.Controls.Add(lblSecurityContent);
             panelSecurityBanner.Controls.Add(lblSecurityTitle);
@@ -207,8 +308,8 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             this.Controls.Add(panelInfo);
             this.Controls.Add(lblHeader);
 
-            this.Resize += (s, e) => AdjustLayout();
-            AdjustLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         protected override void OnResize(EventArgs e)
@@ -219,9 +320,9 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
 
         private void AdjustLayout()
         {
-            if (this.ClientSize.Width < 500 || panelProfileForm == null || panelPasswordForm == null || panelInfo == null || panelSecurityBanner == null || txtFullName == null) return;
-            int totalW = this.ClientSize.Width;
-            int totalH = this.ClientSize.Height;
+            if (panelProfileForm == null || panelPasswordForm == null || panelInfo == null || panelSecurityBanner == null || txtFullName == null) return;
+            int totalW = Math.Max(1040, this.ClientSize.Width);
+            int totalH = Math.Max(700, this.ClientSize.Height);
 
             int fullW = totalW - 50;
 

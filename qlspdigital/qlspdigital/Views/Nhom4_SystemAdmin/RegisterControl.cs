@@ -7,11 +7,13 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 {
     // UI 1: Màn hình Đăng ký tài khoản khách hàng mới
     // Thành viên phụ trách: Trần Quốc Thuận (Nhóm 4)
-    public class RegisterControl : UserControl
+    public partial class RegisterControl : UserControl
     {
         private readonly AuthService _authService;
 
         public event Action? OnNavigateToLogin;
+
+        private Panel panelCenter = null!;
 
         private TextBox txtUsername = null!;
         private TextBox txtFullName = null!;
@@ -30,91 +32,183 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
         private void InitializeComponent()
         {
+            this.SuspendLayout();
+
+            this.AutoScaleDimensions = new SizeF(7F, 15F);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
-            this.Dock = DockStyle.Fill;
 
-            Panel panelCenter = new Panel
-            {
-                Size = new Size(480, 480),
-                BackColor = Color.FromArgb(27, 40, 56)
-            };
-            panelCenter.Location = new Point((this.Width - panelCenter.Width) / 2, 40);
-            this.Resize += (s, e) =>
-            {
-                panelCenter.Location = new Point(Math.Max(20, (this.Width - panelCenter.Width) / 2), Math.Max(20, (this.Height - panelCenter.Height) / 2));
-            };
+            panelCenter = new Panel();
+            panelCenter.Size = new Size(480, 480);
+            panelCenter.BackColor = Color.FromArgb(27, 40, 56);
+            int targetW = Math.Max(1040, this.Width);
+            int targetH = Math.Max(700, this.Height);
+            panelCenter.Location = new Point(Math.Max(20, (targetW - panelCenter.Width) / 2), Math.Max(20, (targetH - panelCenter.Height) / 2));
 
-            Label lblLogo = new Label
-            {
-                Text = "📝 ĐĂNG KÝ THÀNH VIÊN",
-                Location = new Point(0, 15),
-                Size = new Size(480, 35),
-                ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 16, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter,
-                UseMnemonic = false
-            };
+            Label lblLogo = new Label();
+            lblLogo.Text = "📝 ĐĂNG KÝ THÀNH VIÊN";
+            lblLogo.Location = new Point(0, 15);
+            lblLogo.Size = new Size(480, 35);
+            lblLogo.ForeColor = Color.FromArgb(102, 192, 244);
+            lblLogo.Font = new Font("Segoe UI", 16, FontStyle.Bold);
+            lblLogo.TextAlign = ContentAlignment.MiddleCenter;
+            lblLogo.UseMnemonic = false;
 
-            int y = 55;
-            AddInput(panelCenter, "Tên đăng nhập (*):", out txtUsername, ref y);
-            AddInput(panelCenter, "Họ và tên (*):", out txtFullName, ref y);
-            AddInput(panelCenter, "Địa chỉ Email (*):", out txtEmail, ref y);
-            AddInput(panelCenter, "Số điện thoại:", out txtPhone, ref y);
-            AddInput(panelCenter, "Mật khẩu (*):", out txtPassword, ref y, true);
-            AddInput(panelCenter, "Nhập lại mật khẩu (*):", out txtConfirmPassword, ref y, true);
+            Label lblUsername = new Label();
+            lblUsername.Text = "Tên đăng nhập (*):";
+            lblUsername.Location = new Point(35, 55);
+            lblUsername.AutoSize = true;
+            lblUsername.ForeColor = Color.White;
+            lblUsername.Font = new Font("Segoe UI", 9.5f);
+            lblUsername.UseMnemonic = false;
 
-            btnRegister = new Button
-            {
-                Text = "TẠO TÀI KHOẢN MỚI",
-                Location = new Point(35, y + 8),
-                Size = new Size(410, 40),
-                BackColor = Color.FromArgb(92, 126, 16),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 10.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            txtUsername = new TextBox();
+            txtUsername.Location = new Point(35, 78);
+            txtUsername.Width = 410;
+            txtUsername.Font = new Font("Segoe UI", 9.5f);
+            txtUsername.BackColor = Color.FromArgb(18, 25, 35);
+            txtUsername.ForeColor = Color.White;
+
+            Label lblFullName = new Label();
+            lblFullName.Text = "Họ và tên (*):";
+            lblFullName.Location = new Point(35, 109);
+            lblFullName.AutoSize = true;
+            lblFullName.ForeColor = Color.White;
+            lblFullName.Font = new Font("Segoe UI", 9.5f);
+            lblFullName.UseMnemonic = false;
+
+            txtFullName = new TextBox();
+            txtFullName.Location = new Point(35, 132);
+            txtFullName.Width = 410;
+            txtFullName.Font = new Font("Segoe UI", 9.5f);
+            txtFullName.BackColor = Color.FromArgb(18, 25, 35);
+            txtFullName.ForeColor = Color.White;
+
+            Label lblEmail = new Label();
+            lblEmail.Text = "Địa chỉ Email (*):";
+            lblEmail.Location = new Point(35, 163);
+            lblEmail.AutoSize = true;
+            lblEmail.ForeColor = Color.White;
+            lblEmail.Font = new Font("Segoe UI", 9.5f);
+            lblEmail.UseMnemonic = false;
+
+            txtEmail = new TextBox();
+            txtEmail.Location = new Point(35, 186);
+            txtEmail.Width = 410;
+            txtEmail.Font = new Font("Segoe UI", 9.5f);
+            txtEmail.BackColor = Color.FromArgb(18, 25, 35);
+            txtEmail.ForeColor = Color.White;
+
+            Label lblPhone = new Label();
+            lblPhone.Text = "Số điện thoại:";
+            lblPhone.Location = new Point(35, 217);
+            lblPhone.AutoSize = true;
+            lblPhone.ForeColor = Color.White;
+            lblPhone.Font = new Font("Segoe UI", 9.5f);
+            lblPhone.UseMnemonic = false;
+
+            txtPhone = new TextBox();
+            txtPhone.Location = new Point(35, 240);
+            txtPhone.Width = 410;
+            txtPhone.Font = new Font("Segoe UI", 9.5f);
+            txtPhone.BackColor = Color.FromArgb(18, 25, 35);
+            txtPhone.ForeColor = Color.White;
+
+            Label lblPassword = new Label();
+            lblPassword.Text = "Mật khẩu (*):";
+            lblPassword.Location = new Point(35, 271);
+            lblPassword.AutoSize = true;
+            lblPassword.ForeColor = Color.White;
+            lblPassword.Font = new Font("Segoe UI", 9.5f);
+            lblPassword.UseMnemonic = false;
+
+            txtPassword = new TextBox();
+            txtPassword.Location = new Point(35, 294);
+            txtPassword.Width = 410;
+            txtPassword.Font = new Font("Segoe UI", 9.5f);
+            txtPassword.BackColor = Color.FromArgb(18, 25, 35);
+            txtPassword.ForeColor = Color.White;
+            txtPassword.UseSystemPasswordChar = true;
+
+            Label lblConfirmPassword = new Label();
+            lblConfirmPassword.Text = "Nhập lại mật khẩu (*):";
+            lblConfirmPassword.Location = new Point(35, 325);
+            lblConfirmPassword.AutoSize = true;
+            lblConfirmPassword.ForeColor = Color.White;
+            lblConfirmPassword.Font = new Font("Segoe UI", 9.5f);
+            lblConfirmPassword.UseMnemonic = false;
+
+            txtConfirmPassword = new TextBox();
+            txtConfirmPassword.Location = new Point(35, 348);
+            txtConfirmPassword.Width = 410;
+            txtConfirmPassword.Font = new Font("Segoe UI", 9.5f);
+            txtConfirmPassword.BackColor = Color.FromArgb(18, 25, 35);
+            txtConfirmPassword.ForeColor = Color.White;
+            txtConfirmPassword.UseSystemPasswordChar = true;
+
+            btnRegister = new Button();
+            btnRegister.Text = "TẠO TÀI KHOẢN MỚI";
+            btnRegister.Location = new Point(35, 387);
+            btnRegister.Size = new Size(410, 40);
+            btnRegister.BackColor = Color.FromArgb(92, 126, 16);
+            btnRegister.ForeColor = Color.White;
+            btnRegister.FlatStyle = FlatStyle.Flat;
+            btnRegister.Font = new Font("Segoe UI", 10.5f, FontStyle.Bold);
+            btnRegister.Cursor = Cursors.Hand;
+            btnRegister.UseMnemonic = false;
             btnRegister.FlatAppearance.BorderSize = 0;
             btnRegister.Click += BtnRegister_Click;
 
-            btnBackToLogin = new Button
-            {
-                Text = "← Đã có tài khoản? Quay lại Đăng nhập",
-                Location = new Point(35, y + 54),
-                Size = new Size(410, 30),
-                BackColor = Color.Transparent,
-                ForeColor = Color.FromArgb(102, 192, 244),
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Underline),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnBackToLogin = new Button();
+            btnBackToLogin.Text = "← Đã có tài khoản? Quay lại Đăng nhập";
+            btnBackToLogin.Location = new Point(35, 433);
+            btnBackToLogin.Size = new Size(410, 30);
+            btnBackToLogin.BackColor = Color.Transparent;
+            btnBackToLogin.ForeColor = Color.FromArgb(102, 192, 244);
+            btnBackToLogin.FlatStyle = FlatStyle.Flat;
+            btnBackToLogin.Font = new Font("Segoe UI", 9.5f, FontStyle.Underline);
+            btnBackToLogin.Cursor = Cursors.Hand;
+            btnBackToLogin.UseMnemonic = false;
             btnBackToLogin.FlatAppearance.BorderSize = 0;
-            btnBackToLogin.Click += (s, e) => OnNavigateToLogin?.Invoke();
+            btnBackToLogin.Click += BtnBackToLogin_Click;
 
             panelCenter.Controls.Add(btnBackToLogin);
             panelCenter.Controls.Add(btnRegister);
+            panelCenter.Controls.Add(txtConfirmPassword);
+            panelCenter.Controls.Add(lblConfirmPassword);
+            panelCenter.Controls.Add(txtPassword);
+            panelCenter.Controls.Add(lblPassword);
+            panelCenter.Controls.Add(txtPhone);
+            panelCenter.Controls.Add(lblPhone);
+            panelCenter.Controls.Add(txtEmail);
+            panelCenter.Controls.Add(lblEmail);
+            panelCenter.Controls.Add(txtFullName);
+            panelCenter.Controls.Add(lblFullName);
+            panelCenter.Controls.Add(txtUsername);
+            panelCenter.Controls.Add(lblUsername);
             panelCenter.Controls.Add(lblLogo);
 
             this.Controls.Add(panelCenter);
+
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
-        private void AddInput(Panel panel, string label, out TextBox txt, ref int y, bool isPassword = false)
+        protected override void OnResize(EventArgs e)
         {
-            Label lbl = new Label { Text = label, Location = new Point(35, y), AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 9.5f), UseMnemonic = false };
-            txt = new TextBox
+            base.OnResize(e);
+            if (panelCenter != null)
             {
-                Location = new Point(35, y + 23),
-                Width = 410,
-                Font = new Font("Segoe UI", 9.5f),
-                BackColor = Color.FromArgb(18, 25, 35),
-                ForeColor = Color.White,
-                UseSystemPasswordChar = isPassword
-            };
-            panel.Controls.Add(lbl);
-            panel.Controls.Add(txt);
-            y += 54;
+                int w = Math.Max(1040, this.Width);
+                int h = Math.Max(700, this.Height);
+                panelCenter.Location = new Point(Math.Max(20, (w - panelCenter.Width) / 2), Math.Max(20, (h - panelCenter.Height) / 2));
+            }
+        }
+
+        private void BtnBackToLogin_Click(object? sender, EventArgs e)
+        {
+            OnNavigateToLogin?.Invoke();
         }
 
         private void BtnRegister_Click(object? sender, EventArgs e)

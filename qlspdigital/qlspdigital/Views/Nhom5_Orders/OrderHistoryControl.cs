@@ -8,7 +8,7 @@ namespace qlspdigital.Views.Nhom5_Orders
 {
     // UI 7: Xem lịch sử đơn hàng cá nhân của khách hàng
     // Thành viên phụ trách: Phạm Văn Đam (Nhóm 5)
-    public class OrderHistoryControl : UserControl
+    public partial class OrderHistoryControl : UserControl
     {
         private readonly DonHangService _orderService;
 
@@ -23,67 +23,64 @@ namespace qlspdigital.Views.Nhom5_Orders
             _orderService = new DonHangService();
 
             InitializeComponent();
+            AdjustLayout();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadHistory();
         }
 
         private void InitializeComponent()
         {
+            this.SuspendLayout();
+
+            this.AutoScaleDimensions = new SizeF(7F, 15F);
+            this.AutoScaleMode = AutoScaleMode.Font;
             this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
-            this.Dock = DockStyle.Fill;
             this.Padding = new Padding(25);
 
             // Tiêu đề
-            panelTop = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 45
-            };
+            panelTop = new Panel();
+            panelTop.Dock = DockStyle.Top;
+            panelTop.Height = 45;
 
-            Label lblHeader = new Label
-            {
-                Text = "📜 LỊCH SỬ GIAO DỊCH & HÓA ĐƠN CÁ NHÂN",
-                Dock = DockStyle.Left,
-                AutoSize = true,
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 15, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            Label lblHeader = new Label();
+            lblHeader.Text = "📜 LỊCH SỬ GIAO DỊCH & HÓA ĐƠN CÁ NHÂN";
+            lblHeader.Dock = DockStyle.Left;
+            lblHeader.AutoSize = true;
+            lblHeader.ForeColor = Color.White;
+            lblHeader.Font = new Font("Segoe UI", 15, FontStyle.Bold);
+            lblHeader.UseMnemonic = false;
 
-            btnRefresh = new Button
-            {
-                Text = "🔄 Làm mới",
-                Dock = DockStyle.Right,
-                Width = 120,
-                BackColor = Color.FromArgb(49, 98, 130),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnRefresh = new Button();
+            btnRefresh.Text = "🔄 Làm mới";
+            btnRefresh.Dock = DockStyle.Right;
+            btnRefresh.Width = 120;
+            btnRefresh.BackColor = Color.FromArgb(49, 98, 130);
+            btnRefresh.ForeColor = Color.White;
+            btnRefresh.FlatStyle = FlatStyle.Flat;
+            btnRefresh.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnRefresh.Cursor = Cursors.Hand;
+            btnRefresh.UseMnemonic = false;
             btnRefresh.FlatAppearance.BorderSize = 0;
-            btnRefresh.Click += (s, e) => LoadHistory();
+            btnRefresh.Click += BtnRefresh_Click;
 
             panelTop.Controls.Add(btnRefresh);
             panelTop.Controls.Add(lblHeader);
 
             // Bảng danh sách đơn hàng đã mua
-            dgvOrders = new DataGridView
-            {
-                Location = new Point(25, 65),
-                Size = new Size(580, 615),
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left,
-                BackgroundColor = Color.FromArgb(27, 40, 56),
-                ForeColor = Color.White,
-                GridColor = Color.FromArgb(42, 71, 94),
-                BorderStyle = BorderStyle.None,
-                RowHeadersVisible = false,
-                AllowUserToAddRows = false,
-                ReadOnly = true,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-            };
+            dgvOrders = new DataGridView();
+            dgvOrders.Location = new Point(25, 65);
+            dgvOrders.Size = new Size(580, 615);
+            dgvOrders.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            dgvOrders.BackgroundColor = Color.FromArgb(27, 40, 56);
+            dgvOrders.ForeColor = Color.White;
+            dgvOrders.GridColor = Color.FromArgb(42, 71, 94);
+            dgvOrders.BorderStyle = BorderStyle.None;
+            dgvOrders.RowHeadersVisible = false;
+            dgvOrders.AllowUserToAddRows = false;
+            dgvOrders.ReadOnly = true;
+            dgvOrders.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvOrders.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvOrders.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 35);
             dgvOrders.DefaultCellStyle.ForeColor = Color.White;
             dgvOrders.DefaultCellStyle.SelectionBackColor = Color.FromArgb(49, 98, 130);
@@ -119,37 +116,31 @@ namespace qlspdigital.Views.Nhom5_Orders
             dgvOrders.SelectionChanged += DgvOrders_SelectionChanged;
 
             // Bảng chi tiết sản phẩm thuộc đơn hàng
-            panelDetail = new Panel
-            {
-                Location = new Point(625, 65),
-                Size = new Size(390, 615),
-                BackColor = Color.FromArgb(27, 40, 56),
-                Padding = new Padding(15)
-            };
+            panelDetail = new Panel();
+            panelDetail.Location = new Point(625, 65);
+            panelDetail.Size = new Size(390, 615);
+            panelDetail.BackColor = Color.FromArgb(27, 40, 56);
+            panelDetail.Padding = new Padding(15);
 
-            Label lblDetailTitle = new Label
-            {
-                Text = "CÁC MÓN HÀNG TRONG HÓA ĐƠN",
-                Dock = DockStyle.Top,
-                Height = 30,
-                ForeColor = Color.FromArgb(164, 208, 7),
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            Label lblDetailTitle = new Label();
+            lblDetailTitle.Text = "CÁC MÓN HÀNG TRONG HÓA ĐƠN";
+            lblDetailTitle.Dock = DockStyle.Top;
+            lblDetailTitle.Height = 30;
+            lblDetailTitle.ForeColor = Color.FromArgb(164, 208, 7);
+            lblDetailTitle.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            lblDetailTitle.UseMnemonic = false;
 
-            dgvDetails = new DataGridView
-            {
-                Dock = DockStyle.Fill,
-                BackgroundColor = Color.FromArgb(18, 25, 35),
-                ForeColor = Color.White,
-                GridColor = Color.FromArgb(42, 71, 94),
-                BorderStyle = BorderStyle.None,
-                RowHeadersVisible = false,
-                AllowUserToAddRows = false,
-                ReadOnly = true,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-            };
+            dgvDetails = new DataGridView();
+            dgvDetails.Dock = DockStyle.Fill;
+            dgvDetails.BackgroundColor = Color.FromArgb(18, 25, 35);
+            dgvDetails.ForeColor = Color.White;
+            dgvDetails.GridColor = Color.FromArgb(42, 71, 94);
+            dgvDetails.BorderStyle = BorderStyle.None;
+            dgvDetails.RowHeadersVisible = false;
+            dgvDetails.AllowUserToAddRows = false;
+            dgvDetails.ReadOnly = true;
+            dgvDetails.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvDetails.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvDetails.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 35);
             dgvDetails.DefaultCellStyle.ForeColor = Color.White;
             dgvDetails.DefaultCellStyle.SelectionBackColor = Color.FromArgb(49, 98, 130);
@@ -181,8 +172,8 @@ namespace qlspdigital.Views.Nhom5_Orders
             this.Controls.Add(dgvOrders);
             this.Controls.Add(panelTop);
 
-            this.Resize += (s, e) => AdjustLayout();
-            AdjustLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         protected override void OnResize(EventArgs e)
@@ -193,9 +184,9 @@ namespace qlspdigital.Views.Nhom5_Orders
 
         private void AdjustLayout()
         {
-            if (this.ClientSize.Width < 500 || dgvOrders == null || panelDetail == null) return;
-            int totalW = this.ClientSize.Width;
-            int totalH = this.ClientSize.Height;
+            if (dgvOrders == null || panelDetail == null) return;
+            int totalW = Math.Max(1040, this.ClientSize.Width);
+            int totalH = Math.Max(700, this.ClientSize.Height);
 
             int leftW = Math.Max(400, (int)((totalW - 65) * 0.58));
             int rightW = totalW - 65 - leftW;
@@ -240,6 +231,11 @@ namespace qlspdigital.Views.Nhom5_Orders
             {
                 dgvDetails.Rows.Add(item.TenSanPham, item.SoLuong, FormatHelper.FormatCurrency(item.DonGia));
             }
+        }
+
+        private void BtnRefresh_Click(object? sender, EventArgs e)
+        {
+            LoadHistory();
         }
     }
 }

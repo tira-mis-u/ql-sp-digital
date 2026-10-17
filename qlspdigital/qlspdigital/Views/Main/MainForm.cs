@@ -13,7 +13,7 @@ namespace qlspdigital.Views.Main
 {
     // Khung sườn giao diện chính (Application Shell) phong cách Steam
     // Kết nối toàn bộ 15 màn hình chức năng của 5 thành viên
-    public class MainForm : Form
+    public partial class MainForm : Form
     {
         // Panel trung tâm chứa UserControl động
         private Panel panelMainContent = null!;
@@ -50,11 +50,17 @@ namespace qlspdigital.Views.Main
         public MainForm()
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             SubscribeEvents();
         }
 
         private void InitializeComponent()
         {
+            this.SuspendLayout();
+
+            this.AutoScaleDimensions = new SizeF(7F, 15F);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.Name = "MainForm";
             this.Text = "Hệ Thống Phân Phối Sản Phẩm Kỹ Thuật Số (DPMS - Steam Edition)";
             this.Size = new Size(1300, 850);
             this.MinimumSize = new Size(1100, 700);
@@ -64,109 +70,93 @@ namespace qlspdigital.Views.Main
             this.Font = new Font("Segoe UI", 9.5f);
 
             // 1. THANH TIÊU ĐỀ HEADER TRÊN CÙNG
-            panelHeader = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 65,
-                BackColor = Color.FromArgb(16, 24, 34),
-                Padding = new Padding(15, 10, 15, 10)
-            };
-            panelHeader.Paint += (s, e) =>
-            {
-                using var p = new Pen(Color.FromArgb(35, 48, 68), 1);
-                e.Graphics.DrawLine(p, 0, panelHeader.Height - 1, panelHeader.Width, panelHeader.Height - 1);
-            };
+            panelHeader = new Panel();
+            panelHeader.SuspendLayout();
+            panelHeader.Dock = DockStyle.Top;
+            panelHeader.Height = 65;
+            panelHeader.BackColor = Color.FromArgb(16, 24, 34);
+            panelHeader.Padding = new Padding(15, 10, 15, 10);
+            panelHeader.Paint += PanelHeader_Paint;
 
-            Label lblLogo = new Label
-            {
-                Text = "⚡ DPMS",
-                Dock = DockStyle.Left,
-                Width = 110,
-                ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 16, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleLeft,
-                UseMnemonic = false
-            };
+            Label lblLogo = new Label();
+            lblLogo.Text = "⚡ DPMS";
+            lblLogo.Dock = DockStyle.Left;
+            lblLogo.Width = 110;
+            lblLogo.ForeColor = Color.FromArgb(102, 192, 244);
+            lblLogo.Font = new Font("Segoe UI", 16, FontStyle.Bold);
+            lblLogo.TextAlign = ContentAlignment.MiddleLeft;
+            lblLogo.UseMnemonic = false;
 
             // Vùng Header bên phải: Ví, User, Cart, Login/Logout
-            Panel panelHeaderRight = new Panel
-            {
-                Dock = DockStyle.Right,
-                Width = 640,
-                Padding = new Padding(0, 5, 0, 5)
-            };
+            Panel panelHeaderRight = new Panel();
+            panelHeaderRight.SuspendLayout();
+            panelHeaderRight.Dock = DockStyle.Right;
+            panelHeaderRight.Width = 640;
+            panelHeaderRight.Padding = new Padding(0, 5, 0, 5);
 
-            btnHeaderAuth = new Button
-            {
-                Text = "🔑 Đăng nhập",
-                Dock = DockStyle.Right,
-                Width = 145,
-                BackColor = Color.FromArgb(49, 98, 130),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnHeaderAuth = new Button();
+            btnHeaderAuth.Text = "🔑 Đăng nhập";
+            btnHeaderAuth.Dock = DockStyle.Right;
+            btnHeaderAuth.Width = 145;
+            btnHeaderAuth.BackColor = Color.FromArgb(49, 98, 130);
+            btnHeaderAuth.ForeColor = Color.White;
+            btnHeaderAuth.FlatStyle = FlatStyle.Flat;
+            btnHeaderAuth.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnHeaderAuth.Cursor = Cursors.Hand;
+            btnHeaderAuth.UseMnemonic = false;
             btnHeaderAuth.FlatAppearance.BorderSize = 0;
             btnHeaderAuth.Click += BtnHeaderAuth_Click;
 
-            btnHeaderCart = new Button
-            {
-                Text = "🛒 Giỏ hàng (0)",
-                Dock = DockStyle.Right,
-                Width = 145,
-                BackColor = Color.FromArgb(92, 126, 16),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnHeaderCart = new Button();
+            btnHeaderCart.Text = "🛒 Giỏ hàng (0)";
+            btnHeaderCart.Dock = DockStyle.Right;
+            btnHeaderCart.Width = 145;
+            btnHeaderCart.BackColor = Color.FromArgb(92, 126, 16);
+            btnHeaderCart.ForeColor = Color.White;
+            btnHeaderCart.FlatStyle = FlatStyle.Flat;
+            btnHeaderCart.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnHeaderCart.Cursor = Cursors.Hand;
+            btnHeaderCart.UseMnemonic = false;
             btnHeaderCart.FlatAppearance.BorderSize = 0;
-            btnHeaderCart.Click += (s, e) => NavigateToCart();
+            btnHeaderCart.Click += BtnHeaderCart_Click;
 
-            lblBalance = new Label
-            {
-                Text = "💰 Ví: 0 ₫",
-                Dock = DockStyle.Right,
-                Width = 160,
-                ForeColor = Color.FromArgb(164, 208, 7),
-                Font = new Font("Segoe UI", 10.5f, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleRight,
-                UseMnemonic = false
-            };
+            lblBalance = new Label();
+            lblBalance.Text = "💰 Ví: 0 ₫";
+            lblBalance.Dock = DockStyle.Right;
+            lblBalance.Width = 160;
+            lblBalance.ForeColor = Color.FromArgb(164, 208, 7);
+            lblBalance.Font = new Font("Segoe UI", 10.5f, FontStyle.Bold);
+            lblBalance.TextAlign = ContentAlignment.MiddleRight;
+            lblBalance.UseMnemonic = false;
 
-            lblUserGreeting = new Label
-            {
-                Text = "Chào khách vãng lai",
-                Dock = DockStyle.Fill,
-                ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleRight,
-                Padding = new Padding(0, 0, 10, 0),
-                UseMnemonic = false
-            };
+            lblUserGreeting = new Label();
+            lblUserGreeting.Text = "Chào khách vãng lai";
+            lblUserGreeting.Dock = DockStyle.Fill;
+            lblUserGreeting.ForeColor = Color.FromArgb(102, 192, 244);
+            lblUserGreeting.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            lblUserGreeting.TextAlign = ContentAlignment.MiddleRight;
+            lblUserGreeting.Padding = new Padding(0, 0, 10, 0);
+            lblUserGreeting.UseMnemonic = false;
 
             panelHeaderRight.Controls.Add(lblUserGreeting);
             panelHeaderRight.Controls.Add(lblBalance);
             panelHeaderRight.Controls.Add(btnHeaderCart);
             panelHeaderRight.Controls.Add(btnHeaderAuth);
+            panelHeaderRight.ResumeLayout(false);
+
             btnHeaderAuth.SendToBack();
             btnHeaderCart.SendToBack();
             lblBalance.SendToBack();
             lblUserGreeting.BringToFront();
 
-            Label lblAppTitle = new Label
-            {
-                Text = "CỬA HÀNG PHÂN PHỐI SẢN PHẨM KỸ THUẬT SỐ",
-                Dock = DockStyle.Fill,
-                ForeColor = Color.FromArgb(199, 213, 224),
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleLeft,
-                Padding = new Padding(15, 0, 0, 0),
-                UseMnemonic = false
-            };
+            Label lblAppTitle = new Label();
+            lblAppTitle.Text = "CỬA HÀNG PHÂN PHỐI SẢN PHẨM KỸ THUẬT SỐ";
+            lblAppTitle.Dock = DockStyle.Fill;
+            lblAppTitle.ForeColor = Color.FromArgb(199, 213, 224);
+            lblAppTitle.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            lblAppTitle.TextAlign = ContentAlignment.MiddleLeft;
+            lblAppTitle.Padding = new Padding(15, 0, 0, 0);
+            lblAppTitle.UseMnemonic = false;
 
             panelHeader.Controls.Add(lblAppTitle);
             panelHeader.Controls.Add(panelHeaderRight);
@@ -174,54 +164,256 @@ namespace qlspdigital.Views.Main
             lblLogo.SendToBack();
             panelHeaderRight.SendToBack();
             lblAppTitle.BringToFront();
+            panelHeader.ResumeLayout(false);
 
             // 2. THANH ĐIỀU HƯỚNG SIDEBAR BÊN TRÁI
-            panelSidebar = new Panel
-            {
-                Dock = DockStyle.Left,
-                Width = 240,
-                BackColor = Color.FromArgb(18, 25, 35),
-                AutoScroll = true,
-                Padding = new Padding(10, 15, 10, 15)
-            };
+            panelSidebar = new Panel();
+            panelSidebar.SuspendLayout();
+            panelSidebar.Dock = DockStyle.Left;
+            panelSidebar.Width = 240;
+            panelSidebar.BackColor = Color.FromArgb(18, 25, 35);
+            panelSidebar.AutoScroll = true;
+            panelSidebar.Padding = new Padding(10, 15, 10, 15);
 
             // Tiêu đề phân hệ Khách hàng
-            Label lblClientSection = new Label
-            {
-                Text = "MUA SẮM & CÁ NHÂN",
-                Dock = DockStyle.Top,
-                Height = 25,
-                ForeColor = Color.FromArgb(161, 181, 196),
-                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            Label lblClientSection = new Label();
+            lblClientSection.Text = "MUA SẮM & CÁ NHÂN";
+            lblClientSection.Dock = DockStyle.Top;
+            lblClientSection.Height = 25;
+            lblClientSection.ForeColor = Color.FromArgb(161, 181, 196);
+            lblClientSection.Font = new Font("Segoe UI", 8.5f, FontStyle.Bold);
+            lblClientSection.UseMnemonic = false;
 
-            btnMenuStore = CreateMenuButton("🛒 Cửa hàng (Store)", (s, e) => NavigateToStore());
-            btnMenuReviews = CreateMenuButton("💬 Đánh giá sản phẩm", (s, e) => NavigateToReviews(1));
-            btnMenuCart = CreateMenuButton("🛍️ Giỏ hàng của tôi", (s, e) => NavigateToCart());
-            btnMenuWallet = CreateMenuButton("💰 Ví tài khoản", (s, e) => NavigateToWallet());
-            btnMenuVouchers = CreateMenuButton("🎁 Mã giảm giá (Voucher)", (s, e) => NavigateToVouchers());
-            btnMenuLibrary = CreateMenuButton("🎮 Thư viện game sở hữu", (s, e) => NavigateToLibrary());
-            btnMenuOrderHistory = CreateMenuButton("📜 Lịch sử mua hàng", (s, e) => NavigateToOrderHistory());
-            btnMenuProfile = CreateMenuButton("⚙️ Cài đặt & Hồ sơ", (s, e) => NavigateToProfile());
+            btnMenuStore = new Button();
+            btnMenuStore.Text = "🛒 Cửa hàng (Store)";
+            btnMenuStore.Dock = DockStyle.Top;
+            btnMenuStore.Height = 38;
+            btnMenuStore.BackColor = Color.FromArgb(18, 25, 35);
+            btnMenuStore.ForeColor = Color.FromArgb(199, 213, 224);
+            btnMenuStore.FlatStyle = FlatStyle.Flat;
+            btnMenuStore.Font = new Font("Segoe UI", 9.5f);
+            btnMenuStore.TextAlign = ContentAlignment.MiddleLeft;
+            btnMenuStore.Padding = new Padding(10, 0, 0, 0);
+            btnMenuStore.Cursor = Cursors.Hand;
+            btnMenuStore.UseMnemonic = false;
+            btnMenuStore.FlatAppearance.BorderSize = 0;
+            btnMenuStore.MouseEnter += BtnMenu_MouseEnter;
+            btnMenuStore.MouseLeave += BtnMenu_MouseLeave;
+            btnMenuStore.Click += BtnMenuStore_Click;
+
+            btnMenuReviews = new Button();
+            btnMenuReviews.Text = "💬 Đánh giá sản phẩm";
+            btnMenuReviews.Dock = DockStyle.Top;
+            btnMenuReviews.Height = 38;
+            btnMenuReviews.BackColor = Color.FromArgb(18, 25, 35);
+            btnMenuReviews.ForeColor = Color.FromArgb(199, 213, 224);
+            btnMenuReviews.FlatStyle = FlatStyle.Flat;
+            btnMenuReviews.Font = new Font("Segoe UI", 9.5f);
+            btnMenuReviews.TextAlign = ContentAlignment.MiddleLeft;
+            btnMenuReviews.Padding = new Padding(10, 0, 0, 0);
+            btnMenuReviews.Cursor = Cursors.Hand;
+            btnMenuReviews.UseMnemonic = false;
+            btnMenuReviews.FlatAppearance.BorderSize = 0;
+            btnMenuReviews.MouseEnter += BtnMenu_MouseEnter;
+            btnMenuReviews.MouseLeave += BtnMenu_MouseLeave;
+            btnMenuReviews.Click += BtnMenuReviews_Click;
+
+            btnMenuCart = new Button();
+            btnMenuCart.Text = "🛍️ Giỏ hàng của tôi";
+            btnMenuCart.Dock = DockStyle.Top;
+            btnMenuCart.Height = 38;
+            btnMenuCart.BackColor = Color.FromArgb(18, 25, 35);
+            btnMenuCart.ForeColor = Color.FromArgb(199, 213, 224);
+            btnMenuCart.FlatStyle = FlatStyle.Flat;
+            btnMenuCart.Font = new Font("Segoe UI", 9.5f);
+            btnMenuCart.TextAlign = ContentAlignment.MiddleLeft;
+            btnMenuCart.Padding = new Padding(10, 0, 0, 0);
+            btnMenuCart.Cursor = Cursors.Hand;
+            btnMenuCart.UseMnemonic = false;
+            btnMenuCart.FlatAppearance.BorderSize = 0;
+            btnMenuCart.MouseEnter += BtnMenu_MouseEnter;
+            btnMenuCart.MouseLeave += BtnMenu_MouseLeave;
+            btnMenuCart.Click += BtnMenuCart_Click;
+
+            btnMenuWallet = new Button();
+            btnMenuWallet.Text = "💰 Ví tài khoản";
+            btnMenuWallet.Dock = DockStyle.Top;
+            btnMenuWallet.Height = 38;
+            btnMenuWallet.BackColor = Color.FromArgb(18, 25, 35);
+            btnMenuWallet.ForeColor = Color.FromArgb(199, 213, 224);
+            btnMenuWallet.FlatStyle = FlatStyle.Flat;
+            btnMenuWallet.Font = new Font("Segoe UI", 9.5f);
+            btnMenuWallet.TextAlign = ContentAlignment.MiddleLeft;
+            btnMenuWallet.Padding = new Padding(10, 0, 0, 0);
+            btnMenuWallet.Cursor = Cursors.Hand;
+            btnMenuWallet.UseMnemonic = false;
+            btnMenuWallet.FlatAppearance.BorderSize = 0;
+            btnMenuWallet.MouseEnter += BtnMenu_MouseEnter;
+            btnMenuWallet.MouseLeave += BtnMenu_MouseLeave;
+            btnMenuWallet.Click += BtnMenuWallet_Click;
+
+            btnMenuVouchers = new Button();
+            btnMenuVouchers.Text = "🎁 Mã giảm giá (Voucher)";
+            btnMenuVouchers.Dock = DockStyle.Top;
+            btnMenuVouchers.Height = 38;
+            btnMenuVouchers.BackColor = Color.FromArgb(18, 25, 35);
+            btnMenuVouchers.ForeColor = Color.FromArgb(199, 213, 224);
+            btnMenuVouchers.FlatStyle = FlatStyle.Flat;
+            btnMenuVouchers.Font = new Font("Segoe UI", 9.5f);
+            btnMenuVouchers.TextAlign = ContentAlignment.MiddleLeft;
+            btnMenuVouchers.Padding = new Padding(10, 0, 0, 0);
+            btnMenuVouchers.Cursor = Cursors.Hand;
+            btnMenuVouchers.UseMnemonic = false;
+            btnMenuVouchers.FlatAppearance.BorderSize = 0;
+            btnMenuVouchers.MouseEnter += BtnMenu_MouseEnter;
+            btnMenuVouchers.MouseLeave += BtnMenu_MouseLeave;
+            btnMenuVouchers.Click += BtnMenuVouchers_Click;
+
+            btnMenuLibrary = new Button();
+            btnMenuLibrary.Text = "🎮 Thư viện game sở hữu";
+            btnMenuLibrary.Dock = DockStyle.Top;
+            btnMenuLibrary.Height = 38;
+            btnMenuLibrary.BackColor = Color.FromArgb(18, 25, 35);
+            btnMenuLibrary.ForeColor = Color.FromArgb(199, 213, 224);
+            btnMenuLibrary.FlatStyle = FlatStyle.Flat;
+            btnMenuLibrary.Font = new Font("Segoe UI", 9.5f);
+            btnMenuLibrary.TextAlign = ContentAlignment.MiddleLeft;
+            btnMenuLibrary.Padding = new Padding(10, 0, 0, 0);
+            btnMenuLibrary.Cursor = Cursors.Hand;
+            btnMenuLibrary.UseMnemonic = false;
+            btnMenuLibrary.FlatAppearance.BorderSize = 0;
+            btnMenuLibrary.MouseEnter += BtnMenu_MouseEnter;
+            btnMenuLibrary.MouseLeave += BtnMenu_MouseLeave;
+            btnMenuLibrary.Click += BtnMenuLibrary_Click;
+
+            btnMenuOrderHistory = new Button();
+            btnMenuOrderHistory.Text = "📜 Lịch sử mua hàng";
+            btnMenuOrderHistory.Dock = DockStyle.Top;
+            btnMenuOrderHistory.Height = 38;
+            btnMenuOrderHistory.BackColor = Color.FromArgb(18, 25, 35);
+            btnMenuOrderHistory.ForeColor = Color.FromArgb(199, 213, 224);
+            btnMenuOrderHistory.FlatStyle = FlatStyle.Flat;
+            btnMenuOrderHistory.Font = new Font("Segoe UI", 9.5f);
+            btnMenuOrderHistory.TextAlign = ContentAlignment.MiddleLeft;
+            btnMenuOrderHistory.Padding = new Padding(10, 0, 0, 0);
+            btnMenuOrderHistory.Cursor = Cursors.Hand;
+            btnMenuOrderHistory.UseMnemonic = false;
+            btnMenuOrderHistory.FlatAppearance.BorderSize = 0;
+            btnMenuOrderHistory.MouseEnter += BtnMenu_MouseEnter;
+            btnMenuOrderHistory.MouseLeave += BtnMenu_MouseLeave;
+            btnMenuOrderHistory.Click += BtnMenuOrderHistory_Click;
+
+            btnMenuProfile = new Button();
+            btnMenuProfile.Text = "⚙️ Cài đặt & Hồ sơ";
+            btnMenuProfile.Dock = DockStyle.Top;
+            btnMenuProfile.Height = 38;
+            btnMenuProfile.BackColor = Color.FromArgb(18, 25, 35);
+            btnMenuProfile.ForeColor = Color.FromArgb(199, 213, 224);
+            btnMenuProfile.FlatStyle = FlatStyle.Flat;
+            btnMenuProfile.Font = new Font("Segoe UI", 9.5f);
+            btnMenuProfile.TextAlign = ContentAlignment.MiddleLeft;
+            btnMenuProfile.Padding = new Padding(10, 0, 0, 0);
+            btnMenuProfile.Cursor = Cursors.Hand;
+            btnMenuProfile.UseMnemonic = false;
+            btnMenuProfile.FlatAppearance.BorderSize = 0;
+            btnMenuProfile.MouseEnter += BtnMenu_MouseEnter;
+            btnMenuProfile.MouseLeave += BtnMenu_MouseLeave;
+            btnMenuProfile.Click += BtnMenuProfile_Click;
 
             // Phân hệ Quản trị Admin
-            lblAdminSection = new Label
-            {
-                Text = "QUẢN TRỊ VIÊN (ADMIN)",
-                Dock = DockStyle.Top,
-                Height = 30,
-                ForeColor = Color.FromArgb(243, 156, 18),
-                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
-                Padding = new Padding(0, 10, 0, 0),
-                UseMnemonic = false
-            };
+            lblAdminSection = new Label();
+            lblAdminSection.Text = "QUẢN TRỊ VIÊN (ADMIN)";
+            lblAdminSection.Dock = DockStyle.Top;
+            lblAdminSection.Height = 30;
+            lblAdminSection.ForeColor = Color.FromArgb(243, 156, 18);
+            lblAdminSection.Font = new Font("Segoe UI", 8.5f, FontStyle.Bold);
+            lblAdminSection.Padding = new Padding(0, 10, 0, 0);
+            lblAdminSection.UseMnemonic = false;
 
-            btnMenuDashboard = CreateMenuButton("📊 Thống kê Dashboard", (s, e) => NavigateToDashboard());
-            btnMenuProductManage = CreateMenuButton("📦 Quản lý hàng hóa số", (s, e) => NavigateToProductManage());
-            btnMenuCategoryManage = CreateMenuButton("📁 Quản lý danh mục", (s, e) => NavigateToCategoryManage());
-            btnMenuOrderManage = CreateMenuButton("📑 Quản lý đơn hàng", (s, e) => NavigateToOrderManage());
-            btnMenuUserManage = CreateMenuButton("👥 Quản lý người dùng", (s, e) => NavigateToUserManage());
+            btnMenuDashboard = new Button();
+            btnMenuDashboard.Text = "📊 Thống kê Dashboard";
+            btnMenuDashboard.Dock = DockStyle.Top;
+            btnMenuDashboard.Height = 38;
+            btnMenuDashboard.BackColor = Color.FromArgb(18, 25, 35);
+            btnMenuDashboard.ForeColor = Color.FromArgb(199, 213, 224);
+            btnMenuDashboard.FlatStyle = FlatStyle.Flat;
+            btnMenuDashboard.Font = new Font("Segoe UI", 9.5f);
+            btnMenuDashboard.TextAlign = ContentAlignment.MiddleLeft;
+            btnMenuDashboard.Padding = new Padding(10, 0, 0, 0);
+            btnMenuDashboard.Cursor = Cursors.Hand;
+            btnMenuDashboard.UseMnemonic = false;
+            btnMenuDashboard.FlatAppearance.BorderSize = 0;
+            btnMenuDashboard.MouseEnter += BtnMenu_MouseEnter;
+            btnMenuDashboard.MouseLeave += BtnMenu_MouseLeave;
+            btnMenuDashboard.Click += BtnMenuDashboard_Click;
+
+            btnMenuProductManage = new Button();
+            btnMenuProductManage.Text = "📦 Quản lý hàng hóa số";
+            btnMenuProductManage.Dock = DockStyle.Top;
+            btnMenuProductManage.Height = 38;
+            btnMenuProductManage.BackColor = Color.FromArgb(18, 25, 35);
+            btnMenuProductManage.ForeColor = Color.FromArgb(199, 213, 224);
+            btnMenuProductManage.FlatStyle = FlatStyle.Flat;
+            btnMenuProductManage.Font = new Font("Segoe UI", 9.5f);
+            btnMenuProductManage.TextAlign = ContentAlignment.MiddleLeft;
+            btnMenuProductManage.Padding = new Padding(10, 0, 0, 0);
+            btnMenuProductManage.Cursor = Cursors.Hand;
+            btnMenuProductManage.UseMnemonic = false;
+            btnMenuProductManage.FlatAppearance.BorderSize = 0;
+            btnMenuProductManage.MouseEnter += BtnMenu_MouseEnter;
+            btnMenuProductManage.MouseLeave += BtnMenu_MouseLeave;
+            btnMenuProductManage.Click += BtnMenuProductManage_Click;
+
+            btnMenuCategoryManage = new Button();
+            btnMenuCategoryManage.Text = "📁 Quản lý danh mục";
+            btnMenuCategoryManage.Dock = DockStyle.Top;
+            btnMenuCategoryManage.Height = 38;
+            btnMenuCategoryManage.BackColor = Color.FromArgb(18, 25, 35);
+            btnMenuCategoryManage.ForeColor = Color.FromArgb(199, 213, 224);
+            btnMenuCategoryManage.FlatStyle = FlatStyle.Flat;
+            btnMenuCategoryManage.Font = new Font("Segoe UI", 9.5f);
+            btnMenuCategoryManage.TextAlign = ContentAlignment.MiddleLeft;
+            btnMenuCategoryManage.Padding = new Padding(10, 0, 0, 0);
+            btnMenuCategoryManage.Cursor = Cursors.Hand;
+            btnMenuCategoryManage.UseMnemonic = false;
+            btnMenuCategoryManage.FlatAppearance.BorderSize = 0;
+            btnMenuCategoryManage.MouseEnter += BtnMenu_MouseEnter;
+            btnMenuCategoryManage.MouseLeave += BtnMenu_MouseLeave;
+            btnMenuCategoryManage.Click += BtnMenuCategoryManage_Click;
+
+            btnMenuOrderManage = new Button();
+            btnMenuOrderManage.Text = "📑 Quản lý đơn hàng";
+            btnMenuOrderManage.Dock = DockStyle.Top;
+            btnMenuOrderManage.Height = 38;
+            btnMenuOrderManage.BackColor = Color.FromArgb(18, 25, 35);
+            btnMenuOrderManage.ForeColor = Color.FromArgb(199, 213, 224);
+            btnMenuOrderManage.FlatStyle = FlatStyle.Flat;
+            btnMenuOrderManage.Font = new Font("Segoe UI", 9.5f);
+            btnMenuOrderManage.TextAlign = ContentAlignment.MiddleLeft;
+            btnMenuOrderManage.Padding = new Padding(10, 0, 0, 0);
+            btnMenuOrderManage.Cursor = Cursors.Hand;
+            btnMenuOrderManage.UseMnemonic = false;
+            btnMenuOrderManage.FlatAppearance.BorderSize = 0;
+            btnMenuOrderManage.MouseEnter += BtnMenu_MouseEnter;
+            btnMenuOrderManage.MouseLeave += BtnMenu_MouseLeave;
+            btnMenuOrderManage.Click += BtnMenuOrderManage_Click;
+
+            btnMenuUserManage = new Button();
+            btnMenuUserManage.Text = "👥 Quản lý người dùng";
+            btnMenuUserManage.Dock = DockStyle.Top;
+            btnMenuUserManage.Height = 38;
+            btnMenuUserManage.BackColor = Color.FromArgb(18, 25, 35);
+            btnMenuUserManage.ForeColor = Color.FromArgb(199, 213, 224);
+            btnMenuUserManage.FlatStyle = FlatStyle.Flat;
+            btnMenuUserManage.Font = new Font("Segoe UI", 9.5f);
+            btnMenuUserManage.TextAlign = ContentAlignment.MiddleLeft;
+            btnMenuUserManage.Padding = new Padding(10, 0, 0, 0);
+            btnMenuUserManage.Cursor = Cursors.Hand;
+            btnMenuUserManage.UseMnemonic = false;
+            btnMenuUserManage.FlatAppearance.BorderSize = 0;
+            btnMenuUserManage.MouseEnter += BtnMenu_MouseEnter;
+            btnMenuUserManage.MouseLeave += BtnMenu_MouseLeave;
+            btnMenuUserManage.Click += BtnMenuUserManage_Click;
 
             // Thêm vào sidebar theo thứ tự
             panelSidebar.Controls.Add(btnMenuUserManage);
@@ -239,36 +431,32 @@ namespace qlspdigital.Views.Main
             panelSidebar.Controls.Add(btnMenuReviews);
             panelSidebar.Controls.Add(btnMenuStore);
             panelSidebar.Controls.Add(lblClientSection);
+            panelSidebar.ResumeLayout(false);
 
             // 3. THANH TRẠNG THÁI STATUSBAR DƯỚI CÙNG
-            statusStrip = new StatusStrip
-            {
-                BackColor = Color.FromArgb(18, 25, 35),
-                ForeColor = Color.FromArgb(161, 181, 196)
-            };
+            statusStrip = new StatusStrip();
+            statusStrip.SuspendLayout();
+            statusStrip.BackColor = Color.FromArgb(18, 25, 35);
+            statusStrip.ForeColor = Color.FromArgb(161, 181, 196);
 
-            lblStatusText = new ToolStripStatusLabel
-            {
-                Text = "Trạng thái hệ thống: Sẵn sàng | Phiên bản: 1.0.0",
-                Spring = true,
-                TextAlign = ContentAlignment.MiddleLeft
-            };
+            lblStatusText = new ToolStripStatusLabel();
+            lblStatusText.Text = "Trạng thái hệ thống: Sẵn sàng | Phiên bản: 1.0.0";
+            lblStatusText.Spring = true;
+            lblStatusText.TextAlign = ContentAlignment.MiddleLeft;
 
-            lblDbStatus = new ToolStripStatusLabel
-            {
-                Text = "CSDL: DPMS_Db (Đang kết nối...)",
-                TextAlign = ContentAlignment.MiddleRight
-            };
+            lblDbStatus = new ToolStripStatusLabel();
+            lblDbStatus.Text = "CSDL: DPMS_Db (Đang kết nối...)";
+            lblDbStatus.TextAlign = ContentAlignment.MiddleRight;
 
             statusStrip.Items.Add(lblStatusText);
             statusStrip.Items.Add(lblDbStatus);
+            statusStrip.ResumeLayout(false);
+            statusStrip.PerformLayout();
 
             // 4. VÙNG NỘI DUNG CHÍNH (panelMainContent)
-            panelMainContent = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(23, 26, 33)
-            };
+            panelMainContent = new Panel();
+            panelMainContent.Dock = DockStyle.Fill;
+            panelMainContent.BackColor = Color.FromArgb(23, 26, 33);
 
             this.Controls.Add(panelMainContent);
             this.Controls.Add(panelSidebar);
@@ -281,30 +469,48 @@ namespace qlspdigital.Views.Main
             panelMainContent.BringToFront();
 
             this.Load += MainForm_Load;
+
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
-        private Button CreateMenuButton(string text, EventHandler onClick)
+        private void PanelHeader_Paint(object? sender, PaintEventArgs e)
         {
-            Button btn = new Button
+            if (sender is Panel pnl)
             {
-                Text = text,
-                Dock = DockStyle.Top,
-                Height = 38,
-                BackColor = Color.FromArgb(18, 25, 35),
-                ForeColor = Color.FromArgb(199, 213, 224),
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9.5f),
-                TextAlign = ContentAlignment.MiddleLeft,
-                Padding = new Padding(10, 0, 0, 0),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
-            btn.FlatAppearance.BorderSize = 0;
-            btn.MouseEnter += (s, e) => btn.BackColor = Color.FromArgb(42, 71, 94);
-            btn.MouseLeave += (s, e) => btn.BackColor = Color.FromArgb(18, 25, 35);
-            btn.Click += onClick;
-            return btn;
+                using var p = new Pen(Color.FromArgb(35, 48, 68), 1);
+                e.Graphics.DrawLine(p, 0, pnl.Height - 1, pnl.Width, pnl.Height - 1);
+            }
         }
+
+        private void BtnHeaderCart_Click(object? sender, EventArgs e)
+        {
+            NavigateToCart();
+        }
+
+        private void BtnMenu_MouseEnter(object? sender, EventArgs e)
+        {
+            if (sender is Button btn) btn.BackColor = Color.FromArgb(42, 71, 94);
+        }
+
+        private void BtnMenu_MouseLeave(object? sender, EventArgs e)
+        {
+            if (sender is Button btn) btn.BackColor = Color.FromArgb(18, 25, 35);
+        }
+
+        private void BtnMenuStore_Click(object? sender, EventArgs e) => NavigateToStore();
+        private void BtnMenuReviews_Click(object? sender, EventArgs e) => NavigateToReviews(1);
+        private void BtnMenuCart_Click(object? sender, EventArgs e) => NavigateToCart();
+        private void BtnMenuWallet_Click(object? sender, EventArgs e) => NavigateToWallet();
+        private void BtnMenuVouchers_Click(object? sender, EventArgs e) => NavigateToVouchers();
+        private void BtnMenuLibrary_Click(object? sender, EventArgs e) => NavigateToLibrary();
+        private void BtnMenuOrderHistory_Click(object? sender, EventArgs e) => NavigateToOrderHistory();
+        private void BtnMenuProfile_Click(object? sender, EventArgs e) => NavigateToProfile();
+        private void BtnMenuDashboard_Click(object? sender, EventArgs e) => NavigateToDashboard();
+        private void BtnMenuProductManage_Click(object? sender, EventArgs e) => NavigateToProductManage();
+        private void BtnMenuCategoryManage_Click(object? sender, EventArgs e) => NavigateToCategoryManage();
+        private void BtnMenuOrderManage_Click(object? sender, EventArgs e) => NavigateToOrderManage();
+        private void BtnMenuUserManage_Click(object? sender, EventArgs e) => NavigateToUserManage();
 
         private void SubscribeEvents()
         {
@@ -330,6 +536,8 @@ namespace qlspdigital.Views.Main
 
         private void MainForm_Load(object? sender, EventArgs e)
         {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+
             // Kiểm tra kết nối CSDL
             if (DatabaseHelper.TestConnection(out string msg))
             {
@@ -359,20 +567,14 @@ namespace qlspdigital.Views.Main
 
         private void UpdateUserInterfaceSession()
         {
+            bool isAdmin = UserSession.IsLoggedIn && UserSession.IsAdmin;
+
             if (UserSession.IsLoggedIn)
             {
-                lblUserGreeting.Text = $"👤 {UserSession.CurrentFullName} ({(UserSession.IsAdmin ? "Admin" : "User")})";
+                lblUserGreeting.Text = $"👤 {UserSession.CurrentFullName} ({(UserSession.IsAdmin ? "Admin" : "Khách Hàng")})";
                 lblBalance.Text = $"💰 Ví: {FormatHelper.FormatCurrency(UserSession.CurrentBalance)}";
                 btnHeaderAuth.Text = "🚪 Đăng xuất";
                 btnHeaderAuth.BackColor = Color.FromArgb(180, 40, 40);
-
-                // Nếu là Admin thì làm nổi bật vùng Admin
-                lblAdminSection.Visible = true;
-                btnMenuDashboard.Visible = true;
-                btnMenuProductManage.Visible = true;
-                btnMenuCategoryManage.Visible = true;
-                btnMenuOrderManage.Visible = true;
-                btnMenuUserManage.Visible = true;
             }
             else
             {
@@ -380,16 +582,63 @@ namespace qlspdigital.Views.Main
                 lblBalance.Text = "💰 Ví: 0 ₫";
                 btnHeaderAuth.Text = "🔑 Đăng nhập";
                 btnHeaderAuth.BackColor = Color.FromArgb(49, 98, 130);
-
-                // Ẩn bớt chức năng admin khi chưa đăng nhập
-                lblAdminSection.Visible = true; // Vẫn để hiển thị cho giảng viên dễ bấm chấm điểm
-                btnMenuDashboard.Visible = true;
-                btnMenuProductManage.Visible = true;
-                btnMenuCategoryManage.Visible = true;
-                btnMenuOrderManage.Visible = true;
-                btnMenuUserManage.Visible = true;
             }
+
+            // Phân quyền chuẩn RBAC: Chỉ tài khoản Quản trị viên (QuanTriVien) mới hiển thị menu Admin
+            lblAdminSection.Visible = isAdmin;
+            btnMenuDashboard.Visible = isAdmin;
+            btnMenuProductManage.Visible = isAdmin;
+            btnMenuCategoryManage.Visible = isAdmin;
+            btnMenuOrderManage.Visible = isAdmin;
+            btnMenuUserManage.Visible = isAdmin;
+
             UpdateCartBadge();
+        }
+
+        // ==========================================
+        // CƠ CHẾ BẢO VỆ PHÂN QUYỀN (RBAC GUARDS)
+        // ==========================================
+
+        // Kiểm tra quyền đăng nhập cho các tính năng cá nhân
+        private bool EnsureLoggedIn(string tenChucNang)
+        {
+            if (!UserSession.IsLoggedIn)
+            {
+                var result = MessageBox.Show(
+                    $"Bạn cần đăng nhập tài khoản để truy cập '{tenChucNang}'.\nBạn có muốn chuyển sang màn hình Đăng nhập ngay bây giờ không?",
+                    "Yêu cầu đăng nhập",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Information);
+
+                if (result == DialogResult.Yes)
+                {
+                    NavigateToLogin();
+                }
+                return false;
+            }
+            return true;
+        }
+
+        // Kiểm tra quyền Quản trị viên cho các chức năng nhạy cảm của hệ thống
+        private bool EnsureAdmin(string tenChucNang)
+        {
+            if (!UserSession.IsLoggedIn)
+            {
+                EnsureLoggedIn(tenChucNang);
+                return false;
+            }
+
+            if (!UserSession.IsAdmin)
+            {
+                MessageBox.Show(
+                    $"Tài khoản hiện tại không có quyền Quản trị viên để truy cập '{tenChucNang}'!",
+                    "Từ chối truy cập (Access Denied)",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                NavigateToStore();
+                return false;
+            }
+            return true;
         }
 
         // ==========================================
@@ -425,6 +674,8 @@ namespace qlspdigital.Views.Main
 
         public void NavigateToCart()
         {
+            if (!EnsureLoggedIn("Giỏ hàng của tôi")) return;
+
             CartControl cart = new CartControl();
             cart.OnNavigateToLibrary += () => NavigateToLibrary();
             cart.OnNavigateToWallet += () => NavigateToWallet();
@@ -434,6 +685,8 @@ namespace qlspdigital.Views.Main
 
         public void NavigateToWallet()
         {
+            if (!EnsureLoggedIn("Ví tài khoản")) return;
+
             WalletControl wallet = new WalletControl();
             SwitchView(wallet);
             lblStatusText.Text = "Đang xem: Ví tài khoản & Nạp tiền mô phỏng (Nhóm 2 - Nguyễn Quốc Trung)";
@@ -441,6 +694,8 @@ namespace qlspdigital.Views.Main
 
         public void NavigateToVouchers()
         {
+            if (!EnsureLoggedIn("Kho mã ưu đãi & Voucher")) return;
+
             VoucherControl voucher = new VoucherControl();
             voucher.OnNavigateToCart += () => NavigateToCart();
             SwitchView(voucher);
@@ -449,6 +704,8 @@ namespace qlspdigital.Views.Main
 
         public void NavigateToLibrary()
         {
+            if (!EnsureLoggedIn("Thư viện game sở hữu")) return;
+
             LibraryControl library = new LibraryControl();
             SwitchView(library);
             lblStatusText.Text = "Đang xem: Thư viện sản phẩm đã mua & Tải tệp (Nhóm 5 - Phạm Văn Đam)";
@@ -456,13 +713,26 @@ namespace qlspdigital.Views.Main
 
         public void NavigateToOrderHistory()
         {
+            if (!EnsureLoggedIn("Lịch sử mua hàng")) return;
+
             OrderHistoryControl history = new OrderHistoryControl();
             SwitchView(history);
             lblStatusText.Text = "Đang xem: Lịch sử đơn hàng cá nhân (Nhóm 5 - Phạm Văn Đam)";
         }
 
+        public void NavigateToProfile()
+        {
+            if (!EnsureLoggedIn("Hồ sơ & Đổi mật khẩu")) return;
+
+            ProfileControl profile = new ProfileControl();
+            SwitchView(profile);
+            lblStatusText.Text = "Đang xem: Hồ sơ tài khoản & Đổi mật khẩu (Nhóm 3 - Phạm Trung Hiếu)";
+        }
+
         public void NavigateToOrderManage()
         {
+            if (!EnsureAdmin("Quản lý và duyệt đơn hàng toàn hệ thống")) return;
+
             OrderManageControl orders = new OrderManageControl();
             SwitchView(orders);
             lblStatusText.Text = "Đang xem: Quản lý và duyệt đơn hàng toàn hệ thống (Nhóm 5 - Phạm Văn Đam)";
@@ -470,6 +740,8 @@ namespace qlspdigital.Views.Main
 
         public void NavigateToProductManage()
         {
+            if (!EnsureAdmin("Quản trị kho hàng hóa & Tệp số")) return;
+
             ProductManageControl prod = new ProductManageControl();
             SwitchView(prod);
             lblStatusText.Text = "Đang xem: Quản trị kho hàng hóa & Tệp số (Nhóm 3 - Phạm Trung Hiếu)";
@@ -477,20 +749,17 @@ namespace qlspdigital.Views.Main
 
         public void NavigateToCategoryManage()
         {
+            if (!EnsureAdmin("Quản lý danh mục thể loại")) return;
+
             CategoryManageControl cat = new CategoryManageControl();
             SwitchView(cat);
             lblStatusText.Text = "Đang xem: Quản lý danh mục thể loại (Nhóm 3 - Phạm Trung Hiếu)";
         }
 
-        public void NavigateToProfile()
-        {
-            ProfileControl profile = new ProfileControl();
-            SwitchView(profile);
-            lblStatusText.Text = "Đang xem: Hồ sơ tài khoản & Đổi mật khẩu (Nhóm 3 - Phạm Trung Hiếu)";
-        }
-
         public void NavigateToDashboard()
         {
+            if (!EnsureAdmin("Báo cáo chỉ số kinh doanh Dashboard")) return;
+
             DashboardControl dash = new DashboardControl();
             SwitchView(dash);
             lblStatusText.Text = "Đang xem: Báo cáo chỉ số kinh doanh Dashboard (Nhóm 4 - Trần Quốc Thuận)";
@@ -498,6 +767,8 @@ namespace qlspdigital.Views.Main
 
         public void NavigateToUserManage()
         {
+            if (!EnsureAdmin("Quản lý danh sách người dùng")) return;
+
             UserManageControl userMgmt = new UserManageControl();
             SwitchView(userMgmt);
             lblStatusText.Text = "Đang xem: Quản lý danh sách người dùng (Nhóm 4 - Trần Quốc Thuận)";

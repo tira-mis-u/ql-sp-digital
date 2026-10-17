@@ -10,7 +10,7 @@ namespace qlspdigital.Views.Nhom5_Orders
 {
     // UI 6: Kho thư viện trò chơi & sản phẩm số đã sở hữu (Steam Library style)
     // Thành viên phụ trách: Phạm Văn Đam (Nhóm 5)
-    public class LibraryControl : UserControl
+    public partial class LibraryControl : UserControl
     {
         private readonly ThuVienService _libraryService;
 
@@ -31,66 +31,63 @@ namespace qlspdigital.Views.Nhom5_Orders
             _libraryService = new ThuVienService();
 
             InitializeComponent();
+            AdjustLayout();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadLibrary();
         }
 
         private void InitializeComponent()
         {
+            this.SuspendLayout();
+
+            this.AutoScaleDimensions = new SizeF(7F, 15F);
+            this.AutoScaleMode = AutoScaleMode.Font;
             this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
-            this.Dock = DockStyle.Fill;
             this.Padding = new Padding(25);
 
             // Tiêu đề + Nút làm mới
-            Panel panelTop = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 45
-            };
+            Panel panelTop = new Panel();
+            panelTop.Dock = DockStyle.Top;
+            panelTop.Height = 45;
 
-            Label lblHeader = new Label
-            {
-                Text = "🎮 KHO THƯ VIỆN SẢN PHẨM ĐÃ SỞ HỮU (MY LIBRARY)",
-                Dock = DockStyle.Left,
-                AutoSize = true,
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 15, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            Label lblHeader = new Label();
+            lblHeader.Text = "🎮 KHO THƯ VIỆN SẢN PHẨM ĐÃ SỞ HỮU (MY LIBRARY)";
+            lblHeader.Dock = DockStyle.Left;
+            lblHeader.AutoSize = true;
+            lblHeader.ForeColor = Color.White;
+            lblHeader.Font = new Font("Segoe UI", 15, FontStyle.Bold);
+            lblHeader.UseMnemonic = false;
 
-            btnRefresh = new Button
-            {
-                Text = "🔄 Làm mới kho",
-                Dock = DockStyle.Right,
-                Width = 140,
-                BackColor = Color.FromArgb(49, 98, 130),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand
-            };
+            btnRefresh = new Button();
+            btnRefresh.Text = "🔄 Làm mới kho";
+            btnRefresh.Dock = DockStyle.Right;
+            btnRefresh.Width = 140;
+            btnRefresh.BackColor = Color.FromArgb(49, 98, 130);
+            btnRefresh.ForeColor = Color.White;
+            btnRefresh.FlatStyle = FlatStyle.Flat;
+            btnRefresh.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnRefresh.Cursor = Cursors.Hand;
             btnRefresh.FlatAppearance.BorderSize = 0;
-            btnRefresh.Click += (s, e) => LoadLibrary();
+            btnRefresh.Click += BtnRefresh_Click;
 
             panelTop.Controls.Add(btnRefresh);
             panelTop.Controls.Add(lblHeader);
 
             // 1. BẢNG DANH SÁCH GAME TRONG THƯ VIỆN (READ)
-            dgvLibrary = new DataGridView
-            {
-                Location = new Point(25, 65),
-                Size = new Size(580, 620),
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left,
-                BackgroundColor = Color.FromArgb(27, 40, 56),
-                ForeColor = Color.White,
-                GridColor = Color.FromArgb(42, 71, 94),
-                BorderStyle = BorderStyle.None,
-                RowHeadersVisible = false,
-                AllowUserToAddRows = false,
-                ReadOnly = true,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-            };
+            dgvLibrary = new DataGridView();
+            dgvLibrary.Location = new Point(25, 65);
+            dgvLibrary.Size = new Size(580, 620);
+            dgvLibrary.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            dgvLibrary.BackgroundColor = Color.FromArgb(27, 40, 56);
+            dgvLibrary.ForeColor = Color.White;
+            dgvLibrary.GridColor = Color.FromArgb(42, 71, 94);
+            dgvLibrary.BorderStyle = BorderStyle.None;
+            dgvLibrary.RowHeadersVisible = false;
+            dgvLibrary.AllowUserToAddRows = false;
+            dgvLibrary.ReadOnly = true;
+            dgvLibrary.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvLibrary.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvLibrary.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 35);
             dgvLibrary.DefaultCellStyle.ForeColor = Color.White;
             dgvLibrary.DefaultCellStyle.SelectionBackColor = Color.FromArgb(49, 98, 130);
@@ -126,77 +123,85 @@ namespace qlspdigital.Views.Nhom5_Orders
             dgvLibrary.SelectionChanged += DgvLibrary_SelectionChanged;
 
             // 2. KHUNG HÀNH ĐỘNG TẢI TỆP VÀ GỠ BỎ BÊN PHẢI (UPDATE - DELETE)
-            panelActions = new Panel
-            {
-                Location = new Point(625, 65),
-                Size = new Size(390, 620),
-                BackColor = Color.FromArgb(27, 40, 56),
-                Padding = new Padding(20)
-            };
+            panelActions = new Panel();
+            panelActions.Location = new Point(625, 65);
+            panelActions.Size = new Size(390, 620);
+            panelActions.BackColor = Color.FromArgb(27, 40, 56);
+            panelActions.Padding = new Padding(20);
 
-            lblSelectedTitle = new Label
-            {
-                Text = "Chọn sản phẩm trong thư viện",
-                Location = new Point(20, 20),
-                Size = new Size(350, 65),
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 12, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            lblSelectedTitle = new Label();
+            lblSelectedTitle.Text = "Chọn sản phẩm trong thư viện";
+            lblSelectedTitle.Location = new Point(20, 20);
+            lblSelectedTitle.Size = new Size(350, 65);
+            lblSelectedTitle.ForeColor = Color.White;
+            lblSelectedTitle.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+            lblSelectedTitle.UseMnemonic = false;
 
-            lblVersion = new Label { Text = "Phiên bản: ---", Location = new Point(20, 90), AutoSize = true, ForeColor = Color.FromArgb(199, 213, 224), Font = new Font("Segoe UI", 10), UseMnemonic = false };
-            lblSize = new Label { Text = "Dung lượng tệp: ---", Location = new Point(20, 120), AutoSize = true, ForeColor = Color.FromArgb(199, 213, 224), Font = new Font("Segoe UI", 10), UseMnemonic = false };
-            lblDownloadCount = new Label { Text = "Số lần đã tải: 0 lượt", Location = new Point(20, 150), AutoSize = true, ForeColor = Color.FromArgb(164, 208, 7), Font = new Font("Segoe UI", 10, FontStyle.Bold), UseMnemonic = false };
+            lblVersion = new Label();
+            lblVersion.Text = "Phiên bản: ---";
+            lblVersion.Location = new Point(20, 90);
+            lblVersion.AutoSize = true;
+            lblVersion.ForeColor = Color.FromArgb(199, 213, 224);
+            lblVersion.Font = new Font("Segoe UI", 10);
+            lblVersion.UseMnemonic = false;
+
+            lblSize = new Label();
+            lblSize.Text = "Dung lượng tệp: ---";
+            lblSize.Location = new Point(20, 120);
+            lblSize.AutoSize = true;
+            lblSize.ForeColor = Color.FromArgb(199, 213, 224);
+            lblSize.Font = new Font("Segoe UI", 10);
+            lblSize.UseMnemonic = false;
+
+            lblDownloadCount = new Label();
+            lblDownloadCount.Text = "Số lần đã tải: 0 lượt";
+            lblDownloadCount.Location = new Point(20, 150);
+            lblDownloadCount.AutoSize = true;
+            lblDownloadCount.ForeColor = Color.FromArgb(164, 208, 7);
+            lblDownloadCount.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            lblDownloadCount.UseMnemonic = false;
 
             // Nút Tải xuống
-            btnDownload = new Button
-            {
-                Text = "⬇️ TẢI XUỐNG VỀ MÁY",
-                Location = new Point(20, 195),
-                Size = new Size(350, 45),
-                BackColor = Color.FromArgb(92, 126, 16),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnDownload = new Button();
+            btnDownload.Text = "⬇️ TẢI XUỐNG VỀ MÁY";
+            btnDownload.Location = new Point(20, 195);
+            btnDownload.Size = new Size(350, 45);
+            btnDownload.BackColor = Color.FromArgb(92, 126, 16);
+            btnDownload.ForeColor = Color.White;
+            btnDownload.FlatStyle = FlatStyle.Flat;
+            btnDownload.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            btnDownload.Cursor = Cursors.Hand;
+            btnDownload.UseMnemonic = false;
             btnDownload.FlatAppearance.BorderSize = 0;
             btnDownload.Click += BtnDownload_Click;
 
             // Tiến trình tải ProgressBar
-            lblProgressText = new Label
-            {
-                Text = "Sẵn sàng tải xuống",
-                Location = new Point(20, 255),
-                AutoSize = true,
-                ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Italic),
-                UseMnemonic = false
-            };
+            lblProgressText = new Label();
+            lblProgressText.Text = "Sẵn sàng tải xuống";
+            lblProgressText.Location = new Point(20, 255);
+            lblProgressText.AutoSize = true;
+            lblProgressText.ForeColor = Color.FromArgb(102, 192, 244);
+            lblProgressText.Font = new Font("Segoe UI", 9.5f, FontStyle.Italic);
+            lblProgressText.UseMnemonic = false;
 
-            prgDownload = new ProgressBar
-            {
-                Location = new Point(20, 280),
-                Size = new Size(350, 22),
-                Value = 0,
-                Maximum = 100
-            };
+            prgDownload = new ProgressBar();
+            prgDownload.Location = new Point(20, 280);
+            prgDownload.Size = new Size(350, 22);
+            prgDownload.Value = 0;
+            prgDownload.Maximum = 100;
 
             // Nút Gỡ khỏi Thư viện
-            btnUninstall = new Button
-            {
-                Text = "🗑️ Gỡ khỏi Thư viện cá nhân",
-                Location = new Point(20, 550),
-                Size = new Size(350, 38),
-                Anchor = AnchorStyles.Bottom | AnchorStyles.Left,
-                BackColor = Color.FromArgb(180, 40, 40),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnUninstall = new Button();
+            btnUninstall.Text = "🗑️ Gỡ khỏi Thư viện cá nhân";
+            btnUninstall.Location = new Point(20, 550);
+            btnUninstall.Size = new Size(350, 38);
+            btnUninstall.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnUninstall.BackColor = Color.FromArgb(180, 40, 40);
+            btnUninstall.ForeColor = Color.White;
+            btnUninstall.FlatStyle = FlatStyle.Flat;
+            btnUninstall.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnUninstall.Cursor = Cursors.Hand;
+            btnUninstall.UseMnemonic = false;
             btnUninstall.FlatAppearance.BorderSize = 0;
             btnUninstall.Click += BtnUninstall_Click;
 
@@ -213,8 +218,8 @@ namespace qlspdigital.Views.Nhom5_Orders
             this.Controls.Add(dgvLibrary);
             this.Controls.Add(panelTop);
 
-            this.Resize += (s, e) => AdjustLayout();
-            AdjustLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         protected override void OnResize(EventArgs e)
@@ -225,9 +230,9 @@ namespace qlspdigital.Views.Nhom5_Orders
 
         private void AdjustLayout()
         {
-            if (this.ClientSize.Width < 500 || dgvLibrary == null || panelActions == null || lblSelectedTitle == null) return;
-            int totalW = this.ClientSize.Width;
-            int totalH = this.ClientSize.Height;
+            if (dgvLibrary == null || panelActions == null || lblSelectedTitle == null) return;
+            int totalW = Math.Max(1040, this.ClientSize.Width);
+            int totalH = Math.Max(700, this.ClientSize.Height);
 
             int actionW = 400;
             int leftW = totalW - actionW - 65; // margin 25 left + 15 gap + 25 right
@@ -365,6 +370,11 @@ namespace qlspdigital.Views.Nhom5_Orders
                     MessageBox.Show(msg, "Lỗi gỡ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
+        }
+
+        private void BtnRefresh_Click(object? sender, EventArgs e)
+        {
+            LoadLibrary();
         }
     }
 }

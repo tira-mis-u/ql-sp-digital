@@ -9,27 +9,28 @@ namespace qlspdigital.Views.Nhom2_Cart
 {
     // UI 4: Giỏ hàng mua sắm, áp dụng Voucher và Thanh toán 1-Click bằng Ví
     // Thành viên phụ trách: Nguyễn Quốc Trung (Nhóm 2)
-    public class CartControl : UserControl
+    public partial class CartControl : UserControl
     {
         private readonly GioHangService _gioHangService;
         private readonly MaGiamGiaService _voucherService;
+        private readonly ViTaiKhoanService _viService;
         private readonly ThanhToanService _thanhToanService;
 
         public event Action? OnNavigateToLibrary;
         public event Action? OnNavigateToWallet;
 
         private DataGridView dgvCart = null!;
-        private Panel panelBottomActions = null!;
         private Panel panelSummary = null!;
+        private Panel panelBottomActions = null!;
         private TextBox txtVoucher = null!;
         private Button btnApplyVoucher = null!;
         private Label lblSubtotal = null!;
         private Label lblDiscount = null!;
         private Label lblTotal = null!;
         private Label lblWalletBalance = null!;
+        private Button btnDeposit = null!;
         private Button btnCheckout = null!;
         private Button btnClearCart = null!;
-        private Button btnDeposit = null!;
 
         private decimal _tamTinh = 0;
         private decimal _tienGiam = 0;
@@ -39,9 +40,12 @@ namespace qlspdigital.Views.Nhom2_Cart
         {
             _gioHangService = new GioHangService();
             _voucherService = new MaGiamGiaService();
+            _viService = new ViTaiKhoanService();
             _thanhToanService = new ThanhToanService();
 
             InitializeComponent();
+            AdjustLayout();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadCart();
 
             // Lắng nghe biến động số dư ví
@@ -53,38 +57,37 @@ namespace qlspdigital.Views.Nhom2_Cart
 
         private void InitializeComponent()
         {
+            this.SuspendLayout();
+
+            this.AutoScaleDimensions = new SizeF(7F, 15F);
+            this.AutoScaleMode = AutoScaleMode.Font;
             this.Size = new Size(1040, 700);
             this.BackColor = Color.FromArgb(23, 26, 33);
-            this.Dock = DockStyle.Fill;
             this.Padding = new Padding(25);
 
             // Tiêu đề
-            Label lblHeader = new Label
-            {
-                Text = "🛒 GIỎ HÀNG SẢN PHẨM SỐ CỦA BẠN",
-                Location = new Point(25, 15),
-                AutoSize = true,
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 15, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            Label lblHeader = new Label();
+            lblHeader.Text = "🛒 GIỎ HÀNG SẢN PHẨM SỐ CỦA BẠN";
+            lblHeader.Location = new Point(25, 15);
+            lblHeader.AutoSize = true;
+            lblHeader.ForeColor = Color.White;
+            lblHeader.Font = new Font("Segoe UI", 15, FontStyle.Bold);
+            lblHeader.UseMnemonic = false;
 
             // 1. BẢNG DANH SÁCH GIỎ HÀNG
-            dgvCart = new DataGridView
-            {
-                Location = new Point(25, 55),
-                Size = new Size(640, 550),
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left,
-                BackgroundColor = Color.FromArgb(27, 40, 56),
-                ForeColor = Color.White,
-                GridColor = Color.FromArgb(42, 71, 94),
-                BorderStyle = BorderStyle.None,
-                RowHeadersVisible = false,
-                AllowUserToAddRows = false,
-                ReadOnly = true,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-            };
+            dgvCart = new DataGridView();
+            dgvCart.Location = new Point(25, 55);
+            dgvCart.Size = new Size(640, 550);
+            dgvCart.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            dgvCart.BackgroundColor = Color.FromArgb(27, 40, 56);
+            dgvCart.ForeColor = Color.White;
+            dgvCart.GridColor = Color.FromArgb(42, 71, 94);
+            dgvCart.BorderStyle = BorderStyle.None;
+            dgvCart.RowHeadersVisible = false;
+            dgvCart.AllowUserToAddRows = false;
+            dgvCart.ReadOnly = true;
+            dgvCart.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvCart.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvCart.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 35);
             dgvCart.DefaultCellStyle.ForeColor = Color.White;
             dgvCart.DefaultCellStyle.SelectionBackColor = Color.FromArgb(49, 98, 130);
@@ -119,117 +122,91 @@ namespace qlspdigital.Views.Nhom2_Cart
             dgvCart.Columns["ThanhTien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
             // Thanh thao tác dưới bảng giỏ hàng (chống đè lưới)
-            panelBottomActions = new Panel
-            {
-                Location = new Point(25, 618),
-                Size = new Size(640, 50),
-                BackColor = Color.FromArgb(23, 26, 33)
-            };
+            panelBottomActions = new Panel();
+            panelBottomActions.Location = new Point(25, 618);
+            panelBottomActions.Size = new Size(640, 50);
+            panelBottomActions.BackColor = Color.FromArgb(23, 26, 33);
 
             // Nút xóa món khỏi giỏ dưới bảng
-            Button btnRemoveItem = new Button
-            {
-                Text = "🗑️ Xóa món đã chọn",
-                Location = new Point(0, 6),
-                Size = new Size(185, 36),
-                BackColor = Color.FromArgb(180, 40, 40),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            Button btnRemoveItem = new Button();
+            btnRemoveItem.Text = "🗑️ Xóa món đã chọn";
+            btnRemoveItem.Location = new Point(0, 6);
+            btnRemoveItem.Size = new Size(185, 36);
+            btnRemoveItem.BackColor = Color.FromArgb(180, 40, 40);
+            btnRemoveItem.ForeColor = Color.White;
+            btnRemoveItem.FlatStyle = FlatStyle.Flat;
+            btnRemoveItem.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            btnRemoveItem.Cursor = Cursors.Hand;
+            btnRemoveItem.UseMnemonic = false;
             btnRemoveItem.FlatAppearance.BorderSize = 0;
             btnRemoveItem.Click += BtnRemoveItem_Click;
 
-            btnClearCart = new Button
-            {
-                Text = "Xóa toàn bộ giỏ",
-                Location = new Point(195, 6),
-                Size = new Size(140, 36),
-                BackColor = Color.FromArgb(60, 75, 90),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9, FontStyle.Regular),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnClearCart = new Button();
+            btnClearCart.Text = "Xóa toàn bộ giỏ";
+            btnClearCart.Location = new Point(195, 6);
+            btnClearCart.Size = new Size(140, 36);
+            btnClearCart.BackColor = Color.FromArgb(60, 75, 90);
+            btnClearCart.ForeColor = Color.White;
+            btnClearCart.FlatStyle = FlatStyle.Flat;
+            btnClearCart.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+            btnClearCart.Cursor = Cursors.Hand;
+            btnClearCart.UseMnemonic = false;
             btnClearCart.FlatAppearance.BorderSize = 0;
-            btnClearCart.Click += (s, e) =>
-            {
-                if (!UserSession.IsLoggedIn) return;
-                if (MessageBox.Show("Bạn có chắc chắn muốn dọn sạch giỏ hàng?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    _gioHangService.LayGioHang(UserSession.CurrentUserId).ForEach(x => _gioHangService.XoaKhoiGioHang(x.MaGioHang));
-                    LoadCart();
-                }
-            };
+            btnClearCart.Click += BtnClearCart_Click;
 
             panelBottomActions.Controls.Add(btnClearCart);
             panelBottomActions.Controls.Add(btnRemoveItem);
 
             // 2. KHUNG THANH TOÁN BÊN PHẢI (ORDER SUMMARY)
-            panelSummary = new Panel
-            {
-                Location = new Point(685, 55),
-                Size = new Size(330, 606),
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right,
-                BackColor = Color.FromArgb(27, 40, 56),
-                Padding = new Padding(20)
-            };
+            panelSummary = new Panel();
+            panelSummary.Location = new Point(685, 55);
+            panelSummary.Size = new Size(330, 606);
+            panelSummary.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
+            panelSummary.BackColor = Color.FromArgb(27, 40, 56);
+            panelSummary.Padding = new Padding(20);
 
-            Label lblSumTitle = new Label
-            {
-                Text = "TỔNG KẾT ĐƠN HÀNG",
-                Dock = DockStyle.Top,
-                Height = 30,
-                ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 11.5f, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            Label lblSumTitle = new Label();
+            lblSumTitle.Text = "TỔNG KẾT ĐƠN HÀNG";
+            lblSumTitle.Dock = DockStyle.Top;
+            lblSumTitle.Height = 30;
+            lblSumTitle.ForeColor = Color.FromArgb(102, 192, 244);
+            lblSumTitle.Font = new Font("Segoe UI", 11.5f, FontStyle.Bold);
+            lblSumTitle.UseMnemonic = false;
 
             // Khung voucher
-            Panel panelVoucher = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 85,
-                Padding = new Padding(0, 10, 0, 0)
-            };
+            Panel panelVoucher = new Panel();
+            panelVoucher.Dock = DockStyle.Top;
+            panelVoucher.Height = 85;
+            panelVoucher.Padding = new Padding(0, 10, 0, 0);
 
-            Label lblVoucherTitle = new Label
-            {
-                Text = "Mã ưu đãi (Voucher):",
-                Dock = DockStyle.Top,
-                Height = 22,
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 9.5f),
-                UseMnemonic = false
-            };
+            Label lblVoucherTitle = new Label();
+            lblVoucherTitle.Text = "Mã ưu đãi (Voucher):";
+            lblVoucherTitle.Dock = DockStyle.Top;
+            lblVoucherTitle.Height = 22;
+            lblVoucherTitle.ForeColor = Color.White;
+            lblVoucherTitle.Font = new Font("Segoe UI", 9.5f);
+            lblVoucherTitle.UseMnemonic = false;
 
-            txtVoucher = new TextBox
-            {
-                Location = new Point(0, 28),
-                Width = 185,
-                Font = new Font("Segoe UI", 10),
-                BackColor = Color.FromArgb(18, 25, 35),
-                ForeColor = Color.White,
-                CharacterCasing = CharacterCasing.Upper,
-                PlaceholderText = "Nhập mã..."
-            };
+            txtVoucher = new TextBox();
+            txtVoucher.Location = new Point(0, 28);
+            txtVoucher.Width = 185;
+            txtVoucher.Font = new Font("Segoe UI", 10);
+            txtVoucher.BackColor = Color.FromArgb(18, 25, 35);
+            txtVoucher.ForeColor = Color.White;
+            txtVoucher.CharacterCasing = CharacterCasing.Upper;
+            txtVoucher.PlaceholderText = "Nhập mã...";
 
-            btnApplyVoucher = new Button
-            {
-                Text = "Áp dụng",
-                Location = new Point(195, 28),
-                Width = 90,
-                Height = 28,
-                BackColor = Color.FromArgb(49, 98, 130),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnApplyVoucher = new Button();
+            btnApplyVoucher.Text = "Áp dụng";
+            btnApplyVoucher.Location = new Point(195, 28);
+            btnApplyVoucher.Width = 90;
+            btnApplyVoucher.Height = 28;
+            btnApplyVoucher.BackColor = Color.FromArgb(49, 98, 130);
+            btnApplyVoucher.ForeColor = Color.White;
+            btnApplyVoucher.FlatStyle = FlatStyle.Flat;
+            btnApplyVoucher.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            btnApplyVoucher.Cursor = Cursors.Hand;
+            btnApplyVoucher.UseMnemonic = false;
             btnApplyVoucher.FlatAppearance.BorderSize = 0;
             btnApplyVoucher.Click += BtnApplyVoucher_Click;
 
@@ -238,74 +215,62 @@ namespace qlspdigital.Views.Nhom2_Cart
             panelVoucher.Controls.Add(lblVoucherTitle);
 
             // Các dòng số tiền
-            lblSubtotal = new Label
-            {
-                Text = "Tạm tính: 0 ₫",
-                Dock = DockStyle.Top,
-                Height = 30,
-                ForeColor = Color.FromArgb(199, 213, 224),
-                Font = new Font("Segoe UI", 10),
-                UseMnemonic = false
-            };
+            lblSubtotal = new Label();
+            lblSubtotal.Text = "Tạm tính: 0 ₫";
+            lblSubtotal.Dock = DockStyle.Top;
+            lblSubtotal.Height = 30;
+            lblSubtotal.ForeColor = Color.FromArgb(199, 213, 224);
+            lblSubtotal.Font = new Font("Segoe UI", 10);
+            lblSubtotal.UseMnemonic = false;
 
-            lblDiscount = new Label
-            {
-                Text = "Giảm giá: 0 ₫",
-                Dock = DockStyle.Top,
-                Height = 30,
-                ForeColor = Color.FromArgb(243, 156, 18),
-                Font = new Font("Segoe UI", 10),
-                UseMnemonic = false
-            };
+            lblDiscount = new Label();
+            lblDiscount.Text = "Giảm giá: 0 ₫";
+            lblDiscount.Dock = DockStyle.Top;
+            lblDiscount.Height = 30;
+            lblDiscount.ForeColor = Color.FromArgb(243, 156, 18);
+            lblDiscount.Font = new Font("Segoe UI", 10);
+            lblDiscount.UseMnemonic = false;
 
-            lblTotal = new Label
-            {
-                Text = "Tổng thanh toán: 0 ₫",
-                Dock = DockStyle.Top,
-                Height = 45,
-                ForeColor = Color.FromArgb(164, 208, 7),
-                Font = new Font("Segoe UI", 13, FontStyle.Bold),
-                Padding = new Padding(0, 10, 0, 0),
-                UseMnemonic = false
-            };
+            lblTotal = new Label();
+            lblTotal.Text = "Tổng thanh toán: 0 ₫";
+            lblTotal.Dock = DockStyle.Top;
+            lblTotal.Height = 45;
+            lblTotal.ForeColor = Color.FromArgb(164, 208, 7);
+            lblTotal.Font = new Font("Segoe UI", 13, FontStyle.Bold);
+            lblTotal.Padding = new Padding(0, 10, 0, 0);
+            lblTotal.UseMnemonic = false;
 
-            lblWalletBalance = new Label
-            {
-                Text = "Số dư ví: 0 ₫",
-                Dock = DockStyle.Top,
-                Height = 30,
-                ForeColor = Color.FromArgb(102, 192, 244),
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                UseMnemonic = false
-            };
+            lblWalletBalance = new Label();
+            lblWalletBalance.Text = "Số dư ví: 0 ₫";
+            lblWalletBalance.Dock = DockStyle.Top;
+            lblWalletBalance.Height = 30;
+            lblWalletBalance.ForeColor = Color.FromArgb(102, 192, 244);
+            lblWalletBalance.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            lblWalletBalance.UseMnemonic = false;
 
-            btnDeposit = new Button
-            {
-                Text = "💰 Nạp thêm tiền ví",
-                Dock = DockStyle.Top,
-                Height = 34,
-                BackColor = Color.FromArgb(42, 71, 94),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9, FontStyle.Regular),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnDeposit = new Button();
+            btnDeposit.Text = "💰 Nạp thêm tiền ví";
+            btnDeposit.Dock = DockStyle.Top;
+            btnDeposit.Height = 34;
+            btnDeposit.BackColor = Color.FromArgb(42, 71, 94);
+            btnDeposit.ForeColor = Color.White;
+            btnDeposit.FlatStyle = FlatStyle.Flat;
+            btnDeposit.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+            btnDeposit.Cursor = Cursors.Hand;
+            btnDeposit.UseMnemonic = false;
             btnDeposit.FlatAppearance.BorderSize = 0;
-            btnDeposit.Click += (s, e) => OnNavigateToWallet?.Invoke();
+            btnDeposit.Click += BtnDeposit_Click;
 
-            btnCheckout = new Button
-            {
-                Text = "⚡ THANH TOÁN 1-CLICK\n(Trừ số dư Ví)",
-                Dock = DockStyle.Bottom,
-                Height = 55,
-                BackColor = Color.FromArgb(92, 126, 16),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                UseMnemonic = false
-            };
+            btnCheckout = new Button();
+            btnCheckout.Text = "⚡ THANH TOÁN 1-CLICK\n(Trừ số dư Ví)";
+            btnCheckout.Dock = DockStyle.Bottom;
+            btnCheckout.Height = 55;
+            btnCheckout.BackColor = Color.FromArgb(92, 126, 16);
+            btnCheckout.ForeColor = Color.White;
+            btnCheckout.FlatStyle = FlatStyle.Flat;
+            btnCheckout.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            btnCheckout.Cursor = Cursors.Hand;
+            btnCheckout.UseMnemonic = false;
             btnCheckout.FlatAppearance.BorderSize = 0;
             btnCheckout.Click += BtnCheckout_Click;
 
@@ -325,8 +290,8 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             panelBottomActions.BringToFront();
 
-            this.Resize += (s, e) => AdjustLayout();
-            AdjustLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         protected override void OnResize(EventArgs e)
@@ -337,9 +302,9 @@ namespace qlspdigital.Views.Nhom2_Cart
 
         private void AdjustLayout()
         {
-            if (this.ClientSize.Width < 500 || dgvCart == null || panelBottomActions == null || panelSummary == null) return;
-            int totalW = this.ClientSize.Width;
-            int totalH = this.ClientSize.Height;
+            if (dgvCart == null || panelBottomActions == null || panelSummary == null) return;
+            int totalW = Math.Max(1040, this.ClientSize.Width);
+            int totalH = Math.Max(700, this.ClientSize.Height);
 
             int summaryW = 340;
             int leftW = totalW - summaryW - 65; // margin 25 left + 15 gap + 25 right
@@ -364,33 +329,47 @@ namespace qlspdigital.Views.Nhom2_Cart
             _tamTinh = 0;
             _tienGiam = 0;
             _maGiamGiaId = null;
+            txtVoucher.Clear();
 
             if (!UserSession.IsLoggedIn)
             {
-                lblSubtotal.Text = "Tạm tính: 0 ₫";
-                lblTotal.Text = "Tổng thanh toán: 0 ₫";
-                lblWalletBalance.Text = "Vui lòng đăng nhập";
+                lblSubtotal.Text = "Tạm tính: 0 ₫ (Chưa đăng nhập)";
+                lblTotal.Text = "Tổng: 0 ₫";
+                lblWalletBalance.Text = "Số dư ví: 0 ₫";
                 return;
             }
-
-            lblWalletBalance.Text = $"Số dư ví: {FormatHelper.FormatCurrency(UserSession.CurrentBalance)}";
 
             var items = _gioHangService.LayGioHang(UserSession.CurrentUserId);
             foreach (var item in items)
             {
-                _tamTinh += item.ThanhTien;
                 dgvCart.Rows.Add(item.MaGioHang, item.TenSanPham, FormatHelper.FormatCurrency(item.DonGia), item.SoLuong, FormatHelper.FormatCurrency(item.ThanhTien));
+                _tamTinh += item.ThanhTien;
             }
 
-            UpdateTotalLabels();
+            UpdateTotals();
+            UpdateWalletDisplay();
         }
 
-        private void UpdateTotalLabels()
+        private void UpdateWalletDisplay()
         {
-            decimal tongThanhToan = Math.Max(0, _tamTinh - _tienGiam);
+            if (UserSession.IsLoggedIn)
+            {
+                decimal bal = _viService.LaySoDuVi(UserSession.CurrentUserId);
+                UserSession.CurrentBalance = bal;
+                lblWalletBalance.Text = $"Số dư ví: {FormatHelper.FormatCurrency(bal)}";
+            }
+            else
+            {
+                lblWalletBalance.Text = "Số dư ví: 0 ₫";
+            }
+        }
+
+        private void UpdateTotals()
+        {
             lblSubtotal.Text = $"Tạm tính: {FormatHelper.FormatCurrency(_tamTinh)}";
             lblDiscount.Text = $"Giảm giá: -{FormatHelper.FormatCurrency(_tienGiam)}";
-            lblTotal.Text = $"Tổng thanh toán: {FormatHelper.FormatCurrency(tongThanhToan)}";
+            decimal phaiTra = Math.Max(0, _tamTinh - _tienGiam);
+            lblTotal.Text = $"Tổng thanh toán: {FormatHelper.FormatCurrency(phaiTra)}";
         }
 
         private void BtnApplyVoucher_Click(object? sender, EventArgs e)
@@ -412,14 +391,14 @@ namespace qlspdigital.Views.Nhom2_Cart
             {
                 _maGiamGiaId = voucher?.MaGiamGiaId;
                 _tienGiam = tienGiam;
-                UpdateTotalLabels();
+                UpdateTotals();
                 MessageBox.Show(msg, "Áp dụng Voucher", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
                 _maGiamGiaId = null;
                 _tienGiam = 0;
-                UpdateTotalLabels();
+                UpdateTotals();
                 MessageBox.Show(msg, "Lỗi Voucher", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -480,6 +459,21 @@ namespace qlspdigital.Views.Nhom2_Cart
             {
                 MessageBox.Show(msg, "Thanh toán thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void BtnClearCart_Click(object? sender, EventArgs e)
+        {
+            if (!UserSession.IsLoggedIn) return;
+            if (MessageBox.Show("Bạn có chắc chắn muốn dọn sạch giỏ hàng?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                _gioHangService.LayGioHang(UserSession.CurrentUserId).ForEach(x => _gioHangService.XoaKhoiGioHang(x.MaGioHang));
+                LoadCart();
+            }
+        }
+
+        private void BtnDeposit_Click(object? sender, EventArgs e)
+        {
+            OnNavigateToWallet?.Invoke();
         }
     }
 }

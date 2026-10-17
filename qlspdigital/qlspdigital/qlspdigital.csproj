@@ -13,4 +13,16 @@
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Views\Main\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Controls\ProductCardControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Views\**\*Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>
