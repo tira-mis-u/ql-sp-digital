@@ -18,7 +18,7 @@
 |  Mô tả:    [ Tựa game phiêu lưu thế giới mở tương lai hấp dẫn.................................. ] |
 |---------------------------------------------------------------------------------------------------|
 |  [ 2. TẢI LÊN & QUẢN LÝ TỆP KỸ THUẬT SỐ VẬT LÝ (Bảng TepSanPham) ]                                |
-|  Chọn tệp: [ C:\Downloads\Setup_CyberAdventure_v1.2.0.exe      ] [ 📁 Duyệt tệp (.zip, .exe)... ] |
+|  Chọn tệp: [ Setup_CyberAdventure_v1.2.0.exe                  ] [ 📁 Duyệt tệp (.zip, .exe)... ] |
 |  Thông số: Dung lượng: 14.5 GB (15.569.256.448 Bytes) | Đuôi: .exe | Mã SHA256: e3b0c44298fc1c...|
 |  Tiến trình nạp: [===================================================>] 100% (Đã nạp vào Storage) |
 |                                                                                                   |

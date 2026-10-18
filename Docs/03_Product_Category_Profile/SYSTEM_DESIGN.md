@@ -17,7 +17,7 @@
 | **Nghiệp vụ (BLL)** | `SanPhamAdminService.cs` | [`../../qlspdigital/qlspdigital/BLL/Nhom3_ProductAdmin/SanPhamAdminService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom3_ProductAdmin/SanPhamAdminService.cs) | Xử lý logic sản phẩm (`SanPhamAdminService`), danh mục (`DanhMucService`) & hồ sơ (`HoSoService`) |
 | **Truy vấn CSDL (DAL)** | `SanPhamAdminRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/SanPhamAdminRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/SanPhamAdminRepository.cs) | Lệnh ADO.NET CRUD trực tiếp bảng `SanPham` (SELECT, INSERT, UPDATE, DELETE) |
 | **Truy vấn CSDL (DAL)** | `DanhMucRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/DanhMucRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/DanhMucRepository.cs) | Lệnh ADO.NET CRUD bảng `DanhMuc`, đếm `COUNT(sp)` |
-| **Truy vấn CSDL (DAL)** | `HoSoRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/HoSoRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/HoSoRepository.cs) | Lệnh ADO.NET UPDATE hồ sơ, đổi mật khẩu `NguoiDung` & metadata `TepSanPham` |
+| **Truy vấn CSDL (DAL)** | `HoSoRepository.cs` (chứa class `TepSanPhamRepository`) | [`../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/HoSoRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/HoSoRepository.cs) | Lệnh ADO.NET UPDATE hồ sơ, đổi mật khẩu `NguoiDung`, lưu `CaiDatNguoiDung` & metadata `TepSanPham` |
 | **Dữ liệu truyền tải (DTO)** | `SanPhamDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/SanPhamDTO.cs`](../../qlspdigital/qlspdigital/DTOs/SanPhamDTO.cs) | Định nghĩa cấu trúc `SanPhamDTO` và `TepSanPhamDTO` |
 | **Dữ liệu truyền tải (DTO)** | `DanhMucDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/DanhMucDTO.cs`](../../qlspdigital/qlspdigital/DTOs/DanhMucDTO.cs) | Định nghĩa cấu trúc `DanhMucDTO` |
 | **Dữ liệu truyền tải (DTO)** | `NguoiDungDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/NguoiDungDTO.cs`](../../qlspdigital/qlspdigital/DTOs/NguoiDungDTO.cs) | Định nghĩa cấu trúc `NguoiDungDTO` |
@@ -215,7 +215,7 @@ Khi phát triển chức năng thêm sản phẩm số tại **UI 10**, Admin b�
    - Báo cáo tiến độ về giao diện qua `IProgress<int>` để thanh `ProgressBar` tăng dần từ 0% đến 100% mượt mà.
 
 #### Bài toán 2: Chống gãy đường dẫn khi chuyển máy (Relative Path Resolution)
-- **Cái khó:** Nếu lưu đường dẫn cứng `C:\Users\ADMIN\Desktop\ql-sp-digital\Storage\...` vào SQL Server, khi giảng viên mang project sang máy khác chấm điểm, toàn bộ chức năng tải tệp sẽ báo lỗi "Không tìm thấy file" (`FileNotFoundException`).
+- **Cái khó:** Nếu lưu đường dẫn tuyệt đối cục bộ (ví dụ: `C:\Users\...\Desktop\ql-sp-digital\Storage\...`) vào SQL Server, khi giảng viên mang project sang máy khác chấm điểm, toàn bộ chức năng tải tệp sẽ báo lỗi "Không tìm thấy file" (`FileNotFoundException`).
 - **Giải pháp:**
    - CSDL **chỉ lưu đường dẫn tương đối**: `Storage/Products/{MaSanPham}/{TenTep}`.
    - Mã C# luôn phân giải động qua `Path.Combine(Application.StartupPath, duongDanTep.Replace("/", "\\"))`.

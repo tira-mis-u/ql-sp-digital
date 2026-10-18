@@ -153,54 +153,62 @@ qlspdigital/qlspdigital/
 │   ├── DonHangDTO.cs                        # DTO hóa đơn, ChiTietDonHangDTO & ThanhToanDTO
 │   └── ThuVienItemDTO.cs                    # DTO thư viện, DanhGiaDTO & DashboardStatsDTO
 │
-├── DAL/                                     # Data Access Layer (Truy vấn ADO.NET SQL)
+├── DAL/                                     # Data Access Layer (Truy vấn ADO.NET SQL Server)
 │   ├── Nhom1_Store/                         # [Lê Nguyễn Minh Trí]: SanPhamRepository.cs, DanhGiaRepository.cs
 │   ├── Nhom2_Cart/                          # [Nguyễn Quốc Trung]: GioHangRepository.cs, ViTaiKhoanRepository.cs, MaGiamGiaRepository.cs
-│   ├── Nhom3_ProductAdmin/                  # [Phạm Trung Hiếu]: SanPhamAdminRepository.cs, DanhMucRepository.cs, HoSoRepository.cs
-│   ├── Nhom4_SystemAdmin/                   # [Trần Quốc Thuận]: AuthRepository.cs, NguoiDungRepository.cs, DashboardRepository.cs
-│   └── Nhom5_Orders/                        # [Phạm Văn Đam]: DonHangRepository.cs, ThuVienRepository.cs
+│   ├── Nhom3_ProductAdmin/                  # [Phạm Trung Hiếu]: SanPhamAdminRepository.cs, DanhMucRepository.cs, HoSoRepository.cs (chứa TepSanPhamRepository)
+│   ├── Nhom4_SystemAdmin/                   # [Trần Quốc Thuận]: AuthRepository.cs, NguoiDungRepository.cs (chứa DashboardRepository)
+│   └── Nhom5_Orders/                        # [Phạm Văn Đam]: DonHangRepository.cs (chứa ThuVienRepository)
 │
 ├── BLL/                                     # Business Logic Layer (Xử lý nghiệp vụ & Ràng buộc)
-│   ├── Nhom1_Store/                         # [Lê Nguyễn Minh Trí]: SanPhamService.cs, DanhGiaService.cs
-│   ├── Nhom2_Cart/                          # [Nguyễn Quốc Trung]: GioHangService.cs, ViTaiKhoanService.cs, MaGiamGiaService.cs, ThanhToanService.cs
-│   ├── Nhom3_ProductAdmin/                  # [Phạm Trung Hiếu]: SanPhamAdminService.cs, DanhMucService.cs, HoSoService.cs
-│   ├── Nhom4_SystemAdmin/                   # [Trần Quốc Thuận]: AuthService.cs, NguoiDungService.cs, DashboardService.cs
-│   └── Nhom5_Orders/                        # [Phạm Văn Đam]: DonHangService.cs, ThuVienService.cs
+│   ├── Nhom1_Store/                         # [Lê Nguyễn Minh Trí]: SanPhamService.cs (chứa SanPhamService, DanhGiaService)
+│   ├── Nhom2_Cart/                          # [Nguyễn Quốc Trung]: GioHangService.cs (chứa GioHangService, ViTaiKhoanService, MaGiamGiaService, ThanhToanService)
+│   ├── Nhom3_ProductAdmin/                  # [Phạm Trung Hiếu]: SanPhamAdminService.cs (chứa SanPhamAdminService, DanhMucService, HoSoService)
+│   ├── Nhom4_SystemAdmin/                   # [Trần Quốc Thuận]: AuthService.cs (chứa AuthService, NguoiDungService, DashboardService)
+│   └── Nhom5_Orders/                        # [Phạm Văn Đam]: DonHangService.cs (chứa DonHangService, ThuVienService)
 │
 ├── Controls/                                # Thành phần giao diện tái sử dụng
-│   └── ProductCardControl.cs                # Thẻ sản phẩm trên lưới Store (Steam Card style)
+│   ├── ProductCardControl.cs                # Thẻ sản phẩm trên lưới Store (Logic & State)
+│   ├── ProductCardControl.Designer.cs       # Khởi tạo Controls & Visual Studio Designer
+│   └── ProductCardControl.resx              # Resource đính kèm
 │
-└── Views/                                   # 15 MÀN HÌNH CHỨC NĂNG
+└── Views/                                   # 15 MÀN HÌNH CHỨC NĂNG (Tất cả phân tách chuẩn .cs & .Designer.cs)
     │
     ├── Main/                                # Khung sườn tổng thể
-    │   └── MainForm.cs                      # Form chính chứa Header, Sidebar và panelMainContent
+    │   ├── MainForm.cs                      # Form chính chứa Header, Sidebar và panelMainContent
+    │   ├── MainForm.Designer.cs             # Layout Visual Studio Designer
+    │   └── MainForm.resx
     │
     ├── Nhom1_Store/                         # [Lê Nguyễn Minh Trí]
-    │   ├── StoreViewControl.cs              # UI 2: Trang chủ, lọc danh mục, tìm kiếm, lưới sản phẩm
-    │   ├── ProductDetailControl.cs          # UI 3: Chi tiết sản phẩm, cấu hình, giá, xem điểm đánh giá
-    │   └── ProductReviewControl.cs          # UI 14: Đánh giá & Nhận xét sản phẩm (1-5 sao)
+    │   ├── StoreViewControl.cs (.Designer.cs / .resx)      # UI 2: Trang chủ, lọc danh mục, tìm kiếm, lưới sản phẩm
+    │   ├── ProductDetailControl.cs (.Designer.cs / .resx)  # UI 3: Chi tiết sản phẩm, nút Quay lại & Nhận xét không bị che khuất
+    │   └── ProductReviewControl.cs (.Designer.cs / .resx)  # UI 14: Đánh giá & Nhận xét sản phẩm (1-5 sao)
     │
     ├── Nhom2_Cart/                          # [Nguyễn Quốc Trung]
-    │   ├── CartControl.cs                   # UI 4: Giỏ hàng, sửa số lượng, áp dụng voucher, thanh toán ví
-    │   ├── WalletControl.cs                 # UI 5: Ví tài khoản, nạp tiền mô phỏng theo mệnh giá
-    │   └── VoucherControl.cs                # UI 15: Kho mã giảm giá, thu thập ưu đãi, xóa voucher
+    │   ├── CartControl.cs (.Designer.cs / .resx)           # UI 4: Giỏ hàng, sửa số lượng, áp dụng voucher, thanh toán ví
+    │   ├── WalletControl.cs (.Designer.cs / .resx)         # UI 5: Ví tài khoản, nạp tiền mô phỏng theo mệnh giá
+    │   └── VoucherControl.cs (.Designer.cs / .resx)        # UI 15: Kho mã giảm giá, thu thập ưu đãi, xóa voucher
     │
     ├── Nhom3_ProductAdmin/                  # [Phạm Trung Hiếu]
-    │   ├── ProductManageControl.cs          # UI 10: CRUD thông tin sản phẩm, giá, upload metadata tệp số
-    │   ├── CategoryManageControl.cs         # UI 11: CRUD danh mục thể loại
-    │   └── ProfileControl.cs                # UI 8: Xem và cập nhật thông tin cá nhân, đổi mật khẩu
+    │   ├── ProductManageControl.cs (.Designer.cs / .resx)  # UI 10: CRUD thông tin sản phẩm, giá, upload metadata tệp số
+    │   ├── CategoryManageControl.cs (.Designer.cs / .resx) # UI 11: CRUD danh mục thể loại
+    │   └── ProfileControl.cs (.Designer.cs / .resx)        # UI 8: Xem và cập nhật thông tin cá nhân, đổi mật khẩu
     │
     ├── Nhom4_SystemAdmin/                   # [Trần Quốc Thuận]
-    │   ├── LoginControl.cs                  # UI 1: Đăng nhập hệ thống
-    │   ├── RegisterControl.cs               # UI 1: Đăng ký tài khoản
-    │   ├── UserManageControl.cs             # UI 12: Danh sách tài khoản, phân quyền, khóa/mở tài khoản
-    │   └── DashboardControl.cs              # UI 9: Thống kê doanh thu, số đơn, top sản phẩm bán chạy
+    │   ├── LoginControl.cs (.Designer.cs / .resx)          # UI 1: Đăng nhập hệ thống
+    │   ├── RegisterControl.cs (.Designer.cs / .resx)       # UI 1: Đăng ký tài khoản
+    │   ├── UserManageControl.cs (.Designer.cs / .resx)     # UI 12: Danh sách tài khoản, phân quyền, khóa/mở tài khoản
+    │   └── DashboardControl.cs (.Designer.cs / .resx)      # UI 9: Thống kê doanh thu, số đơn, top sản phẩm bán chạy
     │
     └── Nhom5_Orders/                        # [Phạm Văn Đam]
-        ├── LibraryControl.cs                # UI 6: Kho sản phẩm đã sở hữu của khách, nút tải file ProgressBar
-        ├── OrderManageControl.cs            # UI 13: Quản trị viên theo dõi và duyệt đơn hàng
-        └── OrderHistoryControl.cs           # UI 7: Khách hàng xem lịch sử đơn hàng cá nhân
+        ├── LibraryControl.cs (.Designer.cs / .resx)        # UI 6: Kho sản phẩm đã sở hữu của khách, nút tải file ProgressBar
+        ├── OrderManageControl.cs (.Designer.cs / .resx)    # UI 13: Quản trị viên theo dõi và duyệt đơn hàng
+        └── OrderHistoryControl.cs (.Designer.cs / .resx)   # UI 7: Khách hàng xem lịch sử đơn hàng cá nhân
 ```
+
+> **Quy chuẩn Thiết kế Giao diện WinForms & Visual Studio Designer:**
+> - Toàn bộ 18 Form / UserControl trong dự án đều tuân thủ cấu trúc phân tách song song: file `*.cs` (chứa logic tương tác, điều hướng, sự kiện BLL/DAL) và `*.Designer.cs` (chứa mã khởi tạo đồ họa `InitializeComponent()`, tọa độ, Docking, Anchor).
+> - Mọi thành phần đều được cấu hình khoảng cách an toàn (Safety Margin >= 10px), tuyệt đối không để các Panel hay DataGridView đè khuất các nút bấm điều hướng (`btnBack`) hoặc nút hành động (`btnWriteReview`), đảm bảo tương thích 100% với giao diện kéo thả trực quan của Visual Studio.
 
 ---
 

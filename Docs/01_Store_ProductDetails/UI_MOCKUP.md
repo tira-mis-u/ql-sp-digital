@@ -52,46 +52,51 @@
 ### 2.1. Bố cục trực quan (Wireframe Layout)
 ```text
 +---------------------------------------------------------------------------------------------------+
-|  [ < Quay lại Cửa hàng ]                                                                          |
-+---------------------------------------------------------------------------------------------------+
+|  [ Quay lại Cửa hàng ]                                                                            |
 |                                                                                                   |
-|  +-------------------------------------+   +---------------------------------------------------+  |
-|  |                                     |   | Tên: CYBER ADVENTURE RPG                          |  |
-|  |                                     |   | Thể loại: Trò chơi điện tử (Game)                 |  |
-|  |         [ ẢNH BANNER LỚN ]          |   | Nhà phát hành: Pixel Studio                       |  |
-|  |            (PictureBox)             |   | Ngày ra mắt: 15/01/2026                           |  |
-|  |                                     |   | Điểm đánh giá: ⭐⭐⭐⭐⭐ 4.8 / 5 (38 lượt review)  |  |
-|  |                                     |   | Dung lượng tệp: 14.5 GB                           |  |
-|  |                                     |   |---------------------------------------------------|  |
-|  +-------------------------------------+   | GIÁ BÁN: 450.000 VNĐ                              |  |
-|                                            |                                                   |  |
-|                                            | [ 🛒 Thêm vào giỏ hàng ]    [ ⚡ Mua ngay ]       |  |
-|                                            |                                                   |  |
-|                                            | [ 💬 Xem & Viết đánh giá sản phẩm (UI 14) ]       |  |
-|                                            +---------------------------------------------------+  |
+|  +--------------------------------------------------------------------+   +--------------------+  |
+|  | CYBER ADVENTURE RPG                                                |   |     450.000 đ      |  |
+|  | Thể loại: Trò chơi điện tử                                         |   |--------------------|  |
+|  | Nhà phát hành: Pixel Game Studio                                   |   | [Thêm vào Giỏ hàng]|  |
+|  | Phiên bản: 1.2.0           Dung lượng: 14.5 GB                     |   |--------------------|  |
+|  | ⭐ 5.0 / 5.0 (1 lượt nhận xét)                                      |   |[Đánh giá & Nhận xét|  |
+|  +--------------------------------------------------------------------+   +--------------------+  |
 |                                                                                                   |
-|  +---------------------------------------------------------------------------------------------+  |
-|  | MÔ TẢ CHI TIẾT SẢN PHẨM (RichTextBox / Label)                                               |  |
-|  |---------------------------------------------------------------------------------------------|  |
-|  | Cyber Adventure RPG là một tựa game nhập vai thế giới mở với đồ họa tương lai hiện đại...   |  |
-|  | Định dạng bàn giao: Tệp cài đặt kỹ thuật số (.zip / .exe) + Khóa kích hoạt bản quyền.      |  |
-|  | Hỗ trợ hệ điều hành: Windows 10, Windows 11 (64-bit).                                      |  |
-|  +---------------------------------------------------------------------------------------------+  |
+|  +---------------------------------------------+   +-------------------------------------------+  |
+|  | GIỚI THIỆU & ĐẶC TẢ TÍNH NĂNG               |   | ĐÁNH GIÁ TỪ CỘNG ĐỒNG (1)  [+ Viết nhận xét]|  |
+|  |---------------------------------------------|   |-------------------------------------------|  |
+|  | Tựa game nhập vai thế giới mở phong cách    |   | Người đánh giá | Số sao | Nhận xét | Ngày |  |
+|  | Cyberpunk với đồ họa tương lai đỉnh cao...  |   |-------------------------------------------|  |
+|  |                                             |   | Trần Quốc Thuận| ⭐ 5/5 | Game Cyb...|17/10 |  |
+|  | =========================================== |   |                                           |  |
+|  | THÔNG TIN BẢN QUYỀN & THÔNG SỐ KỸ THUẬT:    |   |                                           |  |
+|  | • Nền tảng: Windows 10/11 (64-bit)          |   |                                           |  |
+|  | • Hình thức: Bản quyền số (DRM-Free)        |   |                                           |  |
+|  | • Bảo hành: Cấp lại tệp tải trọn đời        |   |                                           |  |
+|  +---------------------------------------------+   +-------------------------------------------+  |
 +---------------------------------------------------------------------------------------------------+
 ```
 
-### 2.2. Danh sách WinForms Controls gợi ý cho UI 3
-| Tên Control | Loại Control | Chức năng & Thuộc tính |
-|---|---|---|
-| `btnBack` | `Button` | Trở về màn hình `StoreViewControl`. |
-| `picProductLarge` | `PictureBox` | Hiển thị ảnh đại diện cỡ lớn (`SizeMode = Zoom`). |
-| `lblProductName` | `Label` | Tên sản phẩm, Font Size 18pt Bold. |
-| `lblCategory` | `Label` | Tên thể loại sản phẩm. |
-| `lblPrice` | `Label` | Giá sản phẩm, màu sắc nổi bật (Xanh lá / Đỏ), Font 16pt Bold. |
-| `rtbDescription` | `RichTextBox` | Hiển thị mô tả sản phẩm (`ReadOnly = True`, `BorderStyle = None`). |
-| `btnAddToCart` | `Button` | Thêm vào giỏ hàng. Hiển thị thông báo khi thành công. |
-| `btnBuyNow` | `Button` | Chuyển thẳng đến Giỏ hàng & Thanh toán. |
-| `btnGoToReviews` | `Button` | Chuyển đến màn hình Đánh giá sản phẩm UI 14. |
+### 2.2. Danh sách WinForms Controls & Tọa độ căn chỉnh chuẩn Visual Studio Designer
+| Tên Control | Loại Control | Container | Kích thước & Tọa độ | Chức năng & Tương thích Designer |
+|---|---|---|---|---|
+| `btnBack` | `Button` | Root | `(25, 14)`, `Size = 180x36` | Trở về Cửa hàng. Tách biệt hoàn toàn ở trên cùng, không bị card `panelTop` che khuất hay đè lên. |
+| `panelTop` | `Panel` | Root | `(25, 62)`, `Height = 205` | Khung thẻ thông tin tiêu đề, thể loại, NPH, phiên bản, dung lượng, điểm sao và cụm mua sắm. |
+| `lblTitle` | `Label` | `panelTop` | `(20, 14)`, `Font = 16pt Bold` | Tên sản phẩm kỹ thuật số. Co giãn linh hoạt theo chiều rộng cửa sổ. |
+| `panelBuy` | `Panel` | `panelTop` | `Dock = Right`, `Width = 310` | Cụm mua sắm & đánh giá: gồm giá bán niêm yết, nút Thêm giỏ hàng và nút Đánh giá & Nhận xét. |
+| `lblPrice` | `Label` | `panelBuy` | `Dock = Top`, `Height = 40` | Giá bán sản phẩm định dạng VNĐ (hoặc Miễn phí). |
+| `btnAddToCart` | `Button` | `panelBuy` | `Dock = Top`, `Height = 48` | Thêm sản phẩm vào giỏ hàng cá nhân (`GioHangService.ThemVaoGioHang`). |
+| `btnReviews` | `Button` | `panelBuy` | `Dock = Bottom`, `Height = 38` | Chuyển đến màn hình quản lý đánh giá UI 14 (`ProductReviewControl`). |
+| `panelBottom` | `Panel` | Root | `(25, 279)`, `Height = dynamic` | Khung chứa 2 khối thông tin chi tiết: Giới thiệu (trái) và Đánh giá cộng đồng (phải). |
+| `panelDesc` | `Panel` | `panelBottom` | `Left = 0`, `Width = 48%` | Khung hiển thị mô tả, yêu cầu kỹ thuật và bản quyền DRM-Free. |
+| `lblDescTitle` | `Label` | `panelDesc` | `Dock = Top`, `Height = 36` | Tiêu đề "GIỚI THIỆU & ĐẶC TẢ TÍNH NĂNG" căn chỉnh chuẩn 36px. |
+| `rtfDescription` | `RichTextBox` | `panelDesc` | `Dock = Fill` | Nội dung mô tả chi tiết và quy chuẩn kỹ thuật tệp số. |
+| `panelReviews` | `Panel` | `panelBottom` | `Right = 50%`, `Width = 50%` | Khung danh sách đánh giá từ cộng đồng kèm nút viết nhận xét. |
+| `panelReviewsHeader` | `Panel` | `panelReviews` | `Dock = Top`, `Height = 36` | Thanh tiêu đề đánh giá kèm nút hành động. |
+| `lblReviewsTitle` | `Label` | `panelReviewsHeader` | `Dock = Fill`, `Height = 36` | Tiêu đề "ĐÁNH GIÁ TỪ CỘNG ĐỒNG (N)" căn giữa thẳng hàng với nút viết nhận xét. |
+| `btnWriteReview` | `Button` | `panelReviewsHeader` | `Dock = Right`, `Size = 140x36` | Nút "+ Viết nhận xét" mở nhanh giao diện đánh giá UI 14, không bị DataGridView đè khuất. |
+| `dgvReviewsDetail` | `DataGridView` | `panelReviews` | `(17, 66)`, `Size = dynamic` | Bảng danh sách nhận xét cộng đồng; cách header và nút nhận xét 10px khoảng đệm an toàn. |
+| `lblNoReviews` | `Label` | `panelReviews` | `(17, 100)`, `Size = dynamic` | Thông báo hiển thị khi sản phẩm chưa có nhận xét nào từ cộng đồng. |
 
 ---
 

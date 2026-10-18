@@ -102,25 +102,25 @@ Danh mục có thể được mở rộng hoặc thay đổi thông qua chức n
 
 ---
 
-## 3. Chức năng chính
+## 3. Chức năng chính & Phân công nhiệm vụ chi tiết
 
-| Module | Chức năng | Phụ trách |
-|---|---|---|
-| Authentication | Đăng ký, đăng nhập, đăng xuất và phân quyền | Nhóm 4 |
-| Store | Hiển thị, tìm kiếm, lọc và sắp xếp sản phẩm | Nhóm 1 |
-| Product Details | Hiển thị thông tin, hình ảnh, giá và mô tả | Nhóm 1 |
-| Product Reviews & Ratings | Đánh giá sao (1-5★), viết nhận xét phản hồi và xem đánh giá cộng đồng | Nhóm 1 |
-| Shopping Cart | Quản lý sản phẩm trong giỏ hàng, cập nhật số lượng, xóa món | Nhóm 2 |
-| Payment & Wallet Simulation | Mô phỏng ví tài khoản (Steam Wallet), nạp tiền mệnh giá và thanh toán 1-Click | Nhóm 2 |
-| Vouchers & Promotions | Quản lý mã giảm giá, thu thập khuyến mãi và áp dụng khấu trừ đơn hàng | Nhóm 2 |
-| Product Management | CRUD sản phẩm (thêm, sửa, xóa, tìm kiếm sản phẩm) | Nhóm 3 |
-| Category Management | CRUD danh mục thể loại sản phẩm | Nhóm 3 |
-| User Profile | Quản lý hồ sơ cá nhân và đổi mật khẩu | Nhóm 3 |
-| User Management | Quản lý danh sách tài khoản, phân quyền và khóa/mở người dùng | Nhóm 4 |
-| Dashboard & Reports | Thống kê doanh thu, số lượng đơn hàng, số người dùng | Nhóm 4 |
-| Order Management | Duyệt và quản lý trạng thái đơn hàng (Admin) | Nhóm 5 |
-| Order History | Theo dõi lịch sử mua hàng và hóa đơn cá nhân | Nhóm 5 |
-| Digital Library & Downloads | Quản lý kho sản phẩm đã sở hữu và mô phỏng tải tệp kỹ thuật số | Nhóm 5 |
+| Module | Chức năng chi tiết | Thành viên phụ trách | Mã nguồn giao diện tương đối | Tài liệu đặc tả |
+|---|---|---|---|---|
+| **Store (UI 2)** | Hiển thị danh sách sản phẩm dạng thẻ, tìm kiếm từ khóa, lọc theo danh mục | Lê Nguyễn Minh Trí (Nhóm 1) | [`qlspdigital/qlspdigital/Views/Nhom1_Store/StoreViewControl.cs`](qlspdigital/qlspdigital/Views/Nhom1_Store/StoreViewControl.cs) | [`Docs/01_Store_ProductDetails/`](Docs/01_Store_ProductDetails/) |
+| **Product Details (UI 3)** | Chi tiết sản phẩm, cấu hình, bản quyền DRM-Free, giá bán, nút quay lại & thêm giỏ | Lê Nguyễn Minh Trí (Nhóm 1) | [`qlspdigital/qlspdigital/Views/Nhom1_Store/ProductDetailControl.cs`](qlspdigital/qlspdigital/Views/Nhom1_Store/ProductDetailControl.cs) | [`Docs/01_Store_ProductDetails/`](Docs/01_Store_ProductDetails/) |
+| **Reviews & Ratings (UI 14)** | Đánh giá sao (1-5★), viết nhận xét phản hồi, chỉnh sửa & xóa đánh giá cá nhân | Lê Nguyễn Minh Trí (Nhóm 1) | [`qlspdigital/qlspdigital/Views/Nhom1_Store/ProductReviewControl.cs`](qlspdigital/qlspdigital/Views/Nhom1_Store/ProductReviewControl.cs) | [`Docs/01_Store_ProductDetails/`](Docs/01_Store_ProductDetails/) |
+| **Shopping Cart (UI 4)** | Quản lý giỏ hàng, sửa số lượng, áp dụng voucher chiết khấu, thanh toán 1-Click ví | Nguyễn Quốc Trung (Nhóm 2) | [`qlspdigital/qlspdigital/Views/Nhom2_Cart/CartControl.cs`](qlspdigital/qlspdigital/Views/Nhom2_Cart/CartControl.cs) | [`Docs/02_Cart_Wallet/`](Docs/02_Cart_Wallet/) |
+| **Wallet Simulation (UI 5)** | Ví tài khoản (Steam Wallet), xem số dư, nạp tiền nhanh 50k-500k, lịch sử biến động | Nguyễn Quốc Trung (Nhóm 2) | [`qlspdigital/qlspdigital/Views/Nhom2_Cart/WalletControl.cs`](qlspdigital/qlspdigital/Views/Nhom2_Cart/WalletControl.cs) | [`Docs/02_Cart_Wallet/`](Docs/02_Cart_Wallet/) |
+| **Vouchers & Ưu đãi (UI 15)** | Kho mã giảm giá cá nhân, nhập mã thu thập voucher mới, áp dụng vào giỏ hàng | Nguyễn Quốc Trung (Nhóm 2) | [`qlspdigital/qlspdigital/Views/Nhom2_Cart/VoucherControl.cs`](qlspdigital/qlspdigital/Views/Nhom2_Cart/VoucherControl.cs) | [`Docs/02_Cart_Wallet/`](Docs/02_Cart_Wallet/) |
+| **Product Management (UI 10)** | CRUD sản phẩm (thêm, sửa, ngưng bán, cập nhật giá), tải lên metadata tệp số | Phạm Trung Hiếu (Nhóm 3) | [`qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProductManageControl.cs`](qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProductManageControl.cs) | [`Docs/03_Product_Category_Profile/`](Docs/03_Product_Category_Profile/) |
+| **Category Management (UI 11)** | CRUD danh mục thể loại, đếm sản phẩm trực thuộc, chặn xóa danh mục có ràng buộc | Phạm Trung Hiếu (Nhóm 3) | [`qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/CategoryManageControl.cs`](qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/CategoryManageControl.cs) | [`Docs/03_Product_Category_Profile/`](Docs/03_Product_Category_Profile/) |
+| **User Profile (UI 8)** | Quản lý hồ sơ cá nhân, cập nhật SĐT/Email, đổi mật khẩu băm SHA-256 & lưu cài đặt | Phạm Trung Hiếu (Nhóm 3) | [`qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProfileControl.cs`](qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProfileControl.cs) | [`Docs/03_Product_Category_Profile/`](Docs/03_Product_Category_Profile/) |
+| **Authentication (UI 1)** | Đăng nhập và đăng ký tài khoản thành viên mới, phân quyền RBAC và kiểm tra khóa | Trần Quốc Thuận (Nhóm 4) | [`qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/LoginControl.cs`](qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/LoginControl.cs)<br>[`qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/RegisterControl.cs`](qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/RegisterControl.cs) | [`Docs/04_Auth_User_Dashboard/`](Docs/04_Auth_User_Dashboard/) |
+| **User Management (UI 12)** | Quản lý danh sách tài khoản toàn hệ thống, tìm kiếm, nút bấm Khóa / Mở khóa | Trần Quốc Thuận (Nhóm 4) | [`qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/UserManageControl.cs`](qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/UserManageControl.cs) | [`Docs/04_Auth_User_Dashboard/`](Docs/04_Auth_User_Dashboard/) |
+| **Dashboard & Reports (UI 9)** | Thống kê 4 thẻ chỉ số KPI tổng hợp (doanh thu, đơn, khách, món) & Top 5 bán chạy | Trần Quốc Thuận (Nhóm 4) | [`qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/DashboardControl.cs`](qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/DashboardControl.cs) | [`Docs/04_Auth_User_Dashboard/`](Docs/04_Auth_User_Dashboard/) |
+| **Order Management (UI 13)** | Quản trị viên duyệt / hủy đơn hàng, chuyển trạng thái và tự động cấp vào Thư viện | Phạm Văn Đam (Nhóm 5) | [`qlspdigital/qlspdigital/Views/Nhom5_Orders/OrderManageControl.cs`](qlspdigital/qlspdigital/Views/Nhom5_Orders/OrderManageControl.cs) | [`Docs/05_Orders_Library/`](Docs/05_Orders_Library/) |
+| **Order History (UI 7)** | Khách hàng tra cứu lịch sử mua sắm cá nhân, chi tiết hóa đơn và danh sách món | Phạm Văn Đam (Nhóm 5) | [`qlspdigital/qlspdigital/Views/Nhom5_Orders/OrderHistoryControl.cs`](qlspdigital/qlspdigital/Views/Nhom5_Orders/OrderHistoryControl.cs) | [`Docs/05_Orders_Library/`](Docs/05_Orders_Library/) |
+| **Digital Library (UI 6)** | Thư viện số sở hữu vĩnh viễn, tải tệp `.zip`/`.exe` có ProgressBar & gỡ bỏ | Phạm Văn Đam (Nhóm 5) | [`qlspdigital/qlspdigital/Views/Nhom5_Orders/LibraryControl.cs`](qlspdigital/qlspdigital/Views/Nhom5_Orders/LibraryControl.cs) | [`Docs/05_Orders_Library/`](Docs/05_Orders_Library/) |
 
 ### Quy trình mua hàng & Áp dụng ưu đãi
 

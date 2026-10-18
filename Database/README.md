@@ -77,7 +77,7 @@
 - `VIPMEGA100K`: Giảm trực tiếp 100.000đ cho đơn hàng thân thiết từ 500.000đ.
 
 ### Chuỗi kết nối chuẩn trong WinForms C#
-Trong file [DatabaseHelper.cs](file:///c:/Users/ADMIN/Desktop/ql-sp-digital/qlspdigital/qlspdigital/Shared/DatabaseHelper.cs), sử dụng ký hiệu `@` (Verbatim String) để không cần escape dấu `\`:
+Trong file [`DatabaseHelper.cs`](../qlspdigital/qlspdigital/Shared/DatabaseHelper.cs), sử dụng ký hiệu `@` (Verbatim String) để không cần escape dấu `\`:
 ```csharp
 public static string ConnectionString { get; set; } =
     @"Server=localhost\SQLEXPRESS01;Database=DPMS_Db;Integrated Security=True;TrustServerCertificate=True;";
