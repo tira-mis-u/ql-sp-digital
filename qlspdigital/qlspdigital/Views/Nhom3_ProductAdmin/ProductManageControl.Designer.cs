@@ -147,9 +147,9 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(102, 192, 244);
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(30, 45, 62);
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(102, 192, 244);
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvProducts.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvProducts.ColumnHeadersHeight = 32;
+            this.dgvProducts.ColumnHeadersHeight = 34;
             this.dgvProducts.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colMaSanPham,
             this.colTenSanPham,
@@ -180,17 +180,17 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             // 
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.colMaSanPham.DefaultCellStyle = dataGridViewCellStyle3;
-            this.colMaSanPham.FillWeight = 8F;
+            this.colMaSanPham.FillWeight = 5F;
             this.colMaSanPham.HeaderText = "Mã";
-            this.colMaSanPham.MinimumWidth = 45;
+            this.colMaSanPham.MinimumWidth = 32;
             this.colMaSanPham.Name = "MaSanPham";
             this.colMaSanPham.ReadOnly = true;
             // 
             // colTenSanPham
             // 
-            this.colTenSanPham.FillWeight = 36F;
+            this.colTenSanPham.FillWeight = 24F;
             this.colTenSanPham.HeaderText = "Tên sản phẩm";
-            this.colTenSanPham.MinimumWidth = 140;
+            this.colTenSanPham.MinimumWidth = 155;
             this.colTenSanPham.Name = "TenSanPham";
             this.colTenSanPham.ReadOnly = true;
             // 
@@ -198,17 +198,17 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             // 
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
             this.colGiaBan.DefaultCellStyle = dataGridViewCellStyle4;
-            this.colGiaBan.FillWeight = 18F;
+            this.colGiaBan.FillWeight = 14F;
             this.colGiaBan.HeaderText = "Giá bán";
-            this.colGiaBan.MinimumWidth = 95;
+            this.colGiaBan.MinimumWidth = 85;
             this.colGiaBan.Name = "GiaBan";
             this.colGiaBan.ReadOnly = true;
             // 
             // colTenDanhMuc
             // 
-            this.colTenDanhMuc.FillWeight = 18F;
+            this.colTenDanhMuc.FillWeight = 33F;
             this.colTenDanhMuc.HeaderText = "Danh mục";
-            this.colTenDanhMuc.MinimumWidth = 95;
+            this.colTenDanhMuc.MinimumWidth = 185;
             this.colTenDanhMuc.Name = "TenDanhMuc";
             this.colTenDanhMuc.ReadOnly = true;
             // 
@@ -216,9 +216,9 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             // 
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.colDungLuongMB.DefaultCellStyle = dataGridViewCellStyle5;
-            this.colDungLuongMB.FillWeight = 10F;
+            this.colDungLuongMB.FillWeight = 14F;
             this.colDungLuongMB.HeaderText = "Dung lượng";
-            this.colDungLuongMB.MinimumWidth = 80;
+            this.colDungLuongMB.MinimumWidth = 92;
             this.colDungLuongMB.Name = "DungLuongMB";
             this.colDungLuongMB.ReadOnly = true;
             // 
@@ -226,7 +226,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             // 
             this.colTrangThai.FillWeight = 10F;
             this.colTrangThai.HeaderText = "Mở bán";
-            this.colTrangThai.MinimumWidth = 75;
+            this.colTrangThai.MinimumWidth = 70;
             this.colTrangThai.Name = "TrangThai";
             this.colTrangThai.ReadOnly = true;
 

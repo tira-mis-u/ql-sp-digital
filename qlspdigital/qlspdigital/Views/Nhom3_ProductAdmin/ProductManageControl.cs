@@ -41,7 +41,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             int totalW = Math.Max(700, this.ClientSize.Width);
             int totalH = Math.Max(400, this.ClientSize.Height);
 
-            int rightW = Math.Clamp((int)(totalW * 0.44), 420, 600);
+            int rightW = Math.Clamp((int)(totalW * 0.34), 345, 420);
             int leftW = Math.Max(260, totalW - rightW - 65); // margin 25 left + 15 gap + 25 right
             int contentH = Math.Max(220, totalH - 120);
 
@@ -63,15 +63,18 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             panelForm.Size = new Size(rightW, contentH + 50);
 
             // 4. Form Controls inside panelForm
-            int fieldInputW = Math.Max(200, rightW - 175);
+            int fieldInputW = Math.Max(150, rightW - 175);
             txtId.Width = fieldInputW;
             txtName.Width = fieldInputW;
             txtPrice.Width = fieldInputW;
             txtSize.Width = fieldInputW;
             txtVersion.Width = fieldInputW;
             cboCategory.Width = fieldInputW;
-            txtFilePath.Width = Math.Max(120, fieldInputW - 90);
-            btnBrowseFile.Location = new Point(155 + txtFilePath.Width + 10, txtFilePath.Top - 1);
+
+            int browseW = 75;
+            btnBrowseFile.Size = new Size(browseW, txtFilePath.Height + 2);
+            txtFilePath.Width = Math.Max(60, fieldInputW - browseW - 10);
+            btnBrowseFile.Location = new Point(txtFilePath.Left + txtFilePath.Width + 10, txtFilePath.Top - 1);
             txtDescription.Width = rightW - 40;
 
             // Dynamically stretch textarea vertically and pin buttons cleanly

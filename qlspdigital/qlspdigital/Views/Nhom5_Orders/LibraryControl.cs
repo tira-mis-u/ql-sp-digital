@@ -95,6 +95,28 @@ namespace qlspdigital.Views.Nhom5_Orders
             if (list.Count == 0)
             {
                 lblSelectedTitle.Text = "Thư viện trống (Hãy mua game tại Store!)";
+                lblVersion.Text = "Phiên bản: -";
+                lblSize.Text = "Dung lượng: -";
+                lblDownloadCount.Text = "Số lần đã tải: -";
+                SetButtonState(btnDownload, false, Color.FromArgb(90, 160, 45));
+                SetButtonState(btnUninstall, false, Color.FromArgb(180, 40, 40));
+            }
+        }
+
+        private void SetButtonState(Button btn, bool enabled, Color activeColor)
+        {
+            btn.Enabled = enabled;
+            if (enabled)
+            {
+                btn.BackColor = activeColor;
+                btn.ForeColor = Color.White;
+                btn.Cursor = Cursors.Hand;
+            }
+            else
+            {
+                btn.BackColor = Color.FromArgb(42, 54, 66);
+                btn.ForeColor = Color.FromArgb(105, 120, 135);
+                btn.Cursor = Cursors.No;
             }
         }
 
@@ -119,7 +141,12 @@ namespace qlspdigital.Views.Nhom5_Orders
         private void DgvLibrary_SelectionChanged(object? sender, EventArgs e)
         {
             int soHuuId = GetSelectedSoHuuId();
-            if (soHuuId == 0) return;
+            if (soHuuId == 0)
+            {
+                SetButtonState(btnDownload, false, Color.FromArgb(90, 160, 45));
+                SetButtonState(btnUninstall, false, Color.FromArgb(180, 40, 40));
+                return;
+            }
 
             var list = _libraryService.LayKhoThuVien(UserSession.CurrentUserId);
             var item = list.Find(x => x.MaSoHuu == soHuuId);
@@ -130,6 +157,8 @@ namespace qlspdigital.Views.Nhom5_Orders
                 lblVersion.Text = $"Phiên bản: {item.PhienBan}";
                 lblSize.Text = $"Dung lượng: {FormatHelper.FormatFileSize(item.DungLuongMB)}";
                 lblDownloadCount.Text = $"Số lần đã tải: {item.SoLanTai} lượt";
+                SetButtonState(btnDownload, true, Color.FromArgb(90, 160, 45));
+                SetButtonState(btnUninstall, true, Color.FromArgb(180, 40, 40));
             }
         }
 
@@ -154,20 +183,24 @@ namespace qlspdigital.Views.Nhom5_Orders
                 fbd.Description = $"Chọn thư mục lưu tệp cho [{item.TenSanPham}]:";
                 if (fbd.ShowDialog() == DialogResult.OK)
                 {
-                    btnDownload.Enabled = false;
+                    UpdateDownloadProgress(0);
+                    SetButtonState(btnDownload, false, Color.FromArgb(90, 160, 45));
+                    SetButtonState(btnUninstall, false, Color.FromArgb(180, 40, 40));
                     lblProgressText.Text = "Đang kết nối máy chủ CDN và tải tệp...";
 
                     bool success = await _libraryService.TaiXuongTepAsync(item, fbd.SelectedPath, (p) =>
                     {
-                        prgDownload.Value = p;
-                        lblProgressText.Text = $"Tiến trình tải: {p}%...";
+                        UpdateDownloadProgress(p);
                     });
 
-                    btnDownload.Enabled = true;
+                    SetButtonState(btnDownload, true, Color.FromArgb(90, 160, 45));
+                    SetButtonState(btnUninstall, true, Color.FromArgb(180, 40, 40));
 
                     if (success)
                     {
+                        UpdateDownloadProgress(100);
                         lblProgressText.Text = "Tải xuống hoàn tất! Đã kiểm tra SHA-256 an toàn.";
+                        await Task.Delay(250);
                         MessageBox.Show($"Tải tệp thành công về thư mục:\n{fbd.SelectedPath}", "Hoàn tất tải xuống", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadLibrary();
                     }
@@ -178,6 +211,25 @@ namespace qlspdigital.Views.Nhom5_Orders
                     }
                 }
             }
+        }
+
+        private void UpdateDownloadProgress(int percent)
+        {
+            percent = Math.Clamp(percent, 0, 100);
+            if (percent < 100)
+            {
+                // Kỹ thuật WinForms Instant-Snap: Windows bỏ qua hiệu ứng trễ 500ms khi giá trị giảm
+                prgDownload.Value = percent + 1;
+                prgDownload.Value = percent;
+            }
+            else
+            {
+                prgDownload.Maximum = 101;
+                prgDownload.Value = 101;
+                prgDownload.Maximum = 100;
+                prgDownload.Value = 100;
+            }
+            lblProgressText.Text = $"Tiến trình tải: {percent}%...";
         }
 
         private void BtnUninstall_Click(object? sender, EventArgs e)

@@ -92,6 +92,40 @@ namespace qlspdigital.Views.Nhom5_Orders
                     FormatHelper.FormatDateTime(o.NgayTao)
                 );
             }
+
+            if (dgvOrders.Rows.Count == 0)
+            {
+                btnApprove.Enabled = false;
+                btnCancelOrder.Enabled = false;
+            }
+            else
+            {
+                DgvOrders_SelectionChanged(null, EventArgs.Empty);
+            }
+        }
+
+        private bool _canApprove = false;
+        private bool _canCancel = false;
+        private readonly ToolTip _actionToolTip = new ToolTip();
+
+        private void SetButtonVisualState(Button btn, bool canAction, Color activeColor, string tooltipText, string disabledReason, ref bool actionFlag)
+        {
+            actionFlag = canAction;
+            if (canAction)
+            {
+                btn.BackColor = activeColor;
+                btn.ForeColor = Color.White;
+                btn.Cursor = Cursors.Hand;
+                _actionToolTip.SetToolTip(btn, tooltipText);
+            }
+            else
+            {
+                // Giảm opacity: Màu nền xám trầm mờ (42, 54, 66) và chữ xám nhạt (105, 120, 135)
+                btn.BackColor = Color.FromArgb(42, 54, 66);
+                btn.ForeColor = Color.FromArgb(105, 120, 135);
+                btn.Cursor = Cursors.No; // Con trỏ disabled 🚫
+                _actionToolTip.SetToolTip(btn, disabledReason);
+            }
         }
 
         private void DgvOrders_SelectionChanged(object? sender, EventArgs e)
@@ -99,16 +133,42 @@ namespace qlspdigital.Views.Nhom5_Orders
             if (dgvOrders.SelectedRows.Count == 0)
             {
                 dgvOrderDetails.Rows.Clear();
+                SetButtonVisualState(btnApprove, false, Color.FromArgb(90, 160, 45), "", "Vui lòng chọn đơn hàng cần xử lý", ref _canApprove);
+                SetButtonVisualState(btnCancelOrder, false, Color.FromArgb(180, 40, 40), "", "Vui lòng chọn đơn hàng cần xử lý", ref _canCancel);
                 return;
             }
 
             var row = dgvOrders.SelectedRows[0];
-            if (row == null || row.Index < 0) return;
+            if (row == null || row.Index < 0)
+            {
+                SetButtonVisualState(btnApprove, false, Color.FromArgb(90, 160, 45), "", "Vui lòng chọn đơn hàng cần xử lý", ref _canApprove);
+                SetButtonVisualState(btnCancelOrder, false, Color.FromArgb(180, 40, 40), "", "Vui lòng chọn đơn hàng cần xử lý", ref _canCancel);
+                return;
+            }
 
             var val = (dgvOrders.Columns.Contains("MaDonHang") ? row.Cells["MaDonHang"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
             if (val == null) return;
 
             int orderId = Convert.ToInt32(val);
+            string orderStatus = (dgvOrders.Columns.Contains("TrangThai") ? row.Cells["TrangThai"].Value : null)?.ToString()
+                ?? (row.Cells.Count > 4 ? row.Cells[4].Value?.ToString() : string.Empty) ?? string.Empty;
+
+            // Kiểm soát trạng thái nút hành động:
+            // - Đơn đã Hoàn thành: Giảm opacity, đổi màu xám mờ và đổi cursor No (vì khách đã có hàng trong Thư viện, không cần duyệt lại)
+            // - Đơn đã Hủy: Giảm opacity, đổi màu xám mờ và đổi cursor No (không hủy tiếp)
+            bool isCompleted = orderStatus.Equals("Hoàn thành", StringComparison.OrdinalIgnoreCase);
+            bool isCancelled = orderStatus.Equals("Đã hủy", StringComparison.OrdinalIgnoreCase);
+
+            SetButtonVisualState(btnApprove, !isCompleted, Color.FromArgb(90, 160, 45),
+                "Kích hoạt thủ công đơn hàng và cấp bản quyền vào Thư viện của khách",
+                "Đơn hàng này đã Hoàn thành và sản phẩm đã có sẵn trong Thư viện của khách hàng",
+                ref _canApprove);
+
+            SetButtonVisualState(btnCancelOrder, !isCancelled, Color.FromArgb(180, 40, 40),
+                "Hủy đơn hàng này",
+                "Đơn hàng này đã ở trạng thái Đã hủy",
+                ref _canCancel);
+
             dgvOrderDetails.Rows.Clear();
 
             var details = _orderService.LayChiTietDonHang(orderId);
@@ -136,7 +196,11 @@ namespace qlspdigital.Views.Nhom5_Orders
             string code = (dgvOrders.Columns.Contains("MaDonHangCode") ? row.Cells["MaDonHangCode"].Value : null)?.ToString()
                 ?? (row.Cells.Count > 1 ? row.Cells[1].Value?.ToString() : string.Empty) ?? string.Empty;
 
-            if (MessageBox.Show($"Bạn có chắc muốn chuyển đơn [{code}] sang '{status}'?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            string confirmPrompt = status == "Hoàn thành"
+                ? $"Bạn có chắc muốn kích hoạt thủ công đơn hàng [{code}] sang 'Hoàn thành' và cấp sản phẩm vào Thư viện của khách?"
+                : $"Bạn có chắc muốn chuyển đơn hàng [{code}] sang trạng thái '{status}'?";
+
+            if (MessageBox.Show(confirmPrompt, "Xác nhận quản trị", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 bool ok = status == "Hoàn thành" ? _orderService.DuyetDonHang(orderId, out string msg) : _orderService.HuyDonHang(orderId, out msg);
                 if (ok)
@@ -160,7 +224,24 @@ namespace qlspdigital.Views.Nhom5_Orders
             cboStatus.SelectedIndex = 0;
             LoadOrders();
         }
-        private void BtnApprove_Click(object? sender, EventArgs e) => ChangeOrderStatus("Hoàn thành");
-        private void BtnCancelOrder_Click(object? sender, EventArgs e) => ChangeOrderStatus("Đã hủy");
+        private void BtnApprove_Click(object? sender, EventArgs e)
+        {
+            if (!_canApprove)
+            {
+                MessageBox.Show("Đơn hàng này đã Hoàn thành và sản phẩm đã có sẵn trong Thư viện của khách hàng, không thể kích hoạt lại!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            ChangeOrderStatus("Hoàn thành");
+        }
+
+        private void BtnCancelOrder_Click(object? sender, EventArgs e)
+        {
+            if (!_canCancel)
+            {
+                MessageBox.Show("Đơn hàng này đã ở trạng thái Đã hủy!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            ChangeOrderStatus("Đã hủy");
+        }
     }
 }

@@ -78,7 +78,7 @@ namespace qlspdigital.BLL.Nhom5_Orders
         public async Task<bool> TaiXuongTepAsync(ThuVienItemDTO item, string thuMucLuu, Action<int> onProgress)
         {
             onProgress(10);
-            await Task.Delay(80);
+            await Task.Delay(120);
 
             try
             {
@@ -108,8 +108,8 @@ namespace qlspdigital.BLL.Nhom5_Orders
                     }
                 }
 
-                onProgress(30);
-                await Task.Delay(80);
+                onProgress(35);
+                await Task.Delay(150);
 
                 // Xóa tệp zip cũ nếu đã tồn tại để tạo tệp nén mới toàn vẹn
                 if (File.Exists(targetFile))
@@ -117,8 +117,8 @@ namespace qlspdigital.BLL.Nhom5_Orders
                     File.Delete(targetFile);
                 }
 
-                onProgress(50);
-                await Task.Delay(80);
+                onProgress(60);
+                await Task.Delay(150);
 
                 // Tạo file .zip chuẩn nén (PK zip specification) tương thích 100% với Windows Explorer, WinRAR, 7-Zip
                 using (var fs = new FileStream(targetFile, FileMode.Create, FileAccess.Write, FileShare.None))
@@ -176,12 +176,13 @@ namespace qlspdigital.BLL.Nhom5_Orders
                 }
 
                 onProgress(85);
-                await Task.Delay(60);
+                await Task.Delay(150);
 
                 // Cập nhật lượt tải trong CSDL
                 _repo.CapNhatLanTai(item.MaSoHuu);
 
                 onProgress(100);
+                await Task.Delay(100);
                 return true;
             }
             catch

@@ -172,9 +172,9 @@ namespace qlspdigital.Views.Nhom2_Cart
         {
             if (!UserSession.IsLoggedIn) return;
 
-            if (dgvVouchers.SelectedRows.Count == 0)
+            if (dgvVouchers.SelectedRows.Count == 0 || !_canDeleteSelected)
             {
-                MessageBox.Show("Vui lòng chọn voucher cần xóa khỏi kho!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Vui lòng chọn voucher đã có trong ví cần xóa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -199,15 +199,38 @@ namespace qlspdigital.Views.Nhom2_Cart
             OnNavigateToCart?.Invoke();
         }
 
+        private bool _canCollectSelected = false;
+        private bool _canApplySelected = false;
+        private bool _canDeleteSelected = false;
+
+        private void SetBtnState(Button btn, bool enabled, Color activeColor, string text, ref bool flag)
+        {
+            if (btn == null) return;
+            flag = enabled;
+            btn.Text = text;
+            if (enabled)
+            {
+                btn.BackColor = activeColor;
+                btn.ForeColor = Color.White;
+                btn.Cursor = Cursors.Hand;
+            }
+            else
+            {
+                btn.BackColor = Color.FromArgb(42, 54, 66);
+                btn.ForeColor = Color.FromArgb(105, 120, 135);
+                btn.Cursor = Cursors.No;
+            }
+        }
+
         private void DgvVouchers_SelectionChanged(object? sender, EventArgs e)
         {
             if (btnCollectSelected == null || btnApplySelected == null || btnDelete == null) return;
 
             if (dgvVouchers.SelectedRows.Count == 0)
             {
-                btnCollectSelected.Enabled = false;
-                btnApplySelected.Enabled = false;
-                btnDelete.Enabled = false;
+                SetBtnState(btnCollectSelected, false, Color.FromArgb(49, 98, 130), "Thu thập mã vào ví", ref _canCollectSelected);
+                SetBtnState(btnApplySelected, false, Color.FromArgb(90, 160, 45), "Dùng ngay (Cần thu thập trước)", ref _canApplySelected);
+                SetBtnState(btnDelete, false, Color.FromArgb(180, 40, 40), "Xóa khỏi ví", ref _canDeleteSelected);
                 return;
             }
 
@@ -216,39 +239,21 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             if (tt == "Chưa lưu")
             {
-                btnCollectSelected.Enabled = true;
-                btnCollectSelected.Text = "Thu thập mã vào ví";
-                btnCollectSelected.BackColor = Color.FromArgb(49, 98, 130);
-
-                btnApplySelected.Enabled = false;
-                btnApplySelected.Text = "Dùng ngay (Cần thu thập trước)";
-                btnApplySelected.BackColor = Color.FromArgb(60, 60, 60);
-
-                btnDelete.Enabled = false;
+                SetBtnState(btnCollectSelected, true, Color.FromArgb(49, 98, 130), "Thu thập mã vào ví", ref _canCollectSelected);
+                SetBtnState(btnApplySelected, false, Color.FromArgb(90, 160, 45), "Dùng ngay (Cần thu thập trước)", ref _canApplySelected);
+                SetBtnState(btnDelete, false, Color.FromArgb(180, 40, 40), "Xóa khỏi ví", ref _canDeleteSelected);
             }
             else if (tt == "Đã trong ví")
             {
-                btnCollectSelected.Enabled = false;
-                btnCollectSelected.Text = "Đã có trong ví";
-                btnCollectSelected.BackColor = Color.FromArgb(60, 60, 60);
-
-                btnApplySelected.Enabled = true;
-                btnApplySelected.Text = "Dùng ngay (Áp dụng vào giỏ)";
-                btnApplySelected.BackColor = Color.FromArgb(90, 160, 45);
-
-                btnDelete.Enabled = true;
+                SetBtnState(btnCollectSelected, false, Color.FromArgb(49, 98, 130), "Đã có trong ví", ref _canCollectSelected);
+                SetBtnState(btnApplySelected, true, Color.FromArgb(90, 160, 45), "Dùng ngay (Áp dụng vào giỏ)", ref _canApplySelected);
+                SetBtnState(btnDelete, true, Color.FromArgb(180, 40, 40), "Xóa khỏi ví", ref _canDeleteSelected);
             }
             else if (tt == "Đã sử dụng")
             {
-                btnCollectSelected.Enabled = false;
-                btnCollectSelected.Text = "Đã sử dụng";
-                btnCollectSelected.BackColor = Color.FromArgb(60, 60, 60);
-
-                btnApplySelected.Enabled = false;
-                btnApplySelected.Text = "Đã sử dụng (Hết lượt)";
-                btnApplySelected.BackColor = Color.FromArgb(60, 60, 60);
-
-                btnDelete.Enabled = false;
+                SetBtnState(btnCollectSelected, false, Color.FromArgb(49, 98, 130), "Đã sử dụng", ref _canCollectSelected);
+                SetBtnState(btnApplySelected, false, Color.FromArgb(90, 160, 45), "Đã sử dụng (Hết lượt)", ref _canApplySelected);
+                SetBtnState(btnDelete, false, Color.FromArgb(180, 40, 40), "Xóa khỏi ví", ref _canDeleteSelected);
             }
         }
 
@@ -276,9 +281,9 @@ namespace qlspdigital.Views.Nhom2_Cart
                 return;
             }
 
-            if (dgvVouchers.SelectedRows.Count == 0)
+            if (dgvVouchers.SelectedRows.Count == 0 || !_canCollectSelected)
             {
-                MessageBox.Show("Vui lòng chọn voucher cần thu thập trên danh sách!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Mã ưu đãi này đã có trong ví hoặc đã được sử dụng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -299,7 +304,11 @@ namespace qlspdigital.Views.Nhom2_Cart
 
         private void BtnApplySelected_Click(object? sender, EventArgs e)
         {
-            if (dgvVouchers.SelectedRows.Count == 0) return;
+            if (dgvVouchers.SelectedRows.Count == 0 || !_canApplySelected)
+            {
+                MessageBox.Show("Chỉ có mã ưu đãi 'Đã trong ví' mới có thể áp dụng vào giỏ hàng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             var row = dgvVouchers.SelectedRows[0];
             string tt = row.Cells["TrangThai"]?.Value?.ToString() ?? string.Empty;
 

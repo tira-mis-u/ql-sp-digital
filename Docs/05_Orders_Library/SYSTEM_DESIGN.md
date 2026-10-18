@@ -113,7 +113,7 @@
 ```
 - **Ràng buộc duy nhất Thư viện:** `CONSTRAINT UQ_SoHuu UNIQUE (MaNguoiDung, MaSanPham)` $\rightarrow$ Khách hàng không thể sở hữu trùng 2 lần cùng một sản phẩm số.
 - **Ràng buộc toàn vẹn Đơn hàng:** `ON DELETE CASCADE` trên `ChiTietDonHang` đảm bảo không bao giờ tồn tại các dòng chi tiết mồ côi nếu đơn hàng bị xóa khỏi hệ thống.
-- **Quy tắc duyệt đơn:** Khi Admin duyệt đơn sang `N'Hoàn thành'`, hệ thống tự động kiểm tra và chèn bản ghi vào `SoHuuSanPham` nếu khách hàng chưa sở hữu sản phẩm đó.
+- **Quy tắc cấp Thư viện:** Đơn hàng thanh toán ví trực tuyến được hoàn tất tự động tức thì (`Instant Fulfillment`). Với các đơn ngoại lệ/chờ xử lý, khi Admin bấm "Kích hoạt thủ công", hệ thống tự động kiểm tra và chèn bản ghi vào `SoHuuSanPham` (nút tự động làm mờ nếu đơn đã hoàn thành).
 
 ---
 
@@ -123,8 +123,8 @@
 |---|---|---|---|---|
 | **UI 13: Quản trị Đơn hàng** (`OrderManageControl`) | **Read** (Xem danh sách đơn) | `DonHang`, `NguoiDung` | `@TrangThai` ('Tất cả', 'Hoàn thành', 'Chờ xử lý', 'Đã hủy')<br>`@TuKhoa` (tìm theo mã đơn hoặc tên khách)<br>`ORDER BY MaDonHang DESC` | Danh sách `List<DonHangAdminDTO>` nạp vào DataGridView đơn hàng. |
 | **UI 13: Quản trị Đơn hàng** (`OrderManageControl`) | **Read** (Xem chi tiết đơn) | `ChiTietDonHang`, `SanPham` | `MaDonHang = @MaDonHang` | Danh sách các món hàng (Tên, Ảnh, Giá mua, SL, Thành tiền). |
-| **UI 13: Quản trị Đơn hàng** (`OrderManageControl`) | **Update** (Duyệt đơn) | `DonHang`, `SoHuuSanPham` | `MaDonHang = @MaDonHang`<br>Cập nhật `TrangThaiDonHang = N'Hoàn thành'`<br>Tự động cấp vào `SoHuuSanPham` | Cập nhật trạng thái đơn; cấp game vào Thư viện của khách. |
-| **UI 13: Quản trị Đơn hàng** (`OrderManageControl`) | **Update** (Hủy đơn) | `DonHang` | `MaDonHang = @MaDonHang`<br>Cập nhật `TrangThaiDonHang = N'Đã hủy'` | Hủy đơn; không cấp quyền sở hữu. |
+| **UI 13: Quản trị Đơn hàng** (`OrderManageControl`) | **Update** (Kích hoạt thủ công) | `DonHang`, `SoHuuSanPham` | `MaDonHang = @MaDonHang`<br>Cập nhật `TrangThaiDonHang = N'Hoàn thành'`<br>Tự động cấp vào `SoHuuSanPham` | Kích hoạt thủ công cho đơn ngoại lệ (nút tự disable nếu đơn đã Hoàn thành); cấp game vào Thư viện. |
+| **UI 13: Quản trị Đơn hàng** (`OrderManageControl`) | **Update** (Hủy đơn) | `DonHang` | `MaDonHang = @MaDonHang`<br>Cập nhật `TrangThaiDonHang = N'Đã hủy'` | Hủy đơn; không cấp quyền sở hữu (nút tự disable nếu đơn đã Hủy). |
 | **UI 7: Lịch sử đơn hàng** (`OrderHistoryControl`) | **Read** (Lịch sử cá nhân) | `DonHang`, `ChiTietDonHang`, `SanPham` | `MaNguoiDung = @UserId`<br>`ORDER BY NgayTao DESC` | Danh sách các đơn hàng cá nhân đã mua, tổng tiền, ngày giờ chi tiết. |
 | **UI 6: Thư viện số** (`LibraryControl`) | **Read** (Duyệt kho sở hữu) | `SoHuuSanPham`, `SanPham`, `DanhMuc`, `TepSanPham` | `MaNguoiDung = @UserId`<br>`@TuKhoa` (tìm tên game/app trong kho) | Danh sách `List<ThuVienItemDTO>` nạp vào lưới thẻ Thư viện số. |
 | **UI 6: Thư viện số** (`LibraryControl`) | **Update** (Tải tệp & Tăng bộ đếm) | `SoHuuSanPham`, `TepSanPham` | `MaNguoiDung = @UserId AND MaSanPham = @MaSanPham`<br>Tăng `SoLanTai = SoLanTai + 1` | Đọc tệp từ `Storage/Products/...`, copy ra máy khách có ProgressBar; tăng bộ đếm tải. |
@@ -217,10 +217,10 @@ namespace DPMS.BLL.Interfaces
 
 ## 5. Thiết kế Luồng Logic Xử lý (Logic Workflows)
 
-### Luồng 1: Admin Duyệt / Hủy đơn hàng và tự động kích hoạt sở hữu (UI 13)
+### Luồng 1: Admin Kích hoạt thủ công / Hủy đơn hàng (UI 13)
 ```text
-[Admin chọn đơn hàng trên DataGridView] -> Bấm [ Duyệt đơn hàng ]
-          |
+[Admin chọn đơn hàng trên DataGridView] -> Bấm [ Kích hoạt thủ công (Cấp Thư viện) ]
+          |                                (Tự động Disable nếu đơn đã 'Hoàn thành')
           v
 [BLL: IOrderAdminService.ApproveOrder(maDonHang)]
           |

@@ -12,6 +12,9 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
     public partial class UserManageControl : UserControl
     {
         private readonly NguoiDungService _userService;
+        private readonly ToolTip _toolTip = new ToolTip();
+        private bool _canLock = false;
+        private bool _canUnlock = false;
 
         public UserManageControl()
         {
@@ -19,6 +22,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
             InitializeComponent();
             AdjustLayout();
+            dgvUsers.SelectionChanged += (s, e) => UpdateActionButtons();
             if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadUsers();
         }
@@ -86,6 +90,70 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
                     u.TrangThai ? "Hoạt động" : "Bị khóa"
                 );
             }
+            UpdateActionButtons();
+        }
+
+        private void SetButtonState(Button btn, bool enabled, Color activeColor, string tooltipText, ref bool flag)
+        {
+            if (btn == null) return;
+            flag = enabled;
+            if (enabled)
+            {
+                btn.BackColor = activeColor;
+                btn.ForeColor = Color.White;
+                btn.Cursor = Cursors.Hand;
+            }
+            else
+            {
+                btn.BackColor = Color.FromArgb(42, 54, 66);
+                btn.ForeColor = Color.FromArgb(105, 120, 135);
+                btn.Cursor = Cursors.No;
+            }
+            _toolTip.SetToolTip(btn, tooltipText);
+        }
+
+        private void UpdateActionButtons()
+        {
+            if (dgvUsers == null || btnLock == null || btnUnlock == null) return;
+
+            if (dgvUsers.SelectedRows.Count == 0)
+            {
+                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Vui lòng chọn một người dùng", ref _canLock);
+                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Vui lòng chọn một người dùng", ref _canUnlock);
+                return;
+            }
+
+            var row = dgvUsers.SelectedRows[0];
+            if (row == null || row.Index < 0)
+            {
+                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Vui lòng chọn một người dùng", ref _canLock);
+                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Vui lòng chọn một người dùng", ref _canUnlock);
+                return;
+            }
+
+            var valId = (dgvUsers.Columns.Contains("colMaNguoiDung") ? row.Cells["colMaNguoiDung"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            int id = valId != null ? Convert.ToInt32(valId) : 0;
+            string status = (dgvUsers.Columns.Contains("colTrangThai") ? row.Cells["colTrangThai"].Value : null)?.ToString()
+                ?? (row.Cells.Count > 7 ? row.Cells[7].Value?.ToString() : "") ?? "";
+
+            bool isSelf = UserSession.IsLoggedIn && UserSession.CurrentUserId == id;
+            bool isActive = status.Contains("Hoạt động", StringComparison.OrdinalIgnoreCase);
+
+            if (isSelf)
+            {
+                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Không thể tự khóa tài khoản quản trị đang đăng nhập", ref _canLock);
+                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Tài khoản của bạn đang hoạt động", ref _canUnlock);
+            }
+            else if (isActive)
+            {
+                SetButtonState(btnLock, true, Color.FromArgb(180, 40, 40), "Khóa tài khoản này", ref _canLock);
+                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Tài khoản này đang hoạt động bình thường", ref _canUnlock);
+            }
+            else
+            {
+                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Tài khoản này đã bị khóa từ trước", ref _canLock);
+                SetButtonState(btnUnlock, true, Color.FromArgb(90, 160, 45), "Mở khóa cho tài khoản này", ref _canUnlock);
+            }
         }
 
         private void ChangeStatus(bool newStatus)
@@ -93,6 +161,18 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             if (dgvUsers.SelectedRows.Count == 0)
             {
                 MessageBox.Show("Vui lòng chọn tài khoản cần thay đổi trạng thái!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (!newStatus && !_canLock)
+            {
+                MessageBox.Show("Không thể thực hiện khóa tài khoản này (có thể do tài khoản đã bị khóa hoặc là tài khoản quản trị đang đăng nhập).", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (newStatus && !_canUnlock)
+            {
+                MessageBox.Show("Tài khoản này hiện đang ở trạng thái Hoạt động, không cần mở khóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 

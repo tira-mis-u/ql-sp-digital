@@ -391,7 +391,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             this.btnApprove.Name = "btnApprove";
             this.btnApprove.Size = new System.Drawing.Size(360, 40);
             this.btnApprove.TabIndex = 0;
-            this.btnApprove.Text = "Duyệt đơn (Hoàn thành & Cấp Thư viện)";
+            this.btnApprove.Text = "Kích hoạt thủ công (Cấp Thư viện)";
             this.btnApprove.UseMnemonic = false;
             this.btnApprove.UseVisualStyleBackColor = false;
             this.btnApprove.Click += new System.EventHandler(this.BtnApprove_Click);

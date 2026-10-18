@@ -63,7 +63,7 @@ namespace qlspdigital.Views.Nhom1_Store
             this.panelTop.Location = new System.Drawing.Point(25, 15);
             this.panelTop.Name = "panelTop";
             this.panelTop.Padding = new System.Windows.Forms.Padding(15, 10, 15, 10);
-            this.panelTop.Size = new System.Drawing.Size(950, 50);
+            this.panelTop.Size = new System.Drawing.Size(990, 50);
             this.panelTop.TabIndex = 0;
             // 
             // lblAverageScore
@@ -117,7 +117,7 @@ namespace qlspdigital.Views.Nhom1_Store
             this.panelForm.Location = new System.Drawing.Point(25, 75);
             this.panelForm.Name = "panelForm";
             this.panelForm.Padding = new System.Windows.Forms.Padding(15);
-            this.panelForm.Size = new System.Drawing.Size(950, 190);
+            this.panelForm.Size = new System.Drawing.Size(990, 195);
             this.panelForm.TabIndex = 1;
             // 
             // btnDelete
@@ -128,7 +128,7 @@ namespace qlspdigital.Views.Nhom1_Store
             this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDelete.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnDelete.ForeColor = System.Drawing.Color.White;
-            this.btnDelete.Location = new System.Drawing.Point(750, 132);
+            this.btnDelete.Location = new System.Drawing.Point(800, 132);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(160, 38);
             this.btnDelete.TabIndex = 6;
@@ -145,7 +145,7 @@ namespace qlspdigital.Views.Nhom1_Store
             this.btnSubmit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSubmit.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnSubmit.ForeColor = System.Drawing.Color.White;
-            this.btnSubmit.Location = new System.Drawing.Point(750, 88);
+            this.btnSubmit.Location = new System.Drawing.Point(800, 88);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(160, 38);
             this.btnSubmit.TabIndex = 5;
@@ -251,12 +251,12 @@ namespace qlspdigital.Views.Nhom1_Store
             this.dgvReviews.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvReviews.EnableHeadersVisualStyles = false;
             this.dgvReviews.GridColor = System.Drawing.Color.FromArgb(42, 71, 94);
-            this.dgvReviews.Location = new System.Drawing.Point(25, 320);
+            this.dgvReviews.Location = new System.Drawing.Point(25, 285);
             this.dgvReviews.Name = "dgvReviews";
             this.dgvReviews.ReadOnly = true;
             this.dgvReviews.RowHeadersVisible = false;
             this.dgvReviews.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvReviews.Size = new System.Drawing.Size(950, 410);
+            this.dgvReviews.Size = new System.Drawing.Size(990, 390);
             this.dgvReviews.TabIndex = 2;
             // 
             // colHoTen

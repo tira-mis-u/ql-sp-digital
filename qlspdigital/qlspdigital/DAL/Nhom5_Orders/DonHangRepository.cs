@@ -149,7 +149,9 @@ namespace qlspdigital.DAL.Nhom5_Orders
                         }
 
                         trans.Commit();
-                        thongBao = $"Đã cập nhật đơn hàng sang trạng thái '{trangThaiMoi}' thành công!";
+                        thongBao = trangThaiMoi == "Hoàn thành"
+                            ? $"Đã kích hoạt đơn hàng sang trạng thái 'Hoàn thành' và cấp sản phẩm vào Thư viện thành công!"
+                            : $"Đã cập nhật đơn hàng sang trạng thái '{trangThaiMoi}' thành công!";
                         return true;
                     }
                     catch (Exception ex)

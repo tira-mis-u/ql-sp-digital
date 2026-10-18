@@ -74,7 +74,7 @@ namespace qlspdigital.Views.Nhom2_Cart
             this.panelCard.Location = new System.Drawing.Point(25, 55);
             this.panelCard.Name = "panelCard";
             this.panelCard.Padding = new System.Windows.Forms.Padding(20);
-            this.panelCard.Size = new System.Drawing.Size(950, 100);
+            this.panelCard.Size = new System.Drawing.Size(990, 100);
             this.panelCard.TabIndex = 1;
 
             // 
@@ -131,7 +131,7 @@ namespace qlspdigital.Views.Nhom2_Cart
             this.panelDeposit.Location = new System.Drawing.Point(25, 170);
             this.panelDeposit.Name = "panelDeposit";
             this.panelDeposit.Padding = new System.Windows.Forms.Padding(25, 18, 25, 18);
-            this.panelDeposit.Size = new System.Drawing.Size(950, 125);
+            this.panelDeposit.Size = new System.Drawing.Size(990, 125);
             this.panelDeposit.TabIndex = 2;
 
             // 
@@ -292,12 +292,12 @@ namespace qlspdigital.Views.Nhom2_Cart
             this.dgvTransactions.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvTransactions.EnableHeadersVisualStyles = false;
             this.dgvTransactions.GridColor = System.Drawing.Color.FromArgb(42, 71, 94);
-            this.dgvTransactions.Location = new System.Drawing.Point(25, 345);
+            this.dgvTransactions.Location = new System.Drawing.Point(25, 340);
             this.dgvTransactions.Name = "dgvTransactions";
             this.dgvTransactions.ReadOnly = true;
             this.dgvTransactions.RowHeadersVisible = false;
             this.dgvTransactions.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTransactions.Size = new System.Drawing.Size(950, 380);
+            this.dgvTransactions.Size = new System.Drawing.Size(990, 335);
             this.dgvTransactions.TabIndex = 4;
             // 
             // colMaThanhToan

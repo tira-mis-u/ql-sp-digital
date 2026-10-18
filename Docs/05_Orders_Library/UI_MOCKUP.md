@@ -27,7 +27,7 @@
 |  +-------------------------------------+--------+-----------+-------------+                      |
 |  | 1. Cyber Adventure RPG              | 1      | 450.000 đ | 450.000 đ   |                      |
 |  +-------------------------------------+--------+-----------+-------------+                      |
-|  Hành động: [ ✅ DUYỆT ĐƠN (Hoàn tất) ]       [ ❌ HỦY ĐƠN HÀNG ]         [ 🖨️ In hóa đơn ]       |
+|  Hành động: [ ✅ Kích hoạt thủ công (Cấp Thư viện) ]       [ ❌ HỦY ĐƠN HÀNG ]         [ 🖨️ In hóa đơn ]  |
 +---------------------------------------------------------------------------------------------------+
 ```
 
@@ -92,7 +92,7 @@
 |---|---|---|---|
 | `dgvAdminOrders` | `DataGridView` | UI 13 | Bảng đơn hàng Admin. |
 | `dgvAdminOrderItems` | `DataGridView` | UI 13 | Bảng chi tiết sản phẩm thuộc đơn. |
-| `btnApproveOrder` | `Button` | UI 13 | Duyệt đơn (`N'Hoàn thành'`). |
+| `btnApprove` | `Button` | UI 13 | Kích hoạt thủ công (`N'Hoàn thành'`, tự động làm mờ nếu đã Hoàn thành). |
 | `btnCancelOrder` | `Button` | UI 13 | Hủy đơn (`N'Đã hủy'`). |
 | `dgvMyOrders` | `DataGridView` | UI 7 | Lịch sử đơn hàng của cá nhân khách hàng. |
 | `lstLibraryProducts` | `ListBox` | UI 6 | Danh sách các sản phẩm đang sở hữu bên trái. |

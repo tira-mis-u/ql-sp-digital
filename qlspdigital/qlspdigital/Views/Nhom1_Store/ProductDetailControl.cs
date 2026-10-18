@@ -68,11 +68,11 @@ namespace qlspdigital.Views.Nhom1_Store
             if (panelTop == null || panelBottom == null || panelDesc == null || panelReviews == null) return;
             int totalW = Math.Max(600, this.ClientSize.Width);
             int totalH = Math.Max(400, this.ClientSize.Height);
-            int fullW = totalW - 50;
+            int fullW = totalW - 40;
 
             if (btnBack != null)
             {
-                btnBack.Location = new Point(25, 14);
+                btnBack.Location = new Point(20, 14);
                 btnBack.Size = new Size(180, 36);
             }
 
@@ -81,14 +81,14 @@ namespace qlspdigital.Views.Nhom1_Store
                 lblTitle.Width = Math.Max(200, panelTop.ClientSize.Width - 340);
             }
 
-            int topH = 205;
-            int topY = (btnBack != null) ? (btnBack.Bottom + 12) : 62;
-            panelTop.Location = new Point(25, topY);
+            int topH = 195;
+            int topY = (btnBack != null) ? (btnBack.Bottom + 10) : 58;
+            panelTop.Location = new Point(20, topY);
             panelTop.Size = new Size(fullW, topH);
 
             int bottomY = panelTop.Bottom + 12;
             int bottomH = Math.Max(260, totalH - bottomY - 15);
-            panelBottom.Location = new Point(25, bottomY);
+            panelBottom.Location = new Point(20, bottomY);
             panelBottom.Size = new Size(fullW, bottomH);
 
             int pnlW = panelBottom.ClientSize.Width;
@@ -111,12 +111,12 @@ namespace qlspdigital.Views.Nhom1_Store
                 int headerBottom = (panelReviewsHeader != null) ? panelReviewsHeader.Bottom : 56;
                 int gridTop = headerBottom + 10;
                 int dgvH = Math.Max(120, panelReviews.ClientSize.Height - gridTop - 15);
-                dgvReviewsDetail.Location = new Point(17, gridTop);
-                dgvReviewsDetail.Size = new Size(panelReviews.ClientSize.Width - 34, dgvH);
+                dgvReviewsDetail.Location = new Point(15, gridTop);
+                dgvReviewsDetail.Size = new Size(panelReviews.ClientSize.Width - 30, dgvH);
                 if (lblNoReviews != null)
                 {
-                    lblNoReviews.Location = new Point(17, gridTop + 30);
-                    lblNoReviews.Size = new Size(panelReviews.ClientSize.Width - 34, 90);
+                    lblNoReviews.Location = new Point(15, gridTop + 30);
+                    lblNoReviews.Size = new Size(panelReviews.ClientSize.Width - 30, 90);
                 }
             }
         }

@@ -75,7 +75,7 @@ namespace qlspdigital.Views.Nhom1_Store
             this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBack.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnBack.ForeColor = System.Drawing.Color.White;
-            this.btnBack.Location = new System.Drawing.Point(25, 14);
+            this.btnBack.Location = new System.Drawing.Point(20, 14);
             this.btnBack.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnBack.Name = "btnBack";
             this.btnBack.Size = new System.Drawing.Size(180, 36);
@@ -87,7 +87,6 @@ namespace qlspdigital.Views.Nhom1_Store
             // 
             // panelTop
             // 
-            this.panelTop.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.panelTop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(40)))), ((int)(((byte)(56)))));
             this.panelTop.Controls.Add(this.panelBuy);
             this.panelTop.Controls.Add(this.lblRating);
@@ -96,11 +95,11 @@ namespace qlspdigital.Views.Nhom1_Store
             this.panelTop.Controls.Add(this.lblPublisher);
             this.panelTop.Controls.Add(this.lblCategory);
             this.panelTop.Controls.Add(this.lblTitle);
-            this.panelTop.Location = new System.Drawing.Point(25, 62);
+            this.panelTop.Location = new System.Drawing.Point(20, 58);
             this.panelTop.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panelTop.Name = "panelTop";
             this.panelTop.Padding = new System.Windows.Forms.Padding(20, 16, 20, 16);
-            this.panelTop.Size = new System.Drawing.Size(1143, 205);
+            this.panelTop.Size = new System.Drawing.Size(1000, 195);
             this.panelTop.TabIndex = 1;
             // 
             // panelBuy
@@ -110,11 +109,11 @@ namespace qlspdigital.Views.Nhom1_Store
             this.panelBuy.Controls.Add(this.btnAddToCart);
             this.panelBuy.Controls.Add(this.lblPrice);
             this.panelBuy.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelBuy.Location = new System.Drawing.Point(813, 16);
+            this.panelBuy.Location = new System.Drawing.Point(674, 16);
             this.panelBuy.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panelBuy.Name = "panelBuy";
             this.panelBuy.Padding = new System.Windows.Forms.Padding(16, 12, 16, 12);
-            this.panelBuy.Size = new System.Drawing.Size(310, 173);
+            this.panelBuy.Size = new System.Drawing.Size(310, 163);
             this.panelBuy.TabIndex = 0;
             // 
             // btnReviews
@@ -234,22 +233,60 @@ namespace qlspdigital.Views.Nhom1_Store
             this.lblTitle.ForeColor = System.Drawing.Color.White;
             this.lblTitle.Location = new System.Drawing.Point(20, 14);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(770, 36);
+            this.lblTitle.Size = new System.Drawing.Size(640, 36);
             this.lblTitle.TabIndex = 6;
             this.lblTitle.Text = "Tên sản phẩm kỹ thuật số";
             this.lblTitle.UseMnemonic = false;
             // 
             // panelBottom
             // 
-            this.panelBottom.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.panelBottom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(26)))), ((int)(((byte)(33)))));
             this.panelBottom.Controls.Add(this.panelReviews);
             this.panelBottom.Controls.Add(this.panelDesc);
-            this.panelBottom.Location = new System.Drawing.Point(25, 279);
+            this.panelBottom.Location = new System.Drawing.Point(20, 265);
             this.panelBottom.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panelBottom.Name = "panelBottom";
-            this.panelBottom.Size = new System.Drawing.Size(1143, 560);
+            this.panelBottom.Size = new System.Drawing.Size(1000, 415);
             this.panelBottom.TabIndex = 0;
+            // 
+            // panelDesc
+            // 
+            this.panelDesc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(40)))), ((int)(((byte)(56)))));
+            this.panelDesc.Controls.Add(this.rtfDescription);
+            this.panelDesc.Controls.Add(this.lblDescTitle);
+            this.panelDesc.Location = new System.Drawing.Point(0, 0);
+            this.panelDesc.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.panelDesc.Name = "panelDesc";
+            this.panelDesc.Padding = new System.Windows.Forms.Padding(17, 20, 17, 20);
+            this.panelDesc.Size = new System.Drawing.Size(485, 415);
+            this.panelDesc.TabIndex = 1;
+            // 
+            // lblDescTitle
+            // 
+            this.lblDescTitle.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblDescTitle.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
+            this.lblDescTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(192)))), ((int)(((byte)(244)))));
+            this.lblDescTitle.Location = new System.Drawing.Point(17, 20);
+            this.lblDescTitle.Name = "lblDescTitle";
+            this.lblDescTitle.Size = new System.Drawing.Size(451, 36);
+            this.lblDescTitle.TabIndex = 1;
+            this.lblDescTitle.Text = "GIỚI THIỆU & ĐẶC TẢ TÍNH NĂNG";
+            this.lblDescTitle.UseMnemonic = false;
+            // 
+            // rtfDescription
+            // 
+            this.rtfDescription.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(25)))), ((int)(((byte)(35)))));
+            this.rtfDescription.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtfDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtfDescription.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.rtfDescription.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.rtfDescription.Location = new System.Drawing.Point(17, 56);
+            this.rtfDescription.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.rtfDescription.Name = "rtfDescription";
+            this.rtfDescription.ReadOnly = true;
+            this.rtfDescription.Size = new System.Drawing.Size(451, 339);
+            this.rtfDescription.TabIndex = 0;
+            this.rtfDescription.Text = "";
             // 
             // panelReviews
             // 
@@ -257,25 +294,57 @@ namespace qlspdigital.Views.Nhom1_Store
             this.panelReviews.Controls.Add(this.lblNoReviews);
             this.panelReviews.Controls.Add(this.dgvReviewsDetail);
             this.panelReviews.Controls.Add(this.panelReviewsHeader);
-            this.panelReviews.Location = new System.Drawing.Point(0, 0);
+            this.panelReviews.Location = new System.Drawing.Point(500, 0);
             this.panelReviews.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panelReviews.Name = "panelReviews";
             this.panelReviews.Padding = new System.Windows.Forms.Padding(17, 20, 17, 20);
-            this.panelReviews.Size = new System.Drawing.Size(229, 133);
+            this.panelReviews.Size = new System.Drawing.Size(500, 415);
             this.panelReviews.TabIndex = 0;
             // 
-            // lblNoReviews
+            // panelReviewsHeader
             // 
-            this.lblNoReviews.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic);
-            this.lblNoReviews.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(161)))), ((int)(((byte)(181)))), ((int)(((byte)(196)))));
-            this.lblNoReviews.Location = new System.Drawing.Point(17, 100);
-            this.lblNoReviews.Name = "lblNoReviews";
-            this.lblNoReviews.Size = new System.Drawing.Size(195, 80);
-            this.lblNoReviews.TabIndex = 0;
-            this.lblNoReviews.Text = "Chưa có nhận xét nào từ cộng đồng.\r\nHãy là người đầu tiên đánh giá sản phẩm này!" +
-    "";
-            this.lblNoReviews.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblNoReviews.Visible = false;
+            this.panelReviewsHeader.Controls.Add(this.lblReviewsTitle);
+            this.panelReviewsHeader.Controls.Add(this.btnWriteReview);
+            this.panelReviewsHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelReviewsHeader.Location = new System.Drawing.Point(17, 20);
+            this.panelReviewsHeader.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.panelReviewsHeader.Name = "panelReviewsHeader";
+            this.panelReviewsHeader.Size = new System.Drawing.Size(466, 36);
+            this.panelReviewsHeader.TabIndex = 2;
+            // 
+            // lblReviewsTitle
+            // 
+            this.lblReviewsTitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblReviewsTitle.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
+            this.lblReviewsTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(192)))), ((int)(((byte)(244)))));
+            this.lblReviewsTitle.Location = new System.Drawing.Point(0, 0);
+            this.lblReviewsTitle.Name = "lblReviewsTitle";
+            this.lblReviewsTitle.Size = new System.Drawing.Size(326, 36);
+            this.lblReviewsTitle.TabIndex = 0;
+            this.lblReviewsTitle.Text = "ĐÁNH GIÁ TỪ CỘNG ĐỒNG";
+            this.lblReviewsTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblReviewsTitle.UseMnemonic = false;
+            // 
+            // btnWriteReview
+            // 
+            this.btnWriteReview.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(160)))), ((int)(((byte)(45)))));
+            this.btnWriteReview.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnWriteReview.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnWriteReview.FlatAppearance.BorderSize = 0;
+            this.btnWriteReview.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(140)))), ((int)(((byte)(35)))));
+            this.btnWriteReview.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(180)))), ((int)(((byte)(55)))));
+            this.btnWriteReview.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnWriteReview.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnWriteReview.ForeColor = System.Drawing.Color.White;
+            this.btnWriteReview.Location = new System.Drawing.Point(326, 0);
+            this.btnWriteReview.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnWriteReview.Name = "btnWriteReview";
+            this.btnWriteReview.Size = new System.Drawing.Size(140, 36);
+            this.btnWriteReview.TabIndex = 1;
+            this.btnWriteReview.Text = "+ Viết nhận xét";
+            this.btnWriteReview.UseMnemonic = false;
+            this.btnWriteReview.UseVisualStyleBackColor = false;
+            this.btnWriteReview.Click += new System.EventHandler(this.BtnReviews_Click);
             // 
             // dgvReviewsDetail
             // 
@@ -314,124 +383,25 @@ namespace qlspdigital.Views.Nhom1_Store
             this.dgvReviewsDetail.RowHeadersVisible = false;
             this.dgvReviewsDetail.RowHeadersWidth = 51;
             this.dgvReviewsDetail.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvReviewsDetail.Size = new System.Drawing.Size(274, 200);
+            this.dgvReviewsDetail.Size = new System.Drawing.Size(466, 330);
             this.dgvReviewsDetail.TabIndex = 1;
             // 
-            // dataGridViewTextBoxColumn1
+            // lblNoReviews
             // 
-            this.dataGridViewTextBoxColumn1.HeaderText = "Người đánh giá";
-            this.dataGridViewTextBoxColumn1.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            this.dataGridViewTextBoxColumn2.HeaderText = "Số sao";
-            this.dataGridViewTextBoxColumn2.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn3
-            // 
-            this.dataGridViewTextBoxColumn3.HeaderText = "Nhận xét";
-            this.dataGridViewTextBoxColumn3.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn4
-            // 
-            this.dataGridViewTextBoxColumn4.HeaderText = "Ngày đăng";
-            this.dataGridViewTextBoxColumn4.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
-            // 
-            // panelReviewsHeader
-            // 
-            this.panelReviewsHeader.Controls.Add(this.lblReviewsTitle);
-            this.panelReviewsHeader.Controls.Add(this.btnWriteReview);
-            this.panelReviewsHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelReviewsHeader.Location = new System.Drawing.Point(17, 20);
-            this.panelReviewsHeader.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.panelReviewsHeader.Name = "panelReviewsHeader";
-            this.panelReviewsHeader.Size = new System.Drawing.Size(195, 36);
-            this.panelReviewsHeader.TabIndex = 2;
-            // 
-            // lblReviewsTitle
-            // 
-            this.lblReviewsTitle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblReviewsTitle.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
-            this.lblReviewsTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(192)))), ((int)(((byte)(244)))));
-            this.lblReviewsTitle.Location = new System.Drawing.Point(0, 0);
-            this.lblReviewsTitle.Name = "lblReviewsTitle";
-            this.lblReviewsTitle.Size = new System.Drawing.Size(55, 36);
-            this.lblReviewsTitle.TabIndex = 0;
-            this.lblReviewsTitle.Text = "ĐÁNH GIÁ TỪ CỘNG ĐỒNG";
-            this.lblReviewsTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblReviewsTitle.UseMnemonic = false;
-            // 
-            // btnWriteReview
-            // 
-            this.btnWriteReview.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(160)))), ((int)(((byte)(45)))));
-            this.btnWriteReview.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnWriteReview.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnWriteReview.FlatAppearance.BorderSize = 0;
-            this.btnWriteReview.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(140)))), ((int)(((byte)(35)))));
-            this.btnWriteReview.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(180)))), ((int)(((byte)(55)))));
-            this.btnWriteReview.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnWriteReview.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnWriteReview.ForeColor = System.Drawing.Color.White;
-            this.btnWriteReview.Location = new System.Drawing.Point(55, 0);
-            this.btnWriteReview.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnWriteReview.Name = "btnWriteReview";
-            this.btnWriteReview.Size = new System.Drawing.Size(140, 36);
-            this.btnWriteReview.TabIndex = 1;
-            this.btnWriteReview.Text = "+ Viết nhận xét";
-            this.btnWriteReview.UseMnemonic = false;
-            this.btnWriteReview.UseVisualStyleBackColor = false;
-            this.btnWriteReview.Click += new System.EventHandler(this.BtnReviews_Click);
-            // 
-            // panelDesc
-            // 
-            this.panelDesc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(40)))), ((int)(((byte)(56)))));
-            this.panelDesc.Controls.Add(this.rtfDescription);
-            this.panelDesc.Controls.Add(this.lblDescTitle);
-            this.panelDesc.Location = new System.Drawing.Point(0, 0);
-            this.panelDesc.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.panelDesc.Name = "panelDesc";
-            this.panelDesc.Padding = new System.Windows.Forms.Padding(17, 20, 17, 20);
-            this.panelDesc.Size = new System.Drawing.Size(229, 133);
-            this.panelDesc.TabIndex = 1;
-            // 
-            // rtfDescription
-            // 
-            this.rtfDescription.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(25)))), ((int)(((byte)(35)))));
-            this.rtfDescription.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtfDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtfDescription.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.rtfDescription.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.rtfDescription.Location = new System.Drawing.Point(17, 57);
-            this.rtfDescription.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.rtfDescription.Name = "rtfDescription";
-            this.rtfDescription.ReadOnly = true;
-            this.rtfDescription.Size = new System.Drawing.Size(195, 56);
-            this.rtfDescription.TabIndex = 0;
-            this.rtfDescription.Text = "";
-            // 
-            // lblDescTitle
-            // 
-            this.lblDescTitle.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblDescTitle.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
-            this.lblDescTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(192)))), ((int)(((byte)(244)))));
-            this.lblDescTitle.Location = new System.Drawing.Point(17, 20);
-            this.lblDescTitle.Name = "lblDescTitle";
-            this.lblDescTitle.Size = new System.Drawing.Size(195, 36);
-            this.lblDescTitle.TabIndex = 1;
-            this.lblDescTitle.Text = "GIỚI THIỆU & ĐẶC TẢ TÍNH NĂNG";
-            this.lblDescTitle.UseMnemonic = false;
+            this.lblNoReviews.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic);
+            this.lblNoReviews.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(161)))), ((int)(((byte)(181)))), ((int)(((byte)(196)))));
+            this.lblNoReviews.Location = new System.Drawing.Point(17, 100);
+            this.lblNoReviews.Name = "lblNoReviews";
+            this.lblNoReviews.Size = new System.Drawing.Size(466, 80);
+            this.lblNoReviews.TabIndex = 0;
+            this.lblNoReviews.Text = "Chưa có nhận xét nào từ cộng đồng.\r\nHãy là người đầu tiên đánh giá sản phẩm này!" +
+    "";
+            this.lblNoReviews.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblNoReviews.Visible = false;
             // 
             // ProductDetailControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(26)))), ((int)(((byte)(33)))));
             this.Controls.Add(this.panelBottom);
@@ -439,8 +409,8 @@ namespace qlspdigital.Views.Nhom1_Store
             this.Controls.Add(this.btnBack);
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "ProductDetailControl";
-            this.Padding = new System.Windows.Forms.Padding(29, 33, 29, 33);
-            this.Size = new System.Drawing.Size(1189, 933);
+            this.Padding = new System.Windows.Forms.Padding(20);
+            this.Size = new System.Drawing.Size(1040, 700);
             this.panelTop.ResumeLayout(false);
             this.panelTop.PerformLayout();
             this.panelBuy.ResumeLayout(false);

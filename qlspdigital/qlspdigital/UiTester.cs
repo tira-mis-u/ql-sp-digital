@@ -259,6 +259,11 @@ namespace qlspdigital
                 using var bmp = new Bitmap(pnl.Width, pnl.Height);
                 pnl.DrawToBitmap(bmp, new Rectangle(0, 0, pnl.Width, pnl.Height));
                 bmp.Save(Path.Combine(outDir, "OrderManage_Filter.png"), ImageFormat.Png);
+
+                using var fullBmp = new Bitmap(ctrl.Width, ctrl.Height);
+                ctrl.DrawToBitmap(fullBmp, new Rectangle(0, 0, ctrl.Width, ctrl.Height));
+                fullBmp.Save(Path.Combine(outDir, "OrderManage.png"), ImageFormat.Png);
+                Console.WriteLine("  OK: Đã xuất ảnh OrderManage.png");
             }
             form.Close();
             return err;

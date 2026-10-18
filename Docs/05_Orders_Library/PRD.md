@@ -33,9 +33,10 @@ Quản lý toàn bộ vòng đời sau mua hàng: Cho phép Admin theo dõi, l�
    - Bộ lọc theo Trạng thái đơn hàng và tìm kiếm theo mã đơn hoặc tên khách hàng.
 2. **Xem chi tiết sản phẩm trong đơn:**
    - Khi chọn một đơn hàng -> Bảng con bên cạnh/phía dưới hiển thị danh sách các món hàng thuộc đơn đó (Tên sản phẩm, Đơn giá, Số lượng, Thành tiền) từ bảng `ChiTietDonHang`.
-3. **Cập nhật trạng thái đơn (CRUD Update 1 cho BTL):**
-   - Nút **"Duyệt đơn"**: Chuyển trạng thái sang `N'Hoàn thành'` và tự động cấp sản phẩm vào Thư viện của khách (`SoHuuSanPham`).
-   - Nút **"Hủy đơn"**: Chuyển trạng thái sang `N'Đã hủy'`.
+3. **Cơ chế cấp quyền tức thì (Instant Fulfillment) & Điều hành dự phòng (CRUD Update 1 cho BTL):**
+   - **Luồng mua tự động (Chuẩn Steam):** Khách mua hàng online qua Ví sẽ được tự động hoàn tất giao dịch (`TrangThaiDonHang = N'Hoàn thành'`) và tự động nạp ngay vào Thư viện số (`SoHuuSanPham`) trong cùng 1 transaction để tải về lập tức.
+   - **Nút "Kích hoạt thủ công (Cấp Thư viện)":** Đóng vai trò là công cụ can thiệp dự phòng (Manual Override / Fallback). Dùng khi khách chuyển khoản ngân hàng thủ công (đơn ở trạng thái `Chờ xử lý`), tra soát khiếu nại hoặc xử lý sự cố rớt mạng. Tự động **vô hiệu hóa (Disable / làm mờ)** nếu đơn hàng vốn dĩ đã `Hoàn thành` nhằm tránh click dư thừa.
+   - **Nút "Hủy đơn hàng":** Chuyển trạng thái sang `N'Đã hủy'`, dùng cho nghiệp vụ hủy đơn/hoàn tiền (Refund) hoặc thu hồi bản quyền gian lận. Tự động vô hiệu hóa nếu đơn đã bị hủy.
 
 ### 3.2. UI 7 - Lịch sử đơn hàng khách hàng (`OrderHistoryControl`)
 1. **Hiển thị lịch sử mua của cá nhân (CRUD Read 1 phía Client):**
