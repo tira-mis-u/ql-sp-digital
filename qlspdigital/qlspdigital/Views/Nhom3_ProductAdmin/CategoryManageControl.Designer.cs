@@ -103,7 +103,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             // 
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.colMaDanhMuc.DefaultCellStyle = dataGridViewCellStyle3;
-            this.colMaDanhMuc.FillWeight = 10F;
+            this.colMaDanhMuc.FillWeight = 8F;
             this.colMaDanhMuc.HeaderText = "Mã";
             this.colMaDanhMuc.MinimumWidth = 45;
             this.colMaDanhMuc.Name = "MaDanhMuc";
@@ -111,17 +111,17 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             // 
             // colTenDanhMuc
             // 
-            this.colTenDanhMuc.FillWeight = 35F;
+            this.colTenDanhMuc.FillWeight = 30F;
             this.colTenDanhMuc.HeaderText = "Tên thể loại";
-            this.colTenDanhMuc.MinimumWidth = 110;
+            this.colTenDanhMuc.MinimumWidth = 130;
             this.colTenDanhMuc.Name = "TenDanhMuc";
             this.colTenDanhMuc.ReadOnly = true;
             // 
             // colMoTa
             // 
-            this.colMoTa.FillWeight = 35F;
+            this.colMoTa.FillWeight = 36F;
             this.colMoTa.HeaderText = "Mô tả";
-            this.colMoTa.MinimumWidth = 120;
+            this.colMoTa.MinimumWidth = 150;
             this.colMoTa.Name = "MoTa";
             this.colMoTa.ReadOnly = true;
             // 
@@ -131,15 +131,16 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             this.colSoLuongSanPham.DefaultCellStyle = dataGridViewCellStyle4;
             this.colSoLuongSanPham.FillWeight = 10F;
             this.colSoLuongSanPham.HeaderText = "Số SP";
-            this.colSoLuongSanPham.MinimumWidth = 60;
+            this.colSoLuongSanPham.MinimumWidth = 55;
             this.colSoLuongSanPham.Name = "SoLuongSanPham";
             this.colSoLuongSanPham.ReadOnly = true;
             // 
             // colTrangThai
             // 
-            this.colTrangThai.FillWeight = 10F;
+            this.colTrangThai.DefaultCellStyle = dataGridViewCellStyle4;
+            this.colTrangThai.FillWeight = 16F;
             this.colTrangThai.HeaderText = "Hiệu lực";
-            this.colTrangThai.MinimumWidth = 75;
+            this.colTrangThai.MinimumWidth = 90;
             this.colTrangThai.Name = "TrangThai";
             this.colTrangThai.ReadOnly = true;
 

@@ -83,14 +83,14 @@ namespace qlspdigital.Views.Nhom1_Store
             lblSearchTitle.Location = new Point(20, 22);
             txtSearch.Location = new Point(lblSearchTitle.Right + 12, 15);
 
-            int btnSearchW = 105;
-            int btnRefreshW = 95;
-            int rightBoundary = lblTotalCount.Left - 25;
-            int nonInputSpace = 20 + lblSearchTitle.Width + 12 + btnSearchW + 22 + lblCategoryTitle.Width + 12 + btnRefreshW + 14;
-            int availableForInputs = Math.Max(320, rightBoundary - nonInputSpace);
+            int btnSearchW = 100;
+            int btnRefreshW = 90;
+            int rightBoundary = lblTotalCount.Left - 20;
+            int nonInputSpace = 20 + lblSearchTitle.Width + 12 + btnSearchW + 18 + lblCategoryTitle.Width + 12 + btnRefreshW + 12;
+            int availableForInputs = Math.Max(260, rightBoundary - nonInputSpace);
 
-            int searchW = Math.Clamp((int)(availableForInputs * 0.58), 220, 480);
-            int catW = Math.Clamp((int)(availableForInputs * 0.42), 170, 260);
+            int searchW = Math.Clamp((int)(availableForInputs * 0.58), 160, 450);
+            int catW = Math.Clamp((int)(availableForInputs * 0.42), 120, 220);
 
             txtSearch.Size = new Size(searchW, 34);
 

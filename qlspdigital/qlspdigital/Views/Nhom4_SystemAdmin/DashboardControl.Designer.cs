@@ -67,26 +67,25 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             // 
             panelTopBar.Controls.Add(btnRefresh);
             panelTopBar.Controls.Add(lblHeader);
-            panelTopBar.Dock = DockStyle.Top;
-            panelTopBar.Location = new Point(23, 27);
+            panelTopBar.Location = new Point(25, 20);
             panelTopBar.Margin = new Padding(3, 5, 3, 5);
             panelTopBar.Name = "panelTopBar";
-            panelTopBar.Size = new Size(1143, 75);
+            panelTopBar.Size = new Size(990, 48);
             panelTopBar.TabIndex = 0;
             // 
             // btnRefresh
             // 
+            btnRefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnRefresh.BackColor = Color.FromArgb(49, 98, 130);
             btnRefresh.Cursor = Cursors.Hand;
-            btnRefresh.Dock = DockStyle.Right;
             btnRefresh.FlatAppearance.BorderSize = 0;
             btnRefresh.FlatStyle = FlatStyle.Flat;
             btnRefresh.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnRefresh.ForeColor = Color.White;
-            btnRefresh.Location = new Point(973, 0);
+            btnRefresh.Location = new Point(880, 8);
             btnRefresh.Margin = new Padding(3, 5, 3, 5);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(170, 75);
+            btnRefresh.Size = new Size(110, 32);
             btnRefresh.TabIndex = 1;
             btnRefresh.Text = "Làm mới";
             btnRefresh.UseMnemonic = false;
@@ -96,10 +95,10 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             // lblHeader
             // 
             lblHeader.AutoSize = true;
-            lblHeader.Dock = DockStyle.Left;
+            lblHeader.Dock = DockStyle.None;
             lblHeader.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             lblHeader.ForeColor = Color.White;
-            lblHeader.Location = new Point(0, 0);
+            lblHeader.Location = new Point(0, 7);
             lblHeader.Name = "lblHeader";
             lblHeader.Size = new Size(682, 32);
             lblHeader.TabIndex = 0;
@@ -118,12 +117,12 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             panelCards.Controls.Add(card3, 2, 0);
             panelCards.Controls.Add(card2, 1, 0);
             panelCards.Controls.Add(card1, 0, 0);
-            panelCards.Location = new Point(33, 160);
+            panelCards.Location = new Point(25, 80);
             panelCards.Margin = new Padding(3, 5, 3, 5);
             panelCards.Name = "panelCards";
             panelCards.RowCount = 1;
             panelCards.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            panelCards.Size = new Size(1241, 204);
+            panelCards.Size = new Size(990, 115);
             panelCards.TabIndex = 1;
             // 
             // card4
@@ -135,7 +134,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             card4.Location = new Point(940, 0);
             card4.Margin = new Padding(10, 0, 0, 0);
             card4.Name = "card4";
-            card4.Padding = new Padding(19, 27, 19, 27);
+            card4.Padding = new Padding(15, 12, 15, 12);
             card4.Size = new Size(301, 204);
             card4.TabIndex = 3;
             // 
@@ -159,7 +158,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             lblTitle4.ForeColor = Color.FromArgb(161, 181, 196);
             lblTitle4.Location = new Point(19, 27);
             lblTitle4.Name = "lblTitle4";
-            lblTitle4.Size = new Size(263, 39);
+            lblTitle4.Size = new Size(263, 24);
             lblTitle4.TabIndex = 0;
             lblTitle4.Text = "SẢN PHẨM MỞ BÁN";
             lblTitle4.UseMnemonic = false;
@@ -173,7 +172,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             card3.Location = new Point(626, 0);
             card3.Margin = new Padding(6, 0, 6, 0);
             card3.Name = "card3";
-            card3.Padding = new Padding(19, 27, 19, 27);
+            card3.Padding = new Padding(15, 12, 15, 12);
             card3.Size = new Size(298, 204);
             card3.TabIndex = 2;
             // 
@@ -197,7 +196,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             lblTitle3.ForeColor = Color.FromArgb(161, 181, 196);
             lblTitle3.Location = new Point(19, 27);
             lblTitle3.Name = "lblTitle3";
-            lblTitle3.Size = new Size(260, 39);
+            lblTitle3.Size = new Size(260, 24);
             lblTitle3.TabIndex = 0;
             lblTitle3.Text = "KHÁCH HÀNG ĐĂNG KÝ";
             lblTitle3.UseMnemonic = false;
@@ -211,7 +210,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             card2.Location = new Point(316, 0);
             card2.Margin = new Padding(6, 0, 6, 0);
             card2.Name = "card2";
-            card2.Padding = new Padding(19, 27, 19, 27);
+            card2.Padding = new Padding(15, 12, 15, 12);
             card2.Size = new Size(298, 204);
             card2.TabIndex = 1;
             // 
@@ -235,7 +234,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             lblTitle2.ForeColor = Color.FromArgb(161, 181, 196);
             lblTitle2.Location = new Point(19, 27);
             lblTitle2.Name = "lblTitle2";
-            lblTitle2.Size = new Size(260, 39);
+            lblTitle2.Size = new Size(260, 24);
             lblTitle2.TabIndex = 0;
             lblTitle2.Text = "ĐƠN HÀNG THÀNH CÔNG";
             lblTitle2.UseMnemonic = false;
@@ -249,7 +248,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             card1.Location = new Point(0, 0);
             card1.Margin = new Padding(0, 0, 10, 0);
             card1.Name = "card1";
-            card1.Padding = new Padding(19, 27, 19, 27);
+            card1.Padding = new Padding(15, 12, 15, 12);
             card1.Size = new Size(300, 204);
             card1.TabIndex = 0;
             // 
@@ -273,7 +272,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             lblTitle1.ForeColor = Color.FromArgb(161, 181, 196);
             lblTitle1.Location = new Point(19, 27);
             lblTitle1.Name = "lblTitle1";
-            lblTitle1.Size = new Size(262, 39);
+            lblTitle1.Size = new Size(262, 24);
             lblTitle1.TabIndex = 0;
             lblTitle1.Text = "TỔNG DOANH THU";
             lblTitle1.UseMnemonic = false;
@@ -283,7 +282,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             lblTableTitle.AutoSize = true;
             lblTableTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblTableTitle.ForeColor = Color.FromArgb(102, 192, 244);
-            lblTableTitle.Location = new Point(33, 388);
+            lblTableTitle.Location = new Point(25, 205);
             lblTableTitle.Name = "lblTableTitle";
             lblTableTitle.Size = new Size(462, 28);
             lblTableTitle.TabIndex = 2;
@@ -317,14 +316,14 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             dgvTopProducts.DefaultCellStyle = dataGridViewCellStyle4;
             dgvTopProducts.EnableHeadersVisualStyles = false;
             dgvTopProducts.GridColor = Color.FromArgb(42, 71, 94);
-            dgvTopProducts.Location = new Point(33, 444);
+            dgvTopProducts.Location = new Point(25, 240);
             dgvTopProducts.Margin = new Padding(3, 5, 3, 5);
             dgvTopProducts.Name = "dgvTopProducts";
             dgvTopProducts.ReadOnly = true;
             dgvTopProducts.RowHeadersVisible = false;
             dgvTopProducts.RowHeadersWidth = 51;
             dgvTopProducts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvTopProducts.Size = new Size(1241, 747);
+            dgvTopProducts.Size = new Size(990, 435);
             dgvTopProducts.TabIndex = 3;
             // 
             // colXepHang
@@ -365,7 +364,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             // 
             // DashboardControl
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(23, 26, 33);
             Controls.Add(dgvTopProducts);
@@ -374,8 +373,8 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             Controls.Add(panelTopBar);
             Margin = new Padding(3, 5, 3, 5);
             Name = "DashboardControl";
-            Padding = new Padding(23, 27, 23, 27);
-            Size = new Size(1189, 933);
+            Padding = new Padding(20);
+            Size = new Size(1040, 700);
             panelTopBar.ResumeLayout(false);
             panelTopBar.PerformLayout();
             panelCards.ResumeLayout(false);

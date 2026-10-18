@@ -62,18 +62,18 @@ namespace qlspdigital.Views.Nhom1_Store
             this.panelTop.Controls.Add(this.lblSelect);
             this.panelTop.Location = new System.Drawing.Point(25, 15);
             this.panelTop.Name = "panelTop";
-            this.panelTop.Padding = new System.Windows.Forms.Padding(15, 10, 15, 10);
-            this.panelTop.Size = new System.Drawing.Size(990, 50);
+            this.panelTop.Padding = new System.Windows.Forms.Padding(15, 8, 15, 8);
+            this.panelTop.Size = new System.Drawing.Size(990, 56);
             this.panelTop.TabIndex = 0;
             // 
             // lblAverageScore
             // 
-            this.lblAverageScore.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblAverageScore.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.lblAverageScore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAverageScore.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
             this.lblAverageScore.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(156)))), ((int)(((byte)(18)))));
-            this.lblAverageScore.Location = new System.Drawing.Point(585, 10);
+            this.lblAverageScore.Location = new System.Drawing.Point(620, 11);
             this.lblAverageScore.Name = "lblAverageScore";
-            this.lblAverageScore.Size = new System.Drawing.Size(350, 30);
+            this.lblAverageScore.Size = new System.Drawing.Size(350, 34);
             this.lblAverageScore.TabIndex = 2;
             this.lblAverageScore.Text = "Điểm TB: ⭐ 5.0 / 5.0";
             this.lblAverageScore.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -114,7 +114,7 @@ namespace qlspdigital.Views.Nhom1_Store
             this.panelForm.Controls.Add(this.cboStar);
             this.panelForm.Controls.Add(this.lblStarTitle);
             this.panelForm.Controls.Add(this.lblFormTitle);
-            this.panelForm.Location = new System.Drawing.Point(25, 75);
+            this.panelForm.Location = new System.Drawing.Point(25, 80);
             this.panelForm.Name = "panelForm";
             this.panelForm.Padding = new System.Windows.Forms.Padding(15);
             this.panelForm.Size = new System.Drawing.Size(990, 195);

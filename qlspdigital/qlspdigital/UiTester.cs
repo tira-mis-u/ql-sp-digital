@@ -52,6 +52,15 @@ namespace qlspdigital
             // 9. Kiểm tra ProductReviewControl
             errors += TestProductReview(outDir);
 
+            // 9b. Kiểm tra OrderHistoryControl
+            errors += TestOrderHistory(outDir);
+
+            // 9c. Kiểm tra LibraryControl
+            errors += TestLibrary(outDir);
+
+            // 9d. Kiểm tra DashboardControl
+            errors += TestDashboard(outDir);
+
             // 10. Kiểm tra toàn bộ TextBox BorderStyle
             errors += TestAllTextBoxes();
 
@@ -433,6 +442,143 @@ namespace qlspdigital
                 err++;
             }
 
+            form.Close();
+            return err;
+        }
+
+        private static int TestOrderHistory(string outDir)
+        {
+            int err = 0;
+            Console.WriteLine("\n[9b] Kiểm tra OrderHistoryControl...");
+            using var form = new Form { Size = new Size(1300, 800), StartPosition = FormStartPosition.Manual, Location = new Point(-2000, -2000) };
+            var ctrl = new OrderHistoryControl { Dock = DockStyle.Fill };
+            form.Controls.Add(ctrl);
+            form.Show();
+            Application.DoEvents();
+
+            var btnRefresh = GetAllChildControls<Button>(ctrl).FirstOrDefault(b => b.Text.Contains("Làm mới"));
+            if (btnRefresh != null)
+            {
+                if (btnRefresh.Height > 36 || btnRefresh.Width > 150)
+                {
+                    Console.WriteLine($"  LỖI: OrderHistory btnRefresh quá lớn ({btnRefresh.Size})!");
+                    err++;
+                }
+                else
+                {
+                    Console.WriteLine($"  OK: OrderHistory btnRefresh kích thước chuẩn ({btnRefresh.Size.Width}x{btnRefresh.Size.Height})");
+                }
+            }
+
+            using var bmp = new Bitmap(ctrl.Width, ctrl.Height);
+            ctrl.DrawToBitmap(bmp, new Rectangle(0, 0, ctrl.Width, ctrl.Height));
+            bmp.Save(Path.Combine(outDir, "OrderHistory.png"), ImageFormat.Png);
+            Console.WriteLine("  OK: Đã xuất ảnh OrderHistory.png");
+            form.Close();
+            return err;
+        }
+
+        private static int TestLibrary(string outDir)
+        {
+            int err = 0;
+            Console.WriteLine("\n[9c] Kiểm tra LibraryControl...");
+            using var form = new Form { Size = new Size(1300, 800), StartPosition = FormStartPosition.Manual, Location = new Point(-2000, -2000) };
+            var ctrl = new LibraryControl { Dock = DockStyle.Fill };
+            form.Controls.Add(ctrl);
+            form.Show();
+            Application.DoEvents();
+
+            var btnRefresh = GetAllChildControls<Button>(ctrl).FirstOrDefault(b => b.Text.Contains("Làm mới"));
+            if (btnRefresh != null)
+            {
+                if (btnRefresh.Height > 36 || btnRefresh.Width > 150)
+                {
+                    Console.WriteLine($"  LỖI: Library btnRefresh quá lớn ({btnRefresh.Size})!");
+                    err++;
+                }
+                else
+                {
+                    Console.WriteLine($"  OK: Library btnRefresh kích thước chuẩn ({btnRefresh.Size.Width}x{btnRefresh.Size.Height})");
+                }
+            }
+
+            var btnDownload = GetAllChildControls<Button>(ctrl).FirstOrDefault(b => b.Text.Contains("TẢI XUỐNG"));
+            var btnUninstall = GetAllChildControls<Button>(ctrl).FirstOrDefault(b => b.Text.Contains("Gỡ khỏi Thư viện"));
+            var prg = GetAllChildControls<ProgressBar>(ctrl).FirstOrDefault();
+
+            if (btnDownload != null && btnDownload.Height > 48)
+            {
+                Console.WriteLine($"  LỖI: btnDownload quá cao ({btnDownload.Height}px)!");
+                err++;
+            }
+            if (btnUninstall != null && btnUninstall.Height > 48)
+            {
+                Console.WriteLine($"  LỖI: btnUninstall quá cao ({btnUninstall.Height}px)!");
+                err++;
+            }
+            if (btnUninstall != null && prg != null)
+            {
+                if (btnUninstall.Top < prg.Bottom)
+                {
+                    Console.WriteLine($"  LỖI: btnUninstall ({btnUninstall.Bounds}) đè lên progress bar ({prg.Bounds})!");
+                    err++;
+                }
+                else
+                {
+                    Console.WriteLine($"  OK: btnUninstall đặt dưới prgDownload cách {btnUninstall.Top - prg.Bottom}px");
+                }
+            }
+
+            using var bmp = new Bitmap(ctrl.Width, ctrl.Height);
+            ctrl.DrawToBitmap(bmp, new Rectangle(0, 0, ctrl.Width, ctrl.Height));
+            bmp.Save(Path.Combine(outDir, "Library.png"), ImageFormat.Png);
+            Console.WriteLine("  OK: Đã xuất ảnh Library.png");
+            form.Close();
+            return err;
+        }
+
+        private static int TestDashboard(string outDir)
+        {
+            int err = 0;
+            Console.WriteLine("\n[9d] Kiểm tra DashboardControl...");
+            using var form = new Form { Size = new Size(1300, 800), StartPosition = FormStartPosition.Manual, Location = new Point(-2000, -2000) };
+            var ctrl = new DashboardControl { Dock = DockStyle.Fill };
+            form.Controls.Add(ctrl);
+            form.Show();
+            Application.DoEvents();
+
+            var btnRefresh = GetAllChildControls<Button>(ctrl).FirstOrDefault(b => b.Text.Contains("Làm mới"));
+            if (btnRefresh != null)
+            {
+                if (btnRefresh.Height > 36 || btnRefresh.Width > 150)
+                {
+                    Console.WriteLine($"  LỖI: Dashboard btnRefresh quá lớn ({btnRefresh.Size})!");
+                    err++;
+                }
+                else
+                {
+                    Console.WriteLine($"  OK: Dashboard btnRefresh kích thước chuẩn ({btnRefresh.Size.Width}x{btnRefresh.Size.Height})");
+                }
+            }
+
+            var dgv = GetAllChildControls<DataGridView>(ctrl).FirstOrDefault();
+            if (dgv != null)
+            {
+                if (dgv.Bottom > ctrl.ClientSize.Height)
+                {
+                    Console.WriteLine($"  LỖI: dgvTopProducts (Bottom={dgv.Bottom}) vượt quá chiều cao Dashboard ({ctrl.ClientSize.Height})!");
+                    err++;
+                }
+                else
+                {
+                    Console.WriteLine($"  OK: dgvTopProducts nằm hoàn toàn trong Dashboard (Bottom={dgv.Bottom}, Height={ctrl.ClientSize.Height})");
+                }
+            }
+
+            using var bmp = new Bitmap(ctrl.Width, ctrl.Height);
+            ctrl.DrawToBitmap(bmp, new Rectangle(0, 0, ctrl.Width, ctrl.Height));
+            bmp.Save(Path.Combine(outDir, "Dashboard.png"), ImageFormat.Png);
+            Console.WriteLine("  OK: Đã xuất ảnh Dashboard.png");
             form.Close();
             return err;
         }

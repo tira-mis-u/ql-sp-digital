@@ -10,6 +10,7 @@ namespace qlspdigital
         [STAThread]
         static void Main(string[] args)
         {
+            Application.SetHighDpiMode(HighDpiMode.DpiUnawareGdiScaled);
             if (args.Length > 0 && args[0] == "--test-ui")
             {
                 int exitCode = UiTester.Run();

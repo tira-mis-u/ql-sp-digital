@@ -56,16 +56,18 @@ namespace qlspdigital.Views.Nhom1_Store
 
             int fullW = totalW - 50;
             panelTop.Location = new Point(25, 15);
-            panelTop.Size = new Size(fullW, 50);
+            panelTop.Size = new Size(fullW, 56);
 
             // Bố cục khung chọn sản phẩm theo Relative Flow (tránh hoàn toàn đè chữ nhãn)
-            lblSelect.Location = new Point(15, 15);
-            cboProduct.Location = new Point(lblSelect.Right + 16, 12);
+            lblSelect.Location = new Point(15, 17);
+            cboProduct.Location = new Point(lblSelect.Right + 16, 14);
+            lblAverageScore.Location = new Point(panelTop.ClientSize.Width - 365, 11);
+            lblAverageScore.Size = new Size(350, 34);
             int maxCboW = Math.Max(180, panelTop.ClientSize.Width - cboProduct.Left - lblAverageScore.Width - 25);
             cboProduct.Width = Math.Clamp(maxCboW, 200, 420);
 
             // Bố cục Form nhận xét & đánh giá
-            panelForm.Location = new Point(25, 75);
+            panelForm.Location = new Point(25, 80);
             int formW = panelForm.ClientSize.Width;
 
             int starY = 48;

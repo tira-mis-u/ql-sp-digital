@@ -47,25 +47,43 @@ namespace qlspdigital.Views.Nhom5_Orders
 
         private void AdjustLayout()
         {
-            if (dgvLibrary == null || panelActions == null || lblSelectedTitle == null) return;
+            if (dgvLibrary == null || panelActions == null || lblSelectedTitle == null || panelTop == null || btnRefresh == null || lblHeader == null) return;
             int totalW = Math.Max(600, this.ClientSize.Width);
             int totalH = Math.Max(380, this.ClientSize.Height);
 
-            int actionW = Math.Clamp((int)(totalW * 0.35), 320, 420);
-            int leftW = Math.Max(260, totalW - actionW - 65); // margin 25 left + 15 gap + 25 right
-            int contentH = Math.Max(180, totalH - 100 - 25);
+            panelTop.Location = new Point(25, 20);
+            panelTop.Size = new Size(totalW - 50, 48);
+            lblHeader.Location = new Point(0, (panelTop.Height - lblHeader.Height) / 2);
+            btnRefresh.Location = new Point(panelTop.Width - 130, (panelTop.Height - 32) / 2);
+            btnRefresh.Size = new Size(130, 32);
 
-            dgvLibrary.Location = new Point(25, 100);
+            int actionW = Math.Clamp((int)(totalW * 0.35), 320, 420);
+            int leftW = Math.Max(260, totalW - actionW - 65);
+            int contentH = Math.Max(180, totalH - 80 - 25);
+
+            dgvLibrary.Location = new Point(25, 80);
             dgvLibrary.Size = new Size(leftW, contentH);
 
-            panelActions.Location = new Point(25 + leftW + 15, 100);
+            panelActions.Location = new Point(25 + leftW + 15, 80);
             panelActions.Size = new Size(actionW, contentH);
 
             int btnW = actionW - 40;
             lblSelectedTitle.Width = btnW;
-            btnDownload.Width = btnW;
-            prgDownload.Width = btnW;
-            btnUninstall.Width = btnW;
+            lblSelectedTitle.Location = new Point(20, 20);
+
+            lblVersion.Location = new Point(20, lblSelectedTitle.Bottom + 8);
+            lblSize.Location = new Point(20, lblVersion.Bottom + 6);
+            lblDownloadCount.Location = new Point(20, lblSize.Bottom + 6);
+
+            btnDownload.Location = new Point(20, lblDownloadCount.Bottom + 14);
+            btnDownload.Size = new Size(btnW, 42);
+
+            lblProgressText.Location = new Point(20, btnDownload.Bottom + 10);
+            prgDownload.Location = new Point(20, lblProgressText.Bottom + 6);
+            prgDownload.Size = new Size(btnW, 24);
+
+            btnUninstall.Location = new Point(20, prgDownload.Bottom + 14);
+            btnUninstall.Size = new Size(btnW, 38);
         }
 
         public void LoadLibrary()

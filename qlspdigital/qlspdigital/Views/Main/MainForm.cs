@@ -113,6 +113,12 @@ namespace qlspdigital.Views.Main
             // Kích hoạt giao diện Dark Mode (thanh cuộn và thanh tiêu đề)
             ThemeHelper.ApplyDarkMode(this);
 
+            // Tự động tối ưu cửa sổ cho màn hình laptop nhỏ (<= 768p)
+            if (Screen.PrimaryScreen != null && Screen.PrimaryScreen.WorkingArea.Height <= 768)
+            {
+                this.WindowState = FormWindowState.Maximized;
+            }
+
             // Kiểm tra kết nối CSDL
             if (DatabaseHelper.TestConnection(out string msg))
             {
