@@ -14,10 +14,14 @@ namespace qlspdigital.Views.Nhom2_Cart
         private readonly MaGiamGiaService _voucherService;
 
         public event Action? OnNavigateToCart;
+        public event Action<string>? OnNavigateToCartWithVoucher;
 
         private TextBox txtVoucherCode = null!;
         private Button btnCollect = null!;
         private Button btnDelete = null!;
+        private Button btnCollectSelected = null!;
+        private Button btnApplySelected = null!;
+        private Label lblVoucherGuide = null!;
         private Button btnGoToCart = null!;
         private DataGridView dgvVouchers = null!;
         private Label lblListTitle = null!;
@@ -33,6 +37,21 @@ namespace qlspdigital.Views.Nhom2_Cart
             AdjustLayout();
             if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadVouchers();
+
+            MaGiamGiaService.VoucherUpdated += () =>
+            {
+                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
+                {
+                    try { this.BeginInvoke(new Action(LoadVouchers)); } catch { }
+                }
+            };
+            UserSession.SessionChanged += () =>
+            {
+                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
+                {
+                    try { this.BeginInvoke(new Action(LoadVouchers)); } catch { }
+                }
+            };
         }
 
         private void InitializeComponent()
@@ -142,6 +161,8 @@ namespace qlspdigital.Views.Nhom2_Cart
             dgvVouchers.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(102, 192, 244);
             dgvVouchers.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             dgvVouchers.EnableHeadersVisualStyles = false;
+            dgvVouchers.SelectionChanged += DgvVouchers_SelectionChanged;
+            dgvVouchers.CellDoubleClick += DgvVouchers_CellDoubleClick;
 
             dgvVouchers.Columns.Add("MaGiamGiaId", "ID");
             dgvVouchers.Columns.Add("MaCode", "Mã Code");
@@ -188,11 +209,39 @@ namespace qlspdigital.Views.Nhom2_Cart
             panelBottomActions.Size = new Size(950, 50);
             panelBottomActions.BackColor = Color.FromArgb(23, 26, 33);
 
+            // Nút thu thập mã đang chọn trên bảng
+            btnCollectSelected = new Button();
+            btnCollectSelected.Text = "Thu thập mã vào ví";
+            btnCollectSelected.Location = new Point(0, 4);
+            btnCollectSelected.Size = new Size(200, 40);
+            btnCollectSelected.BackColor = Color.FromArgb(49, 98, 130);
+            btnCollectSelected.ForeColor = Color.White;
+            btnCollectSelected.FlatStyle = FlatStyle.Flat;
+            btnCollectSelected.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnCollectSelected.Cursor = Cursors.Hand;
+            btnCollectSelected.UseMnemonic = false;
+            btnCollectSelected.FlatAppearance.BorderSize = 0;
+            btnCollectSelected.Click += BtnCollectSelected_Click;
+
+            // Nút dùng ngay cho mã đã trong ví
+            btnApplySelected = new Button();
+            btnApplySelected.Text = "Dùng ngay (Áp dụng vào giỏ)";
+            btnApplySelected.Location = new Point(210, 4);
+            btnApplySelected.Size = new Size(230, 40);
+            btnApplySelected.BackColor = Color.FromArgb(90, 160, 45);
+            btnApplySelected.ForeColor = Color.White;
+            btnApplySelected.FlatStyle = FlatStyle.Flat;
+            btnApplySelected.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnApplySelected.Cursor = Cursors.Hand;
+            btnApplySelected.UseMnemonic = false;
+            btnApplySelected.FlatAppearance.BorderSize = 0;
+            btnApplySelected.Click += BtnApplySelected_Click;
+
             // Nút xóa voucher khỏi kho
             btnDelete = new Button();
-            btnDelete.Text = "Xóa mã khỏi kho cá nhân";
-            btnDelete.Location = new Point(0, 4);
-            btnDelete.Size = new Size(260, 40);
+            btnDelete.Text = "Xóa khỏi ví";
+            btnDelete.Location = new Point(450, 4);
+            btnDelete.Size = new Size(140, 40);
             btnDelete.BackColor = Color.FromArgb(180, 40, 40);
             btnDelete.ForeColor = Color.White;
             btnDelete.FlatStyle = FlatStyle.Flat;
@@ -202,7 +251,19 @@ namespace qlspdigital.Views.Nhom2_Cart
             btnDelete.FlatAppearance.BorderSize = 0;
             btnDelete.Click += BtnDelete_Click;
 
+            lblVoucherGuide = new Label();
+            lblVoucherGuide.Text = "Lưu ý: Chỉ mã 'Đã trong ví' mới có thể áp dụng tại Giỏ hàng. Mã 'Chưa lưu' vui lòng nhấn 'Thu thập'!";
+            lblVoucherGuide.Location = new Point(600, 8);
+            lblVoucherGuide.Size = new Size(350, 36);
+            lblVoucherGuide.ForeColor = Color.FromArgb(199, 213, 224);
+            lblVoucherGuide.Font = new Font("Segoe UI", 8.5f, FontStyle.Italic);
+            lblVoucherGuide.TextAlign = ContentAlignment.MiddleLeft;
+            lblVoucherGuide.UseMnemonic = false;
+
+            panelBottomActions.Controls.Add(lblVoucherGuide);
             panelBottomActions.Controls.Add(btnDelete);
+            panelBottomActions.Controls.Add(btnApplySelected);
+            panelBottomActions.Controls.Add(btnCollectSelected);
 
             this.Controls.Add(panelBottomActions);
             this.Controls.Add(dgvVouchers);
@@ -257,6 +318,16 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             panelBottomActions.Location = new Point(25, dgvVouchers.Bottom + 10);
             panelBottomActions.Size = new Size(fullW, bottomH);
+
+            if (btnCollectSelected != null && btnApplySelected != null && btnDelete != null && lblVoucherGuide != null)
+            {
+                btnCollectSelected.Location = new Point(0, 4);
+                btnApplySelected.Location = new Point(btnCollectSelected.Right + 12, 4);
+                btnDelete.Location = new Point(btnApplySelected.Right + 12, 4);
+                int guideLeft = btnDelete.Right + 15;
+                lblVoucherGuide.Location = new Point(guideLeft, 6);
+                lblVoucherGuide.Size = new Size(Math.Max(150, fullW - guideLeft), 38);
+            }
         }
 
         public void LoadVouchers()
@@ -275,7 +346,7 @@ namespace qlspdigital.Views.Nhom2_Cart
                 if (v.DaSuDung) tt = "Đã sử dụng";
                 else if (v.DaThuThap) tt = "Đã trong ví";
 
-                dgvVouchers.Rows.Add(
+                int newRowIdx = dgvVouchers.Rows.Add(
                     v.MaGiamGiaId,
                     v.MaCode,
                     v.TieuDe,
@@ -284,7 +355,18 @@ namespace qlspdigital.Views.Nhom2_Cart
                     FormatHelper.FormatDate(v.NgayKetThuc),
                     tt
                 );
+
+                if (v.DaSuDung)
+                {
+                    dgvVouchers.Rows[newRowIdx].DefaultCellStyle.ForeColor = Color.FromArgb(140, 140, 140);
+                }
+                else if (v.DaThuThap)
+                {
+                    dgvVouchers.Rows[newRowIdx].DefaultCellStyle.ForeColor = Color.FromArgb(164, 208, 7);
+                }
             }
+
+            DgvVouchers_SelectionChanged(null, EventArgs.Empty);
         }
 
         private void BtnCollect_Click(object? sender, EventArgs e)
@@ -349,6 +431,122 @@ namespace qlspdigital.Views.Nhom2_Cart
         private void BtnGoToCart_Click(object? sender, EventArgs e)
         {
             OnNavigateToCart?.Invoke();
+        }
+
+        private void DgvVouchers_SelectionChanged(object? sender, EventArgs e)
+        {
+            if (btnCollectSelected == null || btnApplySelected == null || btnDelete == null) return;
+
+            if (dgvVouchers.SelectedRows.Count == 0)
+            {
+                btnCollectSelected.Enabled = false;
+                btnApplySelected.Enabled = false;
+                btnDelete.Enabled = false;
+                return;
+            }
+
+            var row = dgvVouchers.SelectedRows[0];
+            string tt = row.Cells["TrangThai"]?.Value?.ToString() ?? string.Empty;
+
+            if (tt == "Chưa lưu")
+            {
+                btnCollectSelected.Enabled = true;
+                btnCollectSelected.Text = "Thu thập mã vào ví";
+                btnCollectSelected.BackColor = Color.FromArgb(49, 98, 130);
+
+                btnApplySelected.Enabled = false;
+                btnApplySelected.Text = "Dùng ngay (Cần thu thập trước)";
+                btnApplySelected.BackColor = Color.FromArgb(60, 60, 60);
+
+                btnDelete.Enabled = false;
+            }
+            else if (tt == "Đã trong ví")
+            {
+                btnCollectSelected.Enabled = false;
+                btnCollectSelected.Text = "Đã có trong ví";
+                btnCollectSelected.BackColor = Color.FromArgb(60, 60, 60);
+
+                btnApplySelected.Enabled = true;
+                btnApplySelected.Text = "Dùng ngay (Áp dụng vào giỏ)";
+                btnApplySelected.BackColor = Color.FromArgb(90, 160, 45);
+
+                btnDelete.Enabled = true;
+            }
+            else if (tt == "Đã sử dụng")
+            {
+                btnCollectSelected.Enabled = false;
+                btnCollectSelected.Text = "Đã sử dụng";
+                btnCollectSelected.BackColor = Color.FromArgb(60, 60, 60);
+
+                btnApplySelected.Enabled = false;
+                btnApplySelected.Text = "Đã sử dụng (Hết lượt)";
+                btnApplySelected.BackColor = Color.FromArgb(60, 60, 60);
+
+                btnDelete.Enabled = false;
+            }
+        }
+
+        private void DgvVouchers_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dgvVouchers.Rows.Count) return;
+            var row = dgvVouchers.Rows[e.RowIndex];
+            string tt = row.Cells["TrangThai"]?.Value?.ToString() ?? string.Empty;
+
+            if (tt == "Chưa lưu")
+            {
+                BtnCollectSelected_Click(null, EventArgs.Empty);
+            }
+            else if (tt == "Đã trong ví")
+            {
+                BtnApplySelected_Click(null, EventArgs.Empty);
+            }
+        }
+
+        private void BtnCollectSelected_Click(object? sender, EventArgs e)
+        {
+            if (!UserSession.IsLoggedIn)
+            {
+                MessageBox.Show("Vui lòng đăng nhập để thu thập voucher vào ví!", "Yêu cầu đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (dgvVouchers.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Vui lòng chọn voucher cần thu thập trên danh sách!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var row = dgvVouchers.SelectedRows[0];
+            string code = row.Cells["MaCode"]?.Value?.ToString() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(code)) return;
+
+            if (_voucherService.ThuThapVoucher(UserSession.CurrentUserId, code, out string msg))
+            {
+                MessageBox.Show(msg, "Thu thập thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadVouchers();
+            }
+            else
+            {
+                MessageBox.Show(msg, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void BtnApplySelected_Click(object? sender, EventArgs e)
+        {
+            if (dgvVouchers.SelectedRows.Count == 0) return;
+            var row = dgvVouchers.SelectedRows[0];
+            string tt = row.Cells["TrangThai"]?.Value?.ToString() ?? string.Empty;
+
+            if (tt != "Đã trong ví")
+            {
+                MessageBox.Show("Chỉ có mã ưu đãi 'Đã trong ví' mới có thể áp dụng vào giỏ hàng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string code = row.Cells["MaCode"]?.Value?.ToString() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(code)) return;
+
+            OnNavigateToCartWithVoucher?.Invoke(code);
         }
     }
 }

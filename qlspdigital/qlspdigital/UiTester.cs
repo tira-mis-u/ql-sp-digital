@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Windows.Forms;
 using qlspdigital.Views.Main;
@@ -59,6 +60,12 @@ namespace qlspdigital
 
             // 12. Kiểm thử chuyên sâu: Dữ liệu nhập không hợp lệ & Các kịch bản lách/bypass
             errors += TestInputValidationAndBypassSecurity();
+
+            // 13. Kiểm tra giỏ hàng: Giảm giá 0 ₫ và voucher lặp lại
+            errors += TestCartVoucherAndDiscountFormat();
+
+            // 14. Kiểm tra nén ZIP chuẩn và giải nén tệp tải xuống
+            errors += TestZipDownloadAndExtract(outDir);
 
             Console.WriteLine($"\n=== KẾT QUẢ KIỂM THỬ: {(errors == 0 ? "HOÀN TOÀN THÀNH CÔNG (0 LỖI)" : $"{errors} LỖI PHÁT HIỆN")} ===");
             return errors;
@@ -374,9 +381,10 @@ namespace qlspdigital
         private static int TestProductReview(string outDir)
         {
             int err = 0;
-            Console.WriteLine("\n[9] Kiểm tra ProductReviewControl...");
+            Console.WriteLine("\n[9] Kiểm tra ProductReviewControl & ProductDetailControl...");
             using var form = new Form { Size = new Size(1300, 800), StartPosition = FormStartPosition.Manual, Location = new Point(-2000, -2000) };
             var ctrl = new ProductReviewControl { Dock = DockStyle.Fill };
+            ctrl.SetSelectedProduct(1);
             form.Controls.Add(ctrl);
             form.Show();
             Application.DoEvents();
@@ -385,6 +393,41 @@ namespace qlspdigital
             ctrl.DrawToBitmap(bmp, new Rectangle(0, 0, ctrl.Width, ctrl.Height));
             bmp.Save(Path.Combine(outDir, "ProductReviewControl.png"), ImageFormat.Png);
             Console.WriteLine("  OK: Đã xuất ảnh ProductReviewControl.png");
+
+            // Snapshot ProductDetailControl với bảng nhận xét cộng đồng
+            form.Controls.Clear();
+            var detailCtrl = new ProductDetailControl { Dock = DockStyle.Fill };
+            detailCtrl.LoadProductDetail(1);
+            form.Controls.Add(detailCtrl);
+            Application.DoEvents();
+
+            using var bmpDetail = new Bitmap(detailCtrl.Width, detailCtrl.Height);
+            detailCtrl.DrawToBitmap(bmpDetail, new Rectangle(0, 0, detailCtrl.Width, detailCtrl.Height));
+            bmpDetail.Save(Path.Combine(outDir, "ProductDetailControl.png"), ImageFormat.Png);
+            Console.WriteLine("  OK: Đã xuất ảnh ProductDetailControl.png");
+
+            // Snapshot ProfileControl với đầy đủ nút Lưu hồ sơ, Lưu MK và Lưu Cài đặt
+            form.Controls.Clear();
+            var profileCtrl = new ProfileControl { Dock = DockStyle.Fill };
+            form.Controls.Add(profileCtrl);
+            Application.DoEvents();
+
+            using var bmpProfile = new Bitmap(profileCtrl.Width, profileCtrl.Height);
+            profileCtrl.DrawToBitmap(bmpProfile, new Rectangle(0, 0, profileCtrl.Width, profileCtrl.Height));
+            bmpProfile.Save(Path.Combine(outDir, "ProfileControl.png"), ImageFormat.Png);
+            Console.WriteLine("  OK: Đã xuất ảnh ProfileControl.png");
+
+            var saveBtns = GetAllChildControls<Button>(profileCtrl).Where(b => b.Text.Contains("Lưu")).ToList();
+            if (saveBtns.Count >= 3)
+            {
+                Console.WriteLine($"  OK: ProfileControl có đầy đủ {saveBtns.Count} nút Lưu nổi bật (Hồ sơ, Mật khẩu, Cài đặt)!");
+            }
+            else
+            {
+                Console.WriteLine($"  LỖI: ProfileControl chỉ có {saveBtns.Count} nút Lưu!");
+                err++;
+            }
+
             form.Close();
             return err;
         }
@@ -458,13 +501,13 @@ namespace qlspdigital
                         Console.WriteLine("  OK: Đã xóa nút Giỏ hàng khỏi Header thành công!");
                     }
 
-                    if (lblGreeting != null && lblGreeting.Text == "Khách")
+                    if (lblGreeting != null && lblGreeting.Text == "Khách (Chưa đăng nhập)")
                     {
-                        Console.WriteLine("  OK: Lời chào khách mặc định chuẩn xác: 'Khách'");
+                        Console.WriteLine("  OK: Lời chào khách mặc định chuẩn xác: 'Khách (Chưa đăng nhập)'");
                     }
                     else
                     {
-                        Console.WriteLine($"  LỖI: Lời chào là '{lblGreeting?.Text}', mong đợi 'Khách'!");
+                        Console.WriteLine($"  LỖI: Lời chào là '{lblGreeting?.Text}', mong đợi 'Khách (Chưa đăng nhập)'!");
                         err++;
                     }
 
@@ -626,6 +669,185 @@ namespace qlspdigital
             catch (Exception ex)
             {
                 Console.WriteLine($"  LỖI Tìm kiếm với ký tự đặc biệt: {ex.Message}");
+                err++;
+            }
+
+            // 6. Kiểm tra chặn tái sử dụng voucher đã dùng
+            var voucherRepo = new qlspdigital.DAL.Nhom2_Cart.MaGiamGiaRepository();
+            // User 3 đã sử dụng voucher 1 (WELCOME2026) trong bảng MaGiamGiaNguoiDung
+            if (voucherRepo.KiemTraVaApDung("WELCOME2026", 3, 200000, out _, out _, out string vMsg))
+            {
+                Console.WriteLine("  LỖI: Cho phép tái sử dụng voucher đã dùng!");
+                err++;
+            }
+            else
+            {
+                Console.WriteLine($"  OK: Chặn thành công tái sử dụng voucher đã dùng: '{vMsg}'");
+            }
+
+            // 7. Kiểm tra lưu và đọc Cài đặt người dùng (CaiDatNguoiDung) vào CSDL
+            var hoSoSvc = new qlspdigital.BLL.Nhom3_ProductAdmin.HoSoService();
+            if (hoSoSvc.LuuCaiDat(1, false, true, false, true, out string setMsg))
+            {
+                var s = hoSoSvc.LayCaiDat(1);
+                if (!s.ThongBaoEmail && s.GhiNhoDangNhap && !s.TuDongCapNhat && s.XacNhanThanhToan)
+                {
+                    Console.WriteLine("  OK: Lưu và đọc cài đặt người dùng vào CSDL CaiDatNguoiDung thành công 100%!");
+                }
+                else
+                {
+                    Console.WriteLine("  LỖI: Giá trị cài đặt đọc từ CSDL không khớp!");
+                    err++;
+                }
+                // Trả về mặc định
+                hoSoSvc.LuuCaiDat(1, true, true, true, true, out _);
+            }
+            else
+            {
+                Console.WriteLine($"  LỖI: Không thể lưu cài đặt: {setMsg}");
+                err++;
+            }
+
+            return err;
+        }
+
+        private static int TestCartVoucherAndDiscountFormat()
+        {
+            int err = 0;
+            Console.WriteLine("\n[13] Kiểm tra CartControl: Định dạng Giảm giá 0 ₫ và chống click lặp lại Voucher...");
+            using var form = new Form { Size = new Size(1300, 800) };
+            var ctrl = new CartControl { Dock = DockStyle.Fill };
+            form.Controls.Add(ctrl);
+            form.Show();
+            Application.DoEvents();
+
+            var lblDiscount = GetAllChildControls<Label>(ctrl).FirstOrDefault(l => l.Text.StartsWith("Giảm giá"));
+            if (lblDiscount != null)
+            {
+                if (lblDiscount.Text.Contains("-Miễn phí"))
+                {
+                    Console.WriteLine($"  LỖI: Giảm giá hiển thị sai '{lblDiscount.Text}' (chứa '-Miễn phí')!");
+                    err++;
+                }
+                else if (lblDiscount.Text == "Giảm giá: 0 ₫")
+                {
+                    Console.WriteLine($"  OK: Giảm giá hiển thị chuẩn xác: '{lblDiscount.Text}'");
+                }
+                else
+                {
+                    Console.WriteLine($"  OK: Giảm giá hiển thị: '{lblDiscount.Text}'");
+                }
+            }
+            else
+            {
+                Console.WriteLine("  LỖI: Không tìm thấy nhãn Giảm giá trong CartControl!");
+                err++;
+            }
+
+            form.Close();
+            return err;
+        }
+
+        private static int TestZipDownloadAndExtract(string outDir)
+        {
+            int err = 0;
+            Console.WriteLine("\n[14] Kiểm tra Nén & Giải nén Tệp Tải về (ZIP Extractability & Integrity)...");
+
+            string storageDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Storage", "Products");
+            Directory.CreateDirectory(storageDir);
+            string testExePath = Path.Combine(storageDir, "ActionGameTest.exe");
+            byte[] exeDummyBytes = new byte[] { 0x4D, 0x5A, 0x90, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0xFF, 0xFF };
+            File.WriteAllBytes(testExePath, exeDummyBytes);
+
+            string fileHash = qlspdigital.Shared.SecurityHelper.ComputeFileSha256(testExePath);
+
+            var item = new qlspdigital.DTOs.ThuVienItemDTO
+            {
+                MaSoHuu = 999,
+                MaNguoiDung = 1,
+                MaSanPham = 888,
+                TenSanPham = "Game Chien Thuat Dinh Cao",
+                PhienBan = "1.0.5",
+                TenDanhMuc = "Chiến thuật",
+                MaDonHang = 5555,
+                DuongDanTep = "Storage/Products/ActionGameTest.exe",
+                MaHashSHA256 = fileHash
+            };
+
+            string downloadFolder = Path.Combine(outDir, "test_customer_download");
+            if (Directory.Exists(downloadFolder))
+            {
+                Directory.Delete(downloadFolder, true);
+            }
+            Directory.CreateDirectory(downloadFolder);
+
+            var svc = new qlspdigital.BLL.Nhom5_Orders.ThuVienService();
+            bool dlOk = svc.TaiXuongTepAsync(item, downloadFolder, p => { }).GetAwaiter().GetResult();
+
+            if (!dlOk)
+            {
+                Console.WriteLine("  LỖI: TaiXuongTepAsync trả về false!");
+                return err + 1;
+            }
+
+            string expectedZip = Path.Combine(downloadFolder, "Game_Chien_Thuat_Dinh_Cao_v1.0.5.zip");
+            if (!File.Exists(expectedZip))
+            {
+                Console.WriteLine($"  LỖI: Không tìm thấy file zip: {expectedZip}");
+                return err + 1;
+            }
+
+            Console.WriteLine($"  OK: File .zip đã được tạo thành công: {Path.GetFileName(expectedZip)} ({new FileInfo(expectedZip).Length} bytes)");
+
+            string extractFolder = Path.Combine(downloadFolder, "extracted");
+            try
+            {
+                ZipFile.ExtractToDirectory(expectedZip, extractFolder);
+                Console.WriteLine("  OK: Giải nén file .zip thành công bằng ZipFile.ExtractToDirectory mà KHÔNG bị lỗi!");
+
+                string extractedExe = Path.Combine(extractFolder, "ActionGameTest.exe");
+                if (File.Exists(extractedExe))
+                {
+                    byte[] extractedBytes = File.ReadAllBytes(extractedExe);
+                    if (extractedBytes.SequenceEqual(exeDummyBytes))
+                    {
+                        Console.WriteLine("  OK: File .exe sau khi giải nén toàn vẹn 100% khớp từng byte với file upload gốc!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("  LỖI: Nội dung file .exe sau khi giải nén không khớp!");
+                        err++;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("  LỖI: Không tìm thấy ActionGameTest.exe trong thư mục giải nén!");
+                    err++;
+                }
+
+                string extractedLicense = Path.Combine(extractFolder, "LICENSE_AND_KEY.txt");
+                if (File.Exists(extractedLicense))
+                {
+                    string licContent = File.ReadAllText(extractedLicense);
+                    if (licContent.Contains("DPMS DIGITAL PRODUCT LICENSE") && licContent.Contains("1.0.5"))
+                    {
+                        Console.WriteLine("  OK: Giấy phép LICENSE_AND_KEY.txt tồn tại và chứa đầy đủ thông tin xác thực bản quyền!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("  LỖI: Nội dung LICENSE_AND_KEY.txt không hợp lệ!");
+                        err++;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("  LỖI: Không tìm thấy LICENSE_AND_KEY.txt trong file zip giải nén!");
+                    err++;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"  LỖI: File .zip bị hỏng không thể giải nén được: {ex.Message}");
                 err++;
             }
 

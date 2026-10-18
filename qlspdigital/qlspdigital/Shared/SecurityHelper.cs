@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Globalization;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -27,6 +28,30 @@ namespace qlspdigital.Shared
             }
         }
 
+        // Băm dữ liệu nhị phân của tệp thành mã SHA-256 xác thực toàn vẹn
+        public static string ComputeFileSha256(string filePath)
+        {
+            if (!File.Exists(filePath)) return string.Empty;
+            try
+            {
+                using (var stream = File.OpenRead(filePath))
+                using (SHA256 sha256 = SHA256.Create())
+                {
+                    byte[] hash = sha256.ComputeHash(stream);
+                    StringBuilder builder = new StringBuilder();
+                    for (int i = 0; i < hash.Length; i++)
+                    {
+                        builder.Append(hash[i].ToString("x2"));
+                    }
+                    return builder.ToString();
+                }
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
         // So khớp mật khẩu nhập vào với mã băm trong CSDL
         public static bool VerifyPassword(string inputPassword, string storedHash)
         {
@@ -40,10 +65,11 @@ namespace qlspdigital.Shared
     {
         private static readonly CultureInfo VietNamCulture = new CultureInfo("vi-VN");
 
-        // Định dạng tiền tệ VNĐ (VD: 150000 -> "150.000 ₫" hoặc "Miễn phí")
-        public static string FormatCurrency(decimal amount)
+        // Định dạng tiền tệ VNĐ (VD: 150000 -> "150.000 ₫", nếu amount <= 0: "0 ₫", trừ khi allowFreeText = true thì "Miễn phí")
+        public static string FormatCurrency(decimal amount, bool allowFreeText = false)
         {
-            if (amount <= 0) return "Miễn phí";
+            if (amount <= 0 && allowFreeText) return "Miễn phí";
+            if (amount <= 0) return "0 ₫";
             return string.Format(VietNamCulture, "{0:N0} ₫", amount);
         }
 

@@ -64,14 +64,27 @@ Cung cấp bộ công cụ quản trị dữ liệu cốt lõi cho Administrator
    - Cập nhật thông tin danh mục (`UPDATE DanhMuc`).
    - Xóa danh mục (`DELETE FROM DanhMuc` - ràng buộc kiểm tra nếu có sản phẩm thuộc danh mục thì cảnh báo chặn không cho xóa).
 
-### 3.3. UI 8 - Hồ sơ cá nhân & Đổi mật khẩu (`ProfileControl`)
+### 3.3. UI 8 - Hồ sơ cá nhân, Đổi mật khẩu & Cài đặt hệ thống (`ProfileControl`)
 1. **Xem thông tin tài khoản (CRUD Read 3):**
    - Hiển thị: Tên đăng nhập (chỉ đọc), Vai trò (`QuanTriVien`/`KhachHang`), Số dư ví (`SoDuVi`), Họ và tên, Email, Số điện thoại.
-2. **Cập nhật thông tin cá nhân (CRUD Update 3):**
-   - Cho phép chỉnh sửa: Họ tên, Email, Số điện thoại $\rightarrow$ Bấm **"Cập nhật hồ sơ"** $\rightarrow$ `UPDATE NguoiDung`.
+2. **Cập nhật thông tin cá nhân & Đồng bộ Realtime (CRUD Update 3):**
+   - Cho phép chỉnh sửa: Họ tên, Email, Số điện thoại $\rightarrow$ Bấm nút **"Lưu thay đổi hồ sơ"** $\rightarrow$ Thực thi `UPDATE NguoiDung`.
+   - **Đồng bộ thời gian thực (Real-time Sync):** Khi cập nhật họ tên thành công, hệ thống gọi `UserSession.UpdateProfile(hoTen, email)` để kích hoạt sự kiện `SessionChanged`. Thanh tiêu đề Header trên `MainForm` (`lblUserGreeting`) lập tức lắng nghe sự kiện và cập nhật lại câu chào cùng họ tên mới ngay trong tích tắc mà không cần khởi động lại ứng dụng.
 3. **Đổi mật khẩu an toàn:**
    - Nhập: Mật khẩu cũ, Mật khẩu mới, Xác nhận mật khẩu mới.
-   - Kiểm tra hash SHA-256 mật khẩu cũ $\rightarrow$ Nếu đúng cập nhật mật khẩu mới $\rightarrow$ `UPDATE NguoiDung SET MatKhauHash = @MatKhauHashMoi`.
+   - Kiểm tra hash SHA-256 mật khẩu cũ $\rightarrow$ Nếu đúng cập nhật mật khẩu mới $\rightarrow$ Bấm nút **"Lưu mật khẩu mới"** $\rightarrow$ `UPDATE NguoiDung SET MatKhauHash = @MatKhauHashMoi`.
+4. **Tùy chọn cài đặt ứng dụng & Lưu trữ CSDL thật (Settings Persistence):**
+   - Cung cấp các cấu hình tùy chọn:
+     + Nhận thông báo giao dịch & ưu đãi qua Email (`ThongBaoEmail`).
+     + Ghi nhớ phiên đăng nhập trên thiết bị (`GhiNhoDangNhap`).
+     + Tự động kiểm tra bản cập nhật tệp kỹ thuật số (`TuDongCapNhat`).
+     + Luôn hiển thị hộp thoại xác nhận trước khi trừ ví thanh toán (`XacNhanThanhToan`).
+   - Bấm nút **"Lưu cài đặt ứng dụng"** $\rightarrow$ Lưu bền vững vào bảng CSDL `CaiDatNguoiDung` (cơ chế UPSERT - nếu chưa có thì INSERT, đã có thì UPDATE). Mỗi khi người dùng mở màn hình Hồ sơ, hệ thống tự động nạp trạng thái đã lưu từ CSDL.
+5. **Banner Nguyên tắc bảo mật tài khoản Digital Steam:**
+   - Tích hợp khung thông tin khuyến cáo an toàn tài khoản số chuẩn Steam với 4 quy tắc cốt lõi: Mật khẩu phức tạp độc nhất, Tuyệt đối không chia sẻ mã xác thực OTP/Email, Cảnh báo giao dịch nạp/trừ ví bất thường, Kiểm tra tính toàn vẹn mã hash SHA-256 của tệp cài đặt.
+   - Cơ chế layout động (`AutoSize` và tính toán lại `Height` theo độ rộng thực tế `lblSecurityContent.Bottom + 25px`), đảm bảo hiển thị trọn vẹn toàn bộ các mục danh sách và không bị che khuất phần chân ở bất kỳ kích thước màn hình nào.
+6. **Quy chuẩn nhãn nút bấm:**
+   - Tất cả các nút bấm hành động đều sử dụng nhãn chữ thuần (plain text), tuyệt đối không thêm icon emoji để giữ tính trang trọng, chuyên nghiệp và đồng bộ chuẩn ứng dụng Desktop.
 
 ---
 
@@ -84,10 +97,12 @@ Cung cấp bộ công cụ quản trị dữ liệu cốt lõi cho Administrator
    - CSDL chỉ lưu **đường dẫn tương đối** và các siêu dữ liệu kỹ thuật.
 4. **Kiểm tra toàn vẹn (SHA-256):** Mỗi tệp upload bắt buộc phải được tính toán mã hash SHA-256 để làm cơ sở cho phân hệ Thư viện (Nhóm 5) đối chiếu kiểm tra khi người dùng tải tệp về.
 5. **Ràng buộc bảo mật mật khẩu:** Mật khẩu cũ phải trùng khớp với hash trong CSDL; mật khẩu mới phải có độ dài tối thiểu 6 ký tự.
+6. **Bảo toàn cài đặt người dùng:** Bảng `CaiDatNguoiDung` liên kết khóa ngoại với `NguoiDung(MaNguoiDung)` với `ON DELETE CASCADE`, đảm bảo cấu hình cá nhân luôn đi liền với tài khoản.
 
 ---
 
 ## 5. Tiêu chí nghiệm thu & Báo cáo BTL (Acceptance Criteria)
 - [x] **CRUD 1 (Sản phẩm & Tệp số - UI 10):** Thêm, sửa, ngưng bán sản phẩm mượt mà; chọn và upload tệp kỹ thuật số vào thư mục `Storage/` và ghi metadata vào `TepSanPham` thành công.
 - [x] **CRUD 2 (Danh mục thể loại - UI 11):** Thêm, xem, sửa, xóa danh mục trên DataGridView thành công.
-- [x] **CRUD 3 (Hồ sơ & Đổi mật khẩu - UI 8):** Cập nhật họ tên, email và đổi mật khẩu thành công.
+- [x] **CRUD 3 (Hồ sơ, Đổi mật khẩu & Cài đặt - UI 8):** Cập nhật họ tên, email, đồng bộ Header realtime qua `SessionChanged`, đổi mật khẩu an toàn và lưu bền vững cấu hình vào `CaiDatNguoiDung` trong CSDL. Banner bảo mật hiển thị trọn vẹn không bị cắt dòng.
+

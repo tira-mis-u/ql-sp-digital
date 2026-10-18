@@ -274,13 +274,24 @@ namespace qlspdigital.DAL.Nhom5_Orders
                             cmdPay.ExecuteNonQuery();
                         }
 
-                        // 7. Đánh dấu voucher đã dùng (nếu có)
+                        // 7. Đánh dấu voucher đã dùng và trừ số lượng phát hành còn lại
                         if (maGiamGiaId.HasValue)
                         {
                             string qVoucher = @"
-                                UPDATE MaGiamGiaNguoiDung
-                                SET DaSuDung = 1, NgaySuDung = GETDATE()
-                                WHERE MaNguoiDung = @MaNguoiDung AND MaGiamGiaId = @MaGiamGiaId";
+                                IF EXISTS (SELECT 1 FROM MaGiamGiaNguoiDung WHERE MaNguoiDung = @MaNguoiDung AND MaGiamGiaId = @MaGiamGiaId)
+                                BEGIN
+                                    UPDATE MaGiamGiaNguoiDung
+                                    SET DaSuDung = 1, NgaySuDung = GETDATE()
+                                    WHERE MaNguoiDung = @MaNguoiDung AND MaGiamGiaId = @MaGiamGiaId;
+                                END
+                                ELSE
+                                BEGIN
+                                    INSERT INTO MaGiamGiaNguoiDung (MaNguoiDung, MaGiamGiaId, DaSuDung, NgayNhan, NgaySuDung)
+                                    VALUES (@MaNguoiDung, @MaGiamGiaId, 1, GETDATE(), GETDATE());
+                                END
+                                UPDATE MaGiamGia
+                                SET SoLuongConLai = CASE WHEN SoLuongConLai > 0 THEN SoLuongConLai - 1 ELSE 0 END
+                                WHERE MaGiamGiaId = @MaGiamGiaId;";
                             using (SqlCommand cmdVoucher = new SqlCommand(qVoucher, conn, trans))
                             {
                                 cmdVoucher.Parameters.AddWithValue("@MaNguoiDung", maNguoiDung);

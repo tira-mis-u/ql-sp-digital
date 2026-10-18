@@ -148,7 +148,9 @@ namespace qlspdigital.DAL.Nhom2_Cart
             }
 
             string query = @"
-                SELECT mgg.*, ISNULL(mnd.DaSuDung, 0) AS DaSuDung
+                SELECT mgg.*, 
+                       CASE WHEN mnd.MaNguoiDungVoucherId IS NOT NULL THEN 1 ELSE 0 END AS DaThuThap,
+                       ISNULL(mnd.DaSuDung, 0) AS DaSuDung
                 FROM MaGiamGia mgg
                 LEFT JOIN MaGiamGiaNguoiDung mnd ON mgg.MaGiamGiaId = mnd.MaGiamGiaId AND mnd.MaNguoiDung = @MaNguoiDung
                 WHERE mgg.MaCode = @MaCode AND mgg.KichHoat = 1";
@@ -167,6 +169,27 @@ namespace qlspdigital.DAL.Nhom2_Cart
             }
 
             DataRow row = dt.Rows[0];
+            bool daSuDung = Convert.ToBoolean(row["DaSuDung"]);
+            if (daSuDung)
+            {
+                thongBao = "Mã ưu đãi này bạn đã sử dụng rồi, không thể áp dụng lại!";
+                return false;
+            }
+
+            bool daThuThap = Convert.ToInt32(row["DaThuThap"]) == 1;
+            if (maNguoiDung > 0 && !daThuThap)
+            {
+                thongBao = $"Mã ưu đãi '{maCode.Trim().ToUpper()}' chưa được lưu vào Ví của bạn!\nVui lòng vào mục 'Kho mã ưu đãi' bấm 'Thu thập vào ví' trước khi áp dụng.";
+                return false;
+            }
+
+            int soLuongConLai = Convert.ToInt32(row["SoLuongConLai"]);
+            if (soLuongConLai <= 0)
+            {
+                thongBao = "Mã ưu đãi này đã hết lượt sử dụng trên hệ thống!";
+                return false;
+            }
+
             DateTime ngayKetThuc = Convert.ToDateTime(row["NgayKetThuc"]);
             if (ngayKetThuc < DateTime.Now)
             {

@@ -41,6 +41,37 @@ namespace qlspdigital.Views.Nhom1_Store
             if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadCategories();
             LoadProducts();
+
+            // Lắng nghe sự kiện cập nhật đánh giá hoặc danh mục / sản phẩm theo thời gian thực
+            DanhGiaService.ReviewUpdated += (id) =>
+            {
+                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
+                {
+                    try { this.BeginInvoke(new Action(LoadProducts)); } catch { }
+                }
+            };
+            qlspdigital.BLL.Nhom3_ProductAdmin.SanPhamAdminService.ProductCatalogChanged += () =>
+            {
+                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
+                {
+                    try { this.BeginInvoke(new Action(LoadProducts)); } catch { }
+                }
+            };
+            qlspdigital.BLL.Nhom3_ProductAdmin.DanhMucService.CategoryCatalogChanged += () =>
+            {
+                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
+                {
+                    try
+                    {
+                        this.BeginInvoke(new Action(() =>
+                        {
+                            LoadCategories();
+                            LoadProducts();
+                        }));
+                    }
+                    catch { }
+                }
+            };
         }
 
         private void InitializeComponent()

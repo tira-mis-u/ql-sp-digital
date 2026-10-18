@@ -17,6 +17,7 @@ USE DPMS_Db;
 GO
 
 -- 2. XÓA CÁC BẢNG CŨ NẾU ĐÃ TỒN TẠI (THEO THỨ TỰ RÀNG BUỘC KHÓA NGOẠI)
+IF OBJECT_ID('CaiDatNguoiDung', 'U') IS NOT NULL DROP TABLE CaiDatNguoiDung;
 IF OBJECT_ID('DanhGia', 'U') IS NOT NULL DROP TABLE DanhGia;
 IF OBJECT_ID('SoHuuSanPham', 'U') IS NOT NULL DROP TABLE SoHuuSanPham;
 IF OBJECT_ID('ThanhToan', 'U') IS NOT NULL DROP TABLE ThanhToan;
@@ -48,6 +49,18 @@ CREATE TABLE NguoiDung (
     SoDuVi DECIMAL(18,2) NOT NULL DEFAULT 0.00 CHECK (SoDuVi >= 0),
     TrangThai BIT NOT NULL DEFAULT 1, -- 1: Đang hoạt động, 0: Bị khóa
     NgayTao DATETIME NOT NULL DEFAULT GETDATE()
+);
+GO
+
+-- BẢNG 1.1: CaiDatNguoiDung (Cấu hình tùy chọn & cài đặt ứng dụng người dùng)
+CREATE TABLE CaiDatNguoiDung (
+    MaNguoiDung INT PRIMARY KEY,
+    ThongBaoEmail BIT NOT NULL DEFAULT 1,
+    GhiNhoDangNhap BIT NOT NULL DEFAULT 1,
+    TuDongCapNhat BIT NOT NULL DEFAULT 1,
+    XacNhanThanhToan BIT NOT NULL DEFAULT 1,
+    NgayCapNhat DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT FK_CaiDat_NguoiDung FOREIGN KEY (MaNguoiDung) REFERENCES NguoiDung(MaNguoiDung) ON DELETE CASCADE
 );
 GO
 

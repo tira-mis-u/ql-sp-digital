@@ -41,6 +41,21 @@ namespace qlspdigital.Views.Nhom5_Orders
             AdjustLayout();
             if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadLibrary();
+
+            ThuVienService.LibraryUpdated += () =>
+            {
+                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
+                {
+                    try { this.BeginInvoke(new Action(LoadLibrary)); } catch { }
+                }
+            };
+            UserSession.SessionChanged += () =>
+            {
+                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
+                {
+                    try { this.BeginInvoke(new Action(LoadLibrary)); } catch { }
+                }
+            };
         }
 
         private void InitializeComponent()

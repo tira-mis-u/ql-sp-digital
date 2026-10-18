@@ -37,6 +37,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
         private Button btnSave = null!;
         private Button btnDelete = null!;
         private Button btnBrowseFile = null!;
+        private string? _selectedSourceFilePath = null;
 
         public ProductManageControl()
         {
@@ -543,6 +544,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
 
                 var tep = _spAdminService.LayTepTheoSanPham(sp.MaSanPham);
                 txtFilePath.Text = tep != null ? tep.TenTep : "Chưa có file";
+                _selectedSourceFilePath = null;
             }
         }
 
@@ -554,6 +556,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             txtSize.Text = "0";
             txtVersion.Text = "1.0.0";
             txtFilePath.Clear();
+            _selectedSourceFilePath = null;
             txtDescription.Clear();
             chkActive.Checked = true;
             txtName.Focus();
@@ -566,6 +569,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
                 ofd.Filter = "Tệp phần mềm / dữ liệu (*.zip;*.exe;*.rar;*.iso)|*.zip;*.exe;*.rar;*.iso|Tất cả tệp (*.*)|*.*";
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
+                    _selectedSourceFilePath = ofd.FileName;
                     txtFilePath.Text = ofd.SafeFileName;
                     FileInfo fi = new FileInfo(ofd.FileName);
                     txtSize.Text = Math.Round((decimal)fi.Length / (1024 * 1024), 2).ToString();
@@ -625,17 +629,47 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             TepSanPhamDTO? tep = null;
             if (!string.IsNullOrWhiteSpace(txtFilePath.Text) && !txtFilePath.Text.Contains("Chưa có file"))
             {
+                string fileName = txtFilePath.Text.Trim();
+                string storageDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Storage", "Products");
+                if (!Directory.Exists(storageDir))
+                {
+                    Directory.CreateDirectory(storageDir);
+                }
+                string destPath = Path.Combine(storageDir, fileName);
+
+                long fileBytes = 0;
+                string? sha256 = null;
+
+                if (!string.IsNullOrEmpty(_selectedSourceFilePath) && File.Exists(_selectedSourceFilePath))
+                {
+                    try
+                    {
+                        File.Copy(_selectedSourceFilePath, destPath, true);
+                        fileBytes = new FileInfo(destPath).Length;
+                        sha256 = SecurityHelper.ComputeFileSha256(destPath);
+                    }
+                    catch { }
+                }
+                else if (File.Exists(destPath))
+                {
+                    fileBytes = new FileInfo(destPath).Length;
+                    sha256 = SecurityHelper.ComputeFileSha256(destPath);
+                }
+
                 tep = new TepSanPhamDTO
                 {
-                    TenTep = txtFilePath.Text.Trim(),
-                    DuongDanTep = $"Storage/Products/{txtFilePath.Text.Trim()}",
-                    DinhDangTep = Path.GetExtension(txtFilePath.Text.Trim()),
+                    TenTep = fileName,
+                    DuongDanTep = $"Storage/Products/{fileName}",
+                    DinhDangTep = Path.GetExtension(fileName),
+                    KichThuocByte = fileBytes,
+                    MaHashSHA256 = sha256,
                     PhienBan = dto.PhienBan
                 };
             }
 
             if (_spAdminService.LuuSanPham(dto, tep, out string msg))
             {
+                _selectedSourceFilePath = null;
                 MessageBox.Show(msg, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadProducts();
             }

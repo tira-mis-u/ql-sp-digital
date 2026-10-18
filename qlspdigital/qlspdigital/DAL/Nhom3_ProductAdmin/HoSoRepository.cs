@@ -124,6 +124,82 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
             thongBao = "Đổi mật khẩu thất bại, vui lòng thử lại.";
             return false;
         }
+
+        // Đảm bảo bảng CaiDatNguoiDung tồn tại
+        private static bool _tableCaiDatChecked = false;
+        private static void EnsureCaiDatTable()
+        {
+            if (_tableCaiDatChecked) return;
+            string sql = @"
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'CaiDatNguoiDung')
+                BEGIN
+                    CREATE TABLE CaiDatNguoiDung (
+                        MaNguoiDung INT PRIMARY KEY,
+                        ThongBaoEmail BIT NOT NULL DEFAULT 1,
+                        GhiNhoDangNhap BIT NOT NULL DEFAULT 1,
+                        TuDongCapNhat BIT NOT NULL DEFAULT 1,
+                        XacNhanThanhToan BIT NOT NULL DEFAULT 1,
+                        NgayCapNhat DATETIME NOT NULL DEFAULT GETDATE(),
+                        CONSTRAINT FK_CaiDat_NguoiDung FOREIGN KEY (MaNguoiDung) REFERENCES NguoiDung(MaNguoiDung) ON DELETE CASCADE
+                    );
+                END";
+            try
+            {
+                DatabaseHelper.ExecuteNonQuery(sql);
+                _tableCaiDatChecked = true;
+            }
+            catch { }
+        }
+
+        // Lấy cài đặt người dùng từ CSDL
+        public (bool ThongBaoEmail, bool GhiNhoDangNhap, bool TuDongCapNhat, bool XacNhanThanhToan) LayCaiDat(int maNguoiDung)
+        {
+            EnsureCaiDatTable();
+            string query = "SELECT ThongBaoEmail, GhiNhoDangNhap, TuDongCapNhat, XacNhanThanhToan FROM CaiDatNguoiDung WHERE MaNguoiDung = @MaNguoiDung";
+            SqlParameter[] p = { new SqlParameter("@MaNguoiDung", maNguoiDung) };
+            DataTable dt = DatabaseHelper.ExecuteQuery(query, p);
+            if (dt.Rows.Count > 0)
+            {
+                DataRow r = dt.Rows[0];
+                return (
+                    Convert.ToBoolean(r["ThongBaoEmail"]),
+                    Convert.ToBoolean(r["GhiNhoDangNhap"]),
+                    Convert.ToBoolean(r["TuDongCapNhat"]),
+                    Convert.ToBoolean(r["XacNhanThanhToan"])
+                );
+            }
+            return (true, true, true, true);
+        }
+
+        // Lưu cài đặt người dùng vào CSDL
+        public bool LuuCaiDat(int maNguoiDung, bool thongBaoEmail, bool ghiNhoDangNhap, bool tuDongCapNhat, bool xacNhanThanhToan)
+        {
+            EnsureCaiDatTable();
+            string query = @"
+                IF EXISTS (SELECT 1 FROM CaiDatNguoiDung WHERE MaNguoiDung = @MaNguoiDung)
+                BEGIN
+                    UPDATE CaiDatNguoiDung
+                    SET ThongBaoEmail = @Email, GhiNhoDangNhap = @Remember, TuDongCapNhat = @Auto,
+                        XacNhanThanhToan = @Confirm, NgayCapNhat = GETDATE()
+                    WHERE MaNguoiDung = @MaNguoiDung;
+                END
+                ELSE
+                BEGIN
+                    INSERT INTO CaiDatNguoiDung (MaNguoiDung, ThongBaoEmail, GhiNhoDangNhap, TuDongCapNhat, XacNhanThanhToan)
+                    VALUES (@MaNguoiDung, @Email, @Remember, @Auto, @Confirm);
+                END";
+
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@MaNguoiDung", maNguoiDung),
+                new SqlParameter("@Email", thongBaoEmail),
+                new SqlParameter("@Remember", ghiNhoDangNhap),
+                new SqlParameter("@Auto", tuDongCapNhat),
+                new SqlParameter("@Confirm", xacNhanThanhToan)
+            };
+
+            return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
+        }
     }
 
     // Repository quản lý metadata tệp kỹ thuật số

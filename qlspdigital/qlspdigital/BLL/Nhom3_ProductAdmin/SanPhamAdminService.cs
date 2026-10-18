@@ -13,6 +13,13 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
         private readonly SanPhamAdminRepository _repo;
         private readonly TepSanPhamRepository _tepRepo;
 
+        public static event Action? ProductCatalogChanged;
+
+        public static void NotifyProductCatalogChanged()
+        {
+            ProductCatalogChanged?.Invoke();
+        }
+
         public SanPhamAdminService()
         {
             _repo = new SanPhamAdminRepository();
@@ -54,6 +61,7 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
                     _tepRepo.LuuThongTinTep(tep);
                 }
                 thongBao = ok ? "Cập nhật sản phẩm thành công!" : "Cập nhật sản phẩm thất bại.";
+                if (ok) NotifyProductCatalogChanged();
                 return ok;
             }
             else
@@ -68,6 +76,7 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
                         _tepRepo.LuuThongTinTep(tep);
                     }
                     thongBao = "Thêm sản phẩm mới thành công!";
+                    NotifyProductCatalogChanged();
                     return true;
                 }
                 thongBao = "Thêm sản phẩm mới thất bại.";
@@ -81,6 +90,7 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
             {
                 bool ok = _repo.XoaSanPham(maSanPham);
                 thongBao = ok ? "Đã xóa sản phẩm thành công!" : "Xóa sản phẩm thất bại.";
+                if (ok) NotifyProductCatalogChanged();
                 return ok;
             }
             catch (Exception ex)
@@ -101,6 +111,13 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
     public class DanhMucService
     {
         private readonly DanhMucRepository _repo;
+
+        public static event Action? CategoryCatalogChanged;
+
+        public static void NotifyCategoryCatalogChanged()
+        {
+            CategoryCatalogChanged?.Invoke();
+        }
 
         public DanhMucService()
         {
@@ -126,12 +143,14 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
                 {
                     bool ok = _repo.CapNhatDanhMuc(dm);
                     thongBao = ok ? "Cập nhật danh mục thành công!" : "Cập nhật thất bại.";
+                    if (ok) NotifyCategoryCatalogChanged();
                     return ok;
                 }
                 else
                 {
                     bool ok = _repo.ThemDanhMuc(dm);
                     thongBao = ok ? "Thêm danh mục mới thành công!" : "Thêm danh mục thất bại.";
+                    if (ok) NotifyCategoryCatalogChanged();
                     return ok;
                 }
             }
@@ -151,7 +170,9 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
 
         public bool XoaDanhMuc(int maDanhMuc, out string thongBao)
         {
-            return _repo.XoaDanhMuc(maDanhMuc, out thongBao);
+            bool ok = _repo.XoaDanhMuc(maDanhMuc, out thongBao);
+            if (ok) NotifyCategoryCatalogChanged();
+            return ok;
         }
     }
 
@@ -227,6 +248,30 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
             }
 
             return _repo.DoiMatKhau(maNguoiDung, matKhauCu, matKhauMoi, out thongBao);
+        }
+
+        public (bool ThongBaoEmail, bool GhiNhoDangNhap, bool TuDongCapNhat, bool XacNhanThanhToan) LayCaiDat(int maNguoiDung)
+        {
+            if (maNguoiDung <= 0) return (true, true, true, true);
+            return _repo.LayCaiDat(maNguoiDung);
+        }
+
+        public bool LuuCaiDat(int maNguoiDung, bool thongBaoEmail, bool ghiNhoDangNhap, bool tuDongCapNhat, bool xacNhanThanhToan, out string thongBao)
+        {
+            if (maNguoiDung <= 0)
+            {
+                thongBao = "Vui lòng đăng nhập để lưu tùy chọn cài đặt tài khoản!";
+                return false;
+            }
+
+            if (_repo.LuuCaiDat(maNguoiDung, thongBaoEmail, ghiNhoDangNhap, tuDongCapNhat, xacNhanThanhToan))
+            {
+                thongBao = "Đã lưu các tùy chọn cài đặt vào cơ sở dữ liệu thành công!";
+                return true;
+            }
+
+            thongBao = "Không thể lưu cài đặt, vui lòng thử lại.";
+            return false;
         }
     }
 }

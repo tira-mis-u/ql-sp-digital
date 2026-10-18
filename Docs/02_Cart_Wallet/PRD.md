@@ -82,16 +82,19 @@ Mô hình này giúp loại bỏ hoàn toàn màn hình Checkout rườm rà, ph
    - Hiển thị danh sách các lần nạp tiền và trừ tiền mua hàng từ bảng `ThanhToan` / `DonHang` (Thời gian, Loại giao dịch, Số tiền).
 
 ### 3.3. UI 15 - Quản lý Mã giảm giá & Ưu đãi (`VoucherControl` - Bổ sung cho Nhóm 2)
-1. **Hiển thị kho Voucher của người dùng (CRUD Read 3 cho BTL):**
-   - Bảng DataGridView hoặc danh sách thẻ Voucher hiển thị: Mã Voucher, Mô tả ưu đãi, Mức giảm (% hoặc số tiền cụ thể), Đơn hàng tối thiểu, Ngày hết hạn, Trạng thái (Khả dụng / Đã dùng / Hết hạn).
-   - Phân loại tab hoặc ComboBox: "Voucher khả dụng", "Đã sử dụng", "Hết hạn".
+1. **Phân biệt 3 Trạng thái Voucher rõ ràng (Voucher Lifecycle):**
+   - **Trạng thái 1: "Chưa lưu" (Chưa vào ví):** Mã ưu đãi hệ thống phát hành trong bảng `MaGiamGia` mà người dùng chưa thêm vào ví cá nhân. Xuất hiện trong bảng gợi ý ưu đãi để người dùng chủ động chọn **"Thu thập mã vào ví"**. Nếu người dùng bấm thẳng **"Dùng ngay (Áp dụng vào giỏ)"**, hệ thống tự động thực hiện thao tác kép: lưu vào ví và nạp mã vào giỏ hàng ngay lập tức.
+   - **Trạng thái 2: "Đã trong ví" (Sẵn sàng sử dụng):** Mã đã được thu thập vào bảng `MaGiamGiaNguoiDung` với `DaSuDung = 0`. Người dùng có thể bấm **"Dùng ngay (Áp dụng vào giỏ)"** để chuyển sang giỏ hàng kích hoạt ưu đãi, hoặc bấm **"Xóa khỏi ví"** nếu không còn nhu cầu.
+   - **Trạng thái 3: "Đã sử dụng" (Vô hiệu hóa):** Mã ưu đãi đã được khấu trừ thành công vào một đơn hàng thanh toán (`DaSuDung = 1`). Trạng thái này ngăn chặn người dùng tái sử dụng mã một cách bất hợp lệ trên các đơn hàng tiếp theo.
 2. **Thu thập mã Voucher mới (CRUD Create 3):**
    - Ô nhập mã code: Nhập mã khuyến mãi (VD: `CHAOBANMOI`, `SALE10`, `STEAM50K`).
-   - Nút **[ 🎁 Thu thập Voucher ]**: Kiểm tra mã có tồn tại trong bảng hệ thống `MaGiamGia`, nếu hợp lệ thì thêm vào kho voucher cá nhân `MaGiamGiaNguoiDung`.
+   - Nút **[ Thu thập mã vào ví ]**: Kiểm tra mã có tồn tại trong bảng hệ thống `MaGiamGia`, nếu hợp lệ thì thêm vào kho voucher cá nhân `MaGiamGiaNguoiDung`.
    - Thông báo: *"Thu thập voucher thành công! Bạn nhận được ưu đãi giảm X% cho đơn hàng tiếp theo."*
-3. **Xóa & Dọn dẹp Voucher (CRUD Delete 3):**
-   - Nút **[ ❌ Xóa Voucher ]**: Xóa mã đã hết hạn hoặc không muốn giữ khỏi `MaGiamGiaNguoiDung`.
-   - Nút **[ 🛒 Dùng ngay ]**: Tự động mở màn hình Giỏ hàng (UI 4) và điền sẵn mã ưu đãi.
+3. **Thao tác nhanh từ kho Voucher:**
+   - Nút **[ Dùng ngay (Áp dụng vào giỏ) ]**: Tự động mở màn hình Giỏ hàng (UI 4) và áp dụng mã ưu đãi cho giỏ hàng hiện tại.
+   - Nút **[ Xóa khỏi ví ]**: Xóa mã đã hết hạn hoặc không muốn giữ khỏi `MaGiamGiaNguoiDung`.
+4. **Quy chuẩn nhãn nút bấm:**
+   - Tuyệt đối không gắn emoji trên các nút hành động: dùng `Thu thập mã vào ví`, `Dùng ngay (Áp dụng vào giỏ)`, `Xóa khỏi ví`, `Xem ví Voucher giảm giá`.
 
 ---
 
@@ -101,6 +104,7 @@ Mô hình này giúp loại bỏ hoàn toàn màn hình Checkout rườm rà, ph
    - Mỗi đơn hàng chỉ áp dụng tối đa 1 mã giảm giá.
    - Tổng tiền tạm tính phải đạt giá trị tối thiểu (`TamTinh >= DonToiThieu`).
    - Mã voucher phải còn trong hạn sử dụng (`NgayKetThuc >= GETDATE()`) và chưa từng được tài khoản này sử dụng (`DaSuDung = 0`).
+   - Voucher chỉ có thể sử dụng một lần duy nhất cho mỗi tài khoản, sau khi đơn hàng thanh toán thành công, voucher lập tức chuyển sang trạng thái "Đã sử dụng" và không thể kích hoạt lại.
 3. **Tính toàn vẹn giao dịch (Transaction):** Thao tác trừ tiền ví, đánh dấu voucher đã dùng, tạo đơn hàng và cấp quyền thư viện phải nằm chung trong 1 Transaction SQL. Nếu có lỗi xảy ra, hệ thống tự động Rollback toàn bộ.
 4. **Đồng bộ giao diện:** Khi số dư ví thay đổi (sau khi nạp tiền hoặc mua hàng), nhãn hiển thị số dư trên Header của `MainForm` phải được cập nhật ngay lập tức.
 

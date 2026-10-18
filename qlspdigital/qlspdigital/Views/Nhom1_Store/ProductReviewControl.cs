@@ -37,6 +37,21 @@ namespace qlspdigital.Views.Nhom1_Store
             AdjustLayout();
             if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadProductList();
+
+            DanhGiaService.ReviewUpdated += (spId) =>
+            {
+                if ((spId == _maSanPhamHienTai || spId == 0) && !this.IsDisposed && !this.Disposing && this.IsHandleCreated)
+                {
+                    try { this.BeginInvoke(new Action(LoadReviews)); } catch { }
+                }
+            };
+            UserSession.SessionChanged += () =>
+            {
+                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
+                {
+                    try { this.BeginInvoke(new Action(LoadReviews)); } catch { }
+                }
+            };
         }
 
         private void InitializeComponent()
@@ -311,14 +326,32 @@ namespace qlspdigital.Views.Nhom1_Store
         public void SetSelectedProduct(int maSanPham)
         {
             _maSanPhamHienTai = maSanPham;
+            bool found = false;
             for (int i = 0; i < cboProduct.Items.Count; i++)
             {
                 if (cboProduct.Items[i] is ProductComboItem item && item.Id == maSanPham)
                 {
-                    cboProduct.SelectedIndex = i;
+                    if (cboProduct.SelectedIndex != i)
+                    {
+                        cboProduct.SelectedIndex = i;
+                    }
+                    found = true;
                     break;
                 }
             }
+
+            if (!found && cboProduct.Items.Count > 0)
+            {
+                if (cboProduct.SelectedIndex != 0)
+                {
+                    cboProduct.SelectedIndex = 0;
+                }
+                if (cboProduct.SelectedItem is ProductComboItem firstItem)
+                {
+                    _maSanPhamHienTai = firstItem.Id;
+                }
+            }
+
             LoadReviews();
         }
 

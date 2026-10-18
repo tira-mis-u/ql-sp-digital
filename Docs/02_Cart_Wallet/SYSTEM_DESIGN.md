@@ -140,9 +140,9 @@
 | **UI 4: Giỏ hàng** (`CartControl`) | **Create** (Thanh toán 1-Click) | `NguoiDung`, `DonHang`, `ChiTietDonHang`, `SoHuuSanPham`, `MaGiamGiaNguoiDung`, `ThanhToan`, `GioHang` | Kiểm tra `SoDuVi >= TongThanhToan`<br>Thực thi Transaction 8 bước | Trừ số dư ví, cấp game vào Thư viện, làm sạch giỏ, báo thành công. |
 | **UI 5: Ví tài khoản** (`WalletControl`) | **Read** (Xem số dư) | `NguoiDung`, `ThanhToan` | `MaNguoiDung = @UserId` | Hiển thị `SoDuVi` to rõ ràng và bảng lịch sử nạp/trừ tiền. |
 | **UI 5: Ví tài khoản** (`WalletControl`) | **Update** (Nạp tiền gói) | `NguoiDung`, `ThanhToan` | `MaNguoiDung = @UserId`<br>`SoDuVi = SoDuVi + @SoTien`<br>Tạo bản ghi `ThanhToan` nạp ví | Tăng số dư ví, cập nhật số dư Header MainForm. |
-| **UI 15: Kho Voucher** (`VoucherControl`) | **Read** (Xem danh sách) | `MaGiamGiaNguoiDung`, `MaGiamGia` | `MaNguoiDung = @UserId`<br>Lọc theo `DaSuDung` (0/1) | Danh sách `List<MaGiamGiaDTO>` hiển thị trên lưới hoặc thẻ voucher. |
-| **UI 15: Kho Voucher** (`VoucherControl`) | **Create** (Thu thập mã) | `MaGiamGiaNguoiDung`, `MaGiamGia` | `@MaCode`, `KichHoat = 1`, `NgayKetThuc >= GETDATE()`<br>Chưa có trong kho cá nhân | Thêm voucher vào kho cá nhân; sẵn sàng dùng trong Giỏ hàng. |
-| **UI 15: Kho Voucher** (`VoucherControl`) | **Delete** (Xóa voucher) | `MaGiamGiaNguoiDung` | `MaNguoiDung = @UserId AND MaGiamGiaId = @VoucherId` | Gỡ bỏ mã voucher đã hết hạn hoặc không muốn lưu trữ. |
+| **UI 15: Kho Voucher** (`VoucherControl`) | **Read** (Xem danh sách 3 trạng thái) | `MaGiamGiaNguoiDung`, `MaGiamGia` | `MaNguoiDung = @UserId`<br>Hiển thị 3 trạng thái rõ ràng: Chưa lưu / Đã trong ví / Đã sử dụng | Danh sách `List<MaGiamGiaDTO>` hiển thị trên lưới kèm gợi ý ưu đãi độc quyền. |
+| **UI 15: Kho Voucher** (`VoucherControl`) | **Create** (Thu thập / Dùng ngay) | `MaGiamGiaNguoiDung`, `MaGiamGia` | `@MaCode`, `KichHoat = 1`, `NgayKetThuc >= GETDATE()`<br>Bấm "Thu thập mã vào ví" hoặc "Dùng ngay (Áp dụng vào giỏ)" | Thêm voucher vào kho cá nhân và tự động điền áp dụng vào giỏ hàng. |
+| **UI 15: Kho Voucher** (`VoucherControl`) | **Delete** (Xóa khỏi ví) | `MaGiamGiaNguoiDung` | `MaNguoiDung = @UserId AND MaGiamGiaId = @VoucherId` | Nút "Xóa khỏi ví" gỡ bỏ mã ưu đãi không còn nhu cầu sử dụng. |
 
 ---
 

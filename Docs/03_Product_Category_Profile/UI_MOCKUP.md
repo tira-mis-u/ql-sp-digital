@@ -77,7 +77,7 @@
 ### 3.1. Bố cục trực quan (Wireframe Layout)
 ```text
 +---------------------------------------------------------------------------------------------------+
-|  THÔNG TIN TÀI KHOẢN VÀ HỒ SƠ CÁ NHÂN                                                             |
+|  HỒ SƠ CÁ NHÂN & CÀI ĐẶT TÀI KHOẢN                                                                |
 +---------------------------------------------------------------------------------------------------+
 |  +---------------------------------------------+  +---------------------------------------------+ |
 |  | 1. THÔNG TIN CÁ NHÂN                        |  | 2. ĐỔI MẬT KHẨU                             | |
@@ -97,8 +97,28 @@
 |  | Số điện thoại:                              |  |                                             | |
 |  | [ 0987654321                              ] |  |                                             | |
 |  |                                             |  |                                             | |
-|  | [ 💾 Cập nhật thông tin ]                   |  | [ 🔑 Xác nhận đổi mật khẩu ]                | |
+|  | [ Lưu thay đổi hồ sơ ]                      |  | [ Lưu mật khẩu mới ]                        | |
 |  +---------------------------------------------+  +---------------------------------------------+ |
+|                                                                                                   |
+|  +---------------------------------------------------------------------------------------------+  |
+|  | 3. TÙY CHỌN CÀI ĐẶT ỨNG DỤNG                                                                 |  |
+|  |---------------------------------------------------------------------------------------------|  |
+|  | [x] Nhận thông báo giao dịch và ưu đãi qua Email                                            |  |
+|  | [x] Ghi nhớ đăng nhập trên thiết bị này                                                     |  |
+|  | [x] Tự động kiểm tra bản cập nhật tệp kỹ thuật số                                            |  |
+|  | [x] Luôn xác nhận trước khi trừ tiền ví mua sản phẩm                                        |  |
+|  |                                                                                             |  |
+|  | [ Lưu cài đặt ứng dụng ]                                                                    |  |
+|  +---------------------------------------------------------------------------------------------+  |
+|                                                                                                   |
+|  +---------------------------------------------------------------------------------------------+  |
+|  | NGUYÊN TẮC BẢO MẬT TÀI KHOẢN DIGITAL STEAM                                                  |  |
+|  |---------------------------------------------------------------------------------------------|  |
+|  | • Đặt mật khẩu mạnh (tối thiểu 8 ký tự, gồm chữ hoa, số và ký tự đặc biệt).                |  |
+|  | • Tuyệt đối không cung cấp mã OTP hoặc mật khẩu cho bất kỳ ai (kể cả nhân viên hỗ trợ).     |  |
+|  | • Khi phát hiện giao dịch trừ ví bất thường, hãy đổi ngay mật khẩu và liên hệ admin.         |  |
+|  | • Luôn kiểm tra mã hash SHA-256 sau khi tải tệp số để đảm bảo file nguyên vẹn không bị mã độc|  |
+|  +---------------------------------------------------------------------------------------------+  |
 +---------------------------------------------------------------------------------------------------+
 ```
 
@@ -119,5 +139,14 @@
 | `dgvCategories` | `DataGridView` | UI 11 | Hiển thị bảng thể loại. |
 | `txtCategoryName` | `TextBox` | UI 11 | Nhập tên danh mục. |
 | `txtFullName` | `TextBox` | UI 8 | Họ và tên người dùng. |
+| `btnUpdateProfile` | `Button` | UI 8 | Nút "Lưu thay đổi hồ sơ" (không emoji), đồng bộ Header realtime. |
 | `txtOldPassword` | `TextBox` | UI 8 | Mật khẩu cũ (`UseSystemPasswordChar = True`). |
 | `txtNewPassword` | `TextBox` | UI 8 | Mật khẩu mới (`UseSystemPasswordChar = True`). |
+| `btnChangePassword` | `Button` | UI 8 | Nút "Lưu mật khẩu mới" (không emoji). |
+| `chkEmailNotif` | `CheckBox` | UI 8 | Tùy chọn thông báo qua email. |
+| `chkRememberLogin` | `CheckBox` | UI 8 | Tùy chọn ghi nhớ đăng nhập. |
+| `chkAutoUpdate` | `CheckBox` | UI 8 | Tùy chọn tự động kiểm tra bản cập nhật. |
+| `chkConfirmPayment` | `CheckBox` | UI 8 | Tùy chọn xác nhận trước khi thanh toán. |
+| `btnSaveSettings` | `Button` | UI 8 | Nút "Lưu cài đặt ứng dụng" (không emoji), lưu bền vững vào `CaiDatNguoiDung`. |
+| `panelSecurityBanner` | `Panel` | UI 8 | Khung nguyên tắc bảo mật Steam, tự động co giãn (`AutoSize = true`) không bị cắt dòng. |
+

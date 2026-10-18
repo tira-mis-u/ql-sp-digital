@@ -146,7 +146,7 @@ namespace qlspdigital.Controls
             lblTitle.Text = sp.TenSanPham;
             lblCategory.Text = $"Thể loại: {sp.TenDanhMuc}";
             lblRating.Text = $"⭐ {sp.DiemDanhGiaTrungBinh:0.0} ({sp.SoLuongDanhGia} đánh giá)";
-            lblPrice.Text = FormatHelper.FormatCurrency(sp.GiaBan);
+            lblPrice.Text = FormatHelper.FormatCurrency(sp.GiaBan, allowFreeText: true);
         }
 
         private void BtnDetail_Click(object? sender, EventArgs e)

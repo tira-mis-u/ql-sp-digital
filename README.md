@@ -200,6 +200,7 @@ Các bảng dữ liệu chính:
 | `ThanhToan` | Lịch sử giao dịch thanh toán ví và nạp tiền | Cart / Wallet (Nhóm 2) |
 | `SoHuuSanPham` | Quyền sở hữu sản phẩm vĩnh viễn và lịch sử tải tệp | Library (Nhóm 5) |
 | `DanhGia` | Đánh giá sao (1-5★) & nhận xét phản hồi sản phẩm | Store & Reviews (Nhóm 1) |
+| `CaiDatNguoiDung` | Tùy chọn cấu hình người dùng (Thông báo, tự động cập nhật, bảo mật) | Profile (Nhóm 3) |
 
 ### Các nguyên tắc thiết kế
 

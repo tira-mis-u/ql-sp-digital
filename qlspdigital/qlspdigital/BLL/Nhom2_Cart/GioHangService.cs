@@ -162,6 +162,13 @@ namespace qlspdigital.BLL.Nhom2_Cart
     {
         private readonly MaGiamGiaRepository _voucherRepo;
 
+        public static event Action? VoucherUpdated;
+
+        public static void NotifyVoucherUpdated()
+        {
+            VoucherUpdated?.Invoke();
+        }
+
         public MaGiamGiaService()
         {
             _voucherRepo = new MaGiamGiaRepository();
@@ -186,7 +193,9 @@ namespace qlspdigital.BLL.Nhom2_Cart
                 return false;
             }
 
-            return _voucherRepo.ThuThapVoucher(maNguoiDung, maCode, out thongBao);
+            bool ok = _voucherRepo.ThuThapVoucher(maNguoiDung, maCode, out thongBao);
+            if (ok) NotifyVoucherUpdated();
+            return ok;
         }
 
         public bool KiemTraVaApDung(string maCode, int maNguoiDung, decimal tamTinh, out MaGiamGiaDTO? voucher, out decimal tienGiam, out string thongBao)
@@ -196,7 +205,9 @@ namespace qlspdigital.BLL.Nhom2_Cart
 
         public bool XoaVoucherCaNhan(int maGiamGiaId, int maNguoiDung)
         {
-            return _voucherRepo.XoaVoucherCaNhan(maGiamGiaId, maNguoiDung);
+            bool ok = _voucherRepo.XoaVoucherCaNhan(maGiamGiaId, maNguoiDung);
+            if (ok) NotifyVoucherUpdated();
+            return ok;
         }
     }
 
@@ -242,6 +253,11 @@ namespace qlspdigital.BLL.Nhom2_Cart
                 decimal balanceMoi = _viRepo.LaySoDuVi(maNguoiDung);
                 UserSession.UpdateBalance(balanceMoi);
                 GioHangService.NotifyCartUpdated();
+                qlspdigital.BLL.Nhom5_Orders.ThuVienService.NotifyLibraryUpdated();
+                if (maGiamGiaId.HasValue)
+                {
+                    MaGiamGiaService.NotifyVoucherUpdated();
+                }
             }
 
             return ok;

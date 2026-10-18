@@ -18,12 +18,15 @@ namespace qlspdigital.Views.Nhom2_Cart
 
         public event Action? OnNavigateToLibrary;
         public event Action? OnNavigateToWallet;
+        public event Action? OnNavigateToVouchers;
 
         private DataGridView dgvCart = null!;
         private Panel panelSummary = null!;
         private Panel panelBottomActions = null!;
+        private Panel panelVoucher = null!;
         private TextBox txtVoucher = null!;
         private Button btnApplyVoucher = null!;
+        private Button btnOpenVouchers = null!;
         private Label lblSubtotal = null!;
         private Label lblDiscount = null!;
         private Label lblTotal = null!;
@@ -35,6 +38,7 @@ namespace qlspdigital.Views.Nhom2_Cart
         private decimal _tamTinh = 0;
         private decimal _tienGiam = 0;
         private int? _maGiamGiaId = null;
+        private string _appliedVoucherCode = string.Empty;
 
         public CartControl()
         {
@@ -51,7 +55,24 @@ namespace qlspdigital.Views.Nhom2_Cart
             // Lắng nghe biến động số dư ví
             UserSession.BalanceChanged += (bal) =>
             {
-                lblWalletBalance.Text = $"Số dư ví: {FormatHelper.FormatCurrency(bal)}";
+                if (!this.IsDisposed && !this.Disposing && lblWalletBalance != null)
+                {
+                    lblWalletBalance.Text = $"Số dư ví: {FormatHelper.FormatCurrency(bal)}";
+                }
+            };
+            GioHangService.CartUpdated += () =>
+            {
+                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
+                {
+                    try { this.BeginInvoke(new Action(LoadCart)); } catch { }
+                }
+            };
+            UserSession.SessionChanged += () =>
+            {
+                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
+                {
+                    try { this.BeginInvoke(new Action(LoadCart)); } catch { }
+                }
             };
         }
 
@@ -178,9 +199,9 @@ namespace qlspdigital.Views.Nhom2_Cart
             lblSumTitle.UseMnemonic = false;
 
             // Khung voucher
-            Panel panelVoucher = new Panel();
+            panelVoucher = new Panel();
             panelVoucher.Dock = DockStyle.Top;
-            panelVoucher.Height = 85;
+            panelVoucher.Height = 96;
             panelVoucher.Padding = new Padding(0, 10, 0, 0);
 
             Label lblVoucherTitle = new Label();
@@ -200,21 +221,37 @@ namespace qlspdigital.Views.Nhom2_Cart
             txtVoucher.BorderStyle = BorderStyle.FixedSingle;
             txtVoucher.CharacterCasing = CharacterCasing.Upper;
             txtVoucher.PlaceholderText = "Nhập mã...";
+            txtVoucher.TextChanged += TxtVoucher_TextChanged;
 
             btnApplyVoucher = new Button();
             btnApplyVoucher.Text = "Áp dụng";
-            btnApplyVoucher.Location = new Point(200, 26);
-            btnApplyVoucher.Width = 100;
+            btnApplyVoucher.Location = new Point(180, 26);
+            btnApplyVoucher.Width = 120;
             btnApplyVoucher.Height = 32;
             btnApplyVoucher.BackColor = Color.FromArgb(49, 98, 130);
             btnApplyVoucher.ForeColor = Color.White;
             btnApplyVoucher.FlatStyle = FlatStyle.Flat;
-            btnApplyVoucher.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnApplyVoucher.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
             btnApplyVoucher.Cursor = Cursors.Hand;
             btnApplyVoucher.UseMnemonic = false;
             btnApplyVoucher.FlatAppearance.BorderSize = 0;
             btnApplyVoucher.Click += BtnApplyVoucher_Click;
 
+            btnOpenVouchers = new Button();
+            btnOpenVouchers.Text = "Xem ví Voucher giảm giá";
+            btnOpenVouchers.Location = new Point(0, 64);
+            btnOpenVouchers.Size = new Size(240, 24);
+            btnOpenVouchers.ForeColor = Color.FromArgb(102, 192, 244);
+            btnOpenVouchers.BackColor = Color.Transparent;
+            btnOpenVouchers.FlatStyle = FlatStyle.Flat;
+            btnOpenVouchers.Font = new Font("Segoe UI", 9f, FontStyle.Underline);
+            btnOpenVouchers.Cursor = Cursors.Hand;
+            btnOpenVouchers.TextAlign = ContentAlignment.MiddleLeft;
+            btnOpenVouchers.UseMnemonic = false;
+            btnOpenVouchers.FlatAppearance.BorderSize = 0;
+            btnOpenVouchers.Click += BtnOpenVouchers_Click;
+
+            panelVoucher.Controls.Add(btnOpenVouchers);
             panelVoucher.Controls.Add(btnApplyVoucher);
             panelVoucher.Controls.Add(txtVoucher);
             panelVoucher.Controls.Add(lblVoucherTitle);
@@ -332,10 +369,10 @@ namespace qlspdigital.Views.Nhom2_Cart
             if (txtVoucher != null && btnApplyVoucher != null)
             {
                 int pnlW = panelSummary.ClientSize.Width - 40;
-                int btnW = 95;
-                int txtW = Math.Max(120, pnlW - btnW - 10);
+                int btnW = 120;
+                int txtW = Math.Max(100, pnlW - btnW - 10);
                 txtVoucher.Width = txtW;
-                btnApplyVoucher.Location = new Point(txtW + 10, 28);
+                btnApplyVoucher.Location = new Point(txtW + 10, 27);
                 btnApplyVoucher.Width = btnW;
             }
         }
@@ -346,7 +383,13 @@ namespace qlspdigital.Views.Nhom2_Cart
             _tamTinh = 0;
             _tienGiam = 0;
             _maGiamGiaId = null;
+            _appliedVoucherCode = string.Empty;
             txtVoucher.Clear();
+            if (btnApplyVoucher != null)
+            {
+                btnApplyVoucher.Text = "Áp dụng";
+                btnApplyVoucher.BackColor = Color.FromArgb(49, 98, 130);
+            }
 
             if (!UserSession.IsLoggedIn)
             {
@@ -384,9 +427,34 @@ namespace qlspdigital.Views.Nhom2_Cart
         private void UpdateTotals()
         {
             lblSubtotal.Text = $"Tạm tính: {FormatHelper.FormatCurrency(_tamTinh)}";
-            lblDiscount.Text = $"Giảm giá: -{FormatHelper.FormatCurrency(_tienGiam)}";
+            if (_tienGiam > 0)
+            {
+                lblDiscount.Text = !string.IsNullOrEmpty(_appliedVoucherCode)
+                    ? $"Giảm giá ({_appliedVoucherCode}): -{FormatHelper.FormatCurrency(_tienGiam)}"
+                    : $"Giảm giá: -{FormatHelper.FormatCurrency(_tienGiam)}";
+            }
+            else
+            {
+                lblDiscount.Text = "Giảm giá: 0 ₫";
+            }
             decimal phaiTra = Math.Max(0, _tamTinh - _tienGiam);
             lblTotal.Text = $"Tổng thanh toán: {FormatHelper.FormatCurrency(phaiTra)}";
+        }
+
+        private void TxtVoucher_TextChanged(object? sender, EventArgs e)
+        {
+            if (btnApplyVoucher == null) return;
+            string currentText = txtVoucher.Text.Trim();
+            if (!string.IsNullOrEmpty(_appliedVoucherCode) && !string.Equals(currentText, _appliedVoucherCode, StringComparison.OrdinalIgnoreCase))
+            {
+                btnApplyVoucher.Text = "Áp dụng";
+                btnApplyVoucher.BackColor = Color.FromArgb(49, 98, 130);
+            }
+            else if (!string.IsNullOrEmpty(_appliedVoucherCode) && string.Equals(currentText, _appliedVoucherCode, StringComparison.OrdinalIgnoreCase))
+            {
+                btnApplyVoucher.Text = "Đã áp dụng";
+                btnApplyVoucher.BackColor = Color.FromArgb(90, 160, 45);
+            }
         }
 
         private void BtnApplyVoucher_Click(object? sender, EventArgs e)
@@ -410,19 +478,54 @@ namespace qlspdigital.Views.Nhom2_Cart
                 return;
             }
 
+            if (dgvCart.Rows.Count == 0 || _tamTinh <= 0)
+            {
+                MessageBox.Show("Giỏ hàng của bạn đang trống! Vui lòng chọn sản phẩm vào giỏ trước khi áp dụng voucher.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (_maGiamGiaId.HasValue && string.Equals(_appliedVoucherCode, code, StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show($"Mã ưu đãi '{code}' đã được áp dụng thành công cho giỏ hàng hiện tại!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             if (_voucherService.KiemTraVaApDung(code, UserSession.CurrentUserId, _tamTinh, out MaGiamGiaDTO? voucher, out decimal tienGiam, out string msg))
             {
                 _maGiamGiaId = voucher?.MaGiamGiaId;
+                _appliedVoucherCode = code;
                 _tienGiam = tienGiam;
+                btnApplyVoucher.Text = "Đã áp dụng";
+                btnApplyVoucher.BackColor = Color.FromArgb(90, 160, 45);
                 UpdateTotals();
-                MessageBox.Show(msg, "Áp dụng Voucher", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(msg, "Áp dụng Voucher thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
                 _maGiamGiaId = null;
+                _appliedVoucherCode = string.Empty;
                 _tienGiam = 0;
+                btnApplyVoucher.Text = "Áp dụng";
+                btnApplyVoucher.BackColor = Color.FromArgb(49, 98, 130);
                 UpdateTotals();
                 MessageBox.Show(msg, "Lỗi Voucher", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void BtnOpenVouchers_Click(object? sender, EventArgs e)
+        {
+            OnNavigateToVouchers?.Invoke();
+        }
+
+        public void SetInitialVoucherCode(string code)
+        {
+            if (txtVoucher != null && !string.IsNullOrWhiteSpace(code))
+            {
+                txtVoucher.Text = code.Trim().ToUpper();
+                if (UserSession.IsLoggedIn && _tamTinh > 0)
+                {
+                    BtnApplyVoucher_Click(btnApplyVoucher, EventArgs.Empty);
+                }
             }
         }
 

@@ -119,7 +119,7 @@ namespace qlspdigital.Views.Main
             btnHeaderAuth.Click += BtnHeaderAuth_Click;
 
             lblUserGreeting = new Label();
-            lblUserGreeting.Text = "Khách";
+            lblUserGreeting.Text = "Khách (Chưa đăng nhập)";
             lblUserGreeting.Dock = DockStyle.Fill;
             lblUserGreeting.ForeColor = Color.FromArgb(102, 192, 244);
             lblUserGreeting.Font = new Font("Segoe UI", 10, FontStyle.Bold);
@@ -591,7 +591,7 @@ namespace qlspdigital.Views.Main
             }
             else
             {
-                lblUserGreeting.Text = "Khách";
+                lblUserGreeting.Text = "Khách (Chưa đăng nhập)";
                 lblBalance.Text = "Ví: 0 ₫";
                 btnHeaderAuth.Text = "Đăng nhập";
                 btnHeaderAuth.BackColor = Color.FromArgb(49, 98, 130);
@@ -687,14 +687,19 @@ namespace qlspdigital.Views.Main
             lblStatusText.Text = "Đang xem: Đánh giá & Nhận xét sản phẩm (Nhóm 1 - Lê Nguyễn Minh Trí)";
         }
 
-        public void NavigateToCart()
+        public void NavigateToCart(string? initialVoucherCode = null)
         {
             if (!EnsureLoggedIn("Giỏ hàng của tôi")) return;
 
             SetActiveMenu(btnMenuCart);
             CartControl cart = new CartControl();
+            if (!string.IsNullOrWhiteSpace(initialVoucherCode))
+            {
+                cart.SetInitialVoucherCode(initialVoucherCode);
+            }
             cart.OnNavigateToLibrary += () => NavigateToLibrary();
             cart.OnNavigateToWallet += () => NavigateToWallet();
+            cart.OnNavigateToVouchers += () => NavigateToVouchers();
             SwitchView(cart);
             lblStatusText.Text = "Đang xem: Giỏ hàng mua sắm & Thanh toán (Nhóm 2 - Nguyễn Quốc Trung)";
         }
@@ -716,6 +721,7 @@ namespace qlspdigital.Views.Main
             SetActiveMenu(btnMenuVouchers);
             VoucherControl voucher = new VoucherControl();
             voucher.OnNavigateToCart += () => NavigateToCart();
+            voucher.OnNavigateToCartWithVoucher += (code) => NavigateToCart(code);
             SwitchView(voucher);
             lblStatusText.Text = "Đang xem: Kho mã ưu đãi & Voucher giảm giá (Nhóm 2 - Nguyễn Quốc Trung)";
         }

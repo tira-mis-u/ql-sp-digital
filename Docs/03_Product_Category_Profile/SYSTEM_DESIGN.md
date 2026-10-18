@@ -110,17 +110,29 @@
 | `SoDuVi` | `DECIMAL(18,2)` | | `NOT NULL, DEFAULT 0` | Số dư ví hiện tại. |
 | `NgayTao` | `DATETIME` | | `NOT NULL, DEFAULT GETDATE()` | Ngày đăng ký thành viên. |
 
-### 2.5. Quan hệ bảng & Quy tắc toàn vẹn dữ liệu
+### 2.5. Bảng `CaiDatNguoiDung` (Tùy chọn cấu hình hệ thống & Bảo mật cá nhân - UI 8)
+| Tên cột | Kiểu dữ liệu | Khóa | Ràng buộc / Điều kiện | Ý nghĩa nghiệp vụ trong UI |
+|---|---|:---:|---|---|
+| `MaCaiDat` | `INT` | **PK** | `IDENTITY(1,1)` | Mã định danh bản ghi cấu hình cài đặt. |
+| `MaNguoiDung` | `INT` | **FK** | `NOT NULL, UNIQUE, FK -> NguoiDung(MaNguoiDung) ON DELETE CASCADE` | Khóa ngoại liên kết 1-1 với tài khoản người dùng. |
+| `ThongBaoEmail` | `BIT` | | `NOT NULL, DEFAULT 1` | Tùy chọn nhận thông báo giao dịch & khuyến mãi qua Email. |
+| `GhiNhoDangNhap` | `BIT` | | `NOT NULL, DEFAULT 1` | Tùy chọn lưu phiên đăng nhập cục bộ trên thiết bị. |
+| `TuDongCapNhat` | `BIT` | | `NOT NULL, DEFAULT 1` | Tự động kiểm tra phiên bản mới của tệp kỹ thuật số. |
+| `XacNhanThanhToan` | `BIT` | | `NOT NULL, DEFAULT 1` | Bật hộp thoại hỏi xác nhận trước khi trừ số dư ví. |
+| `NgayCapNhat` | `DATETIME` | | `NOT NULL, DEFAULT GETDATE()` | Thời điểm cập nhật cấu hình gần nhất. |
+
+### 2.6. Quan hệ bảng & Quy tắc toàn vẹn dữ liệu
 ```text
 [ DanhMuc ] (1) <---------- (N) [ SanPham ] (1) <---------- (N) [ TepSanPham ]
                                      ^
                                      | (N)
                               [ NhaPhatHanh ] (1)
 
-[ NguoiDung ] (Độc lập cho hồ sơ cá nhân UI 8)
+[ NguoiDung ] (1) <---------- (1) [ CaiDatNguoiDung ] (ON DELETE CASCADE)
 ```
 - **Ràng buộc khóa ngoại khi xóa Danh mục:** `FK_SanPham_DanhMuc` cấu hình `ON DELETE NO ACTION`. Hệ thống sẽ chặn không cho phép xóa danh mục nếu đang có ít nhất một sản phẩm trực thuộc.
 - **Ràng buộc Cascade cho Tệp số:** `FK_TepSanPham_SanPham` cấu hình `ON DELETE CASCADE`. Khi một sản phẩm bị xóa hẳn, toàn bộ các bản ghi tệp số con sẽ tự động được dọn trong CSDL.
+- **Ràng buộc Cascade cho Cài đặt cá nhân:** `FK_CaiDatNguoiDung_NguoiDung` cấu hình `ON DELETE CASCADE`. Khi xóa tài khoản người dùng, toàn bộ cấu hình tùy chọn liên kết sẽ tự động bị xóa theo.
 - **Ràng buộc tên danh mục duy nhất:** `CONSTRAINT UQ_DanhMuc_Ten UNIQUE (TenDanhMuc)` chống trùng tên danh mục.
 
 ---
@@ -140,9 +152,10 @@
 | **UI 11: Quản lý Danh mục** (`CategoryManageControl`) | **Create** (Thêm danh mục) | `DanhMuc` | `@TenDanhMuc`, `@MoTa`, `TrangThai = 1` | Bổ sung thể loại mới vào ComboBox lọc của toàn hệ thống. |
 | **UI 11: Quản lý Danh mục** (`CategoryManageControl`) | **Update** (Sửa danh mục) | `DanhMuc` | `MaDanhMuc = @MaDanhMuc`<br>Cập nhật `@TenDanhMuc`, `@MoTa` | Cập nhật tên thể loại hiển thị. |
 | **UI 11: Quản lý Danh mục** (`CategoryManageControl`) | **Delete** (Xóa danh mục) | `DanhMuc` | `MaDanhMuc = @MaDanhMuc` VÀ không có sản phẩm liên kết | Xóa danh mục nếu rỗng; cảnh báo lỗi nếu còn sản phẩm. |
-| **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Read** (Xem hồ sơ) | `NguoiDung` | `MaNguoiDung = @UserId` | Điền thông tin lên form: Họ tên, Email, SĐT, Số dư ví, Ngày tạo. |
-| **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Update** (Sửa thông tin) | `NguoiDung` | `MaNguoiDung = @UserId`<br>Cập nhật `@HoTen`, `@Email`, `@SoDienThoai` | Cập nhật thông tin liên hệ và đồng bộ họ tên trên Header. |
+| **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Read** (Xem hồ sơ & Cài đặt) | `NguoiDung`, `CaiDatNguoiDung` | `MaNguoiDung = @UserId` | Điền thông tin lên form: Họ tên, Email, SĐT, Số dư ví, Ngày tạo và nạp 4 tùy chọn cài đặt hệ thống. |
+| **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Update** (Sửa thông tin & Realtime) | `NguoiDung` | `MaNguoiDung = @UserId`<br>Cập nhật `@HoTen`, `@Email`, `@SoDienThoai` | Cập nhật CSDL và gọi `UserSession.UpdateProfile()` bắn sự kiện `SessionChanged` đồng bộ tức thì lên Header `MainForm`. |
 | **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Update** (Đổi mật khẩu) | `NguoiDung` | `MaNguoiDung = @UserId AND MatKhauHash = @HashCu`<br>Cập nhật `MatKhauHash = @HashMoi` | Xác nhận đổi mật khẩu thành công bằng mã băm SHA-256 an toàn. |
+| **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Create/Update** (Lưu cài đặt ứng dụng) | `CaiDatNguoiDung` | `MaNguoiDung = @UserId`<br>Cập nhật `@ThongBaoEmail`, `@GhiNhoDangNhap`, `@TuDongCapNhat`, `@XacNhanThanhToan` | Thực thi UPSERT vào CSDL, bảo đảm các checkbox cấu hình được lưu bền vững vào database thực tế. |
 
 ---
 
@@ -372,11 +385,34 @@ namespace DPMS.BLL.Interfaces
 
 ---
 
-### Luồng 3: Cập nhật thông tin hồ sơ & Đổi mật khẩu an toàn (UI 8)
-1. **Cập nhật thông tin cá nhân:**
-   - Khách/Admin sửa Họ tên, Email, Số điện thoại $\rightarrow$ BLL kiểm tra định dạng email và số điện thoại hợp lệ $\rightarrow$ Cập nhật vào CSDL $\rightarrow$ Thông báo thành công và cập nhật lại Họ tên trên Header `MainForm`.
+### Luồng 3: Cập nhật thông tin hồ sơ, Đổi mật khẩu & Tùy chọn cài đặt (UI 8)
+1. **Cập nhật thông tin cá nhân & Đồng bộ Realtime:**
+   - Khách/Admin sửa Họ tên, Email, Số điện thoại $\rightarrow$ BLL kiểm tra định dạng email và số điện thoại hợp lệ $\rightarrow$ Cập nhật vào CSDL (`UPDATE NguoiDung`).
+   - Gọi `UserSession.UpdateProfile(hoTen, email)` kích hoạt sự kiện `UserSession.SessionChanged`.
+   - `MainForm` lắng nghe sự kiện qua `SessionChanged += UpdateUserInterfaceSession` và cập nhật tức thì nhãn câu chào `lblUserGreeting` ("Xin chào, {HoTen}") trên Header thanh điều hướng mà không cần người dùng thao tác F5 hay đăng nhập lại.
 2. **Đổi mật khẩu bảo mật:**
    - Khách nhập Mật khẩu hiện tại, Mật khẩu mới, Xác nhận mật khẩu mới.
    - BLL băm mật khẩu cũ bằng SHA-256: `Hash(MatKhauCu)`.
    - Đối chiếu với `MatKhauHash` hiện tại trong CSDL. Nếu khớp, tính `Hash(MatKhauMoi)` và thực thi cập nhật `MatKhauHash`.
-   - Báo đổi mật khẩu thành công và yêu cầu đăng nhập lại nếu cần.
+   - Báo đổi mật khẩu thành công và thông báo lưu ý bảo mật.
+3. **Lưu cấu hình cài đặt ứng dụng vào CSDL:**
+   - Người dùng tick/untick 4 tùy chọn (Thông báo email, Ghi nhớ đăng nhập, Tự động cập nhật, Xác nhận thanh toán).
+   - Khi bấm nút **"Lưu cài đặt ứng dụng"**, `HoSoService.LuuCaiDat` thực thi truy vấn UPSERT vào bảng `CaiDatNguoiDung`:
+     ```sql
+     MERGE INTO CaiDatNguoiDung WITH (HOLDLOCK) AS target
+     USING (SELECT @MaNguoiDung AS MaNguoiDung) AS source
+     ON (target.MaNguoiDung = source.MaNguoiDung)
+     WHEN MATCHED THEN
+         UPDATE SET ThongBaoEmail = @ThongBaoEmail, GhiNhoDangNhap = @GhiNhoDangNhap,
+                    TuDongCapNhat = @TuDongCapNhat, XacNhanThanhToan = @XacNhanThanhToan,
+                    NgayCapNhat = GETDATE()
+     WHEN NOT MATCHED THEN
+         INSERT (MaNguoiDung, ThongBaoEmail, GhiNhoDangNhap, TuDongCapNhat, XacNhanThanhToan, NgayCapNhat)
+         VALUES (@MaNguoiDung, @ThongBaoEmail, @GhiNhoDangNhap, @TuDongCapNhat, @XacNhanThanhToan, GETDATE());
+     ```
+   - Khi mở lại tab Hồ sơ, hệ thống tự động nạp cấu hình đã lưu để hiển thị lại chính xác trạng thái checkbox của người dùng.
+4. **Hiển thị khung Nguyên tắc bảo mật tài khoản Digital Steam:**
+   - Sử dụng layout tự co giãn linh hoạt: `lblSecurityContent.AutoSize = true`, giới hạn `MaximumSize = new Size(panelWidth - 40, 0)` và gán `panelSecurityBanner.Height = Math.Max(180, lblSecurityContent.Bottom + 25)`.
+   - Đảm bảo hiển thị trọn vẹn 4 điều khoản bảo mật chuẩn Steam (Mật khẩu mạnh, Không chia sẻ OTP, Cảnh báo giao dịch ví, Kiểm tra hash SHA-256) mà không bao giờ bị cắt cụt phần bullet list bên dưới.
+5. **Quy tắc thiết kế nút bấm (Button Policy):**
+   - Không lạm dụng icon emoji trong text của các nút bấm hành động (Ví dụ dùng: `Lưu thay đổi hồ sơ`, `Lưu mật khẩu mới`, `Lưu cài đặt ứng dụng`). Giữ giao diện chuẩn mực, thanh lịch và đồng nhất giữa các màn hình.

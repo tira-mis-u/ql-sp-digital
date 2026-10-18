@@ -1,7 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using qlspdigital.DAL.Nhom5_Orders;
 using qlspdigital.DTOs;
@@ -54,6 +56,13 @@ namespace qlspdigital.BLL.Nhom5_Orders
     {
         private readonly ThuVienRepository _repo;
 
+        public static event Action? LibraryUpdated;
+
+        public static void NotifyLibraryUpdated()
+        {
+            LibraryUpdated?.Invoke();
+        }
+
         public ThuVienService()
         {
             _repo = new ThuVienRepository();
@@ -65,17 +74,12 @@ namespace qlspdigital.BLL.Nhom5_Orders
             return _repo.LayKhoThuVien(maNguoiDung);
         }
 
-        // Mô phỏng quá trình tải xuống tệp kỹ thuật số có ProgressBar và tăng SoLanTai
+        // Tải xuống tệp kỹ thuật số nén ZIP chuẩn (PK zip) tương thích 100% với Windows Explorer, 7-Zip, WinRAR
         public async Task<bool> TaiXuongTepAsync(ThuVienItemDTO item, string thuMucLuu, Action<int> onProgress)
         {
-            // Mô phỏng thanh tiến trình tải từ 0% đến 100%
-            for (int p = 0; p <= 100; p += 10)
-            {
-                onProgress(p);
-                await Task.Delay(100);
-            }
+            onProgress(10);
+            await Task.Delay(80);
 
-            // Tạo file zip/txt mô phỏng trong thư mục khách hàng chọn
             try
             {
                 if (!Directory.Exists(thuMucLuu))
@@ -83,16 +87,101 @@ namespace qlspdigital.BLL.Nhom5_Orders
                     Directory.CreateDirectory(thuMucLuu);
                 }
 
-                string safeName = string.Join("_", item.TenSanPham.Split(Path.GetInvalidFileNameChars()));
+                string safeName = string.Join("_", item.TenSanPham.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries)).Trim().Replace(' ', '_');
                 string targetFile = Path.Combine(thuMucLuu, $"{safeName}_v{item.PhienBan}.zip");
 
-                if (!File.Exists(targetFile))
+                // Tìm tệp gốc đã upload của sản phẩm nếu có
+                string? resolvedSourcePath = null;
+                if (!string.IsNullOrWhiteSpace(item.DuongDanTep))
                 {
-                    File.WriteAllText(targetFile, $"DPMS Digital Product License File\nProduct: {item.TenSanPham}\nVersion: {item.PhienBan}\nDownloaded on: {DateTime.Now}");
+                    if (Path.IsPathRooted(item.DuongDanTep) && File.Exists(item.DuongDanTep))
+                    {
+                        resolvedSourcePath = item.DuongDanTep;
+                    }
+                    else
+                    {
+                        string localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, item.DuongDanTep.Replace('/', Path.DirectorySeparatorChar));
+                        if (File.Exists(localPath))
+                        {
+                            resolvedSourcePath = localPath;
+                        }
+                    }
                 }
+
+                onProgress(30);
+                await Task.Delay(80);
+
+                // Xóa tệp zip cũ nếu đã tồn tại để tạo tệp nén mới toàn vẹn
+                if (File.Exists(targetFile))
+                {
+                    File.Delete(targetFile);
+                }
+
+                onProgress(50);
+                await Task.Delay(80);
+
+                // Tạo file .zip chuẩn nén (PK zip specification) tương thích 100% với Windows Explorer, WinRAR, 7-Zip
+                using (var fs = new FileStream(targetFile, FileMode.Create, FileAccess.Write, FileShare.None))
+                using (var archive = new ZipArchive(fs, ZipArchiveMode.Create, false, Encoding.UTF8))
+                {
+                    // 1. Đóng gói tệp phần mềm / dữ liệu gốc (ví dụ: .exe, .iso, .zip)
+                    if (!string.IsNullOrEmpty(resolvedSourcePath) && File.Exists(resolvedSourcePath))
+                    {
+                        string entryFileName = Path.GetFileName(resolvedSourcePath);
+                        archive.CreateEntryFromFile(resolvedSourcePath, entryFileName, CompressionLevel.Optimal);
+                    }
+                    else
+                    {
+                        // Nếu sản phẩm mẫu chưa có tệp vật lý trên đĩa, tạo tệp thực thi / mô phỏng chuẩn
+                        string ext = !string.IsNullOrWhiteSpace(item.DuongDanTep) ? Path.GetExtension(item.DuongDanTep) : ".exe";
+                        if (string.IsNullOrWhiteSpace(ext)) ext = ".exe";
+                        string entryFileName = $"{safeName}{ext}";
+
+                        var mainEntry = archive.CreateEntry(entryFileName, CompressionLevel.Optimal);
+                        using (var entryStream = mainEntry.Open())
+                        using (var writer = new StreamWriter(entryStream, Encoding.UTF8))
+                        {
+                            writer.WriteLine($"# DPMS Digital Product Distribution Package");
+                            writer.WriteLine($"# Product: {item.TenSanPham}");
+                            writer.WriteLine($"# Version: {item.PhienBan}");
+                            writer.WriteLine($"# Order Code: #{item.MaDonHang}");
+                            writer.WriteLine($"# Category: {item.TenDanhMuc}");
+                            writer.WriteLine($"# Licensed to User ID: {item.MaNguoiDung}");
+                            writer.WriteLine($"# Built with: Visual Studio C# WinForms .NET 10.0");
+                        }
+                    }
+
+                    // 2. Đính kèm giấy phép số LICENSE_AND_KEY.txt
+                    var licEntry = archive.CreateEntry("LICENSE_AND_KEY.txt", CompressionLevel.Optimal);
+                    using (var licStream = licEntry.Open())
+                    using (var writer = new StreamWriter(licStream, Encoding.UTF8))
+                    {
+                        writer.WriteLine("==================================================================");
+                        writer.WriteLine("          DPMS DIGITAL PRODUCT LICENSE & VERIFICATION CERTIFICATE ");
+                        writer.WriteLine("==================================================================");
+                        writer.WriteLine($"Sản phẩm           : {item.TenSanPham}");
+                        writer.WriteLine($"Phiên bản          : {item.PhienBan}");
+                        writer.WriteLine($"Mã đơn hàng        : #{item.MaDonHang}");
+                        writer.WriteLine($"Mã người dùng      : {item.MaNguoiDung}");
+                        writer.WriteLine($"Thời điểm cấp quyền: {item.NgaySoHuu:dd/MM/yyyy HH:mm:ss}");
+                        writer.WriteLine($"Thời điểm tải tệp  : {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
+                        if (!string.IsNullOrEmpty(item.MaHashSHA256))
+                        {
+                            writer.WriteLine($"Mã SHA-256 xác thực: {item.MaHashSHA256}");
+                        }
+                        writer.WriteLine("==================================================================");
+                        writer.WriteLine("Bản quyền kỹ thuật số được chứng nhận bởi DPMS Platform.");
+                        writer.WriteLine("Chúc bạn có trải nghiệm tuyệt vời với sản phẩm!");
+                    }
+                }
+
+                onProgress(85);
+                await Task.Delay(60);
 
                 // Cập nhật lượt tải trong CSDL
                 _repo.CapNhatLanTai(item.MaSoHuu);
+
+                onProgress(100);
                 return true;
             }
             catch

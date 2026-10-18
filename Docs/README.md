@@ -93,6 +93,7 @@ Toàn bộ hệ thống cơ sở dữ liệu đã được chuẩn hóa và vi�
 | 11 | `ThanhToan` | `MaThanhToan` (IDENTITY) | `MaNguoiDung` -> `NguoiDung`<br>`MaDonHang` -> `DonHang` (NULL) | Lịch sử nạp tiền vào ví ảo hoặc trừ tiền thanh toán đơn hàng. | Nhóm 2 |
 | 12 | `SoHuuSanPham` | `MaSoHuu` (IDENTITY) | `MaNguoiDung` -> `NguoiDung`<br>`MaSanPham` -> `SanPham` | Kho game/sản phẩm đã sở hữu vĩnh viễn sau thanh toán, ngày mua, số lần tải. | Nhóm 5 |
 | 13 | `DanhGia` | `MaDanhGia` (IDENTITY) | `MaNguoiDung` -> `NguoiDung`<br>`MaSanPham` -> `SanPham` | Đánh giá sao (1-5★) và nhận xét của khách hàng cho sản phẩm (Ràng buộc `UNIQUE(MaNguoiDung, MaSanPham)`). | Nhóm 1 |
+| 14 | `CaiDatNguoiDung` | `MaCaiDat` (IDENTITY) | `MaNguoiDung` -> `NguoiDung` | Tùy chọn cài đặt người dùng (Thông báo email, ghi nhớ đăng nhập, cập nhật tự động, xác nhận thanh toán). | Nhóm 3 |
 
 ---
 
