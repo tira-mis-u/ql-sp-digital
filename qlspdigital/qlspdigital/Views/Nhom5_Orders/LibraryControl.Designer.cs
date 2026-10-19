@@ -48,25 +48,25 @@ namespace qlspdigital.Views.Nhom5_Orders
             // 
             panelTop.Controls.Add(btnRefresh);
             panelTop.Controls.Add(lblHeader);
-            panelTop.Location = new Point(29, 27);
+            panelTop.Location = new Point(25, 20);
             panelTop.Margin = new Padding(3, 5, 3, 5);
             panelTop.Name = "panelTop";
-            panelTop.Size = new Size(1131, 73);
+            panelTop.Size = new Size(990, 48);
             panelTop.TabIndex = 2;
             // 
             // btnRefresh
             // 
             btnRefresh.BackColor = Color.FromArgb(49, 98, 130);
             btnRefresh.Cursor = Cursors.Hand;
-            btnRefresh.Dock = DockStyle.Right;
+            btnRefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnRefresh.FlatAppearance.BorderSize = 0;
             btnRefresh.FlatStyle = FlatStyle.Flat;
             btnRefresh.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnRefresh.ForeColor = Color.White;
-            btnRefresh.Location = new Point(948, 0);
+            btnRefresh.Location = new Point(860, 8);
             btnRefresh.Margin = new Padding(3, 5, 3, 5);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(183, 73);
+            btnRefresh.Size = new Size(130, 32);
             btnRefresh.TabIndex = 0;
             btnRefresh.Text = "Làm mới kho";
             btnRefresh.UseVisualStyleBackColor = false;
@@ -75,10 +75,10 @@ namespace qlspdigital.Views.Nhom5_Orders
             // lblHeader
             // 
             lblHeader.AutoSize = true;
-            lblHeader.Dock = DockStyle.Left;
+            lblHeader.Dock = DockStyle.None;
             lblHeader.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
             lblHeader.ForeColor = Color.White;
-            lblHeader.Location = new Point(0, 0);
+            lblHeader.Location = new Point(0, 7);
             lblHeader.Name = "lblHeader";
             lblHeader.Size = new Size(657, 35);
             lblHeader.TabIndex = 1;
@@ -178,17 +178,16 @@ namespace qlspdigital.Views.Nhom5_Orders
             // 
             // btnUninstall
             // 
-            btnUninstall.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             btnUninstall.BackColor = Color.FromArgb(180, 40, 40);
             btnUninstall.Cursor = Cursors.Hand;
             btnUninstall.FlatAppearance.BorderSize = 0;
             btnUninstall.FlatStyle = FlatStyle.Flat;
             btnUninstall.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnUninstall.ForeColor = Color.White;
-            btnUninstall.Location = new Point(23, 693);
+            btnUninstall.Location = new Point(20, 298);
             btnUninstall.Margin = new Padding(3, 5, 3, 5);
             btnUninstall.Name = "btnUninstall";
-            btnUninstall.Size = new Size(383, 56);
+            btnUninstall.Size = new Size(315, 38);
             btnUninstall.TabIndex = 0;
             btnUninstall.Text = "Gỡ khỏi Thư viện cá nhân";
             btnUninstall.UseMnemonic = false;
@@ -223,10 +222,10 @@ namespace qlspdigital.Views.Nhom5_Orders
             btnDownload.FlatStyle = FlatStyle.Flat;
             btnDownload.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             btnDownload.ForeColor = Color.White;
-            btnDownload.Location = new Point(23, 347);
+            btnDownload.Location = new Point(20, 180);
             btnDownload.Margin = new Padding(3, 5, 3, 5);
             btnDownload.Name = "btnDownload";
-            btnDownload.Size = new Size(383, 80);
+            btnDownload.Size = new Size(315, 42);
             btnDownload.TabIndex = 3;
             btnDownload.Text = "TẢI XUỐNG VỀ MÁY";
             btnDownload.UseMnemonic = false;

@@ -45,18 +45,24 @@ namespace qlspdigital.Views.Nhom5_Orders
 
         private void AdjustLayout()
         {
-            if (dgvOrders == null || panelDetail == null) return;
+            if (dgvOrders == null || panelDetail == null || panelTop == null || btnRefresh == null || lblHeader == null) return;
             int totalW = Math.Max(600, this.ClientSize.Width);
             int totalH = Math.Max(380, this.ClientSize.Height);
 
+            panelTop.Location = new Point(25, 20);
+            panelTop.Size = new Size(totalW - 50, 48);
+            lblHeader.Location = new Point(0, (panelTop.Height - lblHeader.Height) / 2);
+            btnRefresh.Location = new Point(panelTop.Width - 110, (panelTop.Height - 32) / 2);
+            btnRefresh.Size = new Size(110, 32);
+
             int rightW = Math.Clamp((int)(totalW * 0.38), 300, 440);
             int leftW = Math.Max(260, totalW - rightW - 65);
-            int contentH = Math.Max(180, totalH - 100 - 25);
+            int contentH = Math.Max(180, totalH - 80 - 25);
 
-            dgvOrders.Location = new Point(25, 100);
+            dgvOrders.Location = new Point(25, 80);
             dgvOrders.Size = new Size(leftW, contentH);
 
-            panelDetail.Location = new Point(25 + leftW + 15, 100);
+            panelDetail.Location = new Point(25 + leftW + 15, 80);
             panelDetail.Size = new Size(rightW, contentH);
         }
 

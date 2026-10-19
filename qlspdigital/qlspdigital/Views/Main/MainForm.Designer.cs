@@ -558,14 +558,14 @@ namespace qlspdigital.Views.Main
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(23, 26, 33);
-            this.ClientSize = new System.Drawing.Size(1284, 811);
+            this.ClientSize = new System.Drawing.Size(1200, 680);
             this.Controls.Add(this.panelMainContent);
             this.Controls.Add(this.panelSidebar);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.panelHeader);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.ForeColor = System.Drawing.Color.White;
-            this.MinimumSize = new System.Drawing.Size(1100, 700);
+            this.MinimumSize = new System.Drawing.Size(1024, 600);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Hệ Thống Phân Phối Sản Phẩm Kỹ Thuật Số (DPMS - Steam Edition)";

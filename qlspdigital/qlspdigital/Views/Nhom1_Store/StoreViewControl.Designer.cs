@@ -63,7 +63,8 @@ namespace qlspdigital.Views.Nhom1_Store
             this.lblTotalCount.AutoSize = true;
             this.lblTotalCount.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic);
             this.lblTotalCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(192)))), ((int)(((byte)(244)))));
-            this.lblTotalCount.Location = new System.Drawing.Point(1000, 22);
+            this.lblTotalCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTotalCount.Location = new System.Drawing.Point(840, 22);
             this.lblTotalCount.Name = "lblTotalCount";
             this.lblTotalCount.Size = new System.Drawing.Size(133, 19);
             this.lblTotalCount.TabIndex = 6;
@@ -161,7 +162,7 @@ namespace qlspdigital.Views.Nhom1_Store
             this.flowProducts.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowProducts.Location = new System.Drawing.Point(0, 65);
             this.flowProducts.Name = "flowProducts";
-            this.flowProducts.Padding = new System.Windows.Forms.Padding(20);
+            this.flowProducts.Padding = new System.Windows.Forms.Padding(15, 8, 15, 8);
             this.flowProducts.Size = new System.Drawing.Size(1040, 635);
             this.flowProducts.TabIndex = 1;
             // 

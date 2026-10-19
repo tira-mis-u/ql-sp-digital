@@ -48,25 +48,25 @@ namespace qlspdigital.Views.Nhom5_Orders
             // 
             panelTop.Controls.Add(btnRefresh);
             panelTop.Controls.Add(lblHeader);
-            panelTop.Location = new Point(29, 27);
+            panelTop.Location = new Point(25, 20);
             panelTop.Margin = new Padding(3, 5, 3, 5);
             panelTop.Name = "panelTop";
-            panelTop.Size = new Size(1131, 73);
+            panelTop.Size = new Size(990, 48);
             panelTop.TabIndex = 2;
             // 
             // btnRefresh
             // 
             btnRefresh.BackColor = Color.FromArgb(49, 98, 130);
             btnRefresh.Cursor = Cursors.Hand;
-            btnRefresh.Dock = DockStyle.Right;
+            btnRefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnRefresh.FlatAppearance.BorderSize = 0;
             btnRefresh.FlatStyle = FlatStyle.Flat;
             btnRefresh.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnRefresh.ForeColor = Color.White;
-            btnRefresh.Location = new Point(974, 0);
+            btnRefresh.Location = new Point(880, 8);
             btnRefresh.Margin = new Padding(3, 5, 3, 5);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(157, 73);
+            btnRefresh.Size = new Size(110, 32);
             btnRefresh.TabIndex = 0;
             btnRefresh.Text = "Làm mới";
             btnRefresh.UseMnemonic = false;
@@ -76,10 +76,10 @@ namespace qlspdigital.Views.Nhom5_Orders
             // lblHeader
             // 
             lblHeader.AutoSize = true;
-            lblHeader.Dock = DockStyle.Left;
+            lblHeader.Dock = DockStyle.None;
             lblHeader.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
             lblHeader.ForeColor = Color.White;
-            lblHeader.Location = new Point(0, 0);
+            lblHeader.Location = new Point(0, 7);
             lblHeader.Name = "lblHeader";
             lblHeader.Size = new Size(530, 35);
             lblHeader.TabIndex = 1;

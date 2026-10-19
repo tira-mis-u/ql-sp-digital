@@ -389,7 +389,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             this.btnApprove.ForeColor = System.Drawing.Color.White;
             this.btnApprove.Location = new System.Drawing.Point(0, 4);
             this.btnApprove.Name = "btnApprove";
-            this.btnApprove.Size = new System.Drawing.Size(360, 40);
+            this.btnApprove.Size = new System.Drawing.Size(260, 36);
             this.btnApprove.TabIndex = 0;
             this.btnApprove.Text = "Kích hoạt thủ công (Cấp Thư viện)";
             this.btnApprove.UseMnemonic = false;
@@ -405,9 +405,9 @@ namespace qlspdigital.Views.Nhom5_Orders
             this.btnCancelOrder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancelOrder.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnCancelOrder.ForeColor = System.Drawing.Color.White;
-            this.btnCancelOrder.Location = new System.Drawing.Point(375, 4);
+            this.btnCancelOrder.Location = new System.Drawing.Point(275, 4);
             this.btnCancelOrder.Name = "btnCancelOrder";
-            this.btnCancelOrder.Size = new System.Drawing.Size(180, 40);
+            this.btnCancelOrder.Size = new System.Drawing.Size(150, 36);
             this.btnCancelOrder.TabIndex = 1;
             this.btnCancelOrder.Text = "Hủy đơn hàng";
             this.btnCancelOrder.UseMnemonic = false;

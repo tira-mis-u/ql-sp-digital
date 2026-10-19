@@ -17,8 +17,39 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             _dashboardService = new DashboardService();
 
             InitializeComponent();
+            AdjustLayout();
             if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadDashboardData();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (panelTopBar == null || panelCards == null || dgvTopProducts == null || lblTableTitle == null || btnRefresh == null || lblHeader == null) return;
+            int totalW = Math.Max(600, this.ClientSize.Width);
+            int totalH = Math.Max(380, this.ClientSize.Height);
+
+            int fullW = totalW - 50;
+            panelTopBar.Location = new Point(25, 20);
+            panelTopBar.Size = new Size(fullW, 48);
+            lblHeader.Location = new Point(0, (panelTopBar.Height - lblHeader.Height) / 2);
+            btnRefresh.Location = new Point(panelTopBar.Width - 110, (panelTopBar.Height - 32) / 2);
+            btnRefresh.Size = new Size(110, 32);
+
+            panelCards.Location = new Point(25, 75);
+            panelCards.Size = new Size(fullW, 115);
+
+            lblTableTitle.Location = new Point(25, 205);
+
+            int dgvY = 240;
+            int dgvH = Math.Max(160, totalH - dgvY - 25);
+            dgvTopProducts.Location = new Point(25, dgvY);
+            dgvTopProducts.Size = new Size(fullW, dgvH);
         }
 
         private void BtnRefresh_Click(object? sender, EventArgs e)
