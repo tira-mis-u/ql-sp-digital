@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using qlspdigital.DAL.Nhom1_Store;
+using qlspdigital.DAL.Nhom5_Orders;
 using qlspdigital.DTOs;
 
 namespace qlspdigital.BLL.Nhom1_Store
@@ -33,6 +34,7 @@ namespace qlspdigital.BLL.Nhom1_Store
     public class DanhGiaService
     {
         private readonly DanhGiaRepository _danhGiaRepo;
+        private readonly ThuVienRepository _thuVienRepo;
 
         public static event Action<int>? ReviewUpdated;
 
@@ -44,6 +46,14 @@ namespace qlspdigital.BLL.Nhom1_Store
         public DanhGiaService()
         {
             _danhGiaRepo = new DanhGiaRepository();
+            _thuVienRepo = new ThuVienRepository();
+        }
+
+        // Kiểm tra xem người dùng đã thực sự mua và sở hữu sản phẩm này trong Thư viện chưa (Verified Purchase)
+        public bool DaMuaSanPham(int maNguoiDung, int maSanPham)
+        {
+            if (maNguoiDung <= 0 || maSanPham <= 0) return false;
+            return _thuVienRepo.DaSoHuu(maNguoiDung, maSanPham);
         }
 
         public List<DanhGiaDTO> LayDanhGiaTheoSanPham(int maSanPham)
@@ -75,6 +85,13 @@ namespace qlspdigital.BLL.Nhom1_Store
             if (string.IsNullOrWhiteSpace(binhLuan))
             {
                 thongBao = "Vui lòng nhập nội dung nhận xét của bạn!";
+                return false;
+            }
+
+            // Quy tắc Verified Purchase: Chỉ tài khoản đã sở hữu sản phẩm trong Thư viện mới được phép đánh giá
+            if (!_thuVienRepo.DaSoHuu(maNguoiDung, maSanPham))
+            {
+                thongBao = "Bạn chưa sở hữu sản phẩm này trong Thư viện! Chỉ những khách hàng đã thực sự mua sản phẩm mới có quyền gửi nhận xét & đánh giá (Verified Purchase).";
                 return false;
             }
 

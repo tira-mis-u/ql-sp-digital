@@ -800,7 +800,17 @@ namespace qlspdigital
                 Console.WriteLine("  LỖI: Cho phép gửi nhận xét rỗng!");
                 err++;
             }
-            Console.WriteLine("  OK: Đánh giá chặn toàn bộ số sao ngoài khoảng 1-5 và bình luận trống!");
+            // c. Quy tắc Verified Purchase: Tài khoản chưa mua sản phẩm không được gửi đánh giá
+            if (danhGiaService.LuuDanhGia(999999, 1, 5, "Nhận xét test từ tài khoản chưa mua", out string verifiedMsg))
+            {
+                Console.WriteLine("  LỖI: Cho phép tài khoản chưa mua sản phẩm gửi đánh giá!");
+                err++;
+            }
+            else
+            {
+                Console.WriteLine("  OK: Đã kích hoạt cơ chế Verified Purchase, chặn thành công tài khoản chưa mua!");
+            }
+            Console.WriteLine("  OK: Đánh giá chặn toàn bộ số sao ngoài khoảng 1-5, bình luận trống và tài khoản chưa sở hữu!");
 
             // 5. Kiểm tra an toàn truy vấn tìm kiếm với ký tự đặc biệt (SQL LIKE Wildcards & Injection)
             var spRepo = new qlspdigital.DAL.Nhom1_Store.SanPhamRepository();

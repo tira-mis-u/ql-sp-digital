@@ -174,7 +174,7 @@ namespace qlspdigital.Views.Nhom1_Store
                 lblReviewsTitle.Text = $"ĐÁNH GIÁ TỪ CỘNG ĐỒNG ({reviews.Count})";
                 foreach (var r in reviews)
                 {
-                    dgvReviewsDetail.Rows.Add(r.HoTenNguoiDung, $"⭐ {r.SoSao}/5", r.BinhLuan, FormatHelper.FormatDateTime(r.NgayTao));
+                    dgvReviewsDetail.Rows.Add($"{r.HoTenNguoiDung}  ✓ (Đã mua)", $"⭐ {r.SoSao}/5", r.BinhLuan, FormatHelper.FormatDateTime(r.NgayTao));
                 }
             }
         }

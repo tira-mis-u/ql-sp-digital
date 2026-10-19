@@ -159,23 +159,36 @@ namespace qlspdigital.Views.Nhom1_Store
             foreach (var r in reviews)
             {
                 totalScore += r.SoSao;
-                dgvReviews.Rows.Add(r.HoTenNguoiDung, $"⭐ {r.SoSao}/5", r.BinhLuan, FormatHelper.FormatDateTime(r.NgayTao));
+                dgvReviews.Rows.Add($"{r.HoTenNguoiDung}  ✓ (Đã mua)", $"⭐ {r.SoSao}/5", r.BinhLuan, FormatHelper.FormatDateTime(r.NgayTao));
             }
 
             if (reviews.Count > 0)
             {
                 double avg = Math.Round(totalScore / reviews.Count, 1);
-                lblAverageScore.Text = $"Điểm TB: ⭐ {avg:0.0} / 5.0 ({reviews.Count} đánh giá)";
+                lblAverageScore.Text = $"Điểm TB: ⭐ {avg:0.0} / 5.0 ({reviews.Count} đánh giá xác thực)";
             }
             else
             {
                 lblAverageScore.Text = "Chưa có đánh giá nào";
             }
 
-            // Nếu người dùng đã đăng nhập, nạp đánh giá cũ của họ lên form nếu có
+            // Nếu người dùng đã đăng nhập, nạp đánh giá cũ của họ lên form nếu có và hiển thị trạng thái quyền sở hữu
             if (UserSession.IsLoggedIn)
             {
+                bool daMua = _danhGiaService.DaMuaSanPham(UserSession.CurrentUserId, _maSanPhamHienTai);
                 var myReview = _danhGiaService.LayDanhGiaCuaUser(UserSession.CurrentUserId, _maSanPhamHienTai);
+
+                if (daMua)
+                {
+                    lblFormTitle.Text = "VIẾT HOẶC CHỈNH SỬA ĐÁNH GIÁ (✓ ĐÃ XÁC MINH SỞ HỮU BẢN QUYỀN)";
+                    lblFormTitle.ForeColor = Color.FromArgb(102, 192, 244);
+                }
+                else
+                {
+                    lblFormTitle.Text = "VIẾT ĐÁNH GIÁ (⚠️ BẠN CHƯA MUA SẢN PHẨM NÀY - CHỈ ĐƯỢC XEM)";
+                    lblFormTitle.ForeColor = Color.FromArgb(243, 156, 18);
+                }
+
                 if (myReview != null)
                 {
                     txtComment.Text = myReview.BinhLuan;
@@ -189,6 +202,13 @@ namespace qlspdigital.Views.Nhom1_Store
                     btnSubmit.Text = "Gửi nhận xét";
                 }
             }
+            else
+            {
+                lblFormTitle.Text = "VIẾT ĐÁNH GIÁ (VUI LÒNG ĐĂNG NHẬP & SỞ HỮU ĐỂ ĐÁNH GIÁ)";
+                lblFormTitle.ForeColor = Color.FromArgb(199, 213, 224);
+                txtComment.Clear();
+                btnSubmit.Text = "Gửi nhận xét";
+            }
         }
 
         private void BtnSubmit_Click(object? sender, EventArgs e)
@@ -196,6 +216,13 @@ namespace qlspdigital.Views.Nhom1_Store
             if (!UserSession.IsLoggedIn)
             {
                 MessageBox.Show("Vui lòng đăng nhập để gửi đánh giá!", "Yêu cầu đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Ràng buộc Verified Purchase: Kiểm tra người dùng đã sở hữu sản phẩm trong Thư viện chưa
+            if (!_danhGiaService.DaMuaSanPham(UserSession.CurrentUserId, _maSanPhamHienTai))
+            {
+                MessageBox.Show("Bạn chưa sở hữu sản phẩm này trong Thư viện cá nhân!\n\nHệ thống áp dụng chuẩn Verified Purchase: Chỉ khách hàng đã mua sản phẩm mới có quyền gửi đánh giá nhằm đảm bảo tính khách quan và ngăn chặn đánh giá ảo.", "Yêu cầu sở hữu sản phẩm", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
