@@ -39,6 +39,12 @@ Mỗi thư mục đại diện cho một phân hệ độc lập, bao gồm tr�
 
 ```text
 Docs/
+├── 00_Business_Analysis/                   # [TỔNG QUAN HỆ THỐNG] Phát biểu bài toán & Đặc tả nghiệp vụ chuyên sâu
+│   ├── README.md                           # Mục lục và hướng dẫn tra cứu nghiệp vụ
+│   ├── 01_PROBLEM_STATEMENT.md             # Phát biểu bài toán, bối cảnh & mô hình phân phối số Steam
+│   ├── 02_DETAILED_BUSINESS_RULES.md       # Toàn bộ nghiệp vụ chi tiết của 5 nhóm chức năng (15 màn hình)
+│   ├── 03_CROSS_MODULE_INTEGRATION.md      # Quy trình mua hàng xuyên suốt & xử lý ngoại lệ
+│   └── 04_IN_DEPTH_BUSINESS_SPEC_AND_DEFENSE_QA.md # Khai thác chuyên sâu & 25 câu hỏi vấn đáp phòng thủ BTL
 ├── DEVELOPMENT_PLAN.md                     # Kế hoạch triển khai tổng thể & kiến trúc khung sườn MainForm
 ├── README.md                               # (Tài liệu này) Quy chuẩn làm việc, tra cứu CSDL & mục lục
 │
@@ -62,10 +68,20 @@ Docs/
 │   ├── UI_MOCKUP.md                        # Mô phỏng bố cục UI 1 (Auth), UI 12 (UserMgmt), UI 9 (Dashboard)
 │   └── SYSTEM_DESIGN.md                    # Kiến trúc 3 lớp, Logic phân quyền Session & SQL thống kê SUM/COUNT
 │
-└── 05_Orders_Library/                      # [NHIỆM VỤ 5] Quản lý Đơn hàng & Kho thư viện số
-    ├── PRD.md                              # Đặc tả yêu cầu: Duyệt đơn, Lịch sử mua hàng & Tải file sở hữu (3 UI)
-    ├── UI_MOCKUP.md                        # Mô phỏng bố cục UI 13 (OrderAdmin), UI 7 (OrderHistory), UI 6 (MyLibrary)
-    └── SYSTEM_DESIGN.md                    # Kiến trúc 3 lớp, Quản lý trạng thái đơn & Quyền sở hữu file
+├── 05_Orders_Library/                      # [NHIỆM VỤ 5] Quản lý Đơn hàng & Kho thư viện số
+│   ├── PRD.md                              # Đặc tả yêu cầu: Duyệt đơn, Lịch sử mua hàng & Tải file sở hữu (3 UI)
+│   ├── UI_MOCKUP.md                        # Mô phỏng bố cục UI 13 (OrderAdmin), UI 7 (OrderHistory), UI 6 (MyLibrary)
+│   └── SYSTEM_DESIGN.md                    # Kiến trúc 3 lớp, Quản lý trạng thái đơn & Quyền sở hữu file
+│
+└── 06_Function_And_Button_Call_Flow/       # [TRA CỨU LUỒNG GỌI HÀM & NÚT BẤM] Toàn bộ 15 màn hình & MainForm
+    ├── README.md                           # Kiến trúc Call Hierarchy, Dòng chu chuyển & Bản đồ tra cứu
+    ├── 01_MAINFORM_AND_NAVIGATION_FLOW.md  # 14 nút Menu, Header, Phân quyền RBAC Guards & Sự kiện phản ứng
+    ├── 02_NHOM1_STORE_AND_REVIEWS_FLOW.md  # Luồng gọi nút bấm Nhóm 1 (Store, Detail, Reviews)
+    ├── 03_NHOM2_CART_WALLET_VOUCHERS_FLOW.md # Luồng gọi nút bấm Nhóm 2 (Thanh toán 1-Click, Nạp ví, Voucher)
+    ├── 04_NHOM3_PRODUCT_CATEGORY_PROFILE_FLOW.md # Luồng gọi nút bấm Nhóm 3 (Upload SHA-256, CRUD SP, DM, Profile)
+    ├── 05_NHOM4_AUTH_USER_DASHBOARD_FLOW.md # Luồng gọi nút bấm Nhóm 4 (Login/Register, Khóa User, Dashboard)
+    ├── 06_NHOM5_ORDERS_AND_LIBRARY_FLOW.md # Luồng gọi nút bấm Nhóm 5 (Duyệt đơn, Tải PK-Zip, Chứng chỉ số)
+    └── 07_TRACEABILITY_BUTTON_CALL_MATRIX.md # BẢNG MA TRẬN TRUY VẾT TỔNG THỂ (100% Nút Bấm -> Hàm -> SQL)
 ```
 
 ---
