@@ -24,6 +24,7 @@ namespace qlspdigital.Views.Nhom2_Cart
         private decimal _tienGiam = 0;
         private int? _maGiamGiaId = null;
         private string _appliedVoucherCode = string.Empty;
+        private bool _isCheckingOut = false; // Anti double-click guard
 
         public CartControl()
         {
@@ -275,6 +276,9 @@ namespace qlspdigital.Views.Nhom2_Cart
 
         private void BtnCheckout_Click(object? sender, EventArgs e)
         {
+            // Anti double-click: ngăn gửi 2 giao dịch liên tiếp
+            if (_isCheckingOut) return;
+
             if (!UserSession.IsLoggedIn)
             {
                 MessageBox.Show("Vui lòng đăng nhập để tiến hành thanh toán!", "Yêu cầu đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -303,16 +307,28 @@ namespace qlspdigital.Views.Nhom2_Cart
                 return;
             }
 
-            // Thực hiện giao dịch thanh toán
-            if (_thanhToanService.ThanhToanGioHang(UserSession.CurrentUserId, _tienGiam, _maGiamGiaId, out string orderCode, out string msg))
+            // Khóa nút trong suốt quá trình giao dịch
+            _isCheckingOut = true;
+            if (btnCheckout != null) btnCheckout.Enabled = false;
+            try
             {
-                MessageBox.Show($"{msg}\nMã hóa đơn: {orderCode}\nCảm ơn bạn đã mua sắm trên DPMS!", "Thanh toán thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                LoadCart();
-                OnNavigateToLibrary?.Invoke(); // Tự động mở kho Thư viện game vừa mua
+                // Thực hiện giao dịch thanh toán
+                if (_thanhToanService.ThanhToanGioHang(UserSession.CurrentUserId, _tienGiam, _maGiamGiaId, out string orderCode, out string msg))
+                {
+                    MessageBox.Show($"{msg}\nMã hóa đơn: {orderCode}\nCảm ơn bạn đã mua sắm trên DPMS!", "Thanh toán thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadCart();
+                    OnNavigateToLibrary?.Invoke(); // Tự động mở kho Thư viện game vừa mua
+                }
+                else
+                {
+                    MessageBox.Show(msg, "Thanh toán thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            else
+            finally
             {
-                MessageBox.Show(msg, "Thanh toán thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Luôn mở khóa nút dù giao dịch thành công hay thất bại
+                _isCheckingOut = false;
+                if (btnCheckout != null && !btnCheckout.IsDisposed) btnCheckout.Enabled = true;
             }
         }
 

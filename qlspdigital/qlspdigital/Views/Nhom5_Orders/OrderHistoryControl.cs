@@ -103,7 +103,8 @@ namespace qlspdigital.Views.Nhom5_Orders
             int orderId = Convert.ToInt32(val);
             dgvDetails.Rows.Clear();
 
-            var details = _orderService.LayChiTietDonHang(orderId);
+            // Truyền CurrentUserId để chống IDOR (chỉ xem chi tiết đơn của chính mình)
+            var details = _orderService.LayChiTietDonHang(orderId, UserSession.CurrentUserId);
             foreach (var item in details)
             {
                 dgvDetails.Rows.Add(item.TenSanPham, item.SoLuong, FormatHelper.FormatCurrency(item.DonGia));

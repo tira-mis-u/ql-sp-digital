@@ -39,7 +39,7 @@ namespace qlspdigital.Shared
                 // 2. Nếu thất bại, duyệt qua danh sách các chuỗi kết nối dự phòng
                 foreach (string candidate in FallbackConnectionStrings)
                 {
-                    if (string.Equals(candidate, ConnectionString, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(candidate, ConnectionString, StringComparison.OrdinalIgnoreCase)) // So sánh từng ký tự, không phân biệt chữ hoa chữ thường
                         continue;
 
                     try

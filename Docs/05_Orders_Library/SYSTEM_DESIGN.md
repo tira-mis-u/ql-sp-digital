@@ -264,10 +264,47 @@ namespace DPMS.BLL.Interfaces
 
 ---
 
-### Luồng 4: Gỡ bỏ sản phẩm khỏi Thư viện cá nhân (UI 6)
-1. **Presentation (`LibraryControl`):** Khách hàng click chuột phải vào thẻ game hoặc bấm nút **[ 🗑️ Gỡ khỏi thư viện ]**.
-2. **Xác nhận người dùng:** Hiển thị hộp thoại cảnh báo: *"Bạn có chắc chắn muốn gỡ sản phẩm này khỏi Thư viện cá nhân?"*.
-3. **BLL & DAL (`LibraryService.RemoveFromLibrary`):**
-   - Thực thi xóa an toàn: `DELETE FROM SoHuuSanPham WHERE MaNguoiDung = @UserId AND MaSanPham = @MaSanPham`.
-   - Lưu ý: Bản ghi `DonHang` và `ChiTietDonHang` trong quá khứ vẫn được giữ nguyên vẹn để đối chiếu hóa đơn tài chính.
 4. **Presentation:** Xóa thẻ sản phẩm khỏi giao diện Thư viện, làm mới số lượng game đang sở hữu.
+
+---
+
+## 7. Bảo mật & Hardening (Security Hardening — Cập nhật tháng 10/2026)
+
+### 7.1. Chống IDOR (Insecure Direct Object Reference) trong `LayChiTietDonHang`
+
+**Vấn đề gốc:**  
+Hàm `LayChiTietDonHang(int maDonHang)` chỉ lọc theo `MaDonHang` mà không kiểm tra quyền sở hữu.  
+Người dùng A có thể đoán `MaDonHang` của người dùng B và đọc toàn bộ chi tiết đơn hàng của họ.
+
+**Giải pháp đã triển khai:**
+
+| Tầng | File | Thay đổi |
+|---|---|---|
+| DAL | `DonHangRepository.cs` | `LayChiTietDonHang(int maDonHang, int requestorId = 0)` — Khi `requestorId > 0`, câu SQL thêm `INNER JOIN DonHang dh ... AND dh.MaNguoiDung = @RequestorId`, trả về rỗng nếu đơn không thuộc về người yêu cầu. |
+| BLL | `DonHangService.cs` | `LayChiTietDonHang(int maDonHang, int requestorId = 0)` — Chuyển tiếp tham số xuống DAL. |
+| View (Khách) | `OrderHistoryControl.cs` | Gọi `_orderService.LayChiTietDonHang(orderId, UserSession.CurrentUserId)` — luôn scope theo người đăng nhập. |
+| View (Admin) | `OrderManageControl.cs` | Không gọi `LayChiTietDonHang`; Admin chỉ thao tác qua `CapNhatTrangThaiDonHang`. `requestorId = 0` (mặc định) bỏ qua kiểm tra sở hữu cho Admin. |
+
+**Kết quả:** Người dùng thông thường chỉ có thể đọc chi tiết đơn hàng của **chính họ**, kể cả khi thao túng dữ liệu gửi lên.
+
+---
+
+### 7.2. Tạo mã đơn hàng không trùng lặp (GUID Suffix)
+
+`MaDonHangCode` được sinh theo công thức:  
+```
+ORD-{yyyyMMddHHmmss}-{Guid.NewGuid().ToString("N")[..4].ToUpper()}
+```
+Ví dụ: `ORD-20261015142359-A3F7`
+
+4 ký tự hex ngẫu nhiên từ GUID đảm bảo gần như không thể xảy ra xung đột mã đơn trong cùng một giây, kể cả với nhiều giao dịch đồng thời. Cột `MaDonHangCode` có ràng buộc `UNIQUE` tại CSDL làm lớp bảo vệ cuối.
+
+---
+
+### 7.3. Chống Double-Click / Race Condition trong Thanh toán
+
+**Vấn đề gốc:** Người dùng nhấp nhanh nút "Thanh toán" nhiều lần có thể kích hoạt nhiều giao dịch trừ tiền ví chồng chéo nhau (trước khi giao dịch đầu commit).
+
+**Giải pháp triển khai trong `OrderHistoryControl` / `CartControl`:**  
+*(Xem chi tiết tại [Docs/02_Cart_Wallet/SYSTEM_DESIGN.md](../02_Cart_Wallet/SYSTEM_DESIGN.md) — Mục 7.1)*
+

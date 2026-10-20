@@ -33,10 +33,11 @@ namespace qlspdigital.BLL.Nhom5_Orders
             return _repo.LayLichSuDonHang(maNguoiDung);
         }
 
-        public List<ChiTietDonHangDTO> LayChiTietDonHang(int maDonHang)
+        // IDOR-safe: yêu cầu thêm requestorId (0 = Admin, bỏ qua kiểm tra sở hữu)
+        public List<ChiTietDonHangDTO> LayChiTietDonHang(int maDonHang, int requestorId = 0)
         {
             if (maDonHang <= 0) return new List<ChiTietDonHangDTO>();
-            return _repo.LayChiTietDonHang(maDonHang);
+            return _repo.LayChiTietDonHang(maDonHang, requestorId);
         }
 
         public bool DuyetDonHang(int maDonHang, out string thongBao)

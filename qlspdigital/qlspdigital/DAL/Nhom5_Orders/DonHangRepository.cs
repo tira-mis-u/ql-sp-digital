@@ -78,7 +78,9 @@ namespace qlspdigital.DAL.Nhom5_Orders
         }
 
         // Lấy chi tiết các sản phẩm trong 1 đơn hàng
-        public List<ChiTietDonHangDTO> LayChiTietDonHang(int maDonHang)
+        // requestorId > 0: giới hạn chỉ trả kết quả nếu đơn thuộc về requestorId (chống IDOR)
+        // requestorId = 0: Admin, không kiểm tra sở hữu
+        public List<ChiTietDonHangDTO> LayChiTietDonHang(int maDonHang, int requestorId = 0)
         {
             List<ChiTietDonHangDTO> list = new List<ChiTietDonHangDTO>();
 
@@ -87,10 +89,22 @@ namespace qlspdigital.DAL.Nhom5_Orders
                        sp.TenSanPham
                 FROM ChiTietDonHang ct
                 INNER JOIN SanPham sp ON ct.MaSanPham = sp.MaSanPham
+                INNER JOIN DonHang dh ON ct.MaDonHang = dh.MaDonHang
                 WHERE ct.MaDonHang = @MaDonHang";
 
-            SqlParameter[] parameters = { new SqlParameter("@MaDonHang", maDonHang) };
-            DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
+            List<SqlParameter> parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@MaDonHang", maDonHang)
+            };
+
+            // Chống IDOR: nếu không phải Admin thì buộc phải khớp chủ đơn hàng
+            if (requestorId > 0)
+            {
+                query += " AND dh.MaNguoiDung = @RequestorId";
+                parameters.Add(new SqlParameter("@RequestorId", requestorId));
+            }
+
+            DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters.ToArray());
 
             foreach (DataRow row in dt.Rows)
             {

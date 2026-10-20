@@ -12,6 +12,7 @@ namespace qlspdigital.Views.Nhom2_Cart
     public partial class WalletControl : UserControl
     {
         private readonly ViTaiKhoanService _viService;
+        private bool _isTopUpPending = false; // Anti double-click guard
 
         public WalletControl()
         {
@@ -153,15 +154,31 @@ namespace qlspdigital.Views.Nhom2_Cart
                 return;
             }
 
-            if (_viService.NapTien(UserSession.CurrentUserId, soTien, out string msg))
+            // Anti double-click: chặn nạp tiền 2 lần cùng lúc
+            if (_isTopUpPending) return;
+            _isTopUpPending = true;
+
+            // Vô hiệu hóa tất cả nút nạp trong suốt giao dịch
+            Control[] topupBtns = { btnTopUp50k, btnTopUp100k, btnTopUp200k, btnTopUp500k, btnCustomTopUp };
+            foreach (var btn in topupBtns) if (btn != null) btn.Enabled = false;
+
+            try
             {
-                MessageBox.Show(msg, "Nạp tiền thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                txtCustomAmount.Clear();
-                LoadWalletData();
+                if (_viService.NapTien(UserSession.CurrentUserId, soTien, out string msg))
+                {
+                    MessageBox.Show(msg, "Nạp tiền thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    txtCustomAmount.Clear();
+                    LoadWalletData();
+                }
+                else
+                {
+                    MessageBox.Show(msg, "Nạp tiền thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            else
+            finally
             {
-                MessageBox.Show(msg, "Nạp tiền thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _isTopUpPending = false;
+                foreach (var btn in topupBtns) if (btn != null && !btn.IsDisposed) btn.Enabled = true;
             }
         }
     }

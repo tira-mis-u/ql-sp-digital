@@ -296,3 +296,73 @@ Quy trình đảm bảo tính toàn vẹn tuyệt đối qua Transaction:
    - Kiểm tra mã này đã có trong `MaGiamGiaNguoiDung` của khách hay chưa (chống spam thu thập nhiều lần).
    - Thêm bản ghi mới vào `MaGiamGiaNguoiDung` với `DaSuDung = 0`.
 3. **Presentation:** Hiển thị thẻ voucher mới trong danh sách "Voucher khả dụng". Nút **[ Dùng ngay ]** sẽ tự động chuyển view sang UI 4 và điền sẵn mã ưu đãi.
+
+---
+
+## 7. Bảo mật & Hardening (Security Hardening — Cập nhật tháng 10/2026)
+
+### 7.1. Chống Double-Click / Race Condition tại Thanh toán Giỏ hàng (`CartControl`)
+
+**Vấn đề gốc:**  
+Người dùng nhấp nhanh nút **"Thanh toán"** nhiều lần có thể kích hoạt `ThanhToanGioHang()` nhiều lần chồng chéo nhau trước khi giao dịch đầu tiên commit xong, dẫn đến trừ tiền ví lặp.
+
+**Giải pháp triển khai trong [`CartControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/CartControl.cs):**
+
+```csharp
+private bool _isCheckingOut = false; // Anti double-click guard
+
+private void BtnCheckout_Click(object? sender, EventArgs e)
+{
+    if (_isCheckingOut) return;       // Bỏ qua nếu đang trong giao dịch
+    _isCheckingOut = true;
+    if (btnCheckout != null) btnCheckout.Enabled = false;
+    try
+    {
+        // ... gọi ThanhToanGioHang() ...
+    }
+    finally
+    {
+        _isCheckingOut = false;
+        if (btnCheckout != null && !btnCheckout.IsDisposed) btnCheckout.Enabled = true;
+    }
+}
+```
+
+**Cơ chế hoạt động:**
+1. Biến `_isCheckingOut` (`bool`) hoạt động như một **mutex ứng dụng** cho giao dịch thanh toán.
+2. Nút `btnCheckout` bị Disabled trong suốt thời gian giao dịch đang chạy (feedback rõ ràng cho người dùng).
+3. Khối `finally` **luôn luôn** mở khóa lại dù giao dịch thành công hay thất bại — tránh UI bị treo.
+4. Lớp bảo vệ cuối cùng: `ThanhToanGioHang()` ở DAL chạy trong `SqlTransaction` — nếu trùng lặp vẫn lọt qua, DB sẽ rollback an toàn.
+
+---
+
+### 7.2. Chống Double-Click tại Nạp tiền Ví (`WalletControl`)
+
+**Vấn đề gốc:**  
+Người dùng nhấp nhanh các nút nạp tiền nhanh (50k/100k/200k/500k) hoặc nút "Nạp tùy chọn" nhiều lần có thể ghi nhiều bản ghi `ThanhToan` cùng lúc và tăng số dư ví lặp.
+
+**Giải pháp triển khai trong [`WalletControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/WalletControl.cs):**
+
+```csharp
+private bool _isTopUpPending = false; // Anti double-click guard
+
+private void NapTien(decimal soTien)
+{
+    if (_isTopUpPending) return;
+    _isTopUpPending = true;
+
+    // Vô hiệu hóa TẤT CẢ nút nạp (cả preset lẫn custom)
+    Control[] topupBtns = { btnTopUp50k, btnTopUp100k, btnTopUp200k, btnTopUp500k, btnCustomTopUp };
+    foreach (var btn in topupBtns) if (btn != null) btn.Enabled = false;
+
+    try { /* gọi _viService.NapTien() */ }
+    finally
+    {
+        _isTopUpPending = false;
+        foreach (var btn in topupBtns) if (btn != null && !btn.IsDisposed) btn.Enabled = true;
+    }
+}
+```
+
+**Điểm khác biệt với Checkout:** Vì có 5 nút nạp, tất cả 5 nút được vô hiệu hóa đồng thời trong `finally`, tránh tình huống người dùng click nút 50k rồi ngay lập tức click nút 100k.
+
