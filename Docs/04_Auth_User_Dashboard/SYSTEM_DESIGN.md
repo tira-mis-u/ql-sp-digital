@@ -9,20 +9,20 @@
 
 ## 0. Danh mục File & Thư mục phụ trách trực tiếp (Đường dẫn tương đối)
 
-| Phân tầng kiến trúc | Tên File / Thư mục cụ thể | Đường dẫn tương đối từ tài liệu này | Ý nghĩa chức năng |
-|---|---|---|---|
-| **Giao diện (Views)** | `LoginControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/LoginControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/LoginControl.cs) | UI 1: Đăng nhập hệ thống, kiểm tra phân quyền & trạng thái khóa |
-| **Giao diện (Views)** | `RegisterControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/RegisterControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/RegisterControl.cs) | UI 1: Đăng ký thành viên mới, kiểm tra trùng lặp, băm SHA-256 |
-| **Giao diện (Views)** | `UserManageControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/UserManageControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/UserManageControl.cs) | UI 12: Danh sách tài khoản người dùng, nút bấm Khóa / Mở khóa |
-| **Giao diện (Views)** | `DashboardControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/DashboardControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/DashboardControl.cs) | UI 9: Thống kê 4 thẻ chỉ số KPI tổng hợp và bảng Top 5 bán chạy |
-| **Nghiệp vụ (BLL)** | `AuthService.cs` | [`../../qlspdigital/qlspdigital/BLL/Nhom4_SystemAdmin/AuthService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom4_SystemAdmin/AuthService.cs) | Xử lý logic đăng nhập (`AuthService`), quản lý tài khoản (`NguoiDungService`) & thống kê (`DashboardService`) |
-| **Truy vấn CSDL (DAL)** | `AuthRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/AuthRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/AuthRepository.cs) | Lệnh ADO.NET SELECT/INSERT xác thực, kiểm tra username/email |
-| **Truy vấn CSDL (DAL)** | `NguoiDungRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/NguoiDungRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/NguoiDungRepository.cs) | Lệnh ADO.NET SELECT danh sách user, UPDATE trạng thái khóa `TrangThai = 0/1` |
-| **Truy vấn CSDL (DAL)** | `NguoiDungRepository.cs` (chứa class `DashboardRepository`) | [`../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/NguoiDungRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/NguoiDungRepository.cs) | Lệnh ADO.NET tổng hợp `SUM(TongThanhToan)`, `COUNT(1)` và Top 5 bán chạy |
-| **Dữ liệu truyền tải (DTO)** | `NguoiDungDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/NguoiDungDTO.cs`](../../qlspdigital/qlspdigital/DTOs/NguoiDungDTO.cs) | Định nghĩa cấu trúc `NguoiDungDTO` |
-| **Dữ liệu truyền tải (DTO)** | `ThuVienItemDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/ThuVienItemDTO.cs`](../../qlspdigital/qlspdigital/DTOs/ThuVienItemDTO.cs) | Định nghĩa cấu trúc `DashboardStatsDTO` và `TopSanPhamDTO` |
-| **Tiện ích chung (Shared)** | `UserSession.cs` & `SecurityHelper.cs` | [`../../qlspdigital/qlspdigital/Shared/`](../../qlspdigital/qlspdigital/Shared/) | Quản lý phiên làm việc tĩnh `UserSession` và mã hóa SHA-256 `SecurityHelper` |
-| **CSDL Master SQL** | `DPMS_Database_Master.sql` | [`../../Database/DPMS_Database_Master.sql`](../../Database/DPMS_Database_Master.sql) | Bảng sử dụng: `NguoiDung`, `DonHang`, `ChiTietDonHang`, `SanPham` |
+| Phân tầng kiến trúc | File / Thư mục mã nguồn | Ý nghĩa chức năng |
+|---|---|---|
+| **Giao diện (Views)** | [`LoginControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/LoginControl.cs) | UI 1: Đăng nhập hệ thống, kiểm tra phân quyền & trạng thái khóa |
+| **Giao diện (Views)** | [`RegisterControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/RegisterControl.cs) | UI 1: Đăng ký thành viên mới, kiểm tra trùng lặp |
+| **Giao diện (Views)** | [`UserManageControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/UserManageControl.cs) | UI 12: Danh sách tài khoản người dùng, nút bấm Khóa / Mở khóa |
+| **Giao diện (Views)** | [`DashboardControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom4_SystemAdmin/DashboardControl.cs) | UI 9: Thống kê 4 thẻ chỉ số KPI tổng hợp và bảng Top 5 bán chạy |
+| **Nghiệp vụ (BLL)** | [`AuthService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom4_SystemAdmin/AuthService.cs) | Xử lý logic đăng nhập (`AuthService`), quản lý tài khoản (`NguoiDungService`) & thống kê (`DashboardService`) |
+| **Truy vấn CSDL (DAL)** | [`AuthRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/AuthRepository.cs) | Lệnh ADO.NET SELECT/INSERT xác thực, kiểm tra username/email |
+| **Truy vấn CSDL (DAL)** | [`NguoiDungRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/NguoiDungRepository.cs) | Lệnh ADO.NET SELECT danh sách user, UPDATE trạng thái khóa `TrangThai = 0/1` |
+| **Truy vấn CSDL (DAL)** | [`DashboardRepository` (trong `NguoiDungRepository.cs`)](../../qlspdigital/qlspdigital/DAL/Nhom4_SystemAdmin/NguoiDungRepository.cs) | Lệnh ADO.NET tổng hợp `SUM(TongThanhToan)`, `COUNT(1)` và Top 5 bán chạy |
+| **Dữ liệu truyền tải (DTO)** | [`NguoiDungDTO.cs`](../../qlspdigital/qlspdigital/DTOs/NguoiDungDTO.cs) | Định nghĩa cấu trúc `NguoiDungDTO` |
+| **Dữ liệu truyền tải (DTO)** | [`ThuVienItemDTO.cs` (chứa `DashboardStatsDTO`)](../../qlspdigital/qlspdigital/DTOs/ThuVienItemDTO.cs) | Định nghĩa cấu trúc `DashboardStatsDTO` và `TopSanPhamDTO` |
+| **Tiện ích chung (Shared)** | [`UserSession.cs`](../../qlspdigital/qlspdigital/Shared/UserSession.cs) & [`FormatHelper.cs`](../../qlspdigital/qlspdigital/Shared/FormatHelper.cs) | Quản lý phiên làm việc tĩnh `UserSession` và định dạng hiển thị `FormatHelper` |
+| **CSDL Master SQL** | [`DPMS_Database_Master.sql`](../../Database/DPMS_Database_Master.sql) | Bảng sử dụng: `NguoiDung`, `DonHang`, `ChiTietDonHang`, `SanPham` |
 
 ---
 
@@ -40,7 +40,7 @@
 |                                        BUSINESS LOGIC (BLL)                                        |
 |  - IAuthService / AuthService.cs                 - IUserManageService / UserManageService.cs       |
 |  - IDashboardService / DashboardService.cs       - UserSession (Quản lý phiên làm việc tĩnh)       |
-|  - Logic mã hóa băm mật khẩu SHA-256             - Kiểm tra khóa tài khoản, phân quyền Admin/User  |
+|  - Kiểm tra mật khẩu hợp lệ                      - Kiểm tra khóa tài khoản, phân quyền Admin/User  |
 +--------------------------------------------------+-------------------------------------------------+
                                                    | Entities / Parameters
 +--------------------------------------------------v-------------------------------------------------+
@@ -64,7 +64,7 @@
 |---|---|:---:|---|---|
 | `MaNguoiDung` | `INT` | **PK** | `IDENTITY(1,1)` | Mã định danh người dùng toàn hệ thống. |
 | `TenDangNhap` | `VARCHAR(50)` | | `NOT NULL, UNIQUE` | Tên đăng nhập (chỉ chữ và số, không trùng lặp). |
-| `MatKhauHash` | `VARCHAR(256)` | | `NOT NULL` | Chuỗi mã băm bảo mật SHA-256 của mật khẩu. |
+| `MatKhau` | `NVARCHAR(255)` | | `NOT NULL` | Mật khẩu tài khoản (plain text dễ hiểu). |
 | `HoTen` | `NVARCHAR(100)` | | `NOT NULL` | Họ tên hiển thị trên thanh tiêu đề và bảng quản trị. |
 | `Email` | `VARCHAR(100)` | | `NOT NULL, UNIQUE` | Hộp thư điện tử liên hệ và phục hồi tài khoản. |
 | `SoDienThoai` | `VARCHAR(20)` | | `NULL` | Số điện thoại liên hệ cá nhân. |
@@ -96,8 +96,8 @@
 
 | Giao diện | Thao tác CRUD | Bảng CSDL tác động | Điều kiện lọc & Tham số nghiệp vụ | Kết quả trả về giao diện |
 |---|---|---|---|---|
-| **UI 1: Xác thực** (`LoginControl`) | **Read** (Đăng nhập) | `NguoiDung` | `TenDangNhap = @User AND MatKhauHash = @Hash` | Trả về `NguoiDungDTO` nếu hợp lệ; kiểm tra `TrangThai = 1`. Lưu `UserSession`. |
-| **UI 1: Xác thực** (`RegisterControl`) | **Create** (Đăng ký) | `NguoiDung` | `@TenDangNhap`, `@MatKhauHash`, `@HoTen`, `@Email`, `@SoDienThoai`<br>`VaiTro = N'KhachHang'`, `TrangThai = 1` | Thêm tài khoản mới vào CSDL; thông báo thành công và chuyển sang form Đăng nhập. |
+| **UI 1: Xác thực** (`LoginControl`) | **Read** (Đăng nhập) | `NguoiDung` | `TenDangNhap = @User AND MatKhau = @MatKhau` | Trả về `NguoiDungDTO` nếu hợp lệ; kiểm tra `TrangThai = 1`. Lưu `UserSession`. |
+| **UI 1: Xác thực** (`RegisterControl`) | **Create** (Đăng ký) | `NguoiDung` | `@TenDangNhap`, `@MatKhau`, `@HoTen`, `@Email`, `@SoDienThoai`<br>`VaiTro = N'KhachHang'`, `TrangThai = 1` | Thêm tài khoản mới vào CSDL; thông báo thành công và chuyển sang form Đăng nhập. |
 | **UI 1: Xác thực** (`RegisterControl`) | **Read** (Kiểm tra trùng) | `NguoiDung` | `TenDangNhap = @User OR Email = @Email` | Báo lỗi ngay nếu tên đăng nhập hoặc email đã tồn tại trước khi tạo. |
 | **UI 12: Quản lý người dùng** (`UserManageControl`) | **Read** (Duyệt danh sách) | `NguoiDung` | `@VaiTro` (N'Tất cả', N'KhachHang', N'QuanTriVien')<br>`@TuKhoa` (tìm theo `TenDangNhap` hoặc `HoTen`)<br>`ORDER BY MaNguoiDung DESC` | Danh sách `List<NguoiDungDTO>` nạp vào DataGridView danh sách người dùng. |
 | **UI 12: Quản lý người dùng** (`UserManageControl`) | **Update** (Khóa tài khoản) | `NguoiDung` | `MaNguoiDung = @UserId`<br>`TrangThai = 0` (Chặn không khóa chính mình) | Khóa tài khoản thành công; người dùng bị khóa sẽ không thể đăng nhập. |
@@ -203,7 +203,6 @@ namespace DPMS.BLL.Interfaces
         (bool Success, string Message, NguoiDungDTO User) Login(string username, string password);
         (bool Success, string Message) Register(DangKyDTO dto);
         bool CheckUsernameOrEmailExists(string username, string email);
-        string ComputeHashSHA256(string plainPassword);
     }
 
     // Nghiệp vụ Quản trị Người dùng (Admin)
@@ -232,10 +231,7 @@ namespace DPMS.BLL.Interfaces
 [Khách nhập Username & Password] -> Bấm [ Đăng nhập ]
           |
           v
-[BLL: Băm mật khẩu nhập vào bằng SHA-256]
-          |
-          v
-[DAL: Truy vấn NguoiDung theo TenDangNhap & MatKhauHash]
+[DAL: Truy vấn NguoiDung theo TenDangNhap & MatKhau]
   |-- Không khớp tài khoản/mật khẩu -> Báo lỗi: "Tên đăng nhập hoặc mật khẩu không chính xác!"
   |-- Khớp bản ghi nhưng TrangThai == 0 -> Báo lỗi: "Tài khoản của bạn hiện đang bị khóa!"
   |-- Hợp lệ ->
@@ -255,9 +251,8 @@ namespace DPMS.BLL.Interfaces
    - Kiểm tra rỗng và ràng buộc độ dài tối thiểu (Mật khẩu $\ge$ 6 ký tự).
    - Kiểm tra mật khẩu và xác nhận mật khẩu khớp nhau 100%.
    - Gọi `CheckUsernameOrEmailExists`: Nếu trùng tên đăng nhập hoặc email thì trả về lỗi thông báo người dùng đổi giá trị khác.
-   - Băm mật khẩu bằng thuật toán SHA-256: `MatKhauHash = ComputeHashSHA256(dto.MatKhau)`.
 3. **DAL (`AuthRepository`):**
-   - Thực thi chèn bản ghi mới với `VaiTro = N'KhachHang'`, `TrangThai = 1`, `SoDuVi = 0`.
+   - Thực thi chèn bản ghi mới với `MatKhau = @MatKhau`, `VaiTro = N'KhachHang'`, `TrangThai = 1`, `SoDuVi = 0`.
 4. **Presentation:** Hiển thị thông báo đăng ký thành công và tự động chuyển về giao diện `LoginControl` để người dùng đăng nhập.
 
 ---

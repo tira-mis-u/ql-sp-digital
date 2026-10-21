@@ -18,11 +18,11 @@
 
 | STT | Tên bảng (PascalCase) | Mục đích nghiệp vụ trong hệ thống | Phân hệ / Nhóm sử dụng chính |
 |:---:|---|---|---|
-| 1 | `NguoiDung` | Tài khoản, mật khẩu hash SHA-256, vai trò (`QuanTriVien`/`KhachHang`), số dư ví `SoDuVi`. | Toàn hệ thống (Nhóm 4 Auth, Nhóm 2 Ví, Nhóm 3 Profile) |
+| 1 | `NguoiDung` | Tài khoản, mật khẩu, vai trò (`QuanTriVien`/`KhachHang`), số dư ví `SoDuVi`. | Toàn hệ thống (Nhóm 4 Auth, Nhóm 2 Ví, Nhóm 3 Profile) |
 | 2 | `DanhMuc` | Thể loại sản phẩm (Game, Phần mềm, Đồ họa 3D...). | Nhóm 1 (Lọc Store), Nhóm 3 (Quản trị CRUD) |
 | 3 | `NhaPhatHanh` | Nhà sáng tạo, Studio phát hành sản phẩm số. | Nhóm 1 (Chi tiết SP), Nhóm 3 (Gán Studio) |
 | 4 | `SanPham` | Hàng hóa số: Tên, Mô tả, Giá bán, Ảnh bìa, Dung lượng, Phiên bản, Trạng thái. | Nhóm 1 (Storefront), Nhóm 3 (Admin Inventory) |
-| 5 | `TepSanPham` | Metadata tệp số vật lý: Tên tệp, Đường dẫn tương đối, Định dạng, Byte, Mã hash SHA-256. | Nhóm 3 (Admin Upload), Nhóm 5 (Khách hàng Download) |
+| 5 | `TepSanPham` | Metadata tệp số vật lý: Tên tệp, Đường dẫn tương đối, Định dạng, Byte, Phiên bản. | Nhóm 3 (Admin Upload), Nhóm 5 (Khách hàng Download) |
 | 6 | `GioHang` | Giỏ hàng tạm thời của khách hàng. | Nhóm 2 (Giỏ hàng & Checkout 1-Click) |
 | 7 | `MaGiamGia` | Hệ thống mã ưu đãi toàn sàn (Mã code, % giảm, tiền giảm, hạn dùng, đơn tối thiểu). | Nhóm 2 (Voucher & Chiết khấu hóa đơn) |
 | 8 | `MaGiamGiaNguoiDung`| Kho Voucher cá nhân của từng khách hàng (Thu thập, đánh dấu đã dùng). | Nhóm 2 (UI 15 Kho Voucher cá nhân) |
@@ -59,7 +59,7 @@
 
 > [!TIP]
 > **Mật khẩu dùng chung cho tất cả các tài khoản demo:** `123456`  
-> (Mật khẩu được băm bằng thuật toán SHA-256: `8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92`)
+> (Lưu trữ trực tiếp trong CSDL theo chuẩn đơn giản hóa, dễ kiểm thử và đối soát đồ án)
 
 | STT | Tên đăng nhập | Mật khẩu | Họ và tên | Vai trò (`VaiTro`) | Số dư ví ban đầu | Email | Ghi chú vai trò kiểm thử |
 |:---:|---|---|---|---|---:|---|---|

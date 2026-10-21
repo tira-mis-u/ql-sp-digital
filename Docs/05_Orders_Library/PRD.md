@@ -52,7 +52,7 @@ Quản lý toàn bộ vòng đời sau mua hàng: Cho phép Admin theo dõi, l�
    - Nút **"Tải về máy" (Download)**:
      + Khi bấm, mở hộp thoại `FolderBrowserDialog` cho người dùng chọn nơi lưu file trên máy tính.
      + Hiển thị thanh tiến trình `ProgressBar` sao chép tệp thực tế/mô phỏng từ thư mục `Storage/Products/...` sang thư mục đích, tăng dần từ 0% đến 100%.
-     + Kiểm tra mã băm SHA-256 đối chiếu và tăng bộ đếm `SoLanTai`.
+     + Sao chép tệp sang máy khách và tăng bộ đếm `SoLanTai`.
      + Hiển thị thông báo: `MessageBox.Show("Tải xuống hoàn tất! Tệp sản phẩm kỹ thuật số đã được lưu vào máy tính của bạn.")`.
 3. **Quản lý hiển thị kho (CRUD Delete 2 cho BTL):**
    - Nút **"Gỡ khỏi thư viện"** (Xóa bản ghi khỏi `SoHuuSanPham`).
@@ -68,7 +68,7 @@ Quản lý toàn bộ vòng đời sau mua hàng: Cho phép Admin theo dõi, l�
 ## 5. Tiêu chí nghiệm thu & Báo cáo BTL (Acceptance Criteria)
 - [x] **CRUD 1 (DonHang):** Xem danh sách đơn và cập nhật trạng thái đơn (Chờ xử lý -> Hoàn thành / Đã hủy).
 - [x] **CRUD 2 (SoHuuSanPham):** Xem thư viện cá nhân và gỡ/xóa sản phẩm khỏi thư viện thành công.
-- [x] Tải tệp kỹ thuật số mượt mà có thanh ProgressBar trực quan và kiểm tra toàn vẹn SHA-256.
+- [x] Tải tệp kỹ thuật số mượt mà có thanh ProgressBar trực quan và tăng số lần tải.
 
 ---
 
@@ -76,7 +76,7 @@ Quản lý toàn bộ vòng đời sau mua hàng: Cho phép Admin theo dõi, l�
 
 | Thực thể | **C** (Create) | **R** (Read) | **U** (Update) | **D** (Delete) |
 |---|---|---|---|---|
-| **Thư viện số** (`SoHuuSanPham`) | Tự động cấp khi đơn hàng hoàn thành (`ThanhToan` hoặc duyệt `btnApprove`) | `dgvLibrary` hiển thị toàn bộ game sở hữu (`LayKhoThuVien`) | `btnDownload`: Tải file, kiểm tra SHA-256 và tăng `SoLanTai` | `btnUninstall`: Popup xác nhận -> Gỡ game khỏi kho (`GoKhoiThuVien`) |
+| **Thư viện số** (`SoHuuSanPham`) | Tự động cấp khi đơn hàng hoàn thành (`ThanhToan` hoặc duyệt `btnApprove`) | `dgvLibrary` hiển thị toàn bộ game sở hữu (`LayKhoThuVien`) | `btnDownload`: Tải file và tăng `SoLanTai` | `btnUninstall`: Popup xác nhận -> Gỡ game khỏi kho (`GoKhoiThuVien`) |
 | **Đơn hàng** (`DonHang`) | Tạo đơn hàng qua giao dịch ví Steam | `dgvOrders` và `dgvOrderDetails` hiển thị chi tiết (kèm chống lỗi IDOR) | `btnApprove` (duyệt hoàn thành) và `btnCancelOrder` (hủy đơn) | **Cơ chế Soft Cancel:** Chuyển trạng thái sang "Đã hủy" (Cấm xóa chứng từ kế toán) |
 
 > **Phòng thủ vấn đáp BTL:** Khẳng định với Hội đồng rằng phân hệ của Phạm Văn Đam đạt **FULL CRUD 100%** trên thực thể Thư viện (`SoHuuSanPham`). Đối với thực thể `DonHang`, hệ thống tuân thủ nguyên tắc **Bất biến sổ cái (Immutable Ledger)**: hóa đơn tài chính tuyệt đối không được xóa cứng (Hard Delete) mà dùng cơ chế Soft Cancel để bảo vệ toàn vẹn lịch sử kiểm toán của doanh nghiệp.
