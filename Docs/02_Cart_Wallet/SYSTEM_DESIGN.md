@@ -9,18 +9,18 @@
 
 ## 0. Danh mục File & Thư mục phụ trách trực tiếp (Đường dẫn tương đối)
 
-| Phân tầng kiến trúc | Tên File / Thư mục cụ thể | Đường dẫn tương đối từ tài liệu này | Ý nghĩa chức năng |
-|---|---|---|---|
-| **Giao diện (Views)** | `CartControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom2_Cart/CartControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/CartControl.cs) | UI 4: Giỏ hàng, sửa số lượng, áp dụng Voucher, nút Thanh toán 1-Click ví |
-| **Giao diện (Views)** | `WalletControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom2_Cart/WalletControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/WalletControl.cs) | UI 5: Ví tài khoản, nạp tiền nhanh 50k-500k, lịch sử biến động số dư |
-| **Giao diện (Views)** | `VoucherControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom2_Cart/VoucherControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/VoucherControl.cs) | UI 15: Kho ưu đãi, nhập mã thu thập voucher (Create), xóa voucher (Delete) |
-| **Nghiệp vụ (BLL)** | `GioHangService.cs` | [`../../qlspdigital/qlspdigital/BLL/Nhom2_Cart/GioHangService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom2_Cart/GioHangService.cs) | Xử lý nghiệp vụ giỏ hàng (`GioHangService`), ví (`ViTaiKhoanService`), voucher (`MaGiamGiaService`) & thanh toán (`ThanhToanService`) |
-| **Truy vấn CSDL (DAL)** | `GioHangRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/GioHangRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/GioHangRepository.cs) | Lệnh ADO.NET CRUD bảng `GioHang` (thêm, xem, sửa số lượng, xóa món, dọn giỏ) |
-| **Truy vấn CSDL (DAL)** | `ViTaiKhoanRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/ViTaiKhoanRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/ViTaiKhoanRepository.cs) | Lệnh ADO.NET UPDATE `SoDuVi`, INSERT lịch sử bảng `ThanhToan` |
-| **Truy vấn CSDL (DAL)** | `MaGiamGiaRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/MaGiamGiaRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/MaGiamGiaRepository.cs) | Lệnh ADO.NET SELECT/INSERT/DELETE kho mã ưu đãi `MaGiamGia` & `MaGiamGiaNguoiDung` |
-| **Dữ liệu truyền tải (DTO)** | `GioHangItemDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/GioHangItemDTO.cs`](../../qlspdigital/qlspdigital/DTOs/GioHangItemDTO.cs) | Định nghĩa cấu trúc `GioHangItemDTO` và `MaGiamGiaDTO` |
-| **Dữ liệu truyền tải (DTO)** | `DonHangDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/DonHangDTO.cs`](../../qlspdigital/qlspdigital/DTOs/DonHangDTO.cs) | Định nghĩa cấu trúc `ThanhToanDTO` |
-| **CSDL Master SQL** | `DPMS_Database_Master.sql` | [`../../Database/DPMS_Database_Master.sql`](../../Database/DPMS_Database_Master.sql) | Bảng sử dụng: `GioHang`, `NguoiDung` (`SoDuVi`), `MaGiamGia`, `MaGiamGiaNguoiDung`, `ThanhToan` |
+| Phân tầng kiến trúc | File / Thư mục mã nguồn | Ý nghĩa chức năng |
+|---|---|---|
+| **Giao diện (Views)** | [`CartControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/CartControl.cs) | UI 4: Giỏ hàng, sửa số lượng, áp dụng Voucher, nút Thanh toán 1-Click ví |
+| **Giao diện (Views)** | [`WalletControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/WalletControl.cs) | UI 5: Ví tài khoản, nạp tiền nhanh 50k-500k, lịch sử biến động số dư |
+| **Giao diện (Views)** | [`VoucherControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/VoucherControl.cs) | UI 15: Kho ưu đãi, nhập mã thu thập voucher (Create), xóa voucher (Delete) |
+| **Nghiệp vụ (BLL)** | [`GioHangService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom2_Cart/GioHangService.cs) | Xử lý nghiệp vụ giỏ hàng (`GioHangService`), ví (`ViTaiKhoanService`), voucher (`MaGiamGiaService`) & thanh toán (`ThanhToanService`) |
+| **Truy vấn CSDL (DAL)** | [`GioHangRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/GioHangRepository.cs) | Lệnh ADO.NET CRUD bảng `GioHang` (thêm, xem, sửa số lượng, xóa món, dọn giỏ) |
+| **Truy vấn CSDL (DAL)** | [`ViTaiKhoanRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/ViTaiKhoanRepository.cs) | Lệnh ADO.NET UPDATE `SoDuVi`, INSERT lịch sử bảng `ThanhToan` |
+| **Truy vấn CSDL (DAL)** | [`MaGiamGiaRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/MaGiamGiaRepository.cs) | Lệnh ADO.NET SELECT/INSERT/DELETE kho mã ưu đãi `MaGiamGia` & `MaGiamGiaNguoiDung` |
+| **Dữ liệu truyền tải (DTO)** | [`GioHangItemDTO.cs`](../../qlspdigital/qlspdigital/DTOs/GioHangItemDTO.cs) | Định nghĩa cấu trúc `GioHangItemDTO` và `MaGiamGiaDTO` |
+| **Dữ liệu truyền tải (DTO)** | [`DonHangDTO.cs` (chứa `ThanhToanDTO`)](../../qlspdigital/qlspdigital/DTOs/DonHangDTO.cs) | Định nghĩa cấu trúc `ThanhToanDTO` |
+| **CSDL Master SQL** | [`DPMS_Database_Master.sql`](../../Database/DPMS_Database_Master.sql) | Bảng sử dụng: `GioHang`, `NguoiDung` (`SoDuVi`), `MaGiamGia`, `MaGiamGiaNguoiDung`, `ThanhToan` |
 
 ---
 

@@ -19,7 +19,7 @@
 |---------------------------------------------------------------------------------------------------|
 |  [ 2. TẢI LÊN & QUẢN LÝ TỆP KỸ THUẬT SỐ VẬT LÝ (Bảng TepSanPham) ]                                |
 |  Chọn tệp: [ Setup_CyberAdventure_v1.2.0.exe                  ] [ 📁 Duyệt tệp (.zip, .exe)... ] |
-|  Thông số: Dung lượng: 14.5 GB (15.569.256.448 Bytes) | Đuôi: .exe | Mã SHA256: e3b0c44298fc1c...|
+|  Thông số: Dung lượng: 14.5 GB (15.569.256.448 Bytes) | Đuôi: .exe | Phiên bản: 1.2.0           |
 |  Tiến trình nạp: [===================================================>] 100% (Đã nạp vào Storage) |
 |                                                                                                   |
 |  Danh sách tệp đính kèm của sản phẩm này:                                                         |
@@ -117,7 +117,7 @@
 |  | • Đặt mật khẩu mạnh (tối thiểu 8 ký tự, gồm chữ hoa, số và ký tự đặc biệt).                |  |
 |  | • Tuyệt đối không cung cấp mã OTP hoặc mật khẩu cho bất kỳ ai (kể cả nhân viên hỗ trợ).     |  |
 |  | • Khi phát hiện giao dịch trừ ví bất thường, hãy đổi ngay mật khẩu và liên hệ admin.         |  |
-|  | • Luôn kiểm tra mã hash SHA-256 sau khi tải tệp số để đảm bảo file nguyên vẹn không bị mã độc|  |
+|  | • Định kỳ cập nhật mật khẩu và bảo mật thiết bị để tránh bị kẻ xấu chiếm quyền điều khiển. |  |
 |  +---------------------------------------------------------------------------------------------+  |
 +---------------------------------------------------------------------------------------------------+
 ```
@@ -132,7 +132,7 @@
 | `cboPublisher` | `ComboBox` | UI 10 | Chọn nhà phát hành sản phẩm. |
 | `btnBrowseFile` | `Button` | UI 10 | Mở `OpenFileDialog` chọn tệp cài đặt (.zip, .exe, .rar, .iso). |
 | `txtSelectedFilePath` | `TextBox` | UI 10 | Hiển thị đường dẫn tệp nguồn vừa chọn (`ReadOnly = True`). |
-| `lblFileDetails` | `Label` | UI 10 | Hiển thị dung lượng byte/MB và mã băm SHA-256 đã sinh. |
+| `lblFileDetails` | `Label` | UI 10 | Hiển thị dung lượng byte/MB và thông số tệp. |
 | `prgUpload` | `ProgressBar` | UI 10 | Hiển thị tiến trình copy tệp vật lý vào thư mục `Storage/`. |
 | `dgvProductFiles` | `DataGridView` | UI 10 | Danh sách các tệp đính kèm của sản phẩm (`TepSanPham`). |
 | `btnDeleteFile` | `Button` | UI 10 | Xóa tệp đính kèm đã chọn khỏi CSDL và thư mục `Storage/`. |
