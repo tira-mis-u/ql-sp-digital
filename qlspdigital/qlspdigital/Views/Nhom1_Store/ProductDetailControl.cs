@@ -1,10 +1,10 @@
-using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom1_Store;
 using qlspdigital.BLL.Nhom2_Cart;
 using qlspdigital.DTOs;
 using qlspdigital.Shared;
+using qlspdigital.Views.Main;
 
 namespace qlspdigital.Views.Nhom1_Store
 {
@@ -16,8 +16,6 @@ namespace qlspdigital.Views.Nhom1_Store
         private readonly GioHangService _gioHangService;
         private readonly DanhGiaService _danhGiaService;
 
-        public event Action? OnBackToStore;
-        public event Action<int>? OnViewReviews;
 
         private int _maSanPham;
         private SanPhamDTO? _currentProduct;
@@ -29,96 +27,6 @@ namespace qlspdigital.Views.Nhom1_Store
             _danhGiaService = new DanhGiaService();
 
             InitializeComponent();
-            AdjustLayout();
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
-
-            // Lắng nghe sự kiện cập nhật đánh giá theo thời gian thực
-            DanhGiaService.ReviewUpdated += (spId) =>
-            {
-                if ((spId == _maSanPham || spId == 0) && _maSanPham > 0 && !this.IsDisposed && !this.Disposing && this.IsHandleCreated)
-                {
-                    try
-                    {
-                        this.BeginInvoke(new Action(() => LoadProductDetail(_maSanPham)));
-                    }
-                    catch { }
-                }
-            };
-            UserSession.SessionChanged += () =>
-            {
-                if (_maSanPham > 0 && !this.IsDisposed && !this.Disposing && this.IsHandleCreated)
-                {
-                    try
-                    {
-                        this.BeginInvoke(new Action(() => LoadProductDetail(_maSanPham)));
-                    }
-                    catch { }
-                }
-            };
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            AdjustLayout();
-        }
-
-        private void AdjustLayout()
-        {
-            if (panelTop == null || panelBottom == null || panelDesc == null || panelReviews == null) return;
-            int totalW = Math.Max(600, this.ClientSize.Width);
-            int totalH = Math.Max(400, this.ClientSize.Height);
-            int fullW = totalW - 40;
-
-            if (btnBack != null)
-            {
-                btnBack.Location = new Point(20, 14);
-                btnBack.Size = new Size(180, 36);
-            }
-
-            if (lblTitle != null)
-            {
-                lblTitle.Width = Math.Max(200, panelTop.ClientSize.Width - 340);
-            }
-
-            int topH = 195;
-            int topY = (btnBack != null) ? (btnBack.Bottom + 10) : 58;
-            panelTop.Location = new Point(20, topY);
-            panelTop.Size = new Size(fullW, topH);
-
-            int bottomY = panelTop.Bottom + 12;
-            int bottomH = Math.Max(260, totalH - bottomY - 15);
-            panelBottom.Location = new Point(20, bottomY);
-            panelBottom.Size = new Size(fullW, bottomH);
-
-            int pnlW = panelBottom.ClientSize.Width;
-            int descW = Math.Max(260, (int)(pnlW * 0.48));
-            int revW = Math.Max(260, pnlW - descW - 15);
-
-            panelDesc.Location = new Point(0, 0);
-            panelDesc.Size = new Size(descW, bottomH);
-
-            panelReviews.Location = new Point(descW + 15, 0);
-            panelReviews.Size = new Size(revW, bottomH);
-
-            if (panelReviewsHeader != null)
-            {
-                panelReviewsHeader.Height = 36;
-            }
-
-            if (dgvReviewsDetail != null)
-            {
-                int headerBottom = (panelReviewsHeader != null) ? panelReviewsHeader.Bottom : 56;
-                int gridTop = headerBottom + 10;
-                int dgvH = Math.Max(120, panelReviews.ClientSize.Height - gridTop - 15);
-                dgvReviewsDetail.Location = new Point(15, gridTop);
-                dgvReviewsDetail.Size = new Size(panelReviews.ClientSize.Width - 30, dgvH);
-                if (lblNoReviews != null)
-                {
-                    lblNoReviews.Location = new Point(15, gridTop + 30);
-                    lblNoReviews.Size = new Size(panelReviews.ClientSize.Width - 30, 90);
-                }
-            }
         }
 
         public void LoadProductDetail(int maSanPham)
@@ -127,10 +35,7 @@ namespace qlspdigital.Views.Nhom1_Store
             _maSanPham = maSanPham;
             _currentProduct = _sanPhamService.LayChiTietSanPham(maSanPham);
 
-            if (_currentProduct == null)
-            {
-                return;
-            }
+            if (_currentProduct == null) return;
 
             lblTitle.Text = _currentProduct.TenSanPham;
             lblCategory.Text = $"Thể loại: {_currentProduct.TenDanhMuc}";
@@ -149,7 +54,7 @@ namespace qlspdigital.Views.Nhom1_Store
                            $"• Nhà phát triển / Studio: {_currentProduct.TenNhaPhatHanh}\n" +
                            $"• Chính sách bảo hành: Cấp lại tệp tải xuống & hỗ trợ kích hoạt trọn đời";
 
-            rtfDescription.Text = (string.IsNullOrWhiteSpace(_currentProduct.MoTa)
+            rtfDescription.Text = (string.IsNullOrEmpty(_currentProduct.MoTa)
                 ? "Sản phẩm kỹ thuật số chính hãng được phân phối bản quyền trên hệ thống DPMS. Tương thích đa nền tảng, hỗ trợ cập nhật trọn đời."
                 : _currentProduct.MoTa) + specs;
 
@@ -160,7 +65,7 @@ namespace qlspdigital.Views.Nhom1_Store
         {
             if (dgvReviewsDetail == null) return;
             dgvReviewsDetail.Rows.Clear();
-            var reviews = _danhGiaService.LayDanhGiaTheoSanPham(maSanPham);
+            System.Collections.Generic.List<DanhGiaDTO> reviews = _danhGiaService.LayDanhGiaTheoSanPham(maSanPham);
             if (reviews.Count == 0)
             {
                 lblNoReviews.Visible = true;
@@ -172,7 +77,7 @@ namespace qlspdigital.Views.Nhom1_Store
                 lblNoReviews.Visible = false;
                 dgvReviewsDetail.Visible = true;
                 lblReviewsTitle.Text = $"ĐÁNH GIÁ TỪ CỘNG ĐỒNG ({reviews.Count})";
-                foreach (var r in reviews)
+                foreach (DanhGiaDTO r in reviews)
                 {
                     dgvReviewsDetail.Rows.Add($"{r.HoTenNguoiDung}  ✓ (Đã mua)", $"⭐ {r.SoSao}/5", r.BinhLuan, FormatHelper.FormatDateTime(r.NgayTao));
                 }
@@ -199,12 +104,12 @@ namespace qlspdigital.Views.Nhom1_Store
 
         private void BtnBack_Click(object? sender, EventArgs e)
         {
-            OnBackToStore?.Invoke();
+            MainForm?.NavigateToStore();
         }
 
         private void BtnReviews_Click(object? sender, EventArgs e)
         {
-            OnViewReviews?.Invoke(_maSanPham);
+            MainForm?.NavigateToReviews(_maSanPham);
         }
     }
 }

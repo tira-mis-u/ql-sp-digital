@@ -18,63 +18,16 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             _danhMucService = new DanhMucService();
 
             InitializeComponent();
-            AdjustLayout();
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadCategories();
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            AdjustLayout();
-        }
 
-        private void AdjustLayout()
-        {
-            if (panelForm == null || dgvCategories == null || txtDescription == null || btnNew == null || chkActive == null || txtId == null) return;
-            int totalW = Math.Max(600, this.ClientSize.Width);
-            int totalH = Math.Max(380, this.ClientSize.Height);
-
-            int rightW = Math.Clamp((int)(totalW * 0.40), 380, 520);
-            int leftW = Math.Max(260, totalW - rightW - 65); // margin 25 left + 15 gap + 25 right
-            int contentH = Math.Max(220, totalH - 85);
-
-            // 1. DataGridView
-            dgvCategories.Location = new Point(25, 60);
-            dgvCategories.Size = new Size(leftW, contentH);
-
-            // 2. Right Form Panel
-            panelForm.Location = new Point(25 + leftW + 15, 60);
-            panelForm.Size = new Size(rightW, contentH);
-
-            int formW = panelForm.ClientSize.Width;
-            int formH = panelForm.ClientSize.Height;
-            int inputW = Math.Max(200, formW - 145 - 25);
-            txtId.Width = inputW;
-            txtName.Width = inputW;
-            txtDescription.Width = Math.Max(200, formW - 40);
-
-            int descH = Math.Clamp(formH - 280, 65, 180);
-            txtDescription.Height = descH;
-            chkActive.Location = new Point(20, txtDescription.Bottom + 8);
-            int btnY = chkActive.Bottom + 12;
-
-            int btnW = Math.Max(90, (formW - 40 - 20) / 3);
-            btnNew.Location = new Point(20, btnY);
-            btnNew.Size = new Size(btnW, 36);
-
-            btnSave.Location = new Point(20 + btnW + 10, btnY);
-            btnSave.Size = new Size(btnW, 36);
-
-            btnDelete.Location = new Point(20 + (btnW + 10) * 2, btnY);
-            btnDelete.Size = new Size(btnW, 36);
-        }
 
         public void LoadCategories()
         {
             dgvCategories.Rows.Clear();
-            var list = _danhMucService.LayTatCaDanhMuc();
-            foreach (var dm in list)
+            List<DanhMucDTO> list = _danhMucService.LayTatCaDanhMuc();
+            foreach (DanhMucDTO dm in list)
             {
                 dgvCategories.Rows.Add(dm.MaDanhMuc, dm.TenDanhMuc, dm.MoTa, dm.SoLuongSanPham, dm.TrangThai ? "Hoạt động" : "Khóa");
             }
@@ -84,14 +37,14 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
         {
             if (dgvCategories.SelectedRows.Count == 0) return;
 
-            var row = dgvCategories.SelectedRows[0];
+            DataGridViewRow row = dgvCategories.SelectedRows[0];
             if (row == null || row.Index < 0) return;
 
-            var val = (dgvCategories.Columns.Contains("MaDanhMuc") ? row.Cells["MaDanhMuc"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            object? val = (dgvCategories.Columns.Contains("MaDanhMuc") ? row.Cells["MaDanhMuc"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
             if (val == null) return;
             int id = Convert.ToInt32(val);
-            var list = _danhMucService.LayTatCaDanhMuc();
-            var dm = list.Find(x => x.MaDanhMuc == id);
+            List<DanhMucDTO> list = _danhMucService.LayTatCaDanhMuc();
+            DanhMucDTO? dm = list.Find(x => x.MaDanhMuc == id);
             if (dm != null)
             {
                 txtId.Text = dm.MaDanhMuc.ToString();
@@ -112,7 +65,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
 
         private void BtnSave_Click(object? sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtName.Text))
+            if (txtName.Text.Trim() == "")
             {
                 MessageBox.Show("Vui lòng nhập tên danh mục!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;

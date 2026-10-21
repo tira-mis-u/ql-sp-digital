@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom5_Orders;
+using qlspdigital.DTOs;
 using qlspdigital.Shared;
 
 namespace qlspdigital.Views.Nhom5_Orders
@@ -17,53 +18,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             _orderService = new DonHangService();
 
             InitializeComponent();
-            AdjustLayout();
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadHistory();
-
-            ThuVienService.LibraryUpdated += () =>
-            {
-                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
-                {
-                    try { this.BeginInvoke(new Action(LoadHistory)); } catch { }
-                }
-            };
-            UserSession.SessionChanged += () =>
-            {
-                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
-                {
-                    try { this.BeginInvoke(new Action(LoadHistory)); } catch { }
-                }
-            };
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            AdjustLayout();
-        }
-
-        private void AdjustLayout()
-        {
-            if (dgvOrders == null || panelDetail == null || panelTop == null || btnRefresh == null || lblHeader == null) return;
-            int totalW = Math.Max(600, this.ClientSize.Width);
-            int totalH = Math.Max(380, this.ClientSize.Height);
-
-            panelTop.Location = new Point(25, 20);
-            panelTop.Size = new Size(totalW - 50, 48);
-            lblHeader.Location = new Point(0, (panelTop.Height - lblHeader.Height) / 2);
-            btnRefresh.Location = new Point(panelTop.Width - 110, (panelTop.Height - 32) / 2);
-            btnRefresh.Size = new Size(110, 32);
-
-            int rightW = Math.Clamp((int)(totalW * 0.38), 300, 440);
-            int leftW = Math.Max(260, totalW - rightW - 65);
-            int contentH = Math.Max(180, totalH - 80 - 25);
-
-            dgvOrders.Location = new Point(25, 80);
-            dgvOrders.Size = new Size(leftW, contentH);
-
-            panelDetail.Location = new Point(25 + leftW + 15, 80);
-            panelDetail.Size = new Size(rightW, contentH);
         }
 
         public void LoadHistory()
@@ -73,47 +28,34 @@ namespace qlspdigital.Views.Nhom5_Orders
 
             if (!UserSession.IsLoggedIn) return;
 
-            var list = _orderService.LayLichSuDonHang(UserSession.CurrentUserId);
-            foreach (var o in list)
+            List<DonHangDTO> list = _orderService.LayLichSuDonHang(UserSession.CurrentUserId);
+            foreach (DonHangDTO o in list)
             {
-                dgvOrders.Rows.Add(
-                    o.MaDonHang,
-                    o.MaDonHangCode,
-                    FormatHelper.FormatCurrency(o.TongThanhToan),
-                    o.TrangThaiDonHang,
-                    FormatHelper.FormatDateTime(o.NgayTao)
-                );
+                dgvOrders.Rows.Add(o.MaDonHang, o.MaDonHangCode, FormatHelper.FormatCurrency(o.TongThanhToan), o.TrangThaiDonHang, FormatHelper.FormatDateTime(o.NgayTao));
             }
         }
 
         private void DgvOrders_SelectionChanged(object? sender, EventArgs e)
         {
-            if (dgvOrders.SelectedRows.Count == 0)
-            {
-                dgvDetails.Rows.Clear();
-                return;
-            }
+            if (dgvOrders.SelectedRows.Count == 0) { dgvDetails.Rows.Clear(); return; }
 
-            var row = dgvOrders.SelectedRows[0];
+            DataGridViewRow row = dgvOrders.SelectedRows[0];
             if (row == null || row.Index < 0) return;
 
-            var val = (dgvOrders.Columns.Contains("MaDonHang") ? row.Cells["MaDonHang"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            object? val = (dgvOrders.Columns.Contains("MaDonHang") ? row.Cells["MaDonHang"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
             if (val == null) return;
 
             int orderId = Convert.ToInt32(val);
             dgvDetails.Rows.Clear();
 
             // Truyền CurrentUserId để chống IDOR (chỉ xem chi tiết đơn của chính mình)
-            var details = _orderService.LayChiTietDonHang(orderId, UserSession.CurrentUserId);
-            foreach (var item in details)
+            List<ChiTietDonHangDTO> details = _orderService.LayChiTietDonHang(orderId, UserSession.CurrentUserId);
+            foreach (ChiTietDonHangDTO item in details)
             {
                 dgvDetails.Rows.Add(item.TenSanPham, item.SoLuong, FormatHelper.FormatCurrency(item.DonGia));
             }
         }
 
-        private void BtnRefresh_Click(object? sender, EventArgs e)
-        {
-            LoadHistory();
-        }
+        private void BtnRefresh_Click(object? sender, EventArgs e) => LoadHistory();
     }
 }

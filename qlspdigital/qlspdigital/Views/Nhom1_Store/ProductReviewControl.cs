@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom1_Store;
@@ -22,98 +21,22 @@ namespace qlspdigital.Views.Nhom1_Store
             _danhGiaService = new DanhGiaService();
 
             InitializeComponent();
-            AdjustLayout();
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadProductList();
-
-            DanhGiaService.ReviewUpdated += (spId) =>
-            {
-                if ((spId == _maSanPhamHienTai || spId == 0) && !this.IsDisposed && !this.Disposing && this.IsHandleCreated)
-                {
-                    try { this.BeginInvoke(new Action(LoadReviews)); } catch { }
-                }
-            };
-            UserSession.SessionChanged += () =>
-            {
-                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
-                {
-                    try { this.BeginInvoke(new Action(LoadReviews)); } catch { }
-                }
-            };
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            AdjustLayout();
-        }
-
-        private void AdjustLayout()
-        {
-            if (panelTop == null || panelForm == null || dgvReviews == null || txtComment == null || btnSubmit == null || lblSelect == null || cboProduct == null || lblStarTitle == null || cboStar == null || lblCommentTitle == null) return;
-            int totalW = Math.Max(600, this.ClientSize.Width);
-            int totalH = Math.Max(380, this.ClientSize.Height);
-
-            int fullW = totalW - 50;
-            panelTop.Location = new Point(25, 15);
-            panelTop.Size = new Size(fullW, 56);
-
-            // Bố cục khung chọn sản phẩm theo Relative Flow (tránh hoàn toàn đè chữ nhãn)
-            lblSelect.Location = new Point(15, 17);
-            cboProduct.Location = new Point(lblSelect.Right + 16, 14);
-            lblAverageScore.Location = new Point(panelTop.ClientSize.Width - 365, 11);
-            lblAverageScore.Size = new Size(350, 34);
-            int maxCboW = Math.Max(180, panelTop.ClientSize.Width - cboProduct.Left - lblAverageScore.Width - 25);
-            cboProduct.Width = Math.Clamp(maxCboW, 200, 420);
-
-            // Bố cục Form nhận xét & đánh giá
-            panelForm.Location = new Point(25, 80);
-            int formW = panelForm.ClientSize.Width;
-
-            int starY = 48;
-            lblStarTitle.Location = new Point(15, starY + 4);
-            cboStar.Location = new Point(lblStarTitle.Right + 16, starY);
-            cboStar.Width = 320;
-
-            int commentY = cboStar.Bottom + 16;
-            lblCommentTitle.Location = new Point(15, commentY + 6);
-            int commentX = Math.Max(lblStarTitle.Right, lblCommentTitle.Right) + 16;
-
-            int btnW = 160;
-            int btnX = formW - btnW - 20;
-            btnSubmit.Location = new Point(btnX, commentY);
-            btnSubmit.Size = new Size(btnW, 36);
-            btnDelete.Location = new Point(btnX, commentY + 44);
-            btnDelete.Size = new Size(btnW, 36);
-
-            int txtW = Math.Max(200, btnX - commentX - 20);
-            txtComment.Location = new Point(commentX, commentY);
-            txtComment.Size = new Size(txtW, 80);
-
-            int formH = Math.Max(195, txtComment.Bottom + 18);
-            panelForm.Size = new Size(fullW, formH);
-
-            int dgvY = panelForm.Bottom + 15;
-            int reviewH = Math.Max(180, totalH - dgvY - 25);
-            dgvReviews.Location = new Point(25, dgvY);
-            dgvReviews.Size = new Size(fullW, reviewH);
-        }
 
         private void LoadProductList()
         {
             try
             {
-                var list = _sanPhamService.LayDanhSachSanPham();
+                List<SanPhamDTO> list = _sanPhamService.LayDanhSachSanPham();
                 cboProduct.Items.Clear();
-                foreach (var sp in list)
+                foreach (SanPhamDTO sp in list)
                 {
                     cboProduct.Items.Add(new ProductComboItem { Id = sp.MaSanPham, Name = sp.TenSanPham });
                 }
 
-                if (cboProduct.Items.Count > 0)
-                {
-                    cboProduct.SelectedIndex = 0;
-                }
+                if (cboProduct.Items.Count > 0) cboProduct.SelectedIndex = 0;
             }
             catch { }
         }
@@ -126,10 +49,7 @@ namespace qlspdigital.Views.Nhom1_Store
             {
                 if (cboProduct.Items[i] is ProductComboItem item && item.Id == maSanPham)
                 {
-                    if (cboProduct.SelectedIndex != i)
-                    {
-                        cboProduct.SelectedIndex = i;
-                    }
+                    if (cboProduct.SelectedIndex != i) cboProduct.SelectedIndex = i;
                     found = true;
                     break;
                 }
@@ -137,14 +57,8 @@ namespace qlspdigital.Views.Nhom1_Store
 
             if (!found && cboProduct.Items.Count > 0)
             {
-                if (cboProduct.SelectedIndex != 0)
-                {
-                    cboProduct.SelectedIndex = 0;
-                }
-                if (cboProduct.SelectedItem is ProductComboItem firstItem)
-                {
-                    _maSanPhamHienTai = firstItem.Id;
-                }
+                if (cboProduct.SelectedIndex != 0) cboProduct.SelectedIndex = 0;
+                if (cboProduct.SelectedItem is ProductComboItem firstItem) _maSanPhamHienTai = firstItem.Id;
             }
 
             LoadReviews();
@@ -153,10 +67,10 @@ namespace qlspdigital.Views.Nhom1_Store
         private void LoadReviews()
         {
             dgvReviews.Rows.Clear();
-            var reviews = _danhGiaService.LayDanhGiaTheoSanPham(_maSanPhamHienTai);
+            List<DanhGiaDTO> reviews = _danhGiaService.LayDanhGiaTheoSanPham(_maSanPhamHienTai);
 
             double totalScore = 0;
-            foreach (var r in reviews)
+            foreach (DanhGiaDTO r in reviews)
             {
                 totalScore += r.SoSao;
                 dgvReviews.Rows.Add($"{r.HoTenNguoiDung}  ✓ (Đã mua)", $"⭐ {r.SoSao}/5", r.BinhLuan, FormatHelper.FormatDateTime(r.NgayTao));
@@ -176,7 +90,7 @@ namespace qlspdigital.Views.Nhom1_Store
             if (UserSession.IsLoggedIn)
             {
                 bool daMua = _danhGiaService.DaMuaSanPham(UserSession.CurrentUserId, _maSanPhamHienTai);
-                var myReview = _danhGiaService.LayDanhGiaCuaUser(UserSession.CurrentUserId, _maSanPhamHienTai);
+                DanhGiaDTO? myReview = _danhGiaService.LayDanhGiaCuaUser(UserSession.CurrentUserId, _maSanPhamHienTai);
 
                 if (daMua)
                 {
@@ -229,7 +143,7 @@ namespace qlspdigital.Views.Nhom1_Store
             int star = Math.Clamp(cboStar.SelectedIndex >= 0 ? 5 - cboStar.SelectedIndex : 5, 1, 5);
             string comment = txtComment.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(comment))
+            if (comment == "")
             {
                 MessageBox.Show("Vui lòng nhập nội dung nhận xét của bạn!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -256,7 +170,7 @@ namespace qlspdigital.Views.Nhom1_Store
         {
             if (!UserSession.IsLoggedIn) return;
 
-            var myReview = _danhGiaService.LayDanhGiaCuaUser(UserSession.CurrentUserId, _maSanPhamHienTai);
+            DanhGiaDTO? myReview = _danhGiaService.LayDanhGiaCuaUser(UserSession.CurrentUserId, _maSanPhamHienTai);
             if (myReview == null)
             {
                 MessageBox.Show("Bạn chưa có đánh giá nào cho sản phẩm này để xóa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);

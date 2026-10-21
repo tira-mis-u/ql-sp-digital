@@ -16,6 +16,28 @@ namespace qlspdigital.Views.Main
             base.Dispose(disposing);
         }
 
+        protected override void OnLoad(System.EventArgs e)
+        {
+            base.OnLoad(e);
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            qlspdigital.Shared.ThemeHelper.ApplyDarkMode(this);
+            if (System.Windows.Forms.Screen.PrimaryScreen != null && System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Height <= 768)
+            {
+                this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            }
+        }
+
+        // Hàm chuyển đổi linh hoạt các UserControl vào vùng hiển thị chính
+        public void SwitchView(UserControl newView)
+        {
+            panelMainContent.Controls.Clear();
+            newView.Dock = DockStyle.Fill;
+            panelMainContent.Controls.Add(newView);
+            newView.BringToFront();
+            qlspdigital.Shared.ThemeHelper.ApplyDarkMode(newView);
+            UpdateCartBadge();
+        }
+
         #region Windows Form Designer generated code
         private void InitializeComponent()
         {
@@ -607,5 +629,76 @@ namespace qlspdigital.Views.Main
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel lblStatusText;
         private System.Windows.Forms.ToolStripStatusLabel lblDbStatus;
+
+        private void PanelHeader_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
+        {
+            if (sender is System.Windows.Forms.Panel pnl)
+            {
+                using (System.Drawing.Pen p = new System.Drawing.Pen(System.Drawing.Color.FromArgb(35, 48, 68), 1))
+                {
+                    e.Graphics.DrawLine(p, 0, pnl.Height - 1, pnl.Width, pnl.Height - 1);
+                }
+            }
+        }
+    }
+}
+
+// -------------------------------------------------------------------------
+// Hỗ trợ giao diện hệ thống Windows 10/11 (Dark Mode titlebar & scrollbar)
+// -------------------------------------------------------------------------
+namespace qlspdigital.Shared
+{
+    using System;
+    using System.Runtime.InteropServices;
+    using System.Windows.Forms;
+
+    internal static class ThemeHelper
+    {
+        [System.Runtime.InteropServices.DllImport("uxtheme.dll", ExactSpelling = true, CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+        private static extern int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string pszSubIdList);
+
+        [System.Runtime.InteropServices.DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+
+        private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+
+        public static void ApplyDarkMode(Control control)
+        {
+            if (control == null) return;
+            if (control.IsHandleCreated)
+            {
+                ApplyDarkModeCore(control);
+            }
+            else
+            {
+                EventHandler handleCreatedHandler = null;
+                handleCreatedHandler = (s, e) =>
+                {
+                    control.HandleCreated -= handleCreatedHandler;
+                    ApplyDarkModeCore(control);
+                };
+                control.HandleCreated += handleCreatedHandler;
+            }
+            control.ControlAdded += (s, e) => { if (e.Control != null) ApplyDarkMode(e.Control); };
+            foreach (Control child in control.Controls) ApplyDarkMode(child);
+        }
+
+        private static void ApplyDarkModeCore(Control control)
+        {
+            try
+            {
+                if (control is Form form)
+                {
+                    int darkMode = 1;
+                    DwmSetWindowAttribute(form.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE, ref darkMode, sizeof(int));
+                }
+                if (control is FlowLayoutPanel || control is Panel || control is DataGridView ||
+                    control is TextBox || control is RichTextBox || control is ListBox || control is ScrollableControl)
+                {
+                    SetWindowTheme(control.Handle, "DarkMode_Explorer", null);
+                }
+            }
+            catch { }
+        }
     }
 }

@@ -377,6 +377,7 @@ namespace qlspdigital.Views.Nhom2_Cart
             ((System.ComponentModel.ISupportInitialize)(this.dgvTransactions)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+            this.AdjustLayout();
         }
         #endregion
 
@@ -401,5 +402,83 @@ namespace qlspdigital.Views.Nhom2_Cart
         private System.Windows.Forms.DataGridViewTextBoxColumn colPhuongThuc;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTrangThai;
         private System.Windows.Forms.DataGridViewTextBoxColumn colNgayTao;
+
+        #region Windows Form Designer - Layout & UI Helpers
+#nullable enable
+
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public qlspdigital.Views.Main.MainForm? MainForm { get; set; }
+
+        protected override void OnResize(System.EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            if (panelCard == null || panelDeposit == null || dgvTransactions == null || lblDepositTitle == null || lblHistoryTitle == null) return;
+            int totalW = System.Math.Max(600, this.ClientSize.Width);
+            int totalH = System.Math.Max(400, this.ClientSize.Height);
+            int fullW = totalW - 50;
+
+            panelCard.Location = new System.Drawing.Point(25, 55);
+            panelCard.Size = new System.Drawing.Size(fullW, 100);
+
+            panelDeposit.Location = new System.Drawing.Point(25, 168);
+
+            lblDepositTitle.Location = new System.Drawing.Point(25, 18);
+            int btnY = lblDepositTitle.Bottom + 14;
+            int btnH = 40;
+            btnTopUp50k.Height = btnH;
+            btnTopUp100k.Height = btnH;
+            btnTopUp200k.Height = btnH;
+            btnTopUp500k.Height = btnH;
+            txtCustomAmount.Height = btnH;
+            btnCustomTopUp.Height = btnH;
+
+            int pnlW = panelDeposit.ClientSize.Width;
+            if (btnCustomTopUp != null && txtCustomAmount != null && btnTopUp50k != null)
+            {
+                int gap = 10;
+                int customBtnW = 125;
+                // Ô nhập số tiền rộng rãi, thoải mái nhập liệu (260px - 360px)
+                int customTxtW = System.Math.Clamp((int)(pnlW * 0.28), 260, 360);
+                int fixedPresetSpace = pnlW - 50 - customTxtW - customBtnW - gap * 5;
+                int btnW = System.Math.Clamp(fixedPresetSpace / 4, 85, 125);
+
+                btnTopUp50k.Location = new System.Drawing.Point(25, btnY);
+                btnTopUp50k.Width = btnW;
+
+                btnTopUp100k.Location = new System.Drawing.Point(btnTopUp50k.Right + gap, btnY);
+                btnTopUp100k.Width = btnW;
+
+                btnTopUp200k.Location = new System.Drawing.Point(btnTopUp100k.Right + gap, btnY);
+                btnTopUp200k.Width = btnW;
+
+                btnTopUp500k.Location = new System.Drawing.Point(btnTopUp200k.Right + gap, btnY);
+                btnTopUp500k.Width = btnW;
+
+                txtCustomAmount.Location = new System.Drawing.Point(btnTopUp500k.Right + gap + 6, btnY);
+                txtCustomAmount.Width = customTxtW;
+
+                btnCustomTopUp.Location = new System.Drawing.Point(txtCustomAmount.Right + gap, btnY);
+                btnCustomTopUp.Width = customBtnW;
+            }
+
+            panelDeposit.Size = new System.Drawing.Size(fullW, txtCustomAmount.Bottom + 16);
+
+            lblHistoryTitle.Location = new System.Drawing.Point(25, panelDeposit.Bottom + 16);
+            int dgvY = lblHistoryTitle.Bottom + 10;
+            int contentH = System.Math.Max(150, totalH - dgvY - 25);
+
+            dgvTransactions.Location = new System.Drawing.Point(25, dgvY);
+            dgvTransactions.Size = new System.Drawing.Size(fullW, contentH);
+        }
+
+#nullable restore
+        #endregion
     }
 }

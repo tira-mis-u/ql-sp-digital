@@ -563,6 +563,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             this.panelSecurityBanner.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+            this.AdjustLayout();
         }
         #endregion
 
@@ -600,5 +601,68 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
         private System.Windows.Forms.CheckBox chkAutoUpdate;
         private System.Windows.Forms.CheckBox chkOrderConfirm;
         private System.Windows.Forms.Button btnSaveSettings;
+
+        #region Windows Form Designer - Layout & UI Helpers
+
+        protected override void OnResize(System.EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            if (panelProfileForm == null || panelPasswordForm == null || panelInfo == null || panelSettings == null || panelSecurityBanner == null || txtFullName == null) return;
+            int totalW = System.Math.Max(600, this.ClientSize.Width);
+
+            int fullW = totalW - 50;
+
+            // 1. Panel Info (Top)
+            panelInfo.Location = new System.Drawing.Point(25, 55);
+            panelInfo.Size = new System.Drawing.Size(fullW, 90);
+            int halfInfo = fullW / 2;
+            lblRole.Location = new System.Drawing.Point(System.Math.Max(320, halfInfo), 15);
+            lblCreatedDate.Location = new System.Drawing.Point(System.Math.Max(320, halfInfo), 50);
+
+            // 2. Middle Row: 2 Cards (50% - 50%)
+            int cardW = (fullW - 20) / 2;
+            int cardH = 275;
+            panelProfileForm.Location = new System.Drawing.Point(25, 160);
+            panelProfileForm.Size = new System.Drawing.Size(cardW, cardH);
+
+            panelPasswordForm.Location = new System.Drawing.Point(25 + cardW + 20, 160);
+            panelPasswordForm.Size = new System.Drawing.Size(cardW, cardH);
+
+            int fieldW = System.Math.Max(180, cardW - 195);
+            txtFullName.Width = fieldW;
+            txtEmail.Width = fieldW;
+            txtPhone.Width = fieldW;
+            btnUpdateProfile.Location = new System.Drawing.Point(165, 206);
+            btnUpdateProfile.Width = System.Math.Min(250, fieldW);
+
+            txtOldPassword.Width = fieldW;
+            txtNewPassword.Width = fieldW;
+            txtConfirmPassword.Width = fieldW;
+            btnChangePassword.Location = new System.Drawing.Point(165, 206);
+            btnChangePassword.Width = System.Math.Min(250, fieldW);
+
+            // 3. Settings Card
+            int settingsY = panelProfileForm.Bottom + 16;
+            panelSettings.Location = new System.Drawing.Point(25, settingsY);
+            panelSettings.Size = new System.Drawing.Size(fullW, 155);
+
+            int col2X = System.Math.Max(380, fullW / 2);
+            chkOrderConfirm.Location = new System.Drawing.Point(col2X, 48);
+            btnSaveSettings.Location = new System.Drawing.Point(col2X, 84);
+
+            // 4. Security Banner (Bottom)
+            lblSecurityContent.MaximumSize = new System.Drawing.Size(fullW - 40, 0);
+            int bannerY = panelSettings.Bottom + 16;
+            panelSecurityBanner.Location = new System.Drawing.Point(25, bannerY);
+            panelSecurityBanner.Size = new System.Drawing.Size(fullW, System.Math.Max(180, lblSecurityContent.Bottom + 25));
+        }
+
+        #endregion
     }
 }

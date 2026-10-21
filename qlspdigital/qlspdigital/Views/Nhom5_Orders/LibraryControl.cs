@@ -19,71 +19,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             _libraryService = new ThuVienService();
 
             InitializeComponent();
-            AdjustLayout();
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadLibrary();
-
-            ThuVienService.LibraryUpdated += () =>
-            {
-                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
-                {
-                    try { this.BeginInvoke(new Action(LoadLibrary)); } catch { }
-                }
-            };
-            UserSession.SessionChanged += () =>
-            {
-                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
-                {
-                    try { this.BeginInvoke(new Action(LoadLibrary)); } catch { }
-                }
-            };
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            AdjustLayout();
-        }
-
-        private void AdjustLayout()
-        {
-            if (dgvLibrary == null || panelActions == null || lblSelectedTitle == null || panelTop == null || btnRefresh == null || lblHeader == null) return;
-            int totalW = Math.Max(600, this.ClientSize.Width);
-            int totalH = Math.Max(380, this.ClientSize.Height);
-
-            panelTop.Location = new Point(25, 20);
-            panelTop.Size = new Size(totalW - 50, 48);
-            lblHeader.Location = new Point(0, (panelTop.Height - lblHeader.Height) / 2);
-            btnRefresh.Location = new Point(panelTop.Width - 130, (panelTop.Height - 32) / 2);
-            btnRefresh.Size = new Size(130, 32);
-
-            int actionW = Math.Clamp((int)(totalW * 0.35), 320, 420);
-            int leftW = Math.Max(260, totalW - actionW - 65);
-            int contentH = Math.Max(180, totalH - 80 - 25);
-
-            dgvLibrary.Location = new Point(25, 80);
-            dgvLibrary.Size = new Size(leftW, contentH);
-
-            panelActions.Location = new Point(25 + leftW + 15, 80);
-            panelActions.Size = new Size(actionW, contentH);
-
-            int btnW = actionW - 40;
-            lblSelectedTitle.Width = btnW;
-            lblSelectedTitle.Location = new Point(20, 20);
-
-            lblVersion.Location = new Point(20, lblSelectedTitle.Bottom + 8);
-            lblSize.Location = new Point(20, lblVersion.Bottom + 6);
-            lblDownloadCount.Location = new Point(20, lblSize.Bottom + 6);
-
-            btnDownload.Location = new Point(20, lblDownloadCount.Bottom + 14);
-            btnDownload.Size = new Size(btnW, 42);
-
-            lblProgressText.Location = new Point(20, btnDownload.Bottom + 10);
-            prgDownload.Location = new Point(20, lblProgressText.Bottom + 6);
-            prgDownload.Size = new Size(btnW, 24);
-
-            btnUninstall.Location = new Point(20, prgDownload.Bottom + 14);
-            btnUninstall.Size = new Size(btnW, 38);
         }
 
         public void LoadLibrary()
@@ -98,16 +34,10 @@ namespace qlspdigital.Views.Nhom5_Orders
                 return;
             }
 
-            var list = _libraryService.LayKhoThuVien(UserSession.CurrentUserId);
-            foreach (var item in list)
+            List<ThuVienItemDTO> list = _libraryService.LayKhoThuVien(UserSession.CurrentUserId);
+            foreach (ThuVienItemDTO item in list)
             {
-                dgvLibrary.Rows.Add(
-                    item.MaSoHuu,
-                    item.TenSanPham,
-                    item.TenDanhMuc,
-                    item.PhienBan,
-                    $"{item.SoLanTai} lần"
-                );
+                dgvLibrary.Rows.Add(item.MaSoHuu, item.TenSanPham, item.TenDanhMuc, item.PhienBan, $"{item.SoLanTai} lần");
             }
 
             if (list.Count == 0)
@@ -141,18 +71,18 @@ namespace qlspdigital.Views.Nhom5_Orders
         private int GetSelectedSoHuuId()
         {
             if (dgvLibrary.SelectedRows.Count == 0) return 0;
-            var row = dgvLibrary.SelectedRows[0];
+            DataGridViewRow row = dgvLibrary.SelectedRows[0];
             if (row == null || row.Index < 0) return 0;
-            var val = (dgvLibrary.Columns.Contains("MaSoHuu") ? row.Cells["MaSoHuu"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            object? val = (dgvLibrary.Columns.Contains("MaSoHuu") ? row.Cells["MaSoHuu"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
             return val != null ? Convert.ToInt32(val) : 0;
         }
 
         private string GetSelectedProductName()
         {
             if (dgvLibrary.SelectedRows.Count == 0) return string.Empty;
-            var row = dgvLibrary.SelectedRows[0];
+            DataGridViewRow row = dgvLibrary.SelectedRows[0];
             if (row == null || row.Index < 0) return string.Empty;
-            var val = (dgvLibrary.Columns.Contains("TenSanPham") ? row.Cells["TenSanPham"].Value : null) ?? (row.Cells.Count > 1 ? row.Cells[1].Value : null);
+            object? val = (dgvLibrary.Columns.Contains("TenSanPham") ? row.Cells["TenSanPham"].Value : null) ?? (row.Cells.Count > 1 ? row.Cells[1].Value : null);
             return val?.ToString() ?? string.Empty;
         }
 
@@ -166,8 +96,8 @@ namespace qlspdigital.Views.Nhom5_Orders
                 return;
             }
 
-            var list = _libraryService.LayKhoThuVien(UserSession.CurrentUserId);
-            var item = list.Find(x => x.MaSoHuu == soHuuId);
+            List<ThuVienItemDTO> list = _libraryService.LayKhoThuVien(UserSession.CurrentUserId);
+            ThuVienItemDTO? item = list.Find(x => x.MaSoHuu == soHuuId);
 
             if (item != null)
             {
@@ -191,8 +121,8 @@ namespace qlspdigital.Views.Nhom5_Orders
                 return;
             }
 
-            var list = _libraryService.LayKhoThuVien(UserSession.CurrentUserId);
-            var item = list.Find(x => x.MaSoHuu == soHuuId);
+            List<ThuVienItemDTO> list = _libraryService.LayKhoThuVien(UserSession.CurrentUserId);
+            ThuVienItemDTO? item = list.Find(x => x.MaSoHuu == soHuuId);
 
             if (item == null) return;
 
@@ -204,12 +134,12 @@ namespace qlspdigital.Views.Nhom5_Orders
                     UpdateDownloadProgress(0);
                     SetButtonState(btnDownload, false, Color.FromArgb(90, 160, 45));
                     SetButtonState(btnUninstall, false, Color.FromArgb(180, 40, 40));
+                    UpdateDownloadProgress(20);
                     lblProgressText.Text = "Đang kết nối máy chủ CDN và tải tệp...";
+                    await Task.Delay(100);
+                    UpdateDownloadProgress(50);
 
-                    bool success = await _libraryService.TaiXuongTepAsync(item, fbd.SelectedPath, (p) =>
-                    {
-                        UpdateDownloadProgress(p);
-                    });
+                    bool success = await _libraryService.TaiXuongTepAsync(item, fbd.SelectedPath);
 
                     SetButtonState(btnDownload, true, Color.FromArgb(90, 160, 45));
                     SetButtonState(btnUninstall, true, Color.FromArgb(180, 40, 40));
@@ -217,7 +147,7 @@ namespace qlspdigital.Views.Nhom5_Orders
                     if (success)
                     {
                         UpdateDownloadProgress(100);
-                        lblProgressText.Text = "Tải xuống hoàn tất! Đã kiểm tra SHA-256 an toàn.";
+                        lblProgressText.Text = "Tải xuống hoàn tất thành công!";
                         await Task.Delay(250);
                         MessageBox.Show($"Tải tệp thành công về thư mục:\n{fbd.SelectedPath}", "Hoàn tất tải xuống", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadLibrary();
@@ -277,9 +207,6 @@ namespace qlspdigital.Views.Nhom5_Orders
             }
         }
 
-        private void BtnRefresh_Click(object? sender, EventArgs e)
-        {
-            LoadLibrary();
-        }
+        private void BtnRefresh_Click(object? sender, EventArgs e) => LoadLibrary();
     }
 }

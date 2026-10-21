@@ -343,6 +343,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             this.panelForm.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+            this.AdjustLayout();
         }
         #endregion
 
@@ -365,5 +366,57 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnDelete;
+
+        #region Windows Form Designer - Layout & UI Helpers
+
+        protected override void OnResize(System.EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            if (panelForm == null || dgvCategories == null || txtDescription == null || btnNew == null || chkActive == null || txtId == null) return;
+            int totalW = System.Math.Max(600, this.ClientSize.Width);
+            int totalH = System.Math.Max(380, this.ClientSize.Height);
+
+            int rightW = System.Math.Clamp((int)(totalW * 0.40), 380, 520);
+            int leftW = System.Math.Max(260, totalW - rightW - 65); // margin 25 left + 15 gap + 25 right
+            int contentH = System.Math.Max(220, totalH - 85);
+
+            // 1. DataGridView
+            dgvCategories.Location = new System.Drawing.Point(25, 60);
+            dgvCategories.Size = new System.Drawing.Size(leftW, contentH);
+
+            // 2. Right Form Panel
+            panelForm.Location = new System.Drawing.Point(25 + leftW + 15, 60);
+            panelForm.Size = new System.Drawing.Size(rightW, contentH);
+
+            int formW = panelForm.ClientSize.Width;
+            int formH = panelForm.ClientSize.Height;
+            int inputW = System.Math.Max(200, formW - 145 - 25);
+            txtId.Width = inputW;
+            txtName.Width = inputW;
+            txtDescription.Width = System.Math.Max(200, formW - 40);
+
+            int descH = System.Math.Clamp(formH - 280, 65, 180);
+            txtDescription.Height = descH;
+            chkActive.Location = new System.Drawing.Point(20, txtDescription.Bottom + 8);
+            int btnY = chkActive.Bottom + 12;
+
+            int btnW = System.Math.Max(90, (formW - 40 - 20) / 3);
+            btnNew.Location = new System.Drawing.Point(20, btnY);
+            btnNew.Size = new System.Drawing.Size(btnW, 36);
+
+            btnSave.Location = new System.Drawing.Point(20 + btnW + 10, btnY);
+            btnSave.Size = new System.Drawing.Size(btnW, 36);
+
+            btnDelete.Location = new System.Drawing.Point(20 + (btnW + 10) * 2, btnY);
+            btnDelete.Size = new System.Drawing.Size(btnW, 36);
+        }
+
+        #endregion
     }
 }

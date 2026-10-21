@@ -385,7 +385,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             ((System.ComponentModel.ISupportInitialize)dgvTopProducts).EndInit();
             ResumeLayout(false);
             PerformLayout();
-
+            AdjustLayout();
         }
 
         #endregion
@@ -412,5 +412,40 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
         private System.Windows.Forms.DataGridViewTextBoxColumn colTenSanPham;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSoLuongDaBan;
         private System.Windows.Forms.DataGridViewTextBoxColumn colDoanhThu;
+
+        #region Windows Form Designer - Layout & UI Helpers
+
+        protected override void OnResize(System.EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            if (panelTopBar == null || panelCards == null || dgvTopProducts == null || lblTableTitle == null || btnRefresh == null || lblHeader == null) return;
+            int totalW = System.Math.Max(600, this.ClientSize.Width);
+            int totalH = System.Math.Max(380, this.ClientSize.Height);
+
+            int fullW = totalW - 50;
+            panelTopBar.Location = new System.Drawing.Point(25, 20);
+            panelTopBar.Size = new System.Drawing.Size(fullW, 48);
+            lblHeader.Location = new System.Drawing.Point(0, (panelTopBar.Height - lblHeader.Height) / 2);
+            btnRefresh.Location = new System.Drawing.Point(panelTopBar.Width - 110, (panelTopBar.Height - 32) / 2);
+            btnRefresh.Size = new System.Drawing.Size(110, 32);
+
+            panelCards.Location = new System.Drawing.Point(25, 75);
+            panelCards.Size = new System.Drawing.Size(fullW, 115);
+
+            lblTableTitle.Location = new System.Drawing.Point(25, 205);
+
+            int dgvY = 240;
+            int dgvH = System.Math.Max(160, totalH - dgvY - 25);
+            dgvTopProducts.Location = new System.Drawing.Point(25, dgvY);
+            dgvTopProducts.Size = new System.Drawing.Size(fullW, dgvH);
+        }
+
+        #endregion
     }
 }

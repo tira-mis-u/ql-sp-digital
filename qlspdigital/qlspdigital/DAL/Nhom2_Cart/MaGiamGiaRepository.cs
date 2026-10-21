@@ -59,7 +59,7 @@ namespace qlspdigital.DAL.Nhom2_Cart
         // Thu thập voucher vào kho cá nhân bằng mã code (Create)
         public bool ThuThapVoucher(int maNguoiDung, string maCode, out string thongBao)
         {
-            if (string.IsNullOrWhiteSpace(maCode))
+            if (string.IsNullOrEmpty(maCode) || maCode.Trim() == "")
             {
                 thongBao = "Vui lòng nhập mã voucher!";
                 return false;
@@ -141,7 +141,7 @@ namespace qlspdigital.DAL.Nhom2_Cart
             voucher = null;
             tienGiam = 0;
 
-            if (string.IsNullOrWhiteSpace(maCode))
+            if (string.IsNullOrEmpty(maCode) || maCode.Trim() == "")
             {
                 thongBao = "Vui lòng nhập mã giảm giá!";
                 return false;
@@ -216,7 +216,7 @@ namespace qlspdigital.DAL.Nhom2_Cart
             };
 
             // Tính số tiền giảm
-            if (voucher.LoaiGiamGia.Equals("PhanTram", StringComparison.OrdinalIgnoreCase))
+            if (voucher.LoaiGiamGia == "PhanTram")
             {
                 decimal rawGiam = (tamTinh * voucher.GiaTriGiam) / 100m;
                 if (voucher.GiamToiDa.HasValue && rawGiam > voucher.GiamToiDa.Value)

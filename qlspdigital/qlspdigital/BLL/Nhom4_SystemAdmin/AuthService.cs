@@ -30,7 +30,7 @@ namespace qlspdigital.BLL.Nhom4_SystemAdmin
 
         public bool DangKy(string tenDangNhap, string matKhau, string xacNhanMatKhau, string hoTen, string email, string? soDienThoai, out string thongBao)
         {
-            if (string.IsNullOrWhiteSpace(tenDangNhap))
+            if (string.IsNullOrEmpty(tenDangNhap) || tenDangNhap.Trim() == "")
             {
                 thongBao = "Tên đăng nhập không được để trống!";
                 return false;
@@ -54,19 +54,19 @@ namespace qlspdigital.BLL.Nhom4_SystemAdmin
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(matKhau) || matKhau.Length < 6)
+            if (string.IsNullOrEmpty(matKhau) || matKhau.Length < 6)
             {
                 thongBao = "Mật khẩu phải có độ dài tối thiểu 6 ký tự!";
                 return false;
             }
 
-            if (!matKhau.Equals(xacNhanMatKhau))
+            if (matKhau != xacNhanMatKhau)
             {
                 thongBao = "Mật khẩu xác nhận không khớp!";
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(hoTen))
+            if (string.IsNullOrEmpty(hoTen) || hoTen.Trim() == "")
             {
                 thongBao = "Họ tên không được để trống!";
                 return false;
@@ -78,13 +78,13 @@ namespace qlspdigital.BLL.Nhom4_SystemAdmin
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(email) || !email.Contains("@") || email.Trim().Length > 100)
+            if (string.IsNullOrEmpty(email) || !email.Contains("@") || email.Trim().Length > 100)
             {
                 thongBao = "Địa chỉ email không hợp lệ (phải chứa '@' và dưới 100 ký tự)!";
                 return false;
             }
 
-            if (!string.IsNullOrWhiteSpace(soDienThoai) && soDienThoai.Trim().Length > 20)
+            if (!string.IsNullOrEmpty(soDienThoai) && soDienThoai.Trim().Length > 20)
             {
                 thongBao = "Số điện thoại không được vượt quá 20 ký tự!";
                 return false;

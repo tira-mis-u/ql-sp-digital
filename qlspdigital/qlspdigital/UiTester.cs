@@ -920,8 +920,6 @@ namespace qlspdigital
             byte[] exeDummyBytes = new byte[] { 0x4D, 0x5A, 0x90, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0xFF, 0xFF };
             File.WriteAllBytes(testExePath, exeDummyBytes);
 
-            string fileHash = qlspdigital.Shared.SecurityHelper.ComputeFileSha256(testExePath);
-
             var item = new qlspdigital.DTOs.ThuVienItemDTO
             {
                 MaSoHuu = 999,
@@ -931,8 +929,7 @@ namespace qlspdigital
                 PhienBan = "1.0.5",
                 TenDanhMuc = "Chiến thuật",
                 MaDonHang = 5555,
-                DuongDanTep = "Storage/Products/ActionGameTest.exe",
-                MaHashSHA256 = fileHash
+                DuongDanTep = "Storage/Products/ActionGameTest.exe"
             };
 
             string downloadFolder = Path.Combine(outDir, "test_customer_download");
@@ -943,7 +940,7 @@ namespace qlspdigital
             Directory.CreateDirectory(downloadFolder);
 
             var svc = new qlspdigital.BLL.Nhom5_Orders.ThuVienService();
-            bool dlOk = svc.TaiXuongTepAsync(item, downloadFolder, p => { }).GetAwaiter().GetResult();
+            bool dlOk = svc.TaiXuongTepAsync(item, downloadFolder).GetAwaiter().GetResult();
 
             if (!dlOk)
             {

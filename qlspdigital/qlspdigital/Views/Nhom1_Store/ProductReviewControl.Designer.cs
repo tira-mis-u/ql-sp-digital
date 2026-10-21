@@ -313,7 +313,7 @@ namespace qlspdigital.Views.Nhom1_Store
             ((System.ComponentModel.ISupportInitialize)(this.dgvReviews)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
+            this.AdjustLayout();
         }
 
         #endregion
@@ -335,5 +335,69 @@ namespace qlspdigital.Views.Nhom1_Store
         private System.Windows.Forms.DataGridViewTextBoxColumn colSoSao;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBinhLuan;
         private System.Windows.Forms.DataGridViewTextBoxColumn colNgayTao;
+
+        #region Windows Form Designer - Layout & UI Helpers
+#nullable enable
+
+        protected override void OnResize(System.EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            if (panelTop == null || panelForm == null || dgvReviews == null || txtComment == null || btnSubmit == null || lblSelect == null || cboProduct == null || lblStarTitle == null || cboStar == null || lblCommentTitle == null) return;
+            int totalW = System.Math.Max(600, this.ClientSize.Width);
+            int totalH = System.Math.Max(380, this.ClientSize.Height);
+
+            int fullW = totalW - 50;
+            panelTop.Location = new System.Drawing.Point(25, 15);
+            panelTop.Size = new System.Drawing.Size(fullW, 56);
+
+            // Bố cục khung chọn sản phẩm theo Relative Flow (tránh hoàn toàn đè chữ nhãn)
+            lblSelect.Location = new System.Drawing.Point(15, 17);
+            cboProduct.Location = new System.Drawing.Point(lblSelect.Right + 16, 14);
+            lblAverageScore.Location = new System.Drawing.Point(panelTop.ClientSize.Width - 365, 11);
+            lblAverageScore.Size = new System.Drawing.Size(350, 34);
+            int maxCboW = System.Math.Max(180, panelTop.ClientSize.Width - cboProduct.Left - lblAverageScore.Width - 25);
+            cboProduct.Width = System.Math.Clamp(maxCboW, 200, 420);
+
+            // Bố cục Form nhận xét & đánh giá
+            panelForm.Location = new System.Drawing.Point(25, 80);
+            int formW = panelForm.ClientSize.Width;
+
+            int starY = 48;
+            lblStarTitle.Location = new System.Drawing.Point(15, starY + 4);
+            cboStar.Location = new System.Drawing.Point(lblStarTitle.Right + 16, starY);
+            cboStar.Width = 320;
+
+            int commentY = cboStar.Bottom + 16;
+            lblCommentTitle.Location = new System.Drawing.Point(15, commentY + 6);
+            int commentX = System.Math.Max(lblStarTitle.Right, lblCommentTitle.Right) + 16;
+
+            int btnW = 160;
+            int btnX = formW - btnW - 20;
+            btnSubmit.Location = new System.Drawing.Point(btnX, commentY);
+            btnSubmit.Size = new System.Drawing.Size(btnW, 36);
+            btnDelete.Location = new System.Drawing.Point(btnX, commentY + 44);
+            btnDelete.Size = new System.Drawing.Size(btnW, 36);
+
+            int txtW = System.Math.Max(200, btnX - commentX - 20);
+            txtComment.Location = new System.Drawing.Point(commentX, commentY);
+            txtComment.Size = new System.Drawing.Size(txtW, 80);
+
+            int formH = System.Math.Max(195, txtComment.Bottom + 18);
+            panelForm.Size = new System.Drawing.Size(fullW, formH);
+
+            int dgvY = panelForm.Bottom + 15;
+            int reviewH = System.Math.Max(180, totalH - dgvY - 25);
+            dgvReviews.Location = new System.Drawing.Point(25, dgvY);
+            dgvReviews.Size = new System.Drawing.Size(fullW, reviewH);
+        }
+
+#nullable restore
+        #endregion
     }
 }

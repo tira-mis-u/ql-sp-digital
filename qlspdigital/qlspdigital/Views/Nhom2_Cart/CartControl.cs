@@ -1,9 +1,9 @@
-using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom2_Cart;
 using qlspdigital.DTOs;
 using qlspdigital.Shared;
+using qlspdigital.Views.Main;
 
 namespace qlspdigital.Views.Nhom2_Cart
 {
@@ -16,9 +16,6 @@ namespace qlspdigital.Views.Nhom2_Cart
         private readonly ViTaiKhoanService _viService;
         private readonly ThanhToanService _thanhToanService;
 
-        public event Action? OnNavigateToLibrary;
-        public event Action? OnNavigateToWallet;
-        public event Action? OnNavigateToVouchers;
 
         private decimal _tamTinh = 0;
         private decimal _tienGiam = 0;
@@ -34,74 +31,9 @@ namespace qlspdigital.Views.Nhom2_Cart
             _thanhToanService = new ThanhToanService();
 
             InitializeComponent();
-            AdjustLayout();
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadCart();
-
-            // Lắng nghe biến động số dư ví
-            UserSession.BalanceChanged += (bal) =>
-            {
-                if (!this.IsDisposed && !this.Disposing && lblWalletBalance != null)
-                {
-                    lblWalletBalance.Text = $"Số dư ví: {FormatHelper.FormatCurrency(bal)}";
-                }
-            };
-            GioHangService.CartUpdated += () =>
-            {
-                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
-                {
-                    try { this.BeginInvoke(new Action(LoadCart)); } catch { }
-                }
-            };
-            UserSession.SessionChanged += () =>
-            {
-                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
-                {
-                    try { this.BeginInvoke(new Action(LoadCart)); } catch { }
-                }
-            };
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            AdjustLayout();
-        }
-
-        private void AdjustLayout()
-        {
-            if (dgvCart == null || panelBottomActions == null || panelSummary == null) return;
-            int totalW = Math.Max(600, this.ClientSize.Width);
-            int totalH = Math.Max(380, this.ClientSize.Height);
-
-            int summaryW = Math.Clamp((int)(totalW * 0.34), 320, 380);
-            int leftW = Math.Max(260, totalW - summaryW - 65); // margin 25 left + 15 gap + 25 right
-            int bottomH = 46;
-            int contentH = Math.Max(180, totalH - 55 - bottomH - 22);
-
-            // Left grid
-            dgvCart.Location = new Point(25, 55);
-            dgvCart.Size = new Size(leftW, contentH);
-
-            // Left bottom actions
-            panelBottomActions.Location = new Point(25, 55 + contentH + 8);
-            panelBottomActions.Size = new Size(leftW, bottomH);
-
-            // Right Summary panel
-            panelSummary.Location = new Point(25 + leftW + 15, 55);
-            panelSummary.Size = new Size(summaryW, Math.Max(380, contentH + bottomH + 8));
-
-            // Responsive voucher box inside panelSummary
-            if (txtVoucher != null && btnApplyVoucher != null)
-            {
-                int pnlW = panelSummary.ClientSize.Width - 40;
-                int btnW = 120;
-                int txtW = Math.Max(100, pnlW - btnW - 10);
-                txtVoucher.Width = txtW;
-                btnApplyVoucher.Location = new Point(txtW + 10, 27);
-                btnApplyVoucher.Width = btnW;
-            }
-        }
 
         public void LoadCart()
         {
@@ -125,8 +57,8 @@ namespace qlspdigital.Views.Nhom2_Cart
                 return;
             }
 
-            var items = _gioHangService.LayGioHang(UserSession.CurrentUserId);
-            foreach (var item in items)
+            List<GioHangItemDTO> items = _gioHangService.LayGioHang(UserSession.CurrentUserId);
+            foreach (GioHangItemDTO item in items)
             {
                 dgvCart.Rows.Add(item.MaGioHang, item.TenSanPham, FormatHelper.FormatCurrency(item.DonGia), item.SoLuong, FormatHelper.FormatCurrency(item.ThanhTien));
                 _tamTinh += item.ThanhTien;
@@ -171,12 +103,12 @@ namespace qlspdigital.Views.Nhom2_Cart
         {
             if (btnApplyVoucher == null) return;
             string currentText = txtVoucher.Text.Trim();
-            if (!string.IsNullOrEmpty(_appliedVoucherCode) && !string.Equals(currentText, _appliedVoucherCode, StringComparison.OrdinalIgnoreCase))
+            if (_appliedVoucherCode != "" && currentText.ToUpper() != _appliedVoucherCode.ToUpper())
             {
                 btnApplyVoucher.Text = "Áp dụng";
                 btnApplyVoucher.BackColor = Color.FromArgb(49, 98, 130);
             }
-            else if (!string.IsNullOrEmpty(_appliedVoucherCode) && string.Equals(currentText, _appliedVoucherCode, StringComparison.OrdinalIgnoreCase))
+            else if (_appliedVoucherCode != "" && currentText.ToUpper() == _appliedVoucherCode.ToUpper())
             {
                 btnApplyVoucher.Text = "Đã áp dụng";
                 btnApplyVoucher.BackColor = Color.FromArgb(90, 160, 45);
@@ -186,7 +118,7 @@ namespace qlspdigital.Views.Nhom2_Cart
         private void BtnApplyVoucher_Click(object? sender, EventArgs e)
         {
             string code = txtVoucher.Text.Trim();
-            if (string.IsNullOrWhiteSpace(code))
+            if (code == "")
             {
                 MessageBox.Show("Vui lòng nhập mã ưu đãi!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -210,7 +142,7 @@ namespace qlspdigital.Views.Nhom2_Cart
                 return;
             }
 
-            if (_maGiamGiaId.HasValue && string.Equals(_appliedVoucherCode, code, StringComparison.OrdinalIgnoreCase))
+            if (_maGiamGiaId.HasValue && _appliedVoucherCode.ToUpper() == code.ToUpper())
             {
                 MessageBox.Show($"Mã ưu đãi '{code}' đã được áp dụng thành công cho giỏ hàng hiện tại!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -240,12 +172,12 @@ namespace qlspdigital.Views.Nhom2_Cart
 
         private void BtnOpenVouchers_Click(object? sender, EventArgs e)
         {
-            OnNavigateToVouchers?.Invoke();
+            MainForm?.NavigateToVouchers();
         }
 
         public void SetInitialVoucherCode(string code)
         {
-            if (txtVoucher != null && !string.IsNullOrWhiteSpace(code))
+            if (txtVoucher != null && code.Trim() != "")
             {
                 txtVoucher.Text = code.Trim().ToUpper();
                 if (UserSession.IsLoggedIn && _tamTinh > 0)
@@ -263,15 +195,12 @@ namespace qlspdigital.Views.Nhom2_Cart
                 return;
             }
 
-            var row = dgvCart.SelectedRows[0];
+            DataGridViewRow row = dgvCart.SelectedRows[0];
             if (row == null || row.Index < 0) return;
-            var val = (dgvCart.Columns.Contains("MaGioHang") ? row.Cells["MaGioHang"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            object? val = (dgvCart.Columns.Contains("MaGioHang") ? row.Cells["MaGioHang"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
             if (val == null) return;
             int maGioHang = Convert.ToInt32(val);
-            if (_gioHangService.XoaKhoiGioHang(maGioHang))
-            {
-                LoadCart();
-            }
+            if (_gioHangService.XoaKhoiGioHang(maGioHang)) LoadCart();
         }
 
         private void BtnCheckout_Click(object? sender, EventArgs e)
@@ -302,7 +231,7 @@ namespace qlspdigital.Views.Nhom2_Cart
 
                 if (dr == DialogResult.Yes)
                 {
-                    OnNavigateToWallet?.Invoke();
+                    MainForm?.NavigateToWallet();
                 }
                 return;
             }
@@ -317,7 +246,7 @@ namespace qlspdigital.Views.Nhom2_Cart
                 {
                     MessageBox.Show($"{msg}\nMã hóa đơn: {orderCode}\nCảm ơn bạn đã mua sắm trên DPMS!", "Thanh toán thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadCart();
-                    OnNavigateToLibrary?.Invoke(); // Tự động mở kho Thư viện game vừa mua
+                    MainForm?.NavigateToLibrary(); // Tự động mở kho Thư viện game vừa mua
                 }
                 else
                 {
@@ -344,7 +273,7 @@ namespace qlspdigital.Views.Nhom2_Cart
 
         private void BtnDeposit_Click(object? sender, EventArgs e)
         {
-            OnNavigateToWallet?.Invoke();
+            MainForm?.NavigateToWallet();
         }
     }
 }

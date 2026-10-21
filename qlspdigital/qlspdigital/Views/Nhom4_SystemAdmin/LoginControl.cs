@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom4_SystemAdmin;
 
@@ -10,9 +9,6 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
     public partial class LoginControl : UserControl
     {
         private readonly AuthService _authService;
-
-        public event Action? OnLoginSuccess;
-        public event Action? OnNavigateToRegister;
 
         public LoginControl()
         {
@@ -28,7 +24,9 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             if (_authService.DangNhap(username, password, out string msg))
             {
                 MessageBox.Show(msg, "Đăng nhập thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                OnLoginSuccess?.Invoke();
+                MainForm?.UpdateUserInterfaceSession();
+                MainForm?.UpdateCartBadge();
+                MainForm?.NavigateToStore();
             }
             else
             {
@@ -36,16 +34,6 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             }
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            if (panelCenter != null)
-            {
-                int w = Math.Max(panelCenter.Width + 40, this.ClientSize.Width);
-                int h = Math.Max(panelCenter.Height + 40, this.ClientSize.Height);
-                panelCenter.Location = new Point(Math.Max(20, (w - panelCenter.Width) / 2), Math.Max(20, (h - panelCenter.Height) / 2));
-            }
-        }
 
         private void TxtPassword_KeyDown(object? sender, KeyEventArgs e)
         {
@@ -59,7 +47,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
         private void BtnGoToRegister_Click(object? sender, EventArgs e)
         {
-            OnNavigateToRegister?.Invoke();
+            MainForm?.NavigateToRegister();
         }
 
         private void BtnDemoAdmin_Click(object? sender, EventArgs e)

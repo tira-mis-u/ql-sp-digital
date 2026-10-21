@@ -297,6 +297,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             panelActions.ResumeLayout(false);
             panelActions.PerformLayout();
             ResumeLayout(false);
+            AdjustLayout();
         }
         #endregion
 
@@ -318,5 +319,57 @@ namespace qlspdigital.Views.Nhom5_Orders
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
+
+        #region Windows Form Designer - Layout & UI Helpers
+
+        protected override void OnResize(System.EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            if (dgvLibrary == null || panelActions == null || lblSelectedTitle == null || panelTop == null || btnRefresh == null || lblHeader == null) return;
+            int totalW = System.Math.Max(600, this.ClientSize.Width);
+            int totalH = System.Math.Max(380, this.ClientSize.Height);
+
+            panelTop.Location = new System.Drawing.Point(25, 20);
+            panelTop.Size = new System.Drawing.Size(totalW - 50, 48);
+            lblHeader.Location = new System.Drawing.Point(0, (panelTop.Height - lblHeader.Height) / 2);
+            btnRefresh.Location = new System.Drawing.Point(panelTop.Width - 130, (panelTop.Height - 32) / 2);
+            btnRefresh.Size = new System.Drawing.Size(130, 32);
+
+            int actionW = System.Math.Clamp((int)(totalW * 0.35), 320, 420);
+            int leftW = System.Math.Max(260, totalW - actionW - 65);
+            int contentH = System.Math.Max(180, totalH - 80 - 25);
+
+            dgvLibrary.Location = new System.Drawing.Point(25, 80);
+            dgvLibrary.Size = new System.Drawing.Size(leftW, contentH);
+
+            panelActions.Location = new System.Drawing.Point(25 + leftW + 15, 80);
+            panelActions.Size = new System.Drawing.Size(actionW, contentH);
+
+            int btnW = actionW - 40;
+            lblSelectedTitle.Width = btnW;
+            lblSelectedTitle.Location = new System.Drawing.Point(20, 20);
+
+            lblVersion.Location = new System.Drawing.Point(20, lblSelectedTitle.Bottom + 8);
+            lblSize.Location = new System.Drawing.Point(20, lblVersion.Bottom + 6);
+            lblDownloadCount.Location = new System.Drawing.Point(20, lblSize.Bottom + 6);
+
+            btnDownload.Location = new System.Drawing.Point(20, lblDownloadCount.Bottom + 14);
+            btnDownload.Size = new System.Drawing.Size(btnW, 42);
+
+            lblProgressText.Location = new System.Drawing.Point(20, btnDownload.Bottom + 10);
+            prgDownload.Location = new System.Drawing.Point(20, lblProgressText.Bottom + 6);
+            prgDownload.Size = new System.Drawing.Size(btnW, 24);
+
+            btnUninstall.Location = new System.Drawing.Point(20, prgDownload.Bottom + 14);
+            btnUninstall.Size = new System.Drawing.Size(btnW, 38);
+        }
+
+        #endregion
     }
 }

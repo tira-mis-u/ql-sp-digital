@@ -1,5 +1,3 @@
-using System;
-
 namespace qlspdigital.Shared
 {
     // Lớp lưu trữ phiên làm việc tĩnh của người dùng đang đăng nhập
@@ -15,11 +13,7 @@ namespace qlspdigital.Shared
         public static decimal CurrentBalance { get; set; } = 0;
 
         public static bool IsLoggedIn => CurrentUserId > 0;
-        public static bool IsAdmin => IsLoggedIn && CurrentRole.Equals("QuanTriVien", StringComparison.OrdinalIgnoreCase);
-
-        // Sự kiện thông báo khi trạng thái phiên hoặc số dư thay đổi
-        public static event Action? SessionChanged;
-        public static event Action<decimal>? BalanceChanged;
+        public static bool IsAdmin => IsLoggedIn && CurrentRole == "QuanTriVien";
 
         // Khởi tạo phiên làm việc khi đăng nhập thành công
         public static void Login(int userId, string username, string fullName, string email, string role, decimal balance)
@@ -30,24 +24,19 @@ namespace qlspdigital.Shared
             CurrentEmail = email;
             CurrentRole = role;
             CurrentBalance = balance;
-
-            SessionChanged?.Invoke();
         }
 
-        // Cập nhật số dư ví trong phiên và bắn sự kiện
+        // Cập nhật số dư ví trong phiên
         public static void UpdateBalance(decimal newBalance)
         {
             CurrentBalance = newBalance;
-            BalanceChanged?.Invoke(newBalance);
-            SessionChanged?.Invoke();
         }
 
-        // Cập nhật thông tin cá nhân trong phiên và bắn sự kiện SessionChanged realtime
+        // Cập nhật thông tin cá nhân trong phiên
         public static void UpdateProfile(string fullName, string email)
         {
             CurrentFullName = fullName;
             CurrentEmail = email;
-            SessionChanged?.Invoke();
         }
 
         // Đăng xuất khỏi hệ thống
@@ -59,8 +48,6 @@ namespace qlspdigital.Shared
             CurrentEmail = string.Empty;
             CurrentRole = "KhachHang";
             CurrentBalance = 0;
-
-            SessionChanged?.Invoke();
         }
     }
 }

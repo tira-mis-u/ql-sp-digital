@@ -30,7 +30,7 @@ namespace qlspdigital.DAL.Nhom1_Store
 
             List<SqlParameter> parameters = new List<SqlParameter>();
 
-            if (!string.IsNullOrWhiteSpace(tuKhoa))
+            if (!string.IsNullOrEmpty(tuKhoa) && tuKhoa.Trim() != "")
             {
                 query += " AND sp.TenSanPham LIKE @TuKhoa";
                 string safeKey = tuKhoa.Trim().Replace("[", "[[]");
