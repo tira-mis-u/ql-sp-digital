@@ -27,13 +27,13 @@ namespace qlspdigital.DAL.Nhom5_Orders
 
             List<SqlParameter> parameters = new List<SqlParameter>();
 
-            if (!string.IsNullOrWhiteSpace(trangThai) && !trangThai.Equals("Tất cả", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(trangThai) && trangThai != "Tất cả")
             {
                 query += " AND dh.TrangThaiDonHang = @TrangThai";
                 parameters.Add(new SqlParameter("@TrangThai", trangThai.Trim()));
             }
 
-            if (!string.IsNullOrWhiteSpace(tuKhoa))
+            if (!string.IsNullOrEmpty(tuKhoa) && tuKhoa.Trim() != "")
             {
                 query += " AND (dh.MaDonHangCode LIKE @TuKhoa OR nd.HoTen LIKE @TuKhoa)";
                 string safeKey = tuKhoa.Trim().Replace("[", "[[]");
@@ -142,7 +142,7 @@ namespace qlspdigital.DAL.Nhom5_Orders
                         }
 
                         // 2. Nếu chuyển sang 'Hoàn thành', cấp game vào Thư viện SoHuuSanPham
-                        if (trangThaiMoi.Equals("Hoàn thành", StringComparison.OrdinalIgnoreCase))
+                        if (trangThaiMoi == "Hoàn thành")
                         {
                             string queryGrant = @"
                                 INSERT INTO SoHuuSanPham (MaNguoiDung, MaSanPham, MaDonHang, NgaySoHuu, SoLanTai)

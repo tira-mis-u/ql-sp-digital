@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom3_ProductAdmin;
+using qlspdigital.DTOs;
 using qlspdigital.Shared;
 
 namespace qlspdigital.Views.Nhom3_ProductAdmin
@@ -17,68 +18,10 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             _hoSoService = new HoSoService();
 
             InitializeComponent();
-            AdjustLayout();
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadProfile();
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            AdjustLayout();
-        }
 
-        private void AdjustLayout()
-        {
-            if (panelProfileForm == null || panelPasswordForm == null || panelInfo == null || panelSettings == null || panelSecurityBanner == null || txtFullName == null) return;
-            int totalW = Math.Max(600, this.ClientSize.Width);
-
-            int fullW = totalW - 50;
-
-            // 1. Panel Info (Top)
-            panelInfo.Location = new Point(25, 55);
-            panelInfo.Size = new Size(fullW, 90);
-            int halfInfo = fullW / 2;
-            lblRole.Location = new Point(Math.Max(320, halfInfo), 15);
-            lblCreatedDate.Location = new Point(Math.Max(320, halfInfo), 50);
-
-            // 2. Middle Row: 2 Cards (50% - 50%)
-            int cardW = (fullW - 20) / 2;
-            int cardH = 275;
-            panelProfileForm.Location = new Point(25, 160);
-            panelProfileForm.Size = new Size(cardW, cardH);
-
-            panelPasswordForm.Location = new Point(25 + cardW + 20, 160);
-            panelPasswordForm.Size = new Size(cardW, cardH);
-
-            int fieldW = Math.Max(180, cardW - 195);
-            txtFullName.Width = fieldW;
-            txtEmail.Width = fieldW;
-            txtPhone.Width = fieldW;
-            btnUpdateProfile.Location = new Point(165, 206);
-            btnUpdateProfile.Width = Math.Min(250, fieldW);
-
-            txtOldPassword.Width = fieldW;
-            txtNewPassword.Width = fieldW;
-            txtConfirmPassword.Width = fieldW;
-            btnChangePassword.Location = new Point(165, 206);
-            btnChangePassword.Width = Math.Min(250, fieldW);
-
-            // 3. Settings Card
-            int settingsY = panelProfileForm.Bottom + 16;
-            panelSettings.Location = new Point(25, settingsY);
-            panelSettings.Size = new Size(fullW, 155);
-
-            int col2X = Math.Max(380, fullW / 2);
-            chkOrderConfirm.Location = new Point(col2X, 48);
-            btnSaveSettings.Location = new Point(col2X, 84);
-
-            // 4. Security Banner (Bottom)
-            lblSecurityContent.MaximumSize = new Size(fullW - 40, 0);
-            int bannerY = panelSettings.Bottom + 16;
-            panelSecurityBanner.Location = new Point(25, bannerY);
-            panelSecurityBanner.Size = new Size(fullW, Math.Max(180, lblSecurityContent.Bottom + 25));
-        }
 
         public void LoadProfile()
         {
@@ -91,7 +34,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
                 return;
             }
 
-            var user = _hoSoService.LayHoSo(UserSession.CurrentUserId);
+            NguoiDungDTO? user = _hoSoService.LayHoSo(UserSession.CurrentUserId);
             if (user != null)
             {
                 lblUsername.Text = $"Tài khoản: {user.TenDangNhap}";
@@ -103,7 +46,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
                 txtEmail.Text = user.Email;
                 txtPhone.Text = user.SoDienThoai ?? string.Empty;
 
-                var settings = _hoSoService.LayCaiDat(UserSession.CurrentUserId);
+                (bool ThongBaoEmail, bool GhiNhoDangNhap, bool TuDongCapNhat, bool XacNhanThanhToan) settings = _hoSoService.LayCaiDat(UserSession.CurrentUserId);
                 chkEmailNotify.Checked = settings.ThongBaoEmail;
                 chkRememberSession.Checked = settings.GhiNhoDangNhap;
                 chkAutoUpdate.Checked = settings.TuDongCapNhat;

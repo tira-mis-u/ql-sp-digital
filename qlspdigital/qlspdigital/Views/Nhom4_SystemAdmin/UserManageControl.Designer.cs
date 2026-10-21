@@ -352,7 +352,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             this.panelBottomActions.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
-
+            this.AdjustLayout();
         }
 
         #endregion
@@ -377,5 +377,53 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
         private System.Windows.Forms.Panel panelBottomActions;
         private System.Windows.Forms.Button btnLock;
         private System.Windows.Forms.Button btnUnlock;
+
+        #region Windows Form Designer - Layout & UI Helpers
+
+        protected override void OnResize(System.EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            if (panelFilter == null || dgvUsers == null || panelBottomActions == null || txtSearch == null || btnRefresh == null || lblRole == null || lblSearch == null || cboRole == null) return;
+            int totalW = System.Math.Max(600, this.ClientSize.Width);
+            int totalH = System.Math.Max(380, this.ClientSize.Height);
+
+            int fullW = totalW - 50;
+            panelFilter.Location = new System.Drawing.Point(25, 55);
+            panelFilter.Size = new System.Drawing.Size(fullW, 50);
+
+            // Bố cục tuần tự tương đối - không bao giờ chồng lấn nhãn
+            lblRole.Location = new System.Drawing.Point(15, 15);
+            cboRole.Location = new System.Drawing.Point(lblRole.Right + 12, 10);
+            lblSearch.Location = new System.Drawing.Point(cboRole.Right + 24, 15);
+            txtSearch.Location = new System.Drawing.Point(lblSearch.Right + 12, 10);
+
+            int btnSearchW = 100;
+            int btnRefreshW = 100;
+            int searchW = System.Math.Clamp(fullW - txtSearch.Left - btnSearchW - btnRefreshW - 45, 180, 520);
+            txtSearch.Size = new System.Drawing.Size(searchW, 30);
+
+            btnSearch.Location = new System.Drawing.Point(txtSearch.Right + 10, 9);
+            btnSearch.Size = new System.Drawing.Size(btnSearchW, 32);
+
+            btnRefresh.Location = new System.Drawing.Point(btnSearch.Right + 10, 9);
+            btnRefresh.Size = new System.Drawing.Size(btnRefreshW, 32);
+
+            int bottomH = 46;
+            int contentH = System.Math.Max(180, totalH - 115 - bottomH - 18);
+
+            dgvUsers.Location = new System.Drawing.Point(25, 115);
+            dgvUsers.Size = new System.Drawing.Size(fullW, contentH);
+
+            panelBottomActions.Location = new System.Drawing.Point(25, 115 + contentH + 8);
+            panelBottomActions.Size = new System.Drawing.Size(fullW, bottomH);
+        }
+
+        #endregion
     }
 }

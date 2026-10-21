@@ -20,18 +20,8 @@ namespace qlspdigital.Views.Main
         public MainForm()
         {
             InitializeComponent();
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
-            SubscribeEvents();
         }
 
-        private void PanelHeader_Paint(object? sender, PaintEventArgs e)
-        {
-            if (sender is Panel pnl)
-            {
-                using var p = new Pen(Color.FromArgb(35, 48, 68), 1);
-                e.Graphics.DrawLine(p, 0, pnl.Height - 1, pnl.Width, pnl.Height - 1);
-            }
-        }
 
         private void SetActiveMenu(Button? btn)
         {
@@ -85,22 +75,12 @@ namespace qlspdigital.Views.Main
         private void BtnMenuUserManage_Click(object? sender, EventArgs e) => NavigateToUserManage();
         private void LblBalance_Click(object? sender, EventArgs e) => NavigateToWallet();
 
-        private void SubscribeEvents()
-        {
-            UserSession.SessionChanged += UpdateUserInterfaceSession;
-            UserSession.BalanceChanged += (bal) =>
-            {
-                lblBalance.Text = $"Ví: {FormatHelper.FormatCurrency(bal)}";
-            };
-            GioHangService.CartUpdated += UpdateCartBadge;
-        }
-
-        private void UpdateCartBadge()
+        public void UpdateCartBadge()
         {
             int count = 0;
             if (UserSession.IsLoggedIn)
             {
-                var cartService = new GioHangService();
+                GioHangService cartService = new GioHangService();
                 count = cartService.LayTongSoLuongItem(UserSession.CurrentUserId);
             }
             btnMenuCart.Text = $"🛍️ Giỏ hàng ({count})";
@@ -145,9 +125,10 @@ namespace qlspdigital.Views.Main
             panelMainContent.Controls.Add(newView);
             newView.BringToFront();
             ThemeHelper.ApplyDarkMode(newView);
+            UpdateCartBadge();
         }
 
-        private void UpdateUserInterfaceSession()
+        public void UpdateUserInterfaceSession()
         {
             bool isAdmin = UserSession.IsLoggedIn && UserSession.IsAdmin;
 
@@ -186,16 +167,13 @@ namespace qlspdigital.Views.Main
         {
             if (!UserSession.IsLoggedIn)
             {
-                var result = MessageBox.Show(
+                DialogResult result = MessageBox.Show(
                     $"Bạn cần đăng nhập tài khoản để truy cập '{tenChucNang}'.\nBạn có muốn chuyển sang màn hình Đăng nhập ngay bây giờ không?",
                     "Yêu cầu đăng nhập",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Information);
 
-                if (result == DialogResult.Yes)
-                {
-                    NavigateToLogin();
-                }
+                if (result == DialogResult.Yes) NavigateToLogin();
                 return false;
             }
             return true;
@@ -231,7 +209,7 @@ namespace qlspdigital.Views.Main
         {
             SetActiveMenu(btnMenuStore);
             StoreViewControl store = new StoreViewControl();
-            store.OnViewProductDetail += (spId) => NavigateToProductDetail(spId);
+            store.MainForm = this;
             SwitchView(store);
             lblStatusText.Text = "Đang xem: Cửa hàng sản phẩm số (Nhóm 1 - Lê Nguyễn Minh Trí)";
         }
@@ -240,9 +218,8 @@ namespace qlspdigital.Views.Main
         {
             SetActiveMenu(btnMenuStore);
             ProductDetailControl detail = new ProductDetailControl();
+            detail.MainForm = this;
             detail.LoadProductDetail(maSanPham);
-            detail.OnBackToStore += () => NavigateToStore();
-            detail.OnViewReviews += (id) => NavigateToReviews(id);
             SwitchView(detail);
             lblStatusText.Text = "Đang xem: Chi tiết sản phẩm số (Nhóm 1 - Lê Nguyễn Minh Trí)";
         }
@@ -262,13 +239,11 @@ namespace qlspdigital.Views.Main
 
             SetActiveMenu(btnMenuCart);
             CartControl cart = new CartControl();
-            if (!string.IsNullOrWhiteSpace(initialVoucherCode))
+            cart.MainForm = this;
+            if (initialVoucherCode != null && initialVoucherCode.Trim() != "")
             {
                 cart.SetInitialVoucherCode(initialVoucherCode);
             }
-            cart.OnNavigateToLibrary += () => NavigateToLibrary();
-            cart.OnNavigateToWallet += () => NavigateToWallet();
-            cart.OnNavigateToVouchers += () => NavigateToVouchers();
             SwitchView(cart);
             lblStatusText.Text = "Đang xem: Giỏ hàng mua sắm & Thanh toán (Nhóm 2 - Nguyễn Quốc Trung)";
         }
@@ -279,6 +254,7 @@ namespace qlspdigital.Views.Main
 
             SetActiveMenu(btnMenuWallet);
             WalletControl wallet = new WalletControl();
+            wallet.MainForm = this;
             SwitchView(wallet);
             lblStatusText.Text = "Đang xem: Ví tài khoản & Nạp tiền mô phỏng (Nhóm 2 - Nguyễn Quốc Trung)";
         }
@@ -289,8 +265,7 @@ namespace qlspdigital.Views.Main
 
             SetActiveMenu(btnMenuVouchers);
             VoucherControl voucher = new VoucherControl();
-            voucher.OnNavigateToCart += () => NavigateToCart();
-            voucher.OnNavigateToCartWithVoucher += (code) => NavigateToCart(code);
+            voucher.MainForm = this;
             SwitchView(voucher);
             lblStatusText.Text = "Đang xem: Kho mã ưu đãi & Voucher giảm giá (Nhóm 2 - Nguyễn Quốc Trung)";
         }
@@ -379,8 +354,7 @@ namespace qlspdigital.Views.Main
         {
             SetActiveMenu(null);
             LoginControl login = new LoginControl();
-            login.OnLoginSuccess += () => NavigateToStore();
-            login.OnNavigateToRegister += () => NavigateToRegister();
+            login.MainForm = this;
             SwitchView(login);
             lblStatusText.Text = "Đang xem: Đăng nhập tài khoản (Nhóm 4 - Trần Quốc Thuận)";
         }
@@ -389,7 +363,7 @@ namespace qlspdigital.Views.Main
         {
             SetActiveMenu(null);
             RegisterControl register = new RegisterControl();
-            register.OnNavigateToLogin += () => NavigateToLogin();
+            register.MainForm = this;
             SwitchView(register);
             lblStatusText.Text = "Đang xem: Đăng ký thành viên mới (Nhóm 4 - Trần Quốc Thuận)";
         }
@@ -401,6 +375,7 @@ namespace qlspdigital.Views.Main
                 if (MessageBox.Show("Bạn có muốn đăng xuất khỏi hệ thống?", "Xác nhận đăng xuất", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     UserSession.Logout();
+                    UpdateUserInterfaceSession();
                     NavigateToStore();
                 }
             }

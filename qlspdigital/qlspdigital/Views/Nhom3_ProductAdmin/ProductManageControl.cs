@@ -23,80 +23,15 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             _danhMucService = new DanhMucService();
 
             InitializeComponent();
-            AdjustLayout();
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadCategories();
             LoadProducts();
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            AdjustLayout();
-        }
-
-        private void AdjustLayout()
-        {
-            if (panelForm == null || dgvProducts == null || txtDescription == null || btnNew == null || txtId == null) return;
-            int totalW = Math.Max(700, this.ClientSize.Width);
-            int totalH = Math.Max(400, this.ClientSize.Height);
-
-            int rightW = Math.Clamp((int)(totalW * 0.34), 345, 420);
-            int leftW = Math.Max(260, totalW - rightW - 65); // margin 25 left + 15 gap + 25 right
-            int contentH = Math.Max(220, totalH - 120);
-
-            // 1. Search Bar
-            panelSearch.Location = new Point(25, 55);
-            panelSearch.Size = new Size(leftW, 42);
-            lblSearch.Location = new Point(12, 12);
-            txtSearch.Location = new Point(lblSearch.Right + 12, 8);
-            btnSearch.Size = new Size(95, 30);
-            btnSearch.Location = new Point(leftW - 105, 6);
-            txtSearch.Width = Math.Max(120, btnSearch.Left - txtSearch.Left - 12);
-
-            // 2. DataGridView
-            dgvProducts.Location = new Point(25, 105);
-            dgvProducts.Size = new Size(leftW, contentH);
-
-            // 3. Form Panel
-            panelForm.Location = new Point(25 + leftW + 15, 55);
-            panelForm.Size = new Size(rightW, contentH + 50);
-
-            // 4. Form Controls inside panelForm
-            int fieldInputW = Math.Max(150, rightW - 175);
-            txtId.Width = fieldInputW;
-            txtName.Width = fieldInputW;
-            txtPrice.Width = fieldInputW;
-            txtSize.Width = fieldInputW;
-            txtVersion.Width = fieldInputW;
-            cboCategory.Width = fieldInputW;
-
-            int browseW = 75;
-            btnBrowseFile.Size = new Size(browseW, txtFilePath.Height + 2);
-            txtFilePath.Width = Math.Max(60, fieldInputW - browseW - 10);
-            btnBrowseFile.Location = new Point(txtFilePath.Left + txtFilePath.Width + 10, txtFilePath.Top - 1);
-            txtDescription.Width = rightW - 40;
-
-            // Dynamically stretch textarea vertically and pin buttons cleanly
-            int formH = panelForm.ClientSize.Height;
-            int descH = Math.Clamp(formH - txtDescription.Top - 65, 75, 180);
-            txtDescription.Height = descH;
-            int btnY = txtDescription.Bottom + 12;
-
-            int btnW = Math.Max(90, (rightW - 40 - 20) / 3);
-            btnNew.Location = new Point(20, btnY);
-            btnNew.Size = new Size(btnW, 38);
-            btnSave.Location = new Point(20 + btnW + 10, btnY);
-            btnSave.Size = new Size(btnW, 38);
-            btnDelete.Location = new Point(20 + (btnW + 10) * 2, btnY);
-            btnDelete.Size = new Size(btnW, 38);
         }
 
         private void LoadCategories()
         {
             cboCategory.Items.Clear();
-            var list = _danhMucService.LayTatCaDanhMuc();
-            foreach (var dm in list)
+            List<DanhMucDTO> list = _danhMucService.LayTatCaDanhMuc();
+            foreach (DanhMucDTO dm in list)
             {
                 cboCategory.Items.Add(new CategoryItem { Id = dm.MaDanhMuc, Name = dm.TenDanhMuc });
             }
@@ -107,18 +42,11 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
         {
             dgvProducts.Rows.Clear();
             string keyword = txtSearch.Text.Trim();
-            var list = _spAdminService.LayDanhSachSanPham(keyword);
+            List<SanPhamDTO> list = _spAdminService.LayDanhSachSanPham(keyword);
 
-            foreach (var sp in list)
+            foreach (SanPhamDTO sp in list)
             {
-                dgvProducts.Rows.Add(
-                    sp.MaSanPham,
-                    sp.TenSanPham,
-                    FormatHelper.FormatCurrency(sp.GiaBan),
-                    sp.TenDanhMuc,
-                    $"{sp.DungLuongMB:0.#} MB",
-                    sp.DangKinhDoanh ? "Đang bán" : "Ngưng"
-                );
+                dgvProducts.Rows.Add(sp.MaSanPham, sp.TenSanPham, FormatHelper.FormatCurrency(sp.GiaBan), sp.TenDanhMuc, $"{sp.DungLuongMB:0.#} MB", sp.DangKinhDoanh ? "Đang bán" : "Ngưng");
             }
         }
 
@@ -126,14 +54,14 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
         {
             if (dgvProducts.SelectedRows.Count == 0) return;
 
-            var row = dgvProducts.SelectedRows[0];
+            DataGridViewRow row = dgvProducts.SelectedRows[0];
             if (row == null || row.Index < 0) return;
 
-            var val = (dgvProducts.Columns.Contains("MaSanPham") ? row.Cells["MaSanPham"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            object? val = (dgvProducts.Columns.Contains("MaSanPham") ? row.Cells["MaSanPham"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
             if (val == null) return;
             int id = Convert.ToInt32(val);
-            var list = _spAdminService.LayDanhSachSanPham();
-            var sp = list.Find(x => x.MaSanPham == id);
+            List<SanPhamDTO> list = _spAdminService.LayDanhSachSanPham();
+            SanPhamDTO? sp = list.Find(x => x.MaSanPham == id);
 
             if (sp != null)
             {
@@ -154,7 +82,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
                     }
                 }
 
-                var tep = _spAdminService.LayTepTheoSanPham(sp.MaSanPham);
+                TepSanPhamDTO? tep = _spAdminService.LayTepTheoSanPham(sp.MaSanPham);
                 txtFilePath.Text = tep != null ? tep.TenTep : "Chưa có file";
                 _selectedSourceFilePath = null;
             }
@@ -191,7 +119,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
 
         private void BtnSave_Click(object? sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtName.Text))
+            if (txtName.Text.Trim() == "")
             {
                 MessageBox.Show("Vui lòng nhập tên sản phẩm!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -232,14 +160,14 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
                 TenSanPham = txtName.Text.Trim(),
                 GiaBan = price,
                 DungLuongMB = size,
-                PhienBan = string.IsNullOrWhiteSpace(txtVersion.Text) ? "1.0.0" : txtVersion.Text.Trim(),
+                PhienBan = txtVersion.Text.Trim() == "" ? "1.0.0" : txtVersion.Text.Trim(),
                 MaDanhMuc = catId,
                 DangKinhDoanh = chkActive.Checked,
                 MoTa = txtDescription.Text.Trim()
             };
 
             TepSanPhamDTO? tep = null;
-            if (!string.IsNullOrWhiteSpace(txtFilePath.Text) && !txtFilePath.Text.Contains("Chưa có file"))
+            if (txtFilePath.Text.Trim() != "" && !txtFilePath.Text.Contains("Chưa có file"))
             {
                 string fileName = txtFilePath.Text.Trim();
                 string storageDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Storage", "Products");

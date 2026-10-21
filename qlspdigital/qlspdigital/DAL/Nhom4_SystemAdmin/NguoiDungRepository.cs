@@ -23,13 +23,13 @@ namespace qlspdigital.DAL.Nhom4_SystemAdmin
 
             List<SqlParameter> parameters = new List<SqlParameter>();
 
-            if (!string.IsNullOrWhiteSpace(vaiTro) && !vaiTro.Equals("Tất cả", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(vaiTro) && vaiTro != "Tất cả")
             {
                 query += " AND VaiTro = @VaiTro";
                 parameters.Add(new SqlParameter("@VaiTro", vaiTro.Trim()));
             }
 
-            if (!string.IsNullOrWhiteSpace(tuKhoa))
+            if (!string.IsNullOrEmpty(tuKhoa) && tuKhoa.Trim() != "")
             {
                 query += " AND (TenDangNhap LIKE @TuKhoa OR HoTen LIKE @TuKhoa OR Email LIKE @TuKhoa)";
                 string safeKey = tuKhoa.Trim().Replace("[", "[[]");

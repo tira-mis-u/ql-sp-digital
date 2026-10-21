@@ -34,7 +34,7 @@ namespace qlspdigital.Shared
             if (!File.Exists(filePath)) return string.Empty;
             try
             {
-                using (var stream = File.OpenRead(filePath))
+                using (FileStream stream = File.OpenRead(filePath))
                 using (SHA256 sha256 = SHA256.Create())
                 {
                     byte[] hash = sha256.ComputeHash(stream);
@@ -56,7 +56,7 @@ namespace qlspdigital.Shared
         public static bool VerifyPassword(string inputPassword, string storedHash)
         {
             string hashOfInput = ComputeSha256Hash(inputPassword);
-            return string.Equals(hashOfInput, storedHash, StringComparison.OrdinalIgnoreCase);
+            return hashOfInput.ToLower() == storedHash.ToLower();
         }
     }
 

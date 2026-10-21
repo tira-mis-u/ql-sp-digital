@@ -363,7 +363,9 @@ namespace qlspdigital.Views.Nhom2_Cart
             this.panelBottomActions.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
+            this.AdjustLayout();
         }
+
         #endregion
 
         private System.Windows.Forms.Label lblHeader;
@@ -386,5 +388,69 @@ namespace qlspdigital.Views.Nhom2_Cart
         private System.Windows.Forms.Button btnApplySelected;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Label lblVoucherGuide;
+
+        #region Windows Form Designer - Layout & UI Helpers
+#nullable enable
+
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public qlspdigital.Views.Main.MainForm? MainForm { get; set; }
+
+        protected override void OnResize(System.EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            if (panelCollect == null || dgvVouchers == null || panelBottomActions == null || txtVoucherCode == null || btnCollect == null || btnGoToCart == null || lblCodeTitle == null || lblListTitle == null) return;
+            int totalW = System.Math.Max(600, this.ClientSize.Width);
+            int totalH = System.Math.Max(380, this.ClientSize.Height);
+
+            int fullW = totalW - 50;
+            panelCollect.Location = new System.Drawing.Point(25, 55);
+
+            // Bố cục khung thu thập mã: nhãn ở trên, ô nhập + nút ở dưới với khoảng cách rộng rãi, không bao giờ che dấu tiếng Việt
+            lblCodeTitle.Location = new System.Drawing.Point(20, 14);
+            int inputY = lblCodeTitle.Bottom + 10;
+            int codeW = System.Math.Clamp((int)(fullW * 0.35), 280, 420);
+            txtVoucherCode.Location = new System.Drawing.Point(20, inputY);
+            txtVoucherCode.Width = codeW;
+
+            btnCollect.Location = new System.Drawing.Point(txtVoucherCode.Right + 15, inputY);
+            btnCollect.Size = new System.Drawing.Size(160, 34);
+
+            btnGoToCart.Location = new System.Drawing.Point(btnCollect.Right + 15, inputY);
+            btnGoToCart.Size = new System.Drawing.Size(310, 34);
+
+            panelCollect.Size = new System.Drawing.Size(fullW, txtVoucherCode.Bottom + 16);
+
+            // Bố cục bảng voucher
+            lblListTitle.Location = new System.Drawing.Point(25, panelCollect.Bottom + 16);
+            int dgvY = lblListTitle.Bottom + 10;
+            int bottomH = 48;
+            int contentH = System.Math.Max(180, totalH - dgvY - bottomH - 20);
+
+            dgvVouchers.Location = new System.Drawing.Point(25, dgvY);
+            dgvVouchers.Size = new System.Drawing.Size(fullW, contentH);
+
+            panelBottomActions.Location = new System.Drawing.Point(25, dgvVouchers.Bottom + 10);
+            panelBottomActions.Size = new System.Drawing.Size(fullW, bottomH);
+
+            if (btnCollectSelected != null && btnApplySelected != null && btnDelete != null && lblVoucherGuide != null)
+            {
+                btnCollectSelected.Location = new System.Drawing.Point(0, 4);
+                btnApplySelected.Location = new System.Drawing.Point(btnCollectSelected.Right + 12, 4);
+                btnDelete.Location = new System.Drawing.Point(btnApplySelected.Right + 12, 4);
+                int guideLeft = btnDelete.Right + 15;
+                lblVoucherGuide.Location = new System.Drawing.Point(guideLeft, 6);
+                lblVoucherGuide.Size = new System.Drawing.Size(System.Math.Max(150, fullW - guideLeft), 38);
+            }
+        }
+
+#nullable restore
+        #endregion
     }
 }

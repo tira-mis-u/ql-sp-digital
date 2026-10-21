@@ -13,13 +13,6 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
         private readonly SanPhamAdminRepository _repo;
         private readonly TepSanPhamRepository _tepRepo;
 
-        public static event Action? ProductCatalogChanged;
-
-        public static void NotifyProductCatalogChanged()
-        {
-            ProductCatalogChanged?.Invoke();
-        }
-
         public SanPhamAdminService()
         {
             _repo = new SanPhamAdminRepository();
@@ -33,7 +26,7 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
 
         public bool LuuSanPham(SanPhamDTO sp, TepSanPhamDTO? tep, out string thongBao)
         {
-            if (string.IsNullOrWhiteSpace(sp.TenSanPham))
+            if (string.IsNullOrEmpty(sp.TenSanPham) || sp.TenSanPham.Trim() == "")
             {
                 thongBao = "Tên sản phẩm không được để trống!";
                 return false;
@@ -61,7 +54,6 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
                     _tepRepo.LuuThongTinTep(tep);
                 }
                 thongBao = ok ? "Cập nhật sản phẩm thành công!" : "Cập nhật sản phẩm thất bại.";
-                if (ok) NotifyProductCatalogChanged();
                 return ok;
             }
             else
@@ -76,7 +68,6 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
                         _tepRepo.LuuThongTinTep(tep);
                     }
                     thongBao = "Thêm sản phẩm mới thành công!";
-                    NotifyProductCatalogChanged();
                     return true;
                 }
                 thongBao = "Thêm sản phẩm mới thất bại.";
@@ -90,7 +81,6 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
             {
                 bool ok = _repo.XoaSanPham(maSanPham);
                 thongBao = ok ? "Đã xóa sản phẩm thành công!" : "Xóa sản phẩm thất bại.";
-                if (ok) NotifyProductCatalogChanged();
                 return ok;
             }
             catch (Exception ex)
@@ -112,13 +102,6 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
     {
         private readonly DanhMucRepository _repo;
 
-        public static event Action? CategoryCatalogChanged;
-
-        public static void NotifyCategoryCatalogChanged()
-        {
-            CategoryCatalogChanged?.Invoke();
-        }
-
         public DanhMucService()
         {
             _repo = new DanhMucRepository();
@@ -131,7 +114,7 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
 
         public bool LuuDanhMuc(DanhMucDTO dm, out string thongBao)
         {
-            if (string.IsNullOrWhiteSpace(dm.TenDanhMuc))
+            if (string.IsNullOrEmpty(dm.TenDanhMuc) || dm.TenDanhMuc.Trim() == "")
             {
                 thongBao = "Tên danh mục không được để trống!";
                 return false;
@@ -143,14 +126,12 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
                 {
                     bool ok = _repo.CapNhatDanhMuc(dm);
                     thongBao = ok ? "Cập nhật danh mục thành công!" : "Cập nhật thất bại.";
-                    if (ok) NotifyCategoryCatalogChanged();
                     return ok;
                 }
                 else
                 {
                     bool ok = _repo.ThemDanhMuc(dm);
                     thongBao = ok ? "Thêm danh mục mới thành công!" : "Thêm danh mục thất bại.";
-                    if (ok) NotifyCategoryCatalogChanged();
                     return ok;
                 }
             }
@@ -171,7 +152,6 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
         public bool XoaDanhMuc(int maDanhMuc, out string thongBao)
         {
             bool ok = _repo.XoaDanhMuc(maDanhMuc, out thongBao);
-            if (ok) NotifyCategoryCatalogChanged();
             return ok;
         }
     }
@@ -194,7 +174,7 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
 
         public bool CapNhatHoSo(int maNguoiDung, string hoTen, string email, string? soDienThoai, out string thongBao)
         {
-            if (string.IsNullOrWhiteSpace(hoTen))
+            if (string.IsNullOrEmpty(hoTen) || hoTen.Trim() == "")
             {
                 thongBao = "Họ tên không được để trống!";
                 return false;
@@ -206,13 +186,13 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(email) || !email.Contains("@") || email.Trim().Length > 100)
+            if (string.IsNullOrEmpty(email) || !email.Contains("@") || email.Trim().Length > 100)
             {
                 thongBao = "Địa chỉ email không hợp lệ (phải chứa '@' và dưới 100 ký tự)!";
                 return false;
             }
 
-            if (!string.IsNullOrWhiteSpace(soDienThoai) && soDienThoai.Trim().Length > 20)
+            if (!string.IsNullOrEmpty(soDienThoai) && soDienThoai.Trim().Length > 20)
             {
                 thongBao = "Số điện thoại không được vượt quá 20 ký tự!";
                 return false;
@@ -223,7 +203,7 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
 
         public bool DoiMatKhau(int maNguoiDung, string matKhauCu, string matKhauMoi, string xacNhanMatKhau, out string thongBao)
         {
-            if (string.IsNullOrWhiteSpace(matKhauCu) || string.IsNullOrWhiteSpace(matKhauMoi))
+            if (string.IsNullOrEmpty(matKhauCu) || string.IsNullOrEmpty(matKhauMoi))
             {
                 thongBao = "Vui lòng nhập đầy đủ mật khẩu cũ và mật khẩu mới!";
                 return false;
@@ -235,13 +215,13 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
                 return false;
             }
 
-            if (matKhauCu.Equals(matKhauMoi))
+            if (matKhauCu == matKhauMoi)
             {
                 thongBao = "Mật khẩu mới không được trùng với mật khẩu hiện tại!";
                 return false;
             }
 
-            if (!matKhauMoi.Equals(xacNhanMatKhau))
+            if (matKhauMoi != xacNhanMatKhau)
             {
                 thongBao = "Mật khẩu xác nhận không trùng khớp với mật khẩu mới!";
                 return false;

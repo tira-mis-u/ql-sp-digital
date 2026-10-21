@@ -943,7 +943,7 @@ namespace qlspdigital
             Directory.CreateDirectory(downloadFolder);
 
             var svc = new qlspdigital.BLL.Nhom5_Orders.ThuVienService();
-            bool dlOk = svc.TaiXuongTepAsync(item, downloadFolder, p => { }).GetAwaiter().GetResult();
+            bool dlOk = svc.TaiXuongTepAsync(item, downloadFolder).GetAwaiter().GetResult();
 
             if (!dlOk)
             {

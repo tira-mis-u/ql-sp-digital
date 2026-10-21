@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using qlspdigital.DTOs;
@@ -14,7 +14,7 @@ namespace qlspdigital.DAL.Nhom4_SystemAdmin
         public bool DangNhap(string tenDangNhap, string matKhau, out NguoiDungDTO? user, out string thongBao)
         {
             user = null;
-            if (string.IsNullOrWhiteSpace(tenDangNhap) || string.IsNullOrWhiteSpace(matKhau))
+            if (string.IsNullOrEmpty(tenDangNhap) || string.IsNullOrEmpty(matKhau))
             {
                 thongBao = "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!";
                 return false;
@@ -70,8 +70,8 @@ namespace qlspdigital.DAL.Nhom4_SystemAdmin
         // Đăng ký tài khoản người dùng mới (Create)
         public bool DangKy(string tenDangNhap, string matKhau, string hoTen, string email, string? soDienThoai, out string thongBao)
         {
-            if (string.IsNullOrWhiteSpace(tenDangNhap) || string.IsNullOrWhiteSpace(matKhau) ||
-                string.IsNullOrWhiteSpace(hoTen) || string.IsNullOrWhiteSpace(email))
+            if (string.IsNullOrEmpty(tenDangNhap) || string.IsNullOrEmpty(matKhau) ||
+                string.IsNullOrEmpty(hoTen) || string.IsNullOrEmpty(email))
             {
                 thongBao = "Vui lòng điền đầy đủ các thông tin bắt buộc (*)!";
                 return false;
@@ -89,7 +89,7 @@ namespace qlspdigital.DAL.Nhom4_SystemAdmin
             if (dt.Rows.Count > 0)
             {
                 string existingUser = dt.Rows[0]["TenDangNhap"].ToString() ?? string.Empty;
-                if (existingUser.Equals(tenDangNhap.Trim(), StringComparison.OrdinalIgnoreCase))
+                if (existingUser.ToLower() == tenDangNhap.Trim().ToLower())
                 {
                     thongBao = "Tên đăng nhập này đã được sử dụng! Vui lòng chọn tên khác.";
                     return false;

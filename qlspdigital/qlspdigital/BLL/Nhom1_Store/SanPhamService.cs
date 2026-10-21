@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using qlspdigital.DAL.Nhom1_Store;
 using qlspdigital.DAL.Nhom5_Orders;
@@ -35,13 +34,6 @@ namespace qlspdigital.BLL.Nhom1_Store
     {
         private readonly DanhGiaRepository _danhGiaRepo;
         private readonly ThuVienRepository _thuVienRepo;
-
-        public static event Action<int>? ReviewUpdated;
-
-        public static void NotifyReviewUpdated(int maSanPham)
-        {
-            ReviewUpdated?.Invoke(maSanPham);
-        }
 
         public DanhGiaService()
         {
@@ -82,7 +74,7 @@ namespace qlspdigital.BLL.Nhom1_Store
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(binhLuan))
+            if (string.IsNullOrEmpty(binhLuan) || binhLuan.Trim() == "")
             {
                 thongBao = "Vui lòng nhập nội dung nhận xét của bạn!";
                 return false;
@@ -91,7 +83,7 @@ namespace qlspdigital.BLL.Nhom1_Store
             // Quy tắc Verified Purchase: Chỉ tài khoản đã sở hữu sản phẩm trong Thư viện mới được phép đánh giá
             if (!_thuVienRepo.DaSoHuu(maNguoiDung, maSanPham))
             {
-                thongBao = "Bạn cần sở hữu sản phẩm này trong Thư viện để có thể gửi đánh giá. Vui lòng mua sản phẩm trước khi chia sẻ nhận xét nhé!";
+                thongBao = "Bạn chưa sở hữu sản phẩm này trong Thư viện! Chỉ những khách hàng đã thực sự mua sản phẩm mới có quyền gửi nhận xét & đánh giá (Verified Purchase).";
                 return false;
             }
 
@@ -103,7 +95,6 @@ namespace qlspdigital.BLL.Nhom1_Store
                 existing.BinhLuan = binhLuan.Trim();
                 bool ok = _danhGiaRepo.CapNhatDanhGia(existing);
                 thongBao = ok ? "Đã cập nhật đánh giá thành công!" : "Cập nhật đánh giá thất bại.";
-                if (ok) NotifyReviewUpdated(maSanPham);
                 return ok;
             }
             else
@@ -118,7 +109,6 @@ namespace qlspdigital.BLL.Nhom1_Store
                 };
                 bool ok = _danhGiaRepo.ThemDanhGia(dto);
                 thongBao = ok ? "Cảm ơn bạn đã gửi đánh giá sản phẩm!" : "Gửi đánh giá thất bại.";
-                if (ok) NotifyReviewUpdated(maSanPham);
                 return ok;
             }
         }
@@ -127,7 +117,6 @@ namespace qlspdigital.BLL.Nhom1_Store
         {
             bool ok = _danhGiaRepo.XoaDanhGia(maDanhGia, maNguoiDung);
             thongBao = ok ? "Đã xóa đánh giá của bạn!" : "Xóa đánh giá thất bại.";
-            if (ok) NotifyReviewUpdated(0);
             return ok;
         }
     }

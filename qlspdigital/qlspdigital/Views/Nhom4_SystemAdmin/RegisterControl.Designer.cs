@@ -290,5 +290,25 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
         private System.Windows.Forms.TextBox txtConfirmPassword;
         private System.Windows.Forms.Button btnRegister;
         private System.Windows.Forms.Button btnBackToLogin;
+
+        #region Windows Form Designer - Layout & UI Helpers
+#nullable enable
+
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public qlspdigital.Views.Main.MainForm? MainForm { get; set; }
+
+        protected override void OnResize(System.EventArgs e)
+        {
+            base.OnResize(e);
+            if (panelCenter != null)
+            {
+                int w = System.Math.Max(panelCenter.Width + 40, this.ClientSize.Width);
+                int h = System.Math.Max(panelCenter.Height + 40, this.ClientSize.Height);
+                panelCenter.Location = new System.Drawing.Point(System.Math.Max(20, (w - panelCenter.Width) / 2), System.Math.Max(20, (h - panelCenter.Height) / 2));
+            }
+        }
+
+        #endregion
     }
 }

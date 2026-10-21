@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using qlspdigital.DAL.Nhom2_Cart;
 using qlspdigital.DAL.Nhom5_Orders;
@@ -12,13 +11,6 @@ namespace qlspdigital.BLL.Nhom2_Cart
     public class GioHangService
     {
         private readonly GioHangRepository _gioHangRepo;
-
-        public static event Action? CartUpdated;
-
-        public static void NotifyCartUpdated()
-        {
-            CartUpdated?.Invoke();
-        }
 
         public GioHangService()
         {
@@ -62,21 +54,18 @@ namespace qlspdigital.BLL.Nhom2_Cart
 
             bool ok = _gioHangRepo.ThemVaoGioHang(maNguoiDung, maSanPham, soLuong);
             thongBao = ok ? "Đã thêm sản phẩm vào giỏ hàng thành công!" : "Không thể thêm vào giỏ hàng.";
-            if (ok) NotifyCartUpdated();
             return ok;
         }
 
         public bool CapNhatSoLuong(int maGioHang, int soLuong)
         {
             bool ok = _gioHangRepo.CapNhatSoLuong(maGioHang, soLuong);
-            if (ok) NotifyCartUpdated();
             return ok;
         }
 
         public bool XoaKhoiGioHang(int maGioHang)
         {
             bool ok = _gioHangRepo.XoaKhoiGioHang(maGioHang);
-            if (ok) NotifyCartUpdated();
             return ok;
         }
 
@@ -162,13 +151,6 @@ namespace qlspdigital.BLL.Nhom2_Cart
     {
         private readonly MaGiamGiaRepository _voucherRepo;
 
-        public static event Action? VoucherUpdated;
-
-        public static void NotifyVoucherUpdated()
-        {
-            VoucherUpdated?.Invoke();
-        }
-
         public MaGiamGiaService()
         {
             _voucherRepo = new MaGiamGiaRepository();
@@ -187,14 +169,13 @@ namespace qlspdigital.BLL.Nhom2_Cart
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(maCode))
+            if (string.IsNullOrEmpty(maCode) || maCode.Trim() == "")
             {
                 thongBao = "Vui lòng nhập mã voucher cần thu thập!";
                 return false;
             }
 
             bool ok = _voucherRepo.ThuThapVoucher(maNguoiDung, maCode, out thongBao);
-            if (ok) NotifyVoucherUpdated();
             return ok;
         }
 
@@ -206,7 +187,6 @@ namespace qlspdigital.BLL.Nhom2_Cart
         public bool XoaVoucherCaNhan(int maGiamGiaId, int maNguoiDung)
         {
             bool ok = _voucherRepo.XoaVoucherCaNhan(maGiamGiaId, maNguoiDung);
-            if (ok) NotifyVoucherUpdated();
             return ok;
         }
     }
@@ -252,12 +232,6 @@ namespace qlspdigital.BLL.Nhom2_Cart
                 // Đồng bộ số dư mới sau khi trừ ví
                 decimal balanceMoi = _viRepo.LaySoDuVi(maNguoiDung);
                 UserSession.UpdateBalance(balanceMoi);
-                GioHangService.NotifyCartUpdated();
-                qlspdigital.BLL.Nhom5_Orders.ThuVienService.NotifyLibraryUpdated();
-                if (maGiamGiaId.HasValue)
-                {
-                    MaGiamGiaService.NotifyVoucherUpdated();
-                }
             }
 
             return ok;

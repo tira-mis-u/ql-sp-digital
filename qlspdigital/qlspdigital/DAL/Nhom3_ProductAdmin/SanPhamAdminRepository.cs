@@ -27,7 +27,7 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
 
             List<SqlParameter> parameters = new List<SqlParameter>();
 
-            if (!string.IsNullOrWhiteSpace(tuKhoa))
+            if (!string.IsNullOrEmpty(tuKhoa) && tuKhoa.Trim() != "")
             {
                 query += " AND sp.TenSanPham LIKE @TuKhoa";
                 string safeKey = tuKhoa.Trim().Replace("[", "[[]");
@@ -82,7 +82,7 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
                 new SqlParameter("@GiaBan", sp.GiaBan),
                 new SqlParameter("@HinhAnh", (object?)sp.HinhAnh ?? DBNull.Value),
                 new SqlParameter("@DungLuongMB", sp.DungLuongMB),
-                new SqlParameter("@PhienBan", string.IsNullOrWhiteSpace(sp.PhienBan) ? "1.0.0" : sp.PhienBan),
+                new SqlParameter("@PhienBan", string.IsNullOrEmpty(sp.PhienBan) ? "1.0.0" : sp.PhienBan),
                 new SqlParameter("@MaDanhMuc", sp.MaDanhMuc),
                 new SqlParameter("@MaNhaPhatHanh", sp.MaNhaPhatHanh.HasValue ? (object)sp.MaNhaPhatHanh.Value : DBNull.Value),
                 new SqlParameter("@DangKinhDoanh", sp.DangKinhDoanh)
@@ -121,7 +121,7 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
                 new SqlParameter("@GiaBan", sp.GiaBan),
                 new SqlParameter("@HinhAnh", (object?)sp.HinhAnh ?? DBNull.Value),
                 new SqlParameter("@DungLuongMB", sp.DungLuongMB),
-                new SqlParameter("@PhienBan", string.IsNullOrWhiteSpace(sp.PhienBan) ? "1.0.0" : sp.PhienBan),
+                new SqlParameter("@PhienBan", string.IsNullOrEmpty(sp.PhienBan) ? "1.0.0" : sp.PhienBan),
                 new SqlParameter("@MaDanhMuc", sp.MaDanhMuc),
                 new SqlParameter("@MaNhaPhatHanh", sp.MaNhaPhatHanh.HasValue ? (object)sp.MaNhaPhatHanh.Value : DBNull.Value),
                 new SqlParameter("@DangKinhDoanh", sp.DangKinhDoanh),

@@ -607,5 +607,16 @@ namespace qlspdigital.Views.Main
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel lblStatusText;
         private System.Windows.Forms.ToolStripStatusLabel lblDbStatus;
+
+        private void PanelHeader_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
+        {
+            if (sender is System.Windows.Forms.Panel pnl)
+            {
+                using (System.Drawing.Pen p = new System.Drawing.Pen(System.Drawing.Color.FromArgb(35, 48, 68), 1))
+                {
+                    e.Graphics.DrawLine(p, 0, pnl.Height - 1, pnl.Width, pnl.Height - 1);
+                }
+            }
+        }
     }
 }

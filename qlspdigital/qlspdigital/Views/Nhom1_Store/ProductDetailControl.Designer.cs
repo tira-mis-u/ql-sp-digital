@@ -421,7 +421,7 @@ namespace qlspdigital.Views.Nhom1_Store
             this.panelReviewsHeader.PerformLayout();
             this.panelDesc.ResumeLayout(false);
             this.ResumeLayout(false);
-
+            this.AdjustLayout();
         }
 
         #endregion
@@ -452,5 +452,80 @@ namespace qlspdigital.Views.Nhom1_Store
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.Panel panelReviewsHeader;
+
+        #region Windows Form Designer - Layout & UI Helpers
+#nullable enable
+
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public qlspdigital.Views.Main.MainForm? MainForm { get; set; }
+
+        protected override void OnResize(System.EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            if (panelTop == null || panelBottom == null || panelDesc == null || panelReviews == null) return;
+            int totalW = System.Math.Max(600, this.ClientSize.Width);
+            int totalH = System.Math.Max(400, this.ClientSize.Height);
+            int fullW = totalW - 40;
+
+            if (btnBack != null)
+            {
+                btnBack.Location = new System.Drawing.Point(20, 14);
+                btnBack.Size = new System.Drawing.Size(180, 36);
+            }
+
+            if (lblTitle != null)
+            {
+                lblTitle.Width = System.Math.Max(200, panelTop.ClientSize.Width - 340);
+            }
+
+            int topH = 195;
+            int topY = (btnBack != null) ? (btnBack.Bottom + 10) : 58;
+            panelTop.Location = new System.Drawing.Point(20, topY);
+            panelTop.Size = new System.Drawing.Size(fullW, topH);
+
+            int bottomY = panelTop.Bottom + 12;
+            int bottomH = System.Math.Max(260, totalH - bottomY - 15);
+            panelBottom.Location = new System.Drawing.Point(20, bottomY);
+            panelBottom.Size = new System.Drawing.Size(fullW, bottomH);
+
+            int pnlW = panelBottom.ClientSize.Width;
+            int descW = System.Math.Max(260, (int)(pnlW * 0.48));
+            int revW = System.Math.Max(260, pnlW - descW - 15);
+
+            panelDesc.Location = new System.Drawing.Point(0, 0);
+            panelDesc.Size = new System.Drawing.Size(descW, bottomH);
+
+            panelReviews.Location = new System.Drawing.Point(descW + 15, 0);
+            panelReviews.Size = new System.Drawing.Size(revW, bottomH);
+
+            if (panelReviewsHeader != null)
+            {
+                panelReviewsHeader.Height = 36;
+            }
+
+            if (dgvReviewsDetail != null)
+            {
+                int headerBottom = (panelReviewsHeader != null) ? panelReviewsHeader.Bottom : 56;
+                int gridTop = headerBottom + 10;
+                int dgvH = System.Math.Max(120, panelReviews.ClientSize.Height - gridTop - 15);
+                dgvReviewsDetail.Location = new System.Drawing.Point(15, gridTop);
+                dgvReviewsDetail.Size = new System.Drawing.Size(panelReviews.ClientSize.Width - 30, dgvH);
+                if (lblNoReviews != null)
+                {
+                    lblNoReviews.Location = new System.Drawing.Point(15, gridTop + 30);
+                    lblNoReviews.Size = new System.Drawing.Size(panelReviews.ClientSize.Width - 30, 90);
+                }
+            }
+        }
+
+#nullable restore
+        #endregion
     }
 }
