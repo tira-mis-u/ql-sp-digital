@@ -198,7 +198,25 @@ namespace qlspdigital.Views.Nhom1_Store
 
         [System.ComponentModel.Browsable(false)]
         [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public qlspdigital.Views.Main.MainForm? MainForm { get; set; }
+        public qlspdigital.Views.Main.MainForm? MainForm
+        {
+            get => _mainForm;
+            set
+            {
+                _mainForm = value;
+                // Khi MainForm được gán (sau constructor), cập nhật tất cả card đang hiển thị
+                // Điều này sửa lỗi card.MainForm == null khi LoadProducts() chạy trước khi MainForm được set
+                if (flowProducts != null)
+                {
+                    foreach (System.Windows.Forms.Control ctrl in flowProducts.Controls)
+                    {
+                        if (ctrl is qlspdigital.Controls.ProductCardControl card)
+                            card.MainForm = value;
+                    }
+                }
+            }
+        }
+        private qlspdigital.Views.Main.MainForm? _mainForm;
 
         protected override void OnResize(System.EventArgs e)
         {

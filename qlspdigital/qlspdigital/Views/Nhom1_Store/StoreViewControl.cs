@@ -116,7 +116,7 @@ namespace qlspdigital.Views.Nhom1_Store
             }
             else
             {
-                MessageBox.Show(msg, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(msg, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

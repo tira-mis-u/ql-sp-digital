@@ -124,7 +124,7 @@
       | (1)
       +------------------------ (N) [ SoHuuSanPham ]
 ```
-- **Ràng buộc cặp duy nhất Giỏ hàng:** `CONSTRAINT UQ_GioHang UNIQUE (MaNguoiDung, MaSanPham)` $\rightarrow$ Nếu thêm trùng sản phẩm thì chỉ tăng số lượng.
+- **Ràng buộc cặp duy nhất Giỏ hàng:** `CONSTRAINT UQ_GioHang UNIQUE (MaNguoiDung, MaSanPham)` $\rightarrow$ Sản phẩm số (Digital Products: Game/License) mỗi tài khoản chỉ sở hữu 1 bản quyền; hệ thống kích hoạt cơ chế chặn chọn trùng nhiều lần, số lượng luôn chuẩn hóa là 1.
 - **Ràng buộc cặp duy nhất Kho Voucher:** `CONSTRAINT UQ_NguoiDung_Voucher UNIQUE (MaNguoiDung, MaGiamGiaId)` $\rightarrow$ Mỗi tài khoản chỉ được thu thập 1 mã ưu đãi cùng loại một lần.
 - **Quy tắc an toàn số dư:** Ràng buộc `CHECK (SoDuVi >= 0)` ngăn chặn hoàn toàn tình trạng tài khoản bị âm tiền khi gặp tranh chấp đồng thời (Race Condition).
 

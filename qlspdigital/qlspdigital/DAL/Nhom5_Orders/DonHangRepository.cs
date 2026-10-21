@@ -247,7 +247,7 @@ namespace qlspdigital.DAL.Nhom5_Orders
                         }
 
                         // 5. Thêm chi tiết đơn hàng & cấp vào SoHuuSanPham
-                        foreach (var item in items)
+                        foreach (GioHangItemDTO item in items)
                         {
                             // ChiTietDonHang
                             string qDetail = @"
@@ -257,7 +257,7 @@ namespace qlspdigital.DAL.Nhom5_Orders
                             {
                                 cmdDetail.Parameters.AddWithValue("@MaDonHang", newOrderId);
                                 cmdDetail.Parameters.AddWithValue("@MaSanPham", item.MaSanPham);
-                                cmdDetail.Parameters.AddWithValue("@SoLuong", item.SoLuong);
+                                cmdDetail.Parameters.AddWithValue("@SoLuong", 1); // Sản phẩm kỹ thuật số: mỗi bản quyền chỉ có số lượng là 1
                                 cmdDetail.Parameters.AddWithValue("@DonGia", item.DonGia);
                                 cmdDetail.ExecuteNonQuery();
                             }
