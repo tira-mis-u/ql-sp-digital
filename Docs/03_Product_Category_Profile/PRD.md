@@ -106,3 +106,16 @@ Cung cấp bộ công cụ quản trị dữ liệu cốt lõi cho Administrator
 - [x] **CRUD 2 (Danh mục thể loại - UI 11):** Thêm, xem, sửa, xóa danh mục trên DataGridView thành công.
 - [x] **CRUD 3 (Hồ sơ, Đổi mật khẩu & Cài đặt - UI 8):** Cập nhật họ tên, email, đồng bộ Header realtime qua `SessionChanged`, đổi mật khẩu an toàn và lưu bền vững cấu hình vào `CaiDatNguoiDung` trong CSDL. Banner bảo mật hiển thị trọn vẹn không bị cắt dòng.
 
+---
+
+## 6. Ma trận Đặc tả Nghiệp vụ CRUD Chuyên sâu (CRUD Matrix & Defense Rationale)
+
+| Thực thể | **C** (Create) | **R** (Read) | **U** (Update) | **D** (Delete) |
+|---|---|---|---|---|
+| **Sản phẩm & File** (`SanPham`, `TepSanPham`) | `btnNew` + `btnSave` (upload file, tính hash SHA-256) | `dgvProducts` + ô tìm kiếm `txtSearch` | `btnSave` (khi `txtId > 0`) cập nhật giá, phiên bản, trạng thái | `btnDelete` xóa sản phẩm khỏi CSDL |
+| **Danh mục** (`DanhMuc`) | `btnNew` + `btnSave` thêm danh mục mới | `dgvCategories` hiển thị kèm số lượng SP | `btnSave` sửa tên và mô tả danh mục | `btnDelete` xóa danh mục (chặn nếu còn sản phẩm) |
+| **Hồ sơ cá nhân** (`HoSo`) | Đăng ký tài khoản (tại Nhóm 4) | `LoadProfile` nạp thông tin cá nhân | `btnUpdateProfile` đổi họ tên, email, SĐT; `btnChangePassword` đổi mật khẩu | Không áp dụng (Hồ sơ gắn liền phiên đăng nhập) |
+
+> **Phòng thủ vấn đáp BTL:** Khẳng định với Hội đồng rằng phân hệ của Phạm Trung Hiếu là **chuẩn mực Master Data CRUD hoàn hảo 100%**: hỗ trợ cả upload tệp nhị phân Hybrid Storage bên ngoài CSDL, băm SHA-256 đối chiếu toàn vẹn, và bẫy kiểm tra toàn vẹn danh mục (Cascade Check) ngăn chặn xóa nhầm danh mục đang chứa sản phẩm.
+
+

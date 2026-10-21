@@ -71,3 +71,17 @@ Quản lý vòng đời xác thực của người dùng (Đăng ký tài khoả
 - [x] **CRUD 2 (NguoiDung):** Xem danh sách và thao tác Khóa/Mở khóa tài khoản trên DataGridView thành công.
 - [x] **Dashboard:** Hiển thị chính xác các số liệu thống kê từ câu lệnh `COUNT` và `SUM` SQL.
 
+---
+
+## 6. Ma trận Đặc tả Nghiệp vụ CRUD Chuyên sâu (CRUD Matrix & Defense Rationale)
+
+| Thao tác | Tầng Giao diện (`Views/Nhom4_SystemAdmin`) | Tầng Nghiệp vụ (`BLL/Nhom4_SystemAdmin`) | Tầng Truy vấn (`DAL/Nhom4_SystemAdmin`) | Bản chất Lệnh SQL |
+|---|---|---|---|---|
+| **CREATE** | Màn hình `RegisterControl` -> Đăng ký người dùng mới | `AuthService.DangKy(...)` | `AuthRepository.DangKy(...)` | `INSERT INTO NguoiDung (TenDangNhap, MatKhauHash, HoTen, Email, ...) VALUES (...)` |
+| **READ** | `dgvUsers` trên `UserManageControl` (lọc vai trò, tìm kiếm) | `NguoiDungService.LayDanhSachNguoiDung()` | `NguoiDungRepository.LayDanhSachNguoiDung()` | `SELECT MaNguoiDung, TenDangNhap, HoTen, Email, VaiTro, SoDuVi, TrangThai FROM NguoiDung WHERE ...` |
+| **UPDATE** | Nút `btnLock` / `btnUnlock` thay đổi trạng thái hoạt động | `NguoiDungService.KhoaTaiKhoan()`<br>`NguoiDungService.MoKhoaTaiKhoan()` | `NguoiDungRepository.CapNhatTrangThaiKhoa()` | `UPDATE NguoiDung SET TrangThai = @TrangThai WHERE MaNguoiDung = @MaNguoiDung` |
+| **DELETE** | **Cơ chế Soft Delete:** Bấm `btnLock` để vô hiệu hóa tài khoản (Chặn xóa vật lý) | Ngăn chặn xóa cứng; có bẫy cấm Admin tự khóa chính mình | `CapNhatTrangThaiKhoa(id, false)` | `UPDATE NguoiDung SET TrangThai = 0 WHERE MaNguoiDung = @MaNguoiDung` |
+
+> **Phòng thủ vấn đáp BTL:** Giải trình với Hội đồng tại sao Trần Quốc Thuận không dùng `DELETE FROM NguoiDung`: Trong hệ thống TMĐT thực tế, tài khoản liên kết chặt chẽ với đơn hàng, lịch sử nạp ví và bản quyền game. Xóa cứng sẽ vi phạm ràng buộc khóa ngoại (Foreign Key Constraint) và hủy hoại bằng chứng kiểm toán tài chính. Do đó, hệ thống bắt buộc áp dụng **Soft Delete (Khóa tài khoản)** để đình chỉ người dùng vi phạm mà vẫn giữ trọn vẹn toàn vẹn dữ liệu.
+
+

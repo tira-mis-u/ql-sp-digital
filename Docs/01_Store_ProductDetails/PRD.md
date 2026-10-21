@@ -85,3 +85,17 @@ Cung cấp cho khách hàng trải nghiệm duyệt danh mục, tìm kiếm sả
 - [x] **CRUD 2 (Product Details):** Hiển thị chi tiết cấu hình, mô tả và điểm số đánh giá trung bình.
 - [x] **CRUD 3 (Reviews Management - UI 14):** Thực hiện đầy đủ 4 thao tác CRUD trên bảng `DanhGia`: Đọc danh sách đánh giá (Read), Viết đánh giá mới (Create), Chỉnh sửa nhận xét/số sao (Update), và Xóa bài nhận xét (Delete).
 - [x] Chuyển đổi mượt mà giữa Store, Product Details và Reviews trong khung sườn `MainForm`.
+
+---
+
+## 6. Ma trận Đặc tả Nghiệp vụ CRUD Chuyên sâu (CRUD Matrix & Defense Rationale)
+
+| Thao tác | Tầng Giao diện (`Views/Nhom1_Store`) | Tầng Nghiệp vụ (`BLL/Nhom1_Store`) | Tầng Truy vấn (`DAL/Nhom1_Store`) | Bản chất Lệnh SQL |
+|---|---|---|---|---|
+| **CREATE** | Nút `btnSubmit` ("Gửi nhận xét") trên `ProductReviewControl` | `DanhGiaService.LuuDanhGia(...)` | `DanhGiaRepository.ThemDanhGia(...)` | `INSERT INTO DanhGia (MaNguoiDung, MaSanPham, SoSao, BinhLuan, NgayTao) VALUES (...)` |
+| **READ** | `dgvReviews` & Điểm sao trung bình trên `ProductDetailControl` | `DanhGiaService.LayDanhGiaTheoSanPham()`<br>`LayDanhGiaCuaUser()` | `DanhGiaRepository.LayDanhGiaTheoSanPham()`<br>`LayDanhGiaCuaUser()` | `SELECT dg.*, nd.HoTen, sp.TenSanPham FROM DanhGia dg INNER JOIN NguoiDung nd ... WHERE dg.MaSanPham = @Id` |
+| **UPDATE** | Tự động tải đánh giá cũ, đổi nhãn `btnSubmit` thành "Cập nhật đánh giá" | `DanhGiaService.LuuDanhGia(...)` (rẽ nhánh update) | `DanhGiaRepository.CapNhatDanhGia(...)` | `UPDATE DanhGia SET SoSao = @SoSao, BinhLuan = @BinhLuan, NgayCapNhat = GETDATE() WHERE MaDanhGia = @Id` |
+| **DELETE** | Nút `btnDelete` ("Xóa đánh giá") kèm popup xác nhận Yes/No | `DanhGiaService.XoaDanhGia(...)` | `DanhGiaRepository.XoaDanhGia(...)` | `DELETE FROM DanhGia WHERE MaDanhGia = @MaDanhGia AND MaNguoiDung = @UserId` |
+
+> **Phòng thủ vấn đáp BTL:** Khẳng định với Hội đồng rằng phân hệ của Lê Nguyễn Minh Trí đạt **FULL CRUD 100%** trên thực thể `DanhGia`. Đặc biệt có cơ chế bảo vệ **Verified Purchase** (`DaMuaSanPham()`), ngăn chặn người dùng chưa mua game gửi đánh giá bừa bãi.
+

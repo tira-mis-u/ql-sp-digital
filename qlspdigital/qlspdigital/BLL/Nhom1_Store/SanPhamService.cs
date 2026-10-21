@@ -91,7 +91,7 @@ namespace qlspdigital.BLL.Nhom1_Store
             // Quy tắc Verified Purchase: Chỉ tài khoản đã sở hữu sản phẩm trong Thư viện mới được phép đánh giá
             if (!_thuVienRepo.DaSoHuu(maNguoiDung, maSanPham))
             {
-                thongBao = "Bạn chưa sở hữu sản phẩm này trong Thư viện! Chỉ những khách hàng đã thực sự mua sản phẩm mới có quyền gửi nhận xét & đánh giá (Verified Purchase).";
+                thongBao = "Bạn cần sở hữu sản phẩm này trong Thư viện để có thể gửi đánh giá. Vui lòng mua sản phẩm trước khi chia sẻ nhận xét nhé!";
                 return false;
             }
 
