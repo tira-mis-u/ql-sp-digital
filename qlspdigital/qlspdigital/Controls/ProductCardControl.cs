@@ -28,7 +28,6 @@ namespace qlspdigital.Controls
 
         private void BtnDetail_Click(object? sender, EventArgs e)
         {
-            // Gọi trực tiếp điều hướng sang trang chi tiết sản phẩm
             MainForm?.NavigateToProductDetail(MaSanPham);
         }
 

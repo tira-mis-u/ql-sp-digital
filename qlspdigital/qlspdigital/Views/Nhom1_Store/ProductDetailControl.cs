@@ -59,6 +59,39 @@ namespace qlspdigital.Views.Nhom1_Store
                 : _currentProduct.MoTa) + specs;
 
             LoadCommunityReviews(maSanPham);
+            CapNhatTrangThaiNutMua();
+        }
+
+        private void CapNhatTrangThaiNutMua()
+        {
+            if (btnAddToCart == null) return;
+
+            if (!UserSession.IsLoggedIn)
+            {
+                btnAddToCart.Text = "Thêm vào giỏ hàng";
+                btnAddToCart.Enabled = true;
+                btnAddToCart.BackColor = Color.FromArgb(90, 160, 45);
+                return;
+            }
+
+            if (new qlspdigital.DAL.Nhom5_Orders.ThuVienRepository().DaSoHuu(UserSession.CurrentUserId, _maSanPham))
+            {
+                btnAddToCart.Text = "✓ Đã sở hữu trong Thư viện";
+                btnAddToCart.Enabled = false;
+                btnAddToCart.BackColor = Color.FromArgb(60, 65, 75);
+            }
+            else if (_gioHangService.DaCoTrongGioHang(UserSession.CurrentUserId, _maSanPham))
+            {
+                btnAddToCart.Text = "✓ Đã có trong Giỏ hàng";
+                btnAddToCart.Enabled = false;
+                btnAddToCart.BackColor = Color.FromArgb(49, 98, 130);
+            }
+            else
+            {
+                btnAddToCart.Text = "Thêm vào giỏ hàng";
+                btnAddToCart.Enabled = true;
+                btnAddToCart.BackColor = Color.FromArgb(90, 160, 45);
+            }
         }
 
         private void LoadCommunityReviews(int maSanPham)
@@ -95,10 +128,14 @@ namespace qlspdigital.Views.Nhom1_Store
             if (_gioHangService.ThemVaoGioHang(UserSession.CurrentUserId, _maSanPham, 1, out string msg))
             {
                 MessageBox.Show(msg, "Giỏ hàng", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Cập nhật trạng thái nút và badge số món trong giỏ hàng trên menu thanh bên
+                CapNhatTrangThaiNutMua();
+                MainForm?.UpdateCartBadge();
             }
             else
             {
-                MessageBox.Show(msg, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(msg, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                CapNhatTrangThaiNutMua();
             }
         }
 

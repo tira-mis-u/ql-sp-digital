@@ -322,6 +322,8 @@ namespace qlspdigital.Views.Nhom2_Cart
             this.btnOpenVouchers.BackColor = System.Drawing.Color.Transparent;
             this.btnOpenVouchers.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnOpenVouchers.FlatAppearance.BorderSize = 0;
+            this.btnOpenVouchers.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(35, 55, 75);
+            this.btnOpenVouchers.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(25, 40, 55);
             this.btnOpenVouchers.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnOpenVouchers.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Underline);
             this.btnOpenVouchers.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(192)))), ((int)(((byte)(244)))));

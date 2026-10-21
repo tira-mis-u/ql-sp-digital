@@ -246,7 +246,9 @@ namespace qlspdigital.Views.Nhom2_Cart
                 {
                     MessageBox.Show($"{msg}\nMã hóa đơn: {orderCode}\nCảm ơn bạn đã mua sắm trên DPMS!", "Thanh toán thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadCart();
+                    MainForm?.UpdateUserInterfaceSession(); // Cập nhật số dư ví trên thanh header ngay lập tức
                     MainForm?.NavigateToLibrary(); // Tự động mở kho Thư viện game vừa mua
+
                 }
                 else
                 {
