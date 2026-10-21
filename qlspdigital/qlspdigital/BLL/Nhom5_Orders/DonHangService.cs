@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using qlspdigital.DAL.Nhom5_Orders;
@@ -156,10 +155,6 @@ namespace qlspdigital.BLL.Nhom5_Orders
                         writer.WriteLine($"Mã người dùng      : {item.MaNguoiDung}");
                         writer.WriteLine($"Thời điểm cấp quyền: {item.NgaySoHuu:dd/MM/yyyy HH:mm:ss}");
                         writer.WriteLine($"Thời điểm tải tệp  : {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
-                        if (!string.IsNullOrEmpty(item.MaHashSHA256))
-                        {
-                            writer.WriteLine($"Mã SHA-256 xác thực: {item.MaHashSHA256}");
-                        }
                         writer.WriteLine("==================================================================");
                         writer.WriteLine("Bản quyền kỹ thuật số được chứng nhận bởi DPMS Platform.");
                         writer.WriteLine("Chúc bạn có trải nghiệm tuyệt vời với sản phẩm!");

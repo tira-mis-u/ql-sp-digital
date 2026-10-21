@@ -147,7 +147,7 @@ namespace qlspdigital.Views.Nhom5_Orders
                     if (success)
                     {
                         UpdateDownloadProgress(100);
-                        lblProgressText.Text = "Tải xuống hoàn tất! Đã kiểm tra SHA-256 an toàn.";
+                        lblProgressText.Text = "Tải xuống hoàn tất thành công!";
                         await Task.Delay(250);
                         MessageBox.Show($"Tải tệp thành công về thư mục:\n{fbd.SelectedPath}", "Hoàn tất tải xuống", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadLibrary();

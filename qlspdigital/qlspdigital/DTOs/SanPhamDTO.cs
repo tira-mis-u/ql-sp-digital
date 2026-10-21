@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace qlspdigital.DTOs
 {
@@ -36,7 +36,6 @@ namespace qlspdigital.DTOs
         public string DuongDanTep { get; set; } = string.Empty;
         public string DinhDangTep { get; set; } = ".zip";
         public long KichThuocByte { get; set; } = 0;
-        public string? MaHashSHA256 { get; set; }
         public string PhienBan { get; set; } = "1.0.0";
         public DateTime NgayTaiLen { get; set; } = DateTime.Now;
     }

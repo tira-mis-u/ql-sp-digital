@@ -370,7 +370,7 @@ namespace qlspdigital.DAL.Nhom5_Orders
             string query = @"
                 SELECT sh.MaSoHuu, sh.MaNguoiDung, sh.MaSanPham, sh.MaDonHang, sh.NgaySoHuu, sh.SoLanTai, sh.LanTaiCuoi,
                        sp.TenSanPham, sp.HinhAnh, sp.DungLuongMB, sp.PhienBan, dm.TenDanhMuc,
-                       ISNULL(tp.DuongDanTep, '') AS DuongDanTep, tp.MaHashSHA256
+                       ISNULL(tp.DuongDanTep, '') AS DuongDanTep
                 FROM SoHuuSanPham sh
                 INNER JOIN SanPham sp ON sh.MaSanPham = sp.MaSanPham
                 INNER JOIN DanhMuc dm ON sp.MaDanhMuc = dm.MaDanhMuc
@@ -397,8 +397,7 @@ namespace qlspdigital.DAL.Nhom5_Orders
                     NgaySoHuu = Convert.ToDateTime(row["NgaySoHuu"]),
                     SoLanTai = Convert.ToInt32(row["SoLanTai"]),
                     LanTaiCuoi = row["LanTaiCuoi"] != DBNull.Value ? Convert.ToDateTime(row["LanTaiCuoi"]) : null,
-                    DuongDanTep = row["DuongDanTep"].ToString() ?? string.Empty,
-                    MaHashSHA256 = row["MaHashSHA256"] != DBNull.Value ? row["MaHashSHA256"].ToString() : null
+                    DuongDanTep = row["DuongDanTep"].ToString() ?? string.Empty
                 });
             }
 

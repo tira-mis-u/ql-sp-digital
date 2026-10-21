@@ -88,16 +88,6 @@ namespace qlspdigital.Views.Main
 
         private void MainForm_Load(object? sender, EventArgs e)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
-
-            // Kích hoạt giao diện Dark Mode (thanh cuộn và thanh tiêu đề)
-            ThemeHelper.ApplyDarkMode(this);
-
-            // Tự động tối ưu cửa sổ cho màn hình laptop nhỏ (<= 768p)
-            if (Screen.PrimaryScreen != null && Screen.PrimaryScreen.WorkingArea.Height <= 768)
-            {
-                this.WindowState = FormWindowState.Maximized;
-            }
 
             // Kiểm tra kết nối CSDL
             if (DatabaseHelper.TestConnection(out string msg))
@@ -117,16 +107,6 @@ namespace qlspdigital.Views.Main
             UpdateUserInterfaceSession();
         }
 
-        // Hàm dùng chung chuyển đổi linh hoạt các UserControl vào vùng chính
-        public void SwitchView(UserControl newView)
-        {
-            panelMainContent.Controls.Clear();
-            newView.Dock = DockStyle.Fill;
-            panelMainContent.Controls.Add(newView);
-            newView.BringToFront();
-            ThemeHelper.ApplyDarkMode(newView);
-            UpdateCartBadge();
-        }
 
         public void UpdateUserInterfaceSession()
         {

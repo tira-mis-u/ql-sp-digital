@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("qlspdigital")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cf4f19d5bea195de5ffde46e86a6bda75beaadf9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6a955cb49b7323b992885659a4f7454ebd74689e")]
 [assembly: System.Reflection.AssemblyProductAttribute("qlspdigital")]
 [assembly: System.Reflection.AssemblyTitleAttribute("qlspdigital")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

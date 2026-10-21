@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace qlspdigital.DTOs
 {
@@ -19,7 +19,6 @@ namespace qlspdigital.DTOs
         public int SoLanTai { get; set; } = 0;
         public DateTime? LanTaiCuoi { get; set; }
         public string DuongDanTep { get; set; } = string.Empty;
-        public string? MaHashSHA256 { get; set; }
     }
 
     // DTO đánh giá sao và nhận xét sản phẩm

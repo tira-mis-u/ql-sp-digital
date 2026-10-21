@@ -21,7 +21,9 @@ namespace qlspdigital.DAL.Nhom4_SystemAdmin
             }
 
             string query = @"
-                SELECT MaNguoiDung, TenDangNhap, MatKhauHash, HoTen, Email, SoDienThoai, VaiTro, SoDuVi, TrangThai, NgayTao
+                SELECT MaNguoiDung, TenDangNhap, 
+                       MatKhau,
+                       HoTen, Email, SoDienThoai, VaiTro, SoDuVi, TrangThai, NgayTao
                 FROM NguoiDung
                 WHERE TenDangNhap = @TenDangNhap";
 
@@ -42,8 +44,8 @@ namespace qlspdigital.DAL.Nhom4_SystemAdmin
                 return false;
             }
 
-            string storedHash = row["MatKhauHash"].ToString() ?? string.Empty;
-            if (!SecurityHelper.VerifyPassword(matKhau, storedHash))
+            string storedPass = row["MatKhau"]?.ToString() ?? string.Empty;
+            if (matKhau != storedPass)
             {
                 thongBao = "Mật khẩu không chính xác, vui lòng thử lại!";
                 return false;
@@ -53,7 +55,7 @@ namespace qlspdigital.DAL.Nhom4_SystemAdmin
             {
                 MaNguoiDung = Convert.ToInt32(row["MaNguoiDung"]),
                 TenDangNhap = row["TenDangNhap"].ToString() ?? string.Empty,
-                MatKhauHash = storedHash,
+                MatKhau = storedPass,
                 HoTen = row["HoTen"].ToString() ?? string.Empty,
                 Email = row["Email"].ToString() ?? string.Empty,
                 SoDienThoai = row["SoDienThoai"] != DBNull.Value ? row["SoDienThoai"].ToString() : null,
@@ -101,15 +103,14 @@ namespace qlspdigital.DAL.Nhom4_SystemAdmin
                 }
             }
 
-            string hash = SecurityHelper.ComputeSha256Hash(matKhau);
             string queryInsert = @"
-                INSERT INTO NguoiDung (TenDangNhap, MatKhauHash, HoTen, Email, SoDienThoai, VaiTro, SoDuVi, TrangThai, NgayTao)
-                VALUES (@TenDangNhap, @MatKhauHash, @HoTen, @Email, @SoDienThoai, 'KhachHang', 0, 1, GETDATE())";
+                INSERT INTO NguoiDung (TenDangNhap, MatKhau, HoTen, Email, SoDienThoai, VaiTro, SoDuVi, TrangThai, NgayTao)
+                VALUES (@TenDangNhap, @MatKhau, @HoTen, @Email, @SoDienThoai, 'KhachHang', 0, 1, GETDATE())";
 
             SqlParameter[] pInsert =
             {
                 new SqlParameter("@TenDangNhap", tenDangNhap.Trim()),
-                new SqlParameter("@MatKhauHash", hash),
+                new SqlParameter("@MatKhau", matKhau),
                 new SqlParameter("@HoTen", hoTen.Trim()),
                 new SqlParameter("@Email", email.Trim()),
                 new SqlParameter("@SoDienThoai", (object?)soDienThoai?.Trim() ?? DBNull.Value)

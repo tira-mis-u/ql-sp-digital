@@ -178,7 +178,6 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
                 string destPath = Path.Combine(storageDir, fileName);
 
                 long fileBytes = 0;
-                string? sha256 = null;
 
                 if (!string.IsNullOrEmpty(_selectedSourceFilePath) && File.Exists(_selectedSourceFilePath))
                 {
@@ -186,14 +185,12 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
                     {
                         File.Copy(_selectedSourceFilePath, destPath, true);
                         fileBytes = new FileInfo(destPath).Length;
-                        sha256 = SecurityHelper.ComputeFileSha256(destPath);
                     }
                     catch { }
                 }
                 else if (File.Exists(destPath))
                 {
                     fileBytes = new FileInfo(destPath).Length;
-                    sha256 = SecurityHelper.ComputeFileSha256(destPath);
                 }
 
                 tep = new TepSanPhamDTO
@@ -202,7 +199,6 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
                     DuongDanTep = $"Storage/Products/{fileName}",
                     DinhDangTep = Path.GetExtension(fileName),
                     KichThuocByte = fileBytes,
-                    MaHashSHA256 = sha256,
                     PhienBan = dto.PhienBan
                 };
             }
