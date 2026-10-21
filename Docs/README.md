@@ -40,6 +40,7 @@ Mỗi thư mục đại diện cho một phân hệ độc lập, bao gồm tr�
 ```text
 Docs/
 ├── DEVELOPMENT_PLAN.md                     # Kế hoạch triển khai tổng thể & kiến trúc khung sườn MainForm
+├── FULL_SYSTEM_CRUD_AUDIT_AND_MATRIX.md    # [TÀI LIỆU CỐT LÕI] Đặc tả chi tiết & Ma trận đối soát 100% CRUD 5 nhóm
 ├── README.md                               # (Tài liệu này) Quy chuẩn làm việc, tra cứu CSDL & mục lục
 │
 ├── 01_Store_ProductDetails/                # [NHIỆM VỤ 1] Cửa hàng, Chi tiết sản phẩm & Đánh giá (Reviews)

@@ -165,7 +165,7 @@ namespace qlspdigital.Views.Nhom1_Store
             if (reviews.Count > 0)
             {
                 double avg = Math.Round(totalScore / reviews.Count, 1);
-                lblAverageScore.Text = $"Điểm TB: ⭐ {avg:0.0} / 5.0 ({reviews.Count} đánh giá xác thực)";
+                lblAverageScore.Text = $"Điểm TB: ⭐ {avg:0.0} / 5.0 ({reviews.Count} đánh giá từ người mua)";
             }
             else
             {
@@ -180,12 +180,12 @@ namespace qlspdigital.Views.Nhom1_Store
 
                 if (daMua)
                 {
-                    lblFormTitle.Text = "VIẾT HOẶC CHỈNH SỬA ĐÁNH GIÁ (✓ ĐÃ XÁC MINH SỞ HỮU BẢN QUYỀN)";
+                    lblFormTitle.Text = "VIẾT HOẶC CHỈNH SỬA ĐÁNH GIÁ (BẠN ĐÃ SỞ HỮU SẢN PHẨM)";
                     lblFormTitle.ForeColor = Color.FromArgb(102, 192, 244);
                 }
                 else
                 {
-                    lblFormTitle.Text = "VIẾT ĐÁNH GIÁ (⚠️ BẠN CHƯA MUA SẢN PHẨM NÀY - CHỈ ĐƯỢC XEM)";
+                    lblFormTitle.Text = "VIẾT ĐÁNH GIÁ (BẠN CHƯA MUA SẢN PHẨM NÀY)";
                     lblFormTitle.ForeColor = Color.FromArgb(243, 156, 18);
                 }
 
@@ -204,7 +204,7 @@ namespace qlspdigital.Views.Nhom1_Store
             }
             else
             {
-                lblFormTitle.Text = "VIẾT ĐÁNH GIÁ (VUI LÒNG ĐĂNG NHẬP & SỞ HỮU ĐỂ ĐÁNH GIÁ)";
+                lblFormTitle.Text = "VIẾT ĐÁNH GIÁ (VUI LÒNG ĐĂNG NHẬP ĐỂ ĐÁNH GIÁ)";
                 lblFormTitle.ForeColor = Color.FromArgb(199, 213, 224);
                 txtComment.Clear();
                 btnSubmit.Text = "Gửi nhận xét";
@@ -219,10 +219,10 @@ namespace qlspdigital.Views.Nhom1_Store
                 return;
             }
 
-            // Ràng buộc Verified Purchase: Kiểm tra người dùng đã sở hữu sản phẩm trong Thư viện chưa
+            // Kiểm tra người dùng đã sở hữu sản phẩm trong Thư viện chưa
             if (!_danhGiaService.DaMuaSanPham(UserSession.CurrentUserId, _maSanPhamHienTai))
             {
-                MessageBox.Show("Bạn chưa sở hữu sản phẩm này trong Thư viện cá nhân!\n\nHệ thống áp dụng chuẩn Verified Purchase: Chỉ khách hàng đã mua sản phẩm mới có quyền gửi đánh giá nhằm đảm bảo tính khách quan và ngăn chặn đánh giá ảo.", "Yêu cầu sở hữu sản phẩm", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Bạn cần mua và sở hữu sản phẩm này để có thể gửi đánh giá. Vui lòng mua sản phẩm trước khi chia sẻ nhận xét nhé!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
