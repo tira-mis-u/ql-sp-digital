@@ -24,6 +24,12 @@ namespace qlspdigital.BLL.Nhom3_ProductAdmin
             return _repo.LayDanhSachAdmin(tuKhoa, maDanhMuc);
         }
 
+        public SanPhamDTO? LayChiTietSanPham(int maSanPham)
+        {
+            if (maSanPham <= 0) return null;
+            return _repo.LayChiTietAdmin(maSanPham);
+        }
+
         public bool LuuSanPham(SanPhamDTO sp, TepSanPhamDTO? tep, out string thongBao)
         {
             if (string.IsNullOrEmpty(sp.TenSanPham) || sp.TenSanPham.Trim() == "")

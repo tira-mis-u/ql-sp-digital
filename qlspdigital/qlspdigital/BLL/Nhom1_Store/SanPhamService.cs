@@ -16,9 +16,9 @@ namespace qlspdigital.BLL.Nhom1_Store
             _sanPhamRepo = new SanPhamRepository();
         }
 
-        public List<SanPhamDTO> LayDanhSachSanPham(string? tuKhoa = null, int? maDanhMuc = null)
+        public List<SanPhamDTO> LayDanhSachSanPham(string? tuKhoa = null, int? maDanhMuc = null, int maNguoiDung = 0)
         {
-            return _sanPhamRepo.LayDanhSachSanPham(tuKhoa, maDanhMuc);
+            return _sanPhamRepo.LayDanhSachSanPham(tuKhoa, maDanhMuc, maNguoiDung);
         }
 
         public SanPhamDTO? LayChiTietSanPham(int maSanPham)

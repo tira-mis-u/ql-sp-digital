@@ -42,7 +42,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             DataGridViewRow row = dgvOrders.SelectedRows[0];
             if (row == null || row.Index < 0) return;
 
-            object? val = (dgvOrders.Columns.Contains("MaDonHang") ? row.Cells["MaDonHang"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            object? val = row.Cells.Count > 0 ? row.Cells[0].Value : null;
             if (val == null) return;
 
             int orderId = Convert.ToInt32(val);

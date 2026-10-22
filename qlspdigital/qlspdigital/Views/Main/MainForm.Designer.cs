@@ -20,7 +20,7 @@ namespace qlspdigital.Views.Main
         {
             base.OnLoad(e);
             if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
-            qlspdigital.Shared.ThemeHelper.ApplyDarkMode(this);
+            qlspdigital.Shared.ThemeHelper.ApplyTheme(this);
             if (System.Windows.Forms.Screen.PrimaryScreen != null && System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Height <= 768)
             {
                 this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
@@ -34,7 +34,7 @@ namespace qlspdigital.Views.Main
             newView.Dock = DockStyle.Fill;
             panelMainContent.Controls.Add(newView);
             newView.BringToFront();
-            qlspdigital.Shared.ThemeHelper.ApplyDarkMode(newView);
+            qlspdigital.Shared.ThemeHelper.ApplyTheme(newView);
             UpdateCartBadge();
         }
 
@@ -43,6 +43,7 @@ namespace qlspdigital.Views.Main
         {
             this.panelHeader = new System.Windows.Forms.Panel();
             this.lblLogo = new System.Windows.Forms.Label();
+            this.btnThemeToggle = new System.Windows.Forms.Button();
             this.panelHeaderRight = new System.Windows.Forms.Panel();
             this.lblUserGreeting = new System.Windows.Forms.Label();
             this.btnHeaderAuth = new System.Windows.Forms.Button();
@@ -106,15 +107,34 @@ namespace qlspdigital.Views.Main
             // 
             // panelHeaderRight
             // 
+            this.panelHeaderRight.BackColor = System.Drawing.Color.FromArgb(16, 24, 34);
             this.panelHeaderRight.Controls.Add(this.lblUserGreeting);
+            this.panelHeaderRight.Controls.Add(this.btnThemeToggle);
             this.panelHeaderRight.Controls.Add(this.btnHeaderAuth);
             this.panelHeaderRight.Controls.Add(this.lblBalance);
             this.panelHeaderRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelHeaderRight.Location = new System.Drawing.Point(749, 10);
+            this.panelHeaderRight.Location = new System.Drawing.Point(634, 10);
             this.panelHeaderRight.Name = "panelHeaderRight";
             this.panelHeaderRight.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
-            this.panelHeaderRight.Size = new System.Drawing.Size(520, 45);
+            this.panelHeaderRight.Size = new System.Drawing.Size(635, 45);
             this.panelHeaderRight.TabIndex = 1;
+
+            // 
+            // btnThemeToggle
+            // 
+            this.btnThemeToggle.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnThemeToggle.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnThemeToggle.FlatAppearance.BorderSize = 1;
+            this.btnThemeToggle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnThemeToggle.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btnThemeToggle.Location = new System.Drawing.Point(225, 5);
+            this.btnThemeToggle.Name = "btnThemeToggle";
+            this.btnThemeToggle.Size = new System.Drawing.Size(130, 35);
+            this.btnThemeToggle.TabIndex = 3;
+            this.btnThemeToggle.Text = "☀️ Sáng";
+            this.btnThemeToggle.UseMnemonic = false;
+            this.btnThemeToggle.UseVisualStyleBackColor = false;
+            this.btnThemeToggle.Click += new System.EventHandler(this.BtnThemeToggle_Click);
 
             // 
             // lblBalance
@@ -144,7 +164,7 @@ namespace qlspdigital.Views.Main
             this.btnHeaderAuth.ForeColor = System.Drawing.Color.White;
             this.btnHeaderAuth.Location = new System.Drawing.Point(215, 5);
             this.btnHeaderAuth.Name = "btnHeaderAuth";
-            this.btnHeaderAuth.Size = new System.Drawing.Size(145, 35);
+            this.btnHeaderAuth.Size = new System.Drawing.Size(130, 35);
             this.btnHeaderAuth.TabIndex = 1;
             this.btnHeaderAuth.Text = "Đăng nhập";
             this.btnHeaderAuth.UseMnemonic = false;
@@ -629,76 +649,17 @@ namespace qlspdigital.Views.Main
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel lblStatusText;
         private System.Windows.Forms.ToolStripStatusLabel lblDbStatus;
+        public System.Windows.Forms.Button btnThemeToggle;
 
         private void PanelHeader_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
         {
             if (sender is System.Windows.Forms.Panel pnl)
             {
-                using (System.Drawing.Pen p = new System.Drawing.Pen(System.Drawing.Color.FromArgb(35, 48, 68), 1))
+                using (System.Drawing.Pen p = new System.Drawing.Pen(qlspdigital.Shared.ThemeHelper.GetHeaderBorderColor(), 1))
                 {
                     e.Graphics.DrawLine(p, 0, pnl.Height - 1, pnl.Width, pnl.Height - 1);
                 }
             }
-        }
-    }
-}
-
-// -------------------------------------------------------------------------
-// Hỗ trợ giao diện hệ thống Windows 10/11 (Dark Mode titlebar & scrollbar)
-// -------------------------------------------------------------------------
-namespace qlspdigital.Shared
-{
-    using System;
-    using System.Runtime.InteropServices;
-    using System.Windows.Forms;
-
-    internal static class ThemeHelper
-    {
-        [System.Runtime.InteropServices.DllImport("uxtheme.dll", ExactSpelling = true, CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
-        private static extern int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string pszSubIdList);
-
-        [System.Runtime.InteropServices.DllImport("dwmapi.dll")]
-        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
-
-        private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
-
-        public static void ApplyDarkMode(Control control)
-        {
-            if (control == null) return;
-            if (control.IsHandleCreated)
-            {
-                ApplyDarkModeCore(control);
-            }
-            else
-            {
-                EventHandler handleCreatedHandler = null;
-                handleCreatedHandler = (s, e) =>
-                {
-                    control.HandleCreated -= handleCreatedHandler;
-                    ApplyDarkModeCore(control);
-                };
-                control.HandleCreated += handleCreatedHandler;
-            }
-            control.ControlAdded += (s, e) => { if (e.Control != null) ApplyDarkMode(e.Control); };
-            foreach (Control child in control.Controls) ApplyDarkMode(child);
-        }
-
-        private static void ApplyDarkModeCore(Control control)
-        {
-            try
-            {
-                if (control is Form form)
-                {
-                    int darkMode = 1;
-                    DwmSetWindowAttribute(form.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE, ref darkMode, sizeof(int));
-                }
-                if (control is FlowLayoutPanel || control is Panel || control is DataGridView ||
-                    control is TextBox || control is RichTextBox || control is ListBox || control is ScrollableControl)
-                {
-                    SetWindowTheme(control.Handle, "DarkMode_Explorer", null);
-                }
-            }
-            catch { }
         }
     }
 }

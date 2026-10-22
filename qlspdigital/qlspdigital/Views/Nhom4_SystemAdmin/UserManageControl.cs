@@ -44,20 +44,19 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             UpdateActionButtons();
         }
 
-        private void SetButtonState(Button btn, bool enabled, Color activeColor, string tooltipText, ref bool flag)
+        private void SetButtonState(Button btn, bool enabled, Color activeColor, string tooltipText)
         {
             if (btn == null) return;
-            flag = enabled;
             if (enabled)
             {
-                btn.BackColor = activeColor;
+                btn.BackColor = ThemeHelper.GetButtonColor(activeColor);
                 btn.ForeColor = Color.White;
                 btn.Cursor = Cursors.Hand;
             }
             else
             {
-                btn.BackColor = Color.FromArgb(42, 54, 66);
-                btn.ForeColor = Color.FromArgb(105, 120, 135);
+                btn.BackColor = ThemeHelper.GetDisabledButtonColor();
+                btn.ForeColor = ThemeHelper.GetDisabledButtonTextColor();
                 btn.Cursor = Cursors.No;
             }
             _toolTip.SetToolTip(btn, tooltipText);
@@ -69,22 +68,26 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
             if (dgvUsers.SelectedRows.Count == 0)
             {
-                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Vui lòng chọn một người dùng", ref _canLock);
-                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Vui lòng chọn một người dùng", ref _canUnlock);
+                _canLock = false;
+                _canUnlock = false;
+                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Vui lòng chọn một người dùng");
+                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Vui lòng chọn một người dùng");
                 return;
             }
 
             DataGridViewRow row = dgvUsers.SelectedRows[0];
             if (row == null || row.Index < 0)
             {
-                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Vui lòng chọn một người dùng", ref _canLock);
-                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Vui lòng chọn một người dùng", ref _canUnlock);
+                _canLock = false;
+                _canUnlock = false;
+                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Vui lòng chọn một người dùng");
+                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Vui lòng chọn một người dùng");
                 return;
             }
 
-            object? valId = (dgvUsers.Columns.Contains("colMaNguoiDung") ? row.Cells["colMaNguoiDung"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            object? valId = (dgvUsers.Columns.Contains("MaNguoiDung") ? row.Cells["MaNguoiDung"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
             int id = valId != null ? Convert.ToInt32(valId) : 0;
-            string status = (dgvUsers.Columns.Contains("colTrangThai") ? row.Cells["colTrangThai"].Value : null)?.ToString()
+            string status = (dgvUsers.Columns.Contains("TrangThai") ? row.Cells["TrangThai"].Value : null)?.ToString()
                 ?? (row.Cells.Count > 7 ? row.Cells[7].Value?.ToString() : "") ?? "";
 
             bool isSelf = UserSession.IsLoggedIn && UserSession.CurrentUserId == id;
@@ -92,18 +95,24 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
             if (isSelf)
             {
-                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Không thể tự khóa tài khoản quản trị đang đăng nhập", ref _canLock);
-                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Tài khoản của bạn đang hoạt động", ref _canUnlock);
+                _canLock = false;
+                _canUnlock = false;
+                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Không thể tự khóa tài khoản quản trị đang đăng nhập");
+                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Tài khoản của bạn đang hoạt động");
             }
             else if (isActive)
             {
-                SetButtonState(btnLock, true, Color.FromArgb(180, 40, 40), "Khóa tài khoản này", ref _canLock);
-                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Tài khoản này đang hoạt động bình thường", ref _canUnlock);
+                _canLock = true;
+                _canUnlock = false;
+                SetButtonState(btnLock, true, Color.FromArgb(180, 40, 40), "Khóa tài khoản này");
+                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Tài khoản này đang hoạt động bình thường");
             }
             else
             {
-                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Tài khoản này đã bị khóa từ trước", ref _canLock);
-                SetButtonState(btnUnlock, true, Color.FromArgb(90, 160, 45), "Mở khóa cho tài khoản này", ref _canUnlock);
+                _canLock = false;
+                _canUnlock = true;
+                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Tài khoản này đã bị khóa từ trước");
+                SetButtonState(btnUnlock, true, Color.FromArgb(90, 160, 45), "Mở khóa cho tài khoản này");
             }
         }
 

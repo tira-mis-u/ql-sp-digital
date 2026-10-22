@@ -16,6 +16,7 @@ namespace qlspdigital.Views.Main
     public partial class MainForm : Form
     {
         private Button? _activeMenuButton = null;
+        public Button? ActiveMenuButton => _activeMenuButton;
 
         public MainForm()
         {
@@ -27,8 +28,8 @@ namespace qlspdigital.Views.Main
         {
             if (_activeMenuButton != null && _activeMenuButton != btn)
             {
-                _activeMenuButton.BackColor = Color.FromArgb(18, 25, 35);
-                _activeMenuButton.ForeColor = Color.FromArgb(199, 213, 224);
+                _activeMenuButton.BackColor = ThemeHelper.IsDarkMode ? Color.FromArgb(18, 25, 35) : Color.FromArgb(248, 249, 251);
+                _activeMenuButton.ForeColor = ThemeHelper.IsDarkMode ? Color.FromArgb(199, 213, 224) : Color.FromArgb(71, 85, 105);
                 _activeMenuButton.Font = new Font("Segoe UI", 9.5f, FontStyle.Regular);
             }
 
@@ -36,7 +37,7 @@ namespace qlspdigital.Views.Main
 
             if (_activeMenuButton != null)
             {
-                _activeMenuButton.BackColor = Color.FromArgb(49, 98, 130);
+                _activeMenuButton.BackColor = ThemeHelper.IsDarkMode ? Color.FromArgb(49, 98, 130) : Color.FromArgb(14, 116, 144);
                 _activeMenuButton.ForeColor = Color.White;
                 _activeMenuButton.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             }
@@ -46,8 +47,8 @@ namespace qlspdigital.Views.Main
         {
             if (sender is Button btn && btn != _activeMenuButton)
             {
-                btn.BackColor = Color.FromArgb(42, 71, 94);
-                btn.ForeColor = Color.White;
+                btn.BackColor = ThemeHelper.IsDarkMode ? Color.FromArgb(42, 71, 94) : Color.FromArgb(241, 245, 249);
+                btn.ForeColor = ThemeHelper.IsDarkMode ? Color.White : Color.FromArgb(15, 23, 42);
             }
         }
 
@@ -55,8 +56,8 @@ namespace qlspdigital.Views.Main
         {
             if (sender is Button btn && btn != _activeMenuButton)
             {
-                btn.BackColor = Color.FromArgb(18, 25, 35);
-                btn.ForeColor = Color.FromArgb(199, 213, 224);
+                btn.BackColor = ThemeHelper.IsDarkMode ? Color.FromArgb(18, 25, 35) : Color.FromArgb(248, 249, 251);
+                btn.ForeColor = ThemeHelper.IsDarkMode ? Color.FromArgb(199, 213, 224) : Color.FromArgb(71, 85, 105);
             }
         }
 
@@ -88,17 +89,18 @@ namespace qlspdigital.Views.Main
 
         private void MainForm_Load(object? sender, EventArgs e)
         {
+            UpdateThemeToggleVisuals();
 
             // Kiểm tra kết nối CSDL
             if (DatabaseHelper.TestConnection(out string msg))
             {
                 lblDbStatus.Text = "🟢 CSDL: DPMS_Db (Kết nối thành công)";
-                lblDbStatus.ForeColor = Color.FromArgb(164, 208, 7);
+                lblDbStatus.ForeColor = ThemeHelper.IsDarkMode ? Color.FromArgb(164, 208, 7) : Color.FromArgb(22, 163, 74);
             }
             else
             {
                 lblDbStatus.Text = "🔴 CSDL: Lỗi kết nối DPMS_Db";
-                lblDbStatus.ForeColor = Color.FromArgb(231, 76, 60);
+                lblDbStatus.ForeColor = ThemeHelper.IsDarkMode ? Color.FromArgb(231, 76, 60) : Color.FromArgb(220, 38, 38);
                 MessageBox.Show($"Không thể kết nối CSDL SQL Server!\n{msg}\n\nVui lòng đảm bảo SQL Server đang chạy và đã thực thi file script 'Database/DPMS_Database_Master.sql'.", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
@@ -107,6 +109,32 @@ namespace qlspdigital.Views.Main
             UpdateUserInterfaceSession();
         }
 
+        private void BtnThemeToggle_Click(object? sender, EventArgs e)
+        {
+            ThemeHelper.ToggleTheme(this);
+            UpdateThemeToggleVisuals();
+            UpdateUserInterfaceSession();
+            SetActiveMenu(_activeMenuButton);
+        }
+
+        public void UpdateThemeToggleVisuals()
+        {
+            if (btnThemeToggle == null) return;
+            if (ThemeHelper.IsDarkMode)
+            {
+                btnThemeToggle.Text = "☀️ Sáng";
+                btnThemeToggle.BackColor = Color.FromArgb(27, 40, 56);
+                btnThemeToggle.ForeColor = Color.FromArgb(102, 192, 244);
+                btnThemeToggle.FlatAppearance.BorderColor = Color.FromArgb(42, 71, 94);
+            }
+            else
+            {
+                btnThemeToggle.Text = "🌙 Tối";
+                btnThemeToggle.BackColor = Color.FromArgb(241, 245, 249);
+                btnThemeToggle.ForeColor = Color.FromArgb(15, 23, 42);
+                btnThemeToggle.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+            }
+        }
 
         public void UpdateUserInterfaceSession()
         {
@@ -117,14 +145,14 @@ namespace qlspdigital.Views.Main
                 lblUserGreeting.Text = $"{UserSession.CurrentFullName} ({(UserSession.IsAdmin ? "Admin" : "Khách Hàng")})";
                 lblBalance.Text = $"Ví: {FormatHelper.FormatCurrency(UserSession.CurrentBalance)}";
                 btnHeaderAuth.Text = "Đăng xuất";
-                btnHeaderAuth.BackColor = Color.FromArgb(180, 40, 40);
+                btnHeaderAuth.BackColor = ThemeHelper.GetButtonColor(Color.FromArgb(180, 40, 40));
             }
             else
             {
                 lblUserGreeting.Text = "Khách (Chưa đăng nhập)";
                 lblBalance.Text = "Ví: 0 ₫";
                 btnHeaderAuth.Text = "Đăng nhập";
-                btnHeaderAuth.BackColor = Color.FromArgb(49, 98, 130);
+                btnHeaderAuth.BackColor = ThemeHelper.GetButtonColor(Color.FromArgb(49, 98, 130));
             }
 
             // Phân quyền chuẩn RBAC: Chỉ tài khoản Quản trị viên (QuanTriVien) mới hiển thị menu Admin
@@ -136,6 +164,13 @@ namespace qlspdigital.Views.Main
             btnMenuUserManage.Visible = isAdmin;
 
             UpdateCartBadge();
+
+            // Nếu đang xem Store, reload lại để ẩn/hiện sản phẩm đã mua theo session mới
+            if (panelMainContent.Controls.Count > 0 &&
+                panelMainContent.Controls[0] is qlspdigital.Views.Nhom1_Store.StoreViewControl activeStore)
+            {
+                activeStore.LoadProducts();
+            }
         }
 
         // ==========================================
