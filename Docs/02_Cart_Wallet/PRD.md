@@ -20,7 +20,7 @@ Mô hình này giúp loại bỏ hoàn toàn màn hình Checkout rườm rà, ph
 
 ## 2. Người dùng mục tiêu & Vai trò
 - **Khách hàng đã đăng nhập:**
-  - Quản lý giỏ hàng: kiểm tra danh sách game, sửa số lượng, xóa món.
+  - Quản lý giỏ hàng: kiểm tra danh sách game (chuẩn hóa số lượng = 1 bản quyền), xóa món.
   - Áp dụng mã giảm giá (Voucher) vào giỏ hàng để được khấu trừ tiền thanh toán.
   - Theo dõi số dư ví hiện tại ngay trên giỏ hàng và Header.
   - Bấm thanh toán ngay bằng số dư ví (1-Click Pay).
@@ -39,8 +39,8 @@ Mô hình này giúp loại bỏ hoàn toàn màn hình Checkout rườm rà, ph
      + Giảm giá Voucher (Số tiền được khấu trừ từ mã ưu đãi).
      + Tổng thanh toán thực tế = `Tạm tính - Giảm giá`.
    - Hiển thị số dư ví hiện tại của người dùng: `Số dư ví của bạn: 500.000 VNĐ`.
-2. **Cập nhật số lượng & Xóa món (CRUD Update & Delete 1):**
-   - Nút `+` / `-` để tăng/giảm số lượng món hàng trong `GioHang`.
+2. **Chuẩn hóa số lượng & Xóa món (CRUD Update & Delete 1):**
+   - Sản phẩm kỹ thuật số cố định số lượng = 1 bản quyền; hệ thống chặn thêm trùng sản phẩm (`DaCoTrongGioHang`).
    - Nút "Xóa" từng món khỏi `GioHang`.
    - Nút "Xóa tất cả".
 3. **Áp dụng Mã giảm giá (Tích hợp với UI 15):**

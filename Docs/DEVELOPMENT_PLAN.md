@@ -21,7 +21,7 @@ Toàn bộ ứng dụng sử dụng một cửa sổ duy nhất (`MainForm`), l�
 ### 2.1. Sơ đồ bố cục tổng thể
 ```text
 +-----------------------------------------------------------------------------------------------+
-|  [Logo DPMS]   CỬA HÀNG SẢN PHẨM KỸ THUẬT SỐ       [Khách/User] [🚪 Đăng xuất] [💰 Ví: 0đ]   |  <- HEADER
+|  [Logo DPMS]   CỬA HÀNG SẢN PHẨM KỸ THUẬT SỐ       [Khách/User] [☀️ Sáng / 🌙 Tối] [🚪 Đăng xuất] [💰 Ví: 0đ]   |  <- HEADER
 +-----------------------+-----------------------------------------------------------------------+
 |                       |                                                                       |
 |  ▶️ Cửa hàng (Store)  |                   VÙNG NỘI DUNG CHÍNH                                 |
@@ -43,7 +43,9 @@ Toàn bộ ứng dụng sử dụng một cửa sổ duy nhất (`MainForm`), l�
 ### 2.2. Cách thức hoạt động
 1. **Khung sườn chính (`MainForm.cs`):** 
    - Đóng vai trò làm khung vỏ (Shell) chuẩn Steam Dark Theme.
-   - **Thanh Header:** Chứa Logo, tiêu đề ứng dụng, lời chào tài khoản (mặc định hiển thị `"Khách"`, sau khi đăng nhập hiển thị tên người dùng), nút **Đăng nhập / Đăng xuất** (`btnHeaderAuth`), và số dư ví `lblBalance` ở góc phải ngoài cùng (đã hoán đổi vị trí với nút đăng xuất, hỗ trợ click chuột để chuyển nhanh sang Ví). Nút giỏ hàng mini trên header đã được lược bỏ vì Sidebar bên trái đã có sẵn mục Giỏ hàng.
+   - **Thanh Header:** Chứa Logo, tiêu đề ứng dụng, lời chào tài khoản (mặc định hiển thị `"Khách"`, sau khi đăng nhập hiển thị tên người dùng), nút **Chuyển đổi giao diện Sáng / Tối** (`btnThemeToggle`), nút **Đăng nhập / Đăng xuất** (`btnHeaderAuth`), và số dư ví `lblBalance` ở góc phải ngoài cùng (hỗ trợ click chuột để chuyển nhanh sang Ví).
+   - **Cơ chế Dual Theme Engine (`ThemeHelper.cs`):** Quản lý trạng thái Dark/Light mode toàn cục, lưu cấu hình vào `theme.cfg`, cập nhật tiêu đề/viền cửa sổ qua DWM native API (`DwmSetWindowAttribute`), và duyệt đệ quy cây điều khiển (`ApplyThemeToControlTree`) để chuyển đổi bảng màu mượt mà.
+   - **Tương thích Visual Studio Designer & DPI Scaling:** Chuẩn hóa `AutoScaleMode` và cấu hình DPI trong `app.manifest` (`DpiUnawareGdiScaled`) đảm bảo hiển thị sắc nét, không bị vỡ layout, tràn chữ hoặc mất tương thích giữa các máy tính khác nhau.
    - **Thanh Sidebar (Cơ chế Active/Selected State):**
      + Quản lý tập trung qua phương thức `SetActiveMenu(Button? btn)`.
      + Khi người dùng chuyển sang bất kỳ màn hình nào, nút Sidebar tương ứng sẽ được kích hoạt trạng thái **Selected (Active)** với màu nền xanh điểm nhấn (`Color.FromArgb(49, 98, 130)` / `#316282`) cùng phông chữ đậm màu trắng (`Font = FontStyle.Bold`, `ForeColor = Color.White`).
@@ -58,72 +60,132 @@ Toàn bộ ứng dụng sử dụng một cửa sổ duy nhất (`MainForm`), l�
    - Màn hình Đánh giá sản phẩm (`ProductReviewControl`) không cần nút quay lại cửa hàng vì người dùng có thể chuyển đổi tức thì giữa các phân hệ thông qua Sidebar cố định.
 
 ### 2.3. Mã nguồn khởi chạy & Chuyển đổi màn hình động
-Trong file `MainForm.cs`:
+Trong file `MainForm.cs` (namespace thực tế: `qlspdigital.Views.Main`):
 
 ```csharp
 using System;
+using System.Drawing;
 using System.Windows.Forms;
-using DPMS.WinForms.Views.Store;
-using DPMS.WinForms.Views.Cart;
+using qlspdigital.Shared;          // ThemeHelper, UserSession, FormatHelper, DatabaseHelper
+using qlspdigital.Views.Nhom1_Store;
+using qlspdigital.Views.Nhom2_Cart;
+using qlspdigital.Views.Nhom3_ProductAdmin;
+using qlspdigital.Views.Nhom4_SystemAdmin;
+using qlspdigital.Views.Nhom5_Orders;
+using qlspdigital.BLL.Nhom2_Cart; // GioHangService (để cập nhật badge giỏ hàng)
 
-namespace DPMS.WinForms.Views.Main
+namespace qlspdigital.Views.Main
 {
     public partial class MainForm : Form
     {
+        private Button? _activeMenuButton = null;
+
         public MainForm()
         {
             InitializeComponent();
         }
 
         // Tự động mở Trang chủ Cửa hàng khi vừa bật ứng dụng
-        private void MainForm_Load(object sender, EventArgs e)
+        private void MainForm_Load(object? sender, EventArgs e)
         {
-            SwitchView(new StoreViewControl());
+            UpdateThemeToggleVisuals();          // Đồng bộ nút theme toggle
+            if (DatabaseHelper.TestConnection(out string msg))
+                lblDbStatus.Text = "🟢 CSDL: DPMS_Db (Kết nối thành công)";
+            else
+            {
+                lblDbStatus.Text = "🔴 CSDL: Lỗi kết nối DPMS_Db";
+                MessageBox.Show(msg, "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            NavigateToStore();
+            UpdateUserInterfaceSession();
         }
 
         // Hàm dùng chung để nạp UserControl bất kỳ vào vùng giữa
-        public void SwitchView(UserControl newView)
+        private void SwitchView(UserControl newView)
         {
-            panelMainContent.Controls.Clear();       // Xóa giao diện cũ
-            newView.Dock = DockStyle.Fill;           // Tràn đầy khung panel
-            panelMainContent.Controls.Add(newView);   // Thêm giao diện mới
+            panelMainContent.Controls.Clear();
+            newView.Dock = DockStyle.Fill;
+            panelMainContent.Controls.Add(newView);
             newView.BringToFront();
         }
 
-        // Sự kiện click các mục trên Sidebar
-        private void btnMenuStore_Click(object sender, EventArgs e)
+        // Cập nhật trạng thái nút Active trên Sidebar
+        private void SetActiveMenu(Button? btn)
         {
-            SwitchView(new StoreViewControl());
+            if (_activeMenuButton != null && _activeMenuButton != btn)
+            {
+                _activeMenuButton.BackColor = ThemeHelper.IsDarkMode
+                    ? Color.FromArgb(18, 25, 35) : Color.FromArgb(248, 249, 251);
+                _activeMenuButton.ForeColor = ThemeHelper.IsDarkMode
+                    ? Color.FromArgb(199, 213, 224) : Color.FromArgb(71, 85, 105);
+            }
+            _activeMenuButton = btn;
+            if (_activeMenuButton != null)
+            {
+                _activeMenuButton.BackColor = ThemeHelper.IsDarkMode
+                    ? Color.FromArgb(49, 98, 130) : Color.FromArgb(14, 116, 144);
+                _activeMenuButton.ForeColor = Color.White;
+                _activeMenuButton.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            }
         }
 
-        private void btnMenuReviews_Click(object sender, EventArgs e)
+        // Sự kiện click 14 nút Sidebar (delegate pattern chuẩn C#)
+        private void BtnMenuStore_Click(object? s, EventArgs e)        => NavigateToStore();
+        private void BtnMenuReviews_Click(object? s, EventArgs e)      => NavigateToReviews(1);
+        private void BtnMenuCart_Click(object? s, EventArgs e)         => NavigateToCart();
+        private void BtnMenuWallet_Click(object? s, EventArgs e)       => NavigateToWallet();
+        private void BtnMenuVouchers_Click(object? s, EventArgs e)     => NavigateToVouchers();
+        private void BtnMenuLibrary_Click(object? s, EventArgs e)      => NavigateToLibrary();
+        private void BtnMenuOrderHistory_Click(object? s, EventArgs e) => NavigateToOrderHistory();
+        private void BtnMenuProfile_Click(object? s, EventArgs e)      => NavigateToProfile();
+        private void BtnMenuDashboard_Click(object? s, EventArgs e)    => NavigateToDashboard();
+        private void BtnMenuProductManage_Click(object? s, EventArgs e)=> NavigateToProductManage();
+        private void BtnMenuCategoryManage_Click(object? s, EventArgs e)=>NavigateToCategoryManage();
+        private void BtnMenuOrderManage_Click(object? s, EventArgs e)  => NavigateToOrderManage();
+        private void BtnMenuUserManage_Click(object? s, EventArgs e)   => NavigateToUserManage();
+        private void LblBalance_Click(object? s, EventArgs e)          => NavigateToWallet();
+
+        // Nút chuyển đổi giao diện Sáng / Tối
+        private void BtnThemeToggle_Click(object? sender, EventArgs e)
         {
-            SwitchView(new ProductReviewControl());
+            ThemeHelper.ToggleTheme(this);
+            UpdateThemeToggleVisuals();
+            UpdateUserInterfaceSession();
+            SetActiveMenu(_activeMenuButton);
         }
 
-        private void btnMenuCart_Click(object sender, EventArgs e)
+        // RBAC Guards: chặn truy cập trái phép
+        private bool EnsureLoggedIn(string feature)
         {
-            SwitchView(new CartControl());
+            if (!UserSession.IsLoggedIn)
+            { MessageBox.Show($"Vui lòng đăng nhập để sử dụng '{feature}'."); NavigateToLogin(); return false; }
+            return true;
+        }
+        private bool EnsureAdmin(string feature)
+        {
+            if (!UserSession.IsAdmin)
+            { MessageBox.Show($"Chức năng '{feature}' chỉ dành cho Quản trị viên."); return false; }
+            return true;
         }
 
-        private void btnMenuWallet_Click(object sender, EventArgs e)
+        // Cập nhật hiển thị tên/số dư/quyền Admin sau mỗi sự kiện session
+        public void UpdateUserInterfaceSession()
         {
-            SwitchView(new WalletControl());
-        }
-
-        private void btnMenuVouchers_Click(object sender, EventArgs e)
-        {
-            SwitchView(new VoucherControl());
-        }
-
-        private void btnMenuLibrary_Click(object sender, EventArgs e)
-        {
-            SwitchView(new Views.Orders.LibraryControl());
-        }
-
-        private void btnMenuAdmin_Click(object sender, EventArgs e)
-        {
-            SwitchView(new Views.SystemAdmin.DashboardControl());
+            bool isAdmin = UserSession.IsLoggedIn && UserSession.IsAdmin;
+            lblUserGreeting.Text = UserSession.IsLoggedIn
+                ? $"{UserSession.CurrentFullName} ({(UserSession.IsAdmin ? "Admin" : "Khách Hàng")})"
+                : "Khách (Chưa đăng nhập)";
+            lblBalance.Text = UserSession.IsLoggedIn
+                ? $"Ví: {FormatHelper.FormatCurrency(UserSession.CurrentBalance)}"
+                : "Ví: 0 ₫";
+            btnHeaderAuth.Text = UserSession.IsLoggedIn ? "Đăng xuất" : "Đăng nhập";
+            lblAdminSection.Visible = isAdmin;
+            btnMenuDashboard.Visible = isAdmin;
+            btnMenuProductManage.Visible = isAdmin;
+            btnMenuCategoryManage.Visible = isAdmin;
+            btnMenuOrderManage.Visible = isAdmin;
+            btnMenuUserManage.Visible = isAdmin;
+            UpdateCartBadge();
         }
     }
 }
@@ -142,8 +204,9 @@ qlspdigital/qlspdigital/
 │
 ├── Shared/                                  # Tiện ích dùng chung
 │   ├── DatabaseHelper.cs                    # Kết nối ADO.NET SQL Server (GetConnection, ExecuteQuery, ExecuteNonQuery)
-│   ├── UserSession.cs                       # Quản lý phiên làm việc tĩnh (Login, Logout, CurrentUserId, Balance)
-│   └── FormatHelper.cs                      # Tiện ích định dạng dữ liệu (tiền tệ VNĐ, ngày tháng)
+│   ├── UserSession.cs                       # Quản lý phiên làm việc tĩnh (Login, Logout, UpdateBalance, UpdateProfile)
+│   ├── ThemeHelper.cs                       # Hệ thống Dual Theme Engine (Dark/Light toggle, DWM API, theme.cfg persistence)
+│   └── FormatHelper.cs                      # Tiện ích định dạng (FormatCurrency VNĐ, FormatDateTime, FormatFileSize)
 │
 ├── DTOs/                                    # Data Transfer Objects
 │   ├── NguoiDungDTO.cs                      # DTO người dùng & tài khoản

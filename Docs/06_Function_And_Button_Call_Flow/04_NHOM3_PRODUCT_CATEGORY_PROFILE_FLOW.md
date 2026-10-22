@@ -1,4 +1,4 @@
-# ĐẶC TẢ LUỒNG NÚT BẤM & HÀM XỬ LÝ - NHÓM 3: SẢN PHẨM, DANH MỤC & HỒ SƠ
+﻿# ĐẶC TẢ LUỒNG NÚT BẤM & HÀM XỬ LÝ - NHÓM 3: SẢN PHẨM, DANH MỤC & HỒ SƠ
 **Thành viên phụ trách:** Phạm Trung Hiếu  
 **Màn hình quản lý:**
 1. UI 10: `ProductManageControl` (Quản trị kho hàng hóa số & Tệp phần mềm)
@@ -9,7 +9,7 @@
 
 ## 1. MÀN HÌNH UI 10: `ProductManageControl`
 
-### 1.1. Sơ đồ luồng Tải tệp lên & Tính mã SHA-256
+### 1.1. Sơ đồ luồng Tải tệp lên & Lưu siêu dữ liệu sản phẩm
 
 ```text
 [ Admin bấm nút "📂 Chọn tệp số..." trên ProductManageControl ]
@@ -20,14 +20,14 @@
                                v
          ProductManageControl.BtnBrowseFile_Click()
                                |
-                               | 1. Đọc kích thước FileInfo: file.Length (Bytes)
-                               | 2. Tính toán mã băm toàn vẹn:
-                               |    SecurityHelper.ComputeFileSha256(filePath)
-                               |    -> Dùng luồng FileStream + SHA256.Create()
-                               v
-         Hiển thị lên giao diện:
-         - txtFileSize: Quy đổi sang MB (DungLuongMB)
-         - txtFileHash: Chuỗi Hex 64 ký tự SHA-256
+                                | 1. Mở OpenFileDialog chọn tệp (.zip, .exe, .rar, .iso)
+                                | 2. Đọc thông tin FileInfo:
+                                |    - txtFilePath.Text = ofd.SafeFileName
+                                |    - txtSize.Text = Math.Round(fi.Length / (1024 * 1024), 2)
+                                v
+          Hiển thị lên giao diện:
+          - txtFilePath: Tên tệp số đã chọn
+          - txtSize: Dung lượng tệp quy đổi sang MB
                                |
                                v
          [ Admin điền Tên, Giá, Mô tả và bấm "💾 LƯU SẢN PHẨM" ]
@@ -37,10 +37,10 @@
                                |
                                v
          1. SanPhamAdminRepository: INSERT / UPDATE bảng SanPham
-         2. TepSanPhamRepository:   INSERT / UPDATE bảng TepSanPham (Lưu Metadata & Hash)
+         2. TepSanPhamRepository:   INSERT / UPDATE bảng TepSanPham (Lưu Metadata: Tên, Đường dẫn, Kích thước)
                                |
                                v
-         Bắn sự kiện: SanPhamAdminService.NotifyProductCatalogChanged()
+         Reload lưới sản phẩm và thông báo thành công (không dùng static event)
                                |
                                v
          StoreViewControl tự động tải lại lưới game mới nhất cho khách hàng
@@ -50,23 +50,16 @@
 
 ### 1.2. Chi tiết từng nút bấm trên UI 10
 
-#### 1. Nút `btnBrowseFile` ("Chọn tệp tải lên...")
+#### 1. Nút `btnBrowseFile` ("Chọn...")
 * **Hàm UI bắt sự kiện:** `BtnBrowseFile_Click(object? sender, EventArgs e)`
 * **Nơi gọi (Caller):** Admin chuẩn bị xuất bản hoặc cập nhật bản vá cho một tựa game/phần mềm.
 * **Quy trình hoạt động:**
-  1. Mở `OpenFileDialog` với bộ lọc: `Tệp nén/Cài đặt (*.zip;*.exe;*.rar;*.iso;*.pdf)|*.zip;*.exe;*.rar;*.iso;*.pdf`.
-  2. Lấy thông tin `FileInfo info = new FileInfo(ofd.FileName)`.
-  3. Tính mã băm SHA-256 nguồn thông qua thuật toán mã hóa đối soát:
-     ```csharp
-     using (var sha = SHA256.Create())
-     using (var stream = File.OpenRead(ofd.FileName))
-     {
-         byte[] hash = sha.ComputeHash(stream);
-         _uploadedFileHash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-     }
-     ```
-  4. Lưu đường dẫn tương đối dự kiến: `Storage/Products/{fileName}`.
-  5. Cập nhật các ô Textbox hiển thị: Tên tệp, Định dạng, Dung lượng MB, Mã Hash SHA-256.
+  1. Mở `OpenFileDialog` với bộ lọc: `Tệp phần mềm / dữ liệu (*.zip;*.exe;*.rar;*.iso)|*.zip;*.exe;*.rar;*.iso|Tất cả tệp (*.*)|*.*`.
+  2. Lấy thông tin `FileInfo fi = new FileInfo(ofd.FileName)`.
+  3. Ghi nhớ đường dẫn tệp nguồn `_selectedSourceFilePath = ofd.FileName`.
+  4. Cập nhật các ô Textbox hiển thị:
+     * `txtFilePath.Text = ofd.SafeFileName`: Tên tệp gốc.
+     * `txtSize.Text = Math.Round((decimal)fi.Length / (1024 * 1024), 2).ToString()`: Dung lượng tính bằng MB.
 
 #### 2. Nút `btnSave` ("Lưu thông tin sản phẩm & Tệp số")
 * **Hàm UI bắt sự kiện:** `BtnSave_Click(object? sender, EventArgs e)`
@@ -88,17 +81,21 @@
       DungLuongMB = @DungLuongMB, PhienBan = @PhienBan, MaDanhMuc = @MaDanhMuc, NgayCapNhat = GETDATE()
   WHERE MaSanPham = @MaSanPham;
 
-  -- Lưu Metadata tệp vật lý và mã băm
+  -- Lưu Metadata tệp phần mềm
   IF EXISTS (SELECT 1 FROM TepSanPham WHERE MaSanPham = @MaSanPham)
+  BEGIN
       UPDATE TepSanPham 
-      SET TenTep = @TenTep, DuongDanTep = @DuongDan, DinhDangTep = @DinhDang,
-          KichThuocByte = @Byte, MaHashSHA256 = @Hash, PhienBan = @PhienBan, NgayTaiLen = GETDATE()
+      SET TenTep = @TenTep, DuongDanTep = @DuongDanTep, DinhDangTep = @DinhDangTep,
+          KichThuocByte = @KichThuocByte, PhienBan = @PhienBan, NgayTaiLen = GETDATE()
       WHERE MaSanPham = @MaSanPham;
+  END
   ELSE
-      INSERT INTO TepSanPham (MaSanPham, TenTep, DuongDanTep, DinhDangTep, KichThuocByte, MaHashSHA256, PhienBan, NgayTaiLen)
-      VALUES (@MaSanPham, @TenTep, @DuongDan, @DinhDang, @Byte, @Hash, @PhienBan, GETDATE());
+  BEGIN
+      INSERT INTO TepSanPham (MaSanPham, TenTep, DuongDanTep, DinhDangTep, KichThuocByte, PhienBan, NgayTaiLen)
+      VALUES (@MaSanPham, @TenTep, @DuongDanTep, @DinhDangTep, @KichThuocByte, @PhienBan, GETDATE());
+  END;
   ```
-* **Sự kiện bắn ra:** `SanPhamAdminService.NotifyProductCatalogChanged()`.
+* **Cập nhật giao diện:** Gọi `LoadProducts()` nạp lại danh sách sản phẩm.
 
 #### 3. Nút `btnDelete` ("Ngừng kinh doanh / Mở lại" - Soft Delete)
 * **Hàm UI bắt sự kiện:** `BtnDelete_Click(object? sender, EventArgs e)`
@@ -106,7 +103,7 @@
 * **Hàm BLL được gọi:** `SanPhamAdminService.DoiTrangThaiKinhDoanh(int maSanPham, out string thongBao)`
 * **Hàm DAL được gọi:** `SanPhamAdminRepository.CapNhatTrangThaiKinhDoanh(maSanPham, !dangKinhDoanh)`
 * **SQL thực thi:** `UPDATE SanPham SET DangKinhDoanh = ~DangKinhDoanh WHERE MaSanPham = @MaSanPham;`
-* **Sự kiện bắn ra:** `SanPhamAdminService.NotifyProductCatalogChanged()`.
+* **Cập nhật giao diện:** Gọi `LoadProducts()` nạp lại danh sách sản phẩm.
 
 ---
 
@@ -116,7 +113,7 @@
 * **Hàm UI bắt sự kiện:** `BtnSave_Click(object? sender, EventArgs e)`
 * **Hàm BLL:** `DanhMucService.ThemDanhMuc` / `DanhMucService.CapNhatDanhMuc`.
 * **Hàm DAL:** `DanhMucRepository.ThemDanhMuc` / `DanhMucRepository.CapNhatDanhMuc`.
-* **Sự kiện bắn ra:** `SanPhamAdminService.NotifyCategoryCatalogChanged()`.
+* **Cập nhật giao diện:** Gọi `LoadCategories()` nạp lại danh mục.
 
 #### 5. Nút `btnDelete` ("Xóa danh mục")
 * **Hàm UI bắt sự kiện:** `BtnDelete_Click(object? sender, EventArgs e)`
@@ -134,10 +131,10 @@
 
 #### 7. Nút `btnChangePassword` ("Đổi mật khẩu")
 * **Hàm UI bắt sự kiện:** `BtnChangePassword_Click(object? sender, EventArgs e)`
-* **Quy trình bảo mật:**
-  1. Đối chiếu mật khẩu cũ với `MatKhauHash` trong CSDL bằng `SecurityHelper.VerifyPassword(matKhauCu, storedHash)`.
-  2. Băm SHA-256 mật khẩu mới: `SecurityHelper.ComputeSha256Hash(matKhauMoi)`.
-  3. Cập nhật `UPDATE NguoiDung SET MatKhauHash = @NewHash WHERE MaNguoiDung = @UserId;`.
+* **Quy trình thực thi:**
+  1. Kiểm tra mật khẩu hiện tại với `MatKhau` trong CSDL qua `HoSoRepository.DoiMatKhau`.
+  2. Kiểm tra mật khẩu mới và xác nhận mật khẩu mới trùng khớp (tối thiểu 6 ký tự).
+  3. Cập nhật `UPDATE NguoiDung SET MatKhau = @NewPass WHERE MaNguoiDung = @MaNguoiDung`.
 
 #### 8. Nút `btnSaveSettings` ("Lưu cài đặt trải nghiệm")
 * **Hàm UI bắt sự kiện:** `BtnSaveSettings_Click(object? sender, EventArgs e)`

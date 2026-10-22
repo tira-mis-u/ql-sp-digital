@@ -1,9 +1,9 @@
-# ĐẶC TẢ LUỒNG NÚT BẤM & HÀM XỬ LÝ - NHÓM 5: ĐƠN HÀNG & THƯ VIỆN SỐ
+﻿# ĐẶC TẢ LUỒNG NÚT BẤM & HÀM XỬ LÝ - NHÓM 5: ĐƠN HÀNG & THƯ VIỆN SỐ
 **Thành viên phụ trách:** Phạm Văn Đam  
 **Màn hình quản lý:**
 1. UI 13: `OrderManageControl` (Quản trị đơn hàng toàn sàn & Kích hoạt bù thủ công)
 2. UI 7: `OrderHistoryControl` (Lịch sử giao dịch mua sắm cá nhân)
-3. UI 6: `LibraryControl` (Thư viện game sở hữu, Tải tệp đối soát SHA-256 & Đóng gói Zip)
+3. UI 6: `LibraryControl` (Thư viện game sở hữu, Tải tệp nén PK-Zip & Sinh chứng chỉ bản quyền)
 
 ---
 
@@ -42,7 +42,7 @@
                                +--> trans.Commit()
                                |
                                v
-               Bắn sự kiện: ThuVienService.NotifyLibraryUpdated()
+               Cập nhật giao diện: LoadOrders() tải lại danh sách đơn hàng
                                |
                                v
                Khách hàng truy cập LibraryControl thấy ngay game vừa được cấp!
@@ -57,7 +57,7 @@
 * **Nơi gọi (Caller):** Admin xử lý khiếu nại CSKH trong 15s cho khách hàng bị rớt mạng khi thanh toán khiến đơn kẹt ở `Chờ xử lý`.
 * **Hàm BLL được gọi:** `DonHangService.DuyetDonHang(int maDonHang, out string thongBao)`
 * **Hàm DAL được gọi:** `DonHangRepository.CapNhatTrangThaiDonHang(maDonHang, "Hoàn thành", out thongBao)`
-* **Sự kiện bắn ra:** `ThuVienService.NotifyLibraryUpdated()`.
+* **Cập nhật giao diện:** Gọi `LoadOrders()` nạp lại danh sách đơn hàng.
 * **Phản hồi UI:** Tải lại lưới `dgvOrders`, hiển thị trạng thái `Hoàn thành` màu xanh lá cây.
 
 #### 2. Nút `btnCancelOrder` ("Hủy đơn & Hoàn tiền ví")
@@ -68,7 +68,7 @@
   2. Xóa bản ghi cấp quyền trong `SoHuuSanPham` (thu hồi game).
   3. Hoàn lại số tiền `TongThanhToan` vào `NguoiDung.SoDuVi`.
   4. Ghi sổ nhật ký `ThanhToan (LoaiGiaoDich = N'Hoàn tiền')`.
-* **Sự kiện bắn ra:** `ThuVienService.NotifyLibraryUpdated()` và `UserSession.BalanceChanged`.
+* **Cập nhật giao diện:** Gọi `LoadOrders()` làm mới danh sách đơn hàng.
 
 ---
 
@@ -117,7 +117,6 @@
                              |    - Tên sản phẩm, Phiên bản
                              |    - Mã đơn hàng, Mã người dùng sở hữu
                              |    - Thời điểm cấp quyền
-                             |    - Mã băm toàn vẹn SHA-256
                              | - Tiến độ 85%: Flush stream & đóng gói chuẩn PK-Zip
                              | - Tiến độ 100%: Cập nhật CSDL
                              v
@@ -128,7 +127,7 @@
                              | WHERE MaSoHuu = @MaSoHuu;
                              v
                Giao diện cập nhật: "Lượt tải: X, Lần tải cuối: vừa xong"
-               Hiện thông báo: "Đã tải xuống và kiểm tra SHA-256 an toàn!"
+               Hiện thông báo: "Đã tải xuống thành công gói cài đặt sản phẩm!"
 ```
 
 ---

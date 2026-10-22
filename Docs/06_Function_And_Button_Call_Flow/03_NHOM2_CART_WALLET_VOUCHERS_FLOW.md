@@ -1,4 +1,4 @@
-# ĐẶC TẢ LUỒNG NÚT BẤM & HÀM XỬ LÝ - NHÓM 2: GIỎ HÀNG, VÍ & VOUCHER
+﻿# ĐẶC TẢ LUỒNG NÚT BẤM & HÀM XỬ LÝ - NHÓM 2: GIỎ HÀNG, VÍ & VOUCHER
 **Thành viên phụ trách:** Nguyễn Quốc Trung  
 **Màn hình quản lý:**
 1. UI 4: `CartControl` (Giỏ hàng mua sắm & Thanh toán 1-Click)
@@ -45,11 +45,10 @@
                                 +--> trans.Commit() HOÀN TẤT THÀNH CÔNG!
                                 |
                                 v
-         ĐỒNG BỘ DỮ LIỆU THỜI GIAN THỰC (REACTIVE EVENT BUS):
-         - UserSession.UpdateBalance(balanceMoi) -> lblBalance Header đổi số tiền
-         - GioHangService.NotifyCartUpdated()   -> Badge giỏ hàng về 0
-         - ThuVienService.NotifyLibraryUpdated() -> LibraryControl tự động nạp game mới
-         - MaGiamGiaService.NotifyVoucherUpdated()
+         CẬP NHẬT GIAO DIỆN TƯỜNG MINH (explicit calls, không dùng static events):
+         - UserSession.UpdateBalance(balanceMoi)         -> cập nhật phiên
+         - mainForm.UpdateUserInterfaceSession()          -> lblBalance Header đổi số tiền
+         - mainForm.UpdateCartBadge()                     -> Badge giỏ hàng về 0
                                 |
                                 v
          CartControl: Reset giao diện, hỏi người dùng: "Mở Thư viện để tải game ngay?"
@@ -90,7 +89,7 @@
 * **Hàm BLL được gọi:** `GioHangService.XoaKhoiGioHang(int maGioHang)`
 * **Hàm DAL được gọi:** `GioHangRepository.XoaKhoiGioHang(maGioHang)`
 * **SQL thực thi:** `DELETE FROM GioHang WHERE MaGioHang = @MaGioHang;`
-* **Sự kiện bắn ra:** `GioHangService.NotifyCartUpdated()`.
+* **Cơ chế cập nhật:** Reload danh sách giỏ hàng và gọi `mainForm.UpdateCartBadge()` để cập nhật badge (không dùng static event).
 
 #### 4. Nút `btnClearCart` ("Xóa sạch giỏ hàng")
 * **Hàm UI bắt sự kiện:** `BtnClearCart_Click(object? sender, EventArgs e)`
@@ -156,7 +155,7 @@
   SET SoLuongConLai = SoLuongConLai - 1 
   WHERE MaGiamGiaId = @MaGiamGiaId;
   ```
-* **Sự kiện bắn ra:** `MaGiamGiaService.NotifyVoucherUpdated()`.
+* **Cập nhật giao diện:** Gọi `LoadVouchers()` nạp lại danh sách voucher trong ví.
 
 #### 10. Nút `btnApplySelected` ("Dùng ngay cho Giỏ hàng")
 * **Hàm UI bắt sự kiện:** `BtnApplySelected_Click(object? sender, EventArgs e)`

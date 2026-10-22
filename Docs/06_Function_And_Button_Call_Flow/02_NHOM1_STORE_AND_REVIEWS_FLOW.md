@@ -1,4 +1,4 @@
-# ĐẶC TẢ LUỒNG NÚT BẤM & HÀM XỬ LÝ - NHÓM 1: CỬA HÀNG & ĐÁNH GIÁ
+﻿# ĐẶC TẢ LUỒNG NÚT BẤM & HÀM XỬ LÝ - NHÓM 1: CỬA HÀNG & ĐÁNH GIÁ
 **Thành viên phụ trách:** Lê Nguyễn Minh Trí  
 **Màn hình quản lý:**
 1. UI 2: `StoreViewControl` (Mặt tiền Cửa hàng số) & `ProductCardControl` (Thẻ sản phẩm Steam)
@@ -29,13 +29,15 @@
          GioHangService.ThemVaoGioHang(userId, spId, 1, out msg)
                           |
                           | 1. Kiểm tra ThuVienRepository.DaSoHuu(userId, spId)
-                          |    -> Nếu đã sở hữu: Báo lỗi không cho mua đè!
-                          | 2. Gọi GioHangRepository.ThemVaoGioHang(userId, spId, 1)
+                          |    -> Nếu đã sở hữu: Báo lỗi "Bạn đã sở hữu sản phẩm này trong Thư viện rồi!"
+                          | 2. Kiểm tra GioHangRepository.DaCoTrongGioHang(userId, spId)
+                          |    -> Nếu đã có trong giỏ: Báo lỗi sản phẩm số chỉ mua 1 bản quyền
+                          | 3. Gọi GioHangRepository.ThemVaoGioHang(userId, spId, 1)
                           v
-         Thực thi SQL: MERGE / INSERT vào bảng GioHang
+         Thực thi SQL: MERGE / INSERT vào bảng GioHang (Số lượng = 1)
                           |
                           v
-         Bắn sự kiện: GioHangService.NotifyCartUpdated()
+         mainForm.UpdateCartBadge() cập nhật badge số lượng tức thì trên Header
                           |
                           v
          MainForm.UpdateCartBadge() cập nhật badge số lượng tức thì trên Header
@@ -87,11 +89,12 @@
 #### 4. Nút `btnAddToCart` ("Thêm vào giỏ hàng")
 * **Hàm UI bắt sự kiện:** `BtnAddToCart_Click(object? sender, EventArgs e)`
 * **Hàm BLL được gọi:** `GioHangService.ThemVaoGioHang(UserSession.CurrentUserId, _maSanPham, 1, out msg)`
-* **Hàm DAL được gọi:** `ThuVienRepository.DaSoHuu` và `GioHangRepository.ThemVaoGioHang`
+* **Hàm DAL được gọi:** `ThuVienRepository.DaSoHuu`, `GioHangRepository.DaCoTrongGioHang` và `GioHangRepository.ThemVaoGioHang`
 * **Quy tắc chặn:**
   * Nếu chưa đăng nhập $\to$ Báo lỗi *"Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!"*.
   * Nếu đã có trong thư viện $\to$ Báo lỗi *"Bạn đã sở hữu sản phẩm này trong Thư viện rồi! Không cần mua lại."*.
-* **Sự kiện bắn ra:** `GioHangService.NotifyCartUpdated()`.
+  * Nếu đã có trong giỏ hàng $\to$ Báo lỗi *"Sản phẩm này đã có trong giỏ hàng của bạn rồi! Vì là sản phẩm kỹ thuật số, mỗi tài khoản chỉ mua 1 bản quyền."*.
+* **Cơ chế cập nhật:** Gọi `mainForm.UpdateCartBadge()` để cập nhật badge số lượng trên Sidebar (không dùng static event).
 
 #### 5. Nút `btnBack` ("← Quay lại cửa hàng")
 * **Hàm UI bắt sự kiện:** `BtnBack_Click(object? sender, EventArgs e)`
@@ -134,10 +137,10 @@
                           |
                           | UPDATE SanPham SET DiemTrungBinh = (SELECT AVG(CAST(SoSao AS DECIMAL(3,2))))
                           v
-         Bắn sự kiện: SanPhamService.NotifyReviewUpdated(spId)
+         Gọi ProductReviewControl.LoadReviews() nạp lại nhận xét
                           |
                           v
-         StoreViewControl & ProductDetailControl tự động cập nhật số sao mới trên giao diện
+         Cập nhật danh sách nhận xét của sản phẩm và hiển thị thông báo thành công
 ```
 
 ---
@@ -178,7 +181,7 @@
   )
   WHERE MaSanPham = @MaSanPham;
   ```
-* **Sự kiện bắn ra:** `SanPhamService.NotifyReviewUpdated(maSanPham)`.
+* **Cập nhật giao diện:** Gọi `LoadReviews()` nạp lại danh sách đánh giá.
 * **Phản hồi UI:** Tải lại lưới danh sách đánh giá `LoadReviews()`.
 
 #### 8. Nút `btnDelete` ("Xóa đánh giá của tôi")

@@ -1,4 +1,4 @@
-# THIẾT KẾ HỆ THỐNG (SYSTEM DESIGN) - NHÓM 3
+﻿# THIẾT KẾ HỆ THỐNG (SYSTEM DESIGN) - NHÓM 3
 **Phân hệ:** Quản lý sản phẩm & Tệp số, Quản lý danh mục, Hồ sơ cá nhân (Products & Digital Files, Categories, User Profile)  
 **Màn hình phụ trách:** UI 10 (`ProductManageControl`), UI 11 (`CategoryManageControl`), UI 8 (`ProfileControl`)  
 **Thành viên phụ trách:** Phạm Trung Hiếu  
@@ -152,7 +152,7 @@
 | **UI 11: Quản lý Danh mục** (`CategoryManageControl`) | **Update** (Sửa danh mục) | `DanhMuc` | `MaDanhMuc = @MaDanhMuc`<br>Cập nhật `@TenDanhMuc`, `@MoTa` | Cập nhật tên thể loại hiển thị. |
 | **UI 11: Quản lý Danh mục** (`CategoryManageControl`) | **Delete** (Xóa danh mục) | `DanhMuc` | `MaDanhMuc = @MaDanhMuc` VÀ không có sản phẩm liên kết | Xóa danh mục nếu rỗng; cảnh báo lỗi nếu còn sản phẩm. |
 | **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Read** (Xem hồ sơ & Cài đặt) | `NguoiDung`, `CaiDatNguoiDung` | `MaNguoiDung = @UserId` | Điền thông tin lên form: Họ tên, Email, SĐT, Số dư ví, Ngày tạo và nạp 4 tùy chọn cài đặt hệ thống. |
-| **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Update** (Sửa thông tin & Realtime) | `NguoiDung` | `MaNguoiDung = @UserId`<br>Cập nhật `@HoTen`, `@Email`, `@SoDienThoai` | Cập nhật CSDL và gọi `UserSession.UpdateProfile()` bắn sự kiện `SessionChanged` đồng bộ tức thì lên Header `MainForm`. |
+| **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Update** (Sửa thông tin & Realtime) | `NguoiDung` | `MaNguoiDung = @UserId`<br>Cập nhật `@HoTen`, `@Email`, `@SoDienThoai` | Cập nhật CSDL và gọi `UserSession.UpdateProfile()` đồng bộ thông tin họ tên, email trong phiên làm việc. |
 | **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Update** (Đổi mật khẩu) | `NguoiDung` | `MaNguoiDung = @UserId AND MatKhau = @MatKhauCu`<br>Cập nhật `MatKhau = @MatKhauMoi` | Xác nhận đổi mật khẩu thành công. |
 | **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Create/Update** (Lưu cài đặt ứng dụng) | `CaiDatNguoiDung` | `MaNguoiDung = @UserId`<br>Cập nhật `@ThongBaoEmail`, `@GhiNhoDangNhap`, `@TuDongCapNhat`, `@XacNhanThanhToan` | Thực thi UPSERT vào CSDL, bảo đảm các checkbox cấu hình được lưu bền vững vào database thực tế. |
 
@@ -382,8 +382,8 @@ namespace DPMS.BLL.Interfaces
 ### Luồng 3: Cập nhật thông tin hồ sơ, Đổi mật khẩu & Tùy chọn cài đặt (UI 8)
 1. **Cập nhật thông tin cá nhân & Đồng bộ Realtime:**
    - Khách/Admin sửa Họ tên, Email, Số điện thoại $\rightarrow$ BLL kiểm tra định dạng email và số điện thoại hợp lệ $\rightarrow$ Cập nhật vào CSDL (`UPDATE NguoiDung`).
-   - Gọi `UserSession.UpdateProfile(hoTen, email)` kích hoạt sự kiện `UserSession.SessionChanged`.
-   - `MainForm` lắng nghe sự kiện qua `SessionChanged += UpdateUserInterfaceSession` và cập nhật tức thì nhãn câu chào `lblUserGreeting` ("Xin chào, {HoTen}") trên Header thanh điều hướng mà không cần người dùng thao tác F5 hay đăng nhập lại.
+   - Gọi `UserSession.UpdateProfile(hoTen, email)` để cập nhật thông tin trong phiên làm việc tĩnh, sau đó gọi `mainForm.UpdateUserInterfaceSession()` tường minh.
+   - `MainForm.lblUserGreeting` cập nhật tức thì nhãn câu chào ("Xin chào, {HoTen}") trên Header thanh điều hướng mà không cần người dùng thao tác F5 hay đăng nhập lại.
 2. **Đổi mật khẩu bảo mật:**
    - Khách nhập Mật khẩu hiện tại, Mật khẩu mới, Xác nhận mật khẩu mới.
    - Đối chiếu với `MatKhau` hiện tại trong CSDL. Nếu khớp, thực thi cập nhật `MatKhau = @MatKhauMoi`.

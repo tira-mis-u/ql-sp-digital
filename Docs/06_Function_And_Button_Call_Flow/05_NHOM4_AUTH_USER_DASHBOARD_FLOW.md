@@ -1,4 +1,4 @@
-# ĐẶC TẢ LUỒNG NÚT BẤM & HÀM XỬ LÝ - NHÓM 4: BẢO MẬT, TÀI KHOẢN & DASHBOARD
+﻿# ĐẶC TẢ LUỒNG NÚT BẤM & HÀM XỬ LÝ - NHÓM 4: BẢO MẬT, TÀI KHOẢN & DASHBOARD
 **Thành viên phụ trách:** Trần Quốc Thuận  
 **Màn hình quản lý:**
 1. UI 1: `LoginControl` (Xác thực đăng nhập tài khoản)
@@ -25,12 +25,12 @@
                          v
          AuthRepository.DangNhap(username, password, out userDto, out msg)
                          |
-                         | 1. Băm SHA-256 mật khẩu nhập vào:
-                         |    SecurityHelper.ComputeSha256Hash(password)
-                         | 2. SELECT * FROM NguoiDung 
-                         |    WHERE TenDangNhap = @User AND MatKhauHash = @Hash;
-                         | 3. Kiểm tra trạng thái tài khoản:
-                         |    -> Nếu TrangThai == 0: Báo lỗi "Tài khoản đang bị khóa!"
+                          | 1. SELECT thông tin tài khoản:
+                          |    SELECT * FROM NguoiDung WHERE TenDangNhap = @User;
+                          | 2. Đối chiếu mật khẩu nhập với mật khẩu lưu trữ trong CSDL
+                          | 3. Kiểm tra trạng thái tài khoản:
+                          |    -> Nếu TrangThai == 0: Báo lỗi 'Tài khoản của bạn đã bị khóa!'
+                          v
                          v
          [ Đăng nhập thành công ]
                          |
@@ -38,8 +38,8 @@
          UserSession.Login(id, username, fullName, email, role, balance)
                          |
                          v
-         BẮN SỰ KIỆN PHẢN ỨNG TOÀN CỤC:
-         UserSession.SessionChanged?.Invoke()
+         GỊi TƯỜNG MINH (không có static event):
+         mainForm.UpdateUserInterfaceSession()
                          |
                          v
          MainForm.UpdateUserInterfaceSession()
@@ -61,7 +61,7 @@
 * **Nơi gọi (Caller):** Người dùng bấm nút hoặc nhấn phím **Enter** trên ô mật khẩu.
 * **Hàm BLL được gọi:** `AuthService.DangNhap(string tenDangNhap, string matKhau, out string thongBao)`
 * **Hàm DAL được gọi:** `AuthRepository.DangNhap(...)`
-* **Sự kiện bắn ra:** `OnLoginSuccess?.Invoke()` và `UserSession.SessionChanged`.
+* **Cơ chế cập nhật:** Sau khi gọi `UserSession.Login(...)`, `LoginControl` gọi `mainForm.UpdateUserInterfaceSession()` tường minh để đồng bộ menu RBAC và số dư ví, sau đó chuyển hướng về `NavigateToStore()`.
 
 #### 2. Nút `btnDemoAdmin` & `btnDemoCustomer` (Điền nhanh tài khoản Demo)
 * **Hàm UI bắt sự kiện:**
@@ -88,8 +88,8 @@
   IF EXISTS (SELECT 1 FROM NguoiDung WHERE TenDangNhap = @User OR Email = @Email)
       RAISERROR(N'Tên đăng nhập hoặc Email đã tồn tại!', 16, 1);
   ELSE
-      INSERT INTO NguoiDung (TenDangNhap, MatKhauHash, HoTen, Email, SoDienThoai, VaiTro, SoDuVi, TrangThai)
-      VALUES (@User, @Hash, @HoTen, @Email, @Phone, N'KhachHang', 0, 1);
+      INSERT INTO NguoiDung (TenDangNhap, MatKhau, HoTen, Email, SoDienThoai, VaiTro, SoDuVi, TrangThai)
+      VALUES (@User, @MatKhau, @HoTen, @Email, @Phone, N'KhachHang', 0, 1);
   ```
 
 ---

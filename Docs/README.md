@@ -79,7 +79,7 @@ Docs/
     ├── 01_MAINFORM_AND_NAVIGATION_FLOW.md  # 14 nút Menu, Header, Phân quyền RBAC Guards & Sự kiện phản ứng
     ├── 02_NHOM1_STORE_AND_REVIEWS_FLOW.md  # Luồng gọi nút bấm Nhóm 1 (Store, Detail, Reviews)
     ├── 03_NHOM2_CART_WALLET_VOUCHERS_FLOW.md # Luồng gọi nút bấm Nhóm 2 (Thanh toán 1-Click, Nạp ví, Voucher)
-    ├── 04_NHOM3_PRODUCT_CATEGORY_PROFILE_FLOW.md # Luồng gọi nút bấm Nhóm 3 (Upload SHA-256, CRUD SP, DM, Profile)
+    ├── 04_NHOM3_PRODUCT_CATEGORY_PROFILE_FLOW.md # Luồng gọi nút bấm Nhóm 3 (Upload tệp số, CRUD SP, DM, Profile)
     ├── 05_NHOM4_AUTH_USER_DASHBOARD_FLOW.md # Luồng gọi nút bấm Nhóm 4 (Login/Register, Khóa User, Dashboard)
     ├── 06_NHOM5_ORDERS_AND_LIBRARY_FLOW.md # Luồng gọi nút bấm Nhóm 5 (Duyệt đơn, Tải PK-Zip, Chứng chỉ số)
     └── 07_TRACEABILITY_BUTTON_CALL_MATRIX.md # BẢNG MA TRẬN TRUY VẾT TỔNG THỂ (100% Nút Bấm -> Hàm -> SQL)

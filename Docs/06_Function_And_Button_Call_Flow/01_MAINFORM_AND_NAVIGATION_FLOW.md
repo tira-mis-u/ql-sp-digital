@@ -59,18 +59,16 @@
 
 #### 3. Nút `btnMenuCart` ("Giỏ hàng")
 * **Hàm UI bắt sự kiện:** `BtnMenuCart_Click(object? sender, EventArgs e)`
-* **Nơi gọi (Caller):** Người dùng click menu Giỏ hàng hoặc bấm nút "Đi tới Giỏ hàng" từ `VoucherControl`.
+* **Nơi gọi (Caller):** Người dùng click menu Giỏ hàng hoặc từ Voucher nạp cử voucher sang Cart.
 * **Hàm thực thi tiếp theo:** `NavigateToCart(string? initialVoucherCode = null)`
 * **Rào chắn phân quyền (RBAC Guard):**
-  * Gọi `EnsureLoggedIn("Giỏ hàng của tôi")`. Nếu `UserSession.IsLoggedIn == false`, hiện Popup hỏi người dùng có muốn chuyển sang màn hình Đăng nhập không. Nếu chọn "Yes" $\to$ chuyển hướng `NavigateToLogin()`, dừng luồng mở giỏ hàng.
+  * Gọi `EnsureLoggedIn("Giỏ hàng của tôi")`. Nếu `UserSession.IsLoggedIn == false`, hiện `MessageBox` mời đăng nhập rồi gọi `NavigateToLogin()`, dừng luồng mở giỏ hàng.
 * **Quy trình hoạt động:**
   1. `SetActiveMenu(btnMenuCart)`.
-  2. Khởi tạo `CartControl cart = new CartControl()`.
-  3. Đăng ký các sự kiện callback từ giỏ:
-     * `cart.OnNavigateToLibrary += () => NavigateToLibrary();` (sau khi thanh toán thành công).
-     * `cart.OnNavigateToWallet += () => NavigateToWallet();` (khi số dư không đủ).
-     * `cart.OnNavigateToVouchers += () => NavigateToVouchers();` (khi muốn tìm voucher).
+  2. Khởi tạo `CartControl cart = new CartControl(); cart.MainForm = this;`.
+  3. Nếu có `initialVoucherCode`: gọi `cart.SetInitialVoucherCode(code)` để tự động nạp mã voucher từ `VoucherControl`.
   4. `SwitchView(cart)`.
+
 
 #### 4. Nút `btnMenuWallet` ("Ví tài khoản")
 * **Hàm UI bắt sự kiện:** `BtnMenuWallet_Click(object? sender, EventArgs e)`
@@ -117,18 +115,19 @@
 Tất cả các nút này đều có thuộc tính `Visible = false` mặc định và được bảo vệ nghiêm ngặt bằng hàm `EnsureAdmin(string tenChucNang)`.
 
 ```csharp
+// Thực tế trong MainForm.cs: EnsureAdmin không redirect sang Store
 private bool EnsureAdmin(string tenChucNang)
 {
-    if (!UserSession.IsLoggedIn) { EnsureLoggedIn(tenChucNang); return false; }
     if (!UserSession.IsAdmin)
     {
-        MessageBox.Show($"Tài khoản không có quyền Quản trị viên để truy cập '{tenChucNang}'!", "Từ chối truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        NavigateToStore();
-        return false;
+        MessageBox.Show($"Chức năng '{tenChucNang}' chỉ dành cho Quản trị viên!",
+            "Từ chối truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        return false; // Chỉ từ chối, không redirect - màn hình hiện tại giữ nguyên
     }
     return true;
 }
 ```
+
 
 #### 9. Nút `btnMenuDashboard` ("Bảng điều khiển kinh doanh")
 * **Hàm bắt sự kiện:** `BtnMenuDashboard_Click(object? sender, EventArgs e)` $\to$ gọi `NavigateToDashboard()`.
@@ -160,43 +159,90 @@ private bool EnsureAdmin(string tenChucNang)
   * Nếu `UserSession.IsLoggedIn == false`:
     $\to$ Gọi `NavigateToLogin()` nạp màn hình Đăng nhập.
   * Nếu `UserSession.IsLoggedIn == true`:
-    $\to$ Hiển thị hộp thoại: *"Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?"*.
-    $\to$ Nếu chọn Yes: Gọi `new AuthService().DangXuat()` $\implies$ kích hoạt `UserSession.Logout()`.
-    $\to$ Sự kiện `UserSession.SessionChanged` tự động kích hoạt `UpdateUserInterfaceSession()`.
+    $\to$ Hiển thị hộp thoại: *"Bạn có muốn đăng xuất khỏi hệ thống?"*.
+    $\to$ Nếu chọn Yes: Gọi trực tiếp `UserSession.Logout()` (reset tất cả fields về mặc định).
+    $\to$ Gọi tường minh `UpdateUserInterfaceSession()` để ẩn menu Admin, reset số dư ví.
     $\to$ Chuyển về màn hình `NavigateToStore()`.
+
+> **⚠️ Lưu ý:** Không gọi `AuthService.DangXuat()` — `UserSession.Logout()` được gọi trực tiếp từ UI. Không có `UserSession.SessionChanged` event — `UpdateUserInterfaceSession()` được gọi tường minh sau mỗi login/logout.
 
 #### 15. Nhãn `lblBalance` (Hiển thị số dư ví Header)
 * **Hàm bắt sự kiện:** `LblBalance_Click(object? sender, EventArgs e)`
 * **Hành vi:** Cho phép bấm trực tiếp vào số dư ví trên thanh tiêu đề để chuyển nhanh đến màn hình `NavigateToWallet()`.
 
+#### 16. Nút `btnThemeToggle` (Chuyển đổi giao diện Tối / Sáng)
+* **Hàm bắt sự kiện:** `BtnThemeToggle_Click(object? sender, EventArgs e)`
+* **Nơi gọi (Caller):** Người dùng bấm nút biểu tượng góc trên bên phải Header (`panelHeaderRight`).
+* **Hàm thực thi tiếp theo:**
+  1. `ThemeHelper.ToggleTheme(this)`: Đảo ngược cờ `ThemeHelper.IsDarkMode`, lưu cấu hình vào `theme.cfg`, cập nhật màu viền/title bar Windows qua DWM API (`DwmSetWindowAttribute`), và duyệt đệ quy toàn bộ cây giao diện (`ApplyThemeToControlTree`) để đổi màu nền, viền, phông chữ.
+  2. `UpdateThemeToggleVisuals()`: Cập nhật nhãn nút (`☀️ Sáng` khi đang Dark Mode, hoặc `🌙 Tối` khi đang Light Mode) và màu sắc nút tương ứng.
+  3. `UpdateUserInterfaceSession()`: Đồng bộ lại màu sắc các thành phần session (số dư, trạng thái đăng nhập).
+  4. `SetActiveMenu(_activeMenuButton)`: Duy trì highlight menu đang chọn theo bảng màu theme mới.
+
 ---
 
-## 3. TRẠM THU PHÁT SỰ KIỆN PHẢN ỨNG TOÀN CỤC (GLOBAL EVENT LISTENERS)
+## 3. CƠ CHẾCẬP NHẬT GIAO DIỆN THEO PHIÊN (SESSION-DRIVEN UI REFRESH)
 
-Được khởi tạo tại `SubscribeEvents()` trong hàm khởi tạo của `MainForm`:
+> **Quan trọng:** Trong phiên bản hiện tại, `UserSession` **không có** static events (`SessionChanged`, `BalanceChanged`). `GioHangService.CartUpdated` static event **không tồn tại**. Không có `SubscribeEvents()` method trong `MainForm`. Mọi cập nhật UI được kích hoạt bằng cách gọi **tường minh (explicit call)** sau mỗi hành động có tác động phó.
 
+### Các điểm kích hoạt `UpdateUserInterfaceSession()` trong cây gọi hàm:
+
+| Trigger | Nơi gọi | Mô tả |
+|---|---|---|
+| Đăng nhập thành công | `LoginControl.cs` gọi `mainForm.UpdateUserInterfaceSession()` | Hiện menu Admin nếu là `QuanTriVien`, cập nhật số dư ví |
+| Đăng xuất | `MainForm.BtnHeaderAuth_Click` gọi sau `UserSession.Logout()` | Reset số dư về `0 ₫`, ẩn menu Admin, đổi nút thành "Đăng nhập" |
+| Nạp tiền ví | `WalletControl.cs` gọi `mainForm.UpdateUserInterfaceSession()` sau nạp | Cập nhật `lblBalance` trên Header |
+| Thanh toán giỏ hàng | `CartControl.cs` gọi `mainForm.UpdateUserInterfaceSession()` sau checkout | Trừ số dư ví, làm mới badge giỏ hàng |
+| Chuyển đổi theme | `MainForm.BtnThemeToggle_Click` | Giữ header đồng bộ màu sắc theo theme mới |
+| Khở động | `MainForm_Load` | Khởi tạo trạng thái ban đầu (guest mode) |
+
+### Hàm `UpdateUserInterfaceSession()` — Logic chi tiết:
 ```csharp
-private void SubscribeEvents()
+public void UpdateUserInterfaceSession()
 {
-    // 1. Khi trạng thái phiên (Đăng nhập / Đăng xuất / Đổi vai trò) thay đổi
-    UserSession.SessionChanged += UpdateUserInterfaceSession;
+    bool isAdmin = UserSession.IsLoggedIn && UserSession.IsAdmin;
 
-    // 2. Khi số dư ví thay đổi ở bất kỳ màn hình nào (Nạp ví, Thanh toán giỏ, Hoàn tiền)
-    UserSession.BalanceChanged += (bal) =>
+    // 1. Cập nhật lời chào và số dư ví trên Header
+    lblUserGreeting.Text = UserSession.IsLoggedIn
+        ? $"{UserSession.CurrentFullName} ({(UserSession.IsAdmin ? "Admin" : "Khách Hàng")})"
+        : "Khách (Chưa đăng nhập)";
+    lblBalance.Text = UserSession.IsLoggedIn
+        ? $"Ví: {FormatHelper.FormatCurrency(UserSession.CurrentBalance)}"
+        : "Ví: 0 ₫";
+    btnHeaderAuth.Text = UserSession.IsLoggedIn ? "Đăng xuất" : "Đăng nhập";
+
+    // 2. Phân quyền RBAC: Chỉ hiện menu Admin cho QuanTriVien
+    lblAdminSection.Visible      = isAdmin;
+    btnMenuDashboard.Visible     = isAdmin;
+    btnMenuProductManage.Visible = isAdmin;
+    btnMenuCategoryManage.Visible= isAdmin;
+    btnMenuOrderManage.Visible   = isAdmin;
+    btnMenuUserManage.Visible    = isAdmin;
+
+    // 3. Cập nhật badge số món trong nút Giỏ hàng
+    UpdateCartBadge();
+
+    // 4. Nếu đang đứng ở Store, reload lại lưới (thả nhãn "Đã sở hữu" khi đắng nhập mới)
+    if (panelMainContent.Controls.Count > 0 &&
+        panelMainContent.Controls[0] is StoreViewControl activeStore)
     {
-        lblBalance.Text = $"Ví: {FormatHelper.FormatCurrency(bal)}";
-    };
-
-    // 3. Khi giỏ hàng có thêm/bớt món hàng
-    GioHangService.CartUpdated += UpdateCartBadge;
+        activeStore.LoadProducts();
+    }
 }
 ```
 
-* **Hàm `UpdateUserInterfaceSession()`:**
-  * Nếu là Khách: Tắt toàn bộ 5 nút Admin (`Visible = false`), đặt số dư = `0 ₫`, nút Header hiện "Đăng nhập".
-  * Nếu là Khách hàng: Giữ ẩn nút Admin, hiển thị số dư thực tế, nút Header hiện "Đăng xuất" màu đỏ.
-  * Nếu là Quản trị viên (`QuanTriVien`): Bật sáng toàn bộ 5 nút Admin (`Visible = true`), hiển thị nhãn "(Admin)".
-* **Hàm `UpdateCartBadge()`:**
-  * Gọi `_gioHangService.LayTongSoLuongItem(UserSession.CurrentUserId)`.
-  * Nếu `count > 0`: Cập nhật text nút giỏ hàng `🛒 Giỏ hàng ({count})`.
-  * Nếu `count == 0`: Hiển thị `🛒 Giỏ hàng`.
+### Hàm `UpdateCartBadge()`:
+```csharp
+public void UpdateCartBadge()
+{
+    int count = 0;
+    if (UserSession.IsLoggedIn)
+    {
+        GioHangService cartService = new GioHangService();
+        count = cartService.LayTongSoLuongItem(UserSession.CurrentUserId);
+    }
+    btnMenuCart.Text = $"🛒 Giỏ hàng ({count})";
+}
+```
+> Gọi `new GioHangService()` (không dùng singleton) và đếm trực tiếp từ CSDL mỗi khi refresh, không dùng cached event.
+

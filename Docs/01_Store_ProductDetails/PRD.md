@@ -77,6 +77,7 @@ Cung cấp cho khách hàng trải nghiệm duyệt danh mục, tìm kiếm sả
 2. **Quy tắc đánh giá (Unique Review):** Mỗi tài khoản người dùng chỉ được phép đánh giá tối đa 1 lần cho mỗi sản phẩm (`UNIQUE(MaNguoiDung, MaSanPham)`). Muốn đổi ý kiến thì dùng tính năng Sửa đánh giá.
 3. **Ràng buộc điểm sao:** Điểm đánh giá bắt buộc phải là số nguyên từ 1 đến 5 (`SoSao BETWEEN 1 AND 5`).
 4. **Bảo toàn dữ liệu:** Khi xóa bài đánh giá, điểm trung bình của sản phẩm phải được tính toán lại ngay lập tức.
+5. **Quy tắc Người mua xác thực (Verified Purchase):** Chỉ người dùng đã thực sự sở hữu sản phẩm trong Thư viện (`DaMuaSanPham` / `ThuVienRepository.DaSoHuu`) mới được phép đăng hoặc sửa bài đánh giá, đảm bảo tính khách quan và uy tín của nền tảng.
 
 ---
 

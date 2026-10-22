@@ -46,7 +46,7 @@ sequenceDiagram
     
     UI_Cart-->>Customer: Thông báo mua hàng thành công!
     Customer->>UI_Lib: 9. Mở Thư viện số (UI 6), thấy ngay sản phẩm vừa mua
-    Customer->>UI_Lib: 10. Bấm [Tải về máy] (ProgressBar + Check SHA-256)
+    Customer->>UI_Lib: 10. Bấm [Tải về máy] (ProgressBar + PK-Zip & Giấy phép)
     
     Note over UI_Dash: 11. Dashboard tự động ghi nhận doanh thu và số đơn mới
 ```
@@ -56,7 +56,7 @@ sequenceDiagram
 2. **Quản lý Giỏ hàng & Ưu đãi (Nhóm 2):** Khách hàng thêm sản phẩm vào giỏ, truy cập Kho Voucher (`VoucherControl`) để thu thập mã ưu đãi và kích hoạt chiết khấu trực tiếp trên giỏ hàng (`CartControl`).
 3. **Kiểm tra Tài chính & Nạp ví (Nhóm 2):** Hệ thống kiểm tra số dư ví `SoDuVi`. Nếu không đủ tiền, hệ thống điều hướng thông minh sang màn hình Ví (`WalletControl`) để nạp nhanh các gói mệnh giá 50k - 1.000k.
 4. **Thanh toán Nguyên tử ACID (Nhóm 2):** Khi số dư hợp lệ, BLL thực thi một Transaction khép kín: Trừ tiền ví $\rightarrow$ Ghi log bảng `ThanhToan` $\rightarrow$ Tạo đơn hàng `DonHang` $\rightarrow$ Lưu chi tiết `ChiTietDonHang` $\rightarrow$ Cấp bản quyền vào bảng `SoHuuSanPham` $\rightarrow$ Đánh dấu voucher đã dùng $\rightarrow$ Xóa sạch giỏ hàng.
-5. **Phân phối Tệp số & Kiểm tra Toàn vẹn (Nhóm 5):** Khách hàng chuyển sang Thư viện (`LibraryControl`), sản phẩm mới xuất hiện ngay lập tức. Khách bấm "Tải về máy", hệ thống sao chép file từ `Storage/Products/{MaSanPham}/`, chạy tiến trình `ProgressBar` và đối chiếu mã hash SHA-256 để đảm bảo tệp tải về không bị lỗi.
+5. **Phân phối Tệp số & Đóng gói Bản quyền (Nhóm 5):** Khách hàng chuyển sang Thư viện (`LibraryControl`), sản phẩm mới xuất hiện ngay lập tức. Khách bấm "Tải về máy", hệ thống đóng gói nén bất đồng bộ chuẩn PK-Zip (`.zip`), tạo chứng chỉ bản quyền độc bản `LICENSE_AND_KEY.txt` kèm theo và cập nhật lượt tải trong CSDL.
 6. **Đánh giá Hậu mãi (Nhóm 1):** Sau khi sở hữu sản phẩm, khách hàng có thể quay lại Trung tâm Đánh giá (`ProductReviewControl`) để chấm điểm từ 1 đến 5 sao và viết lời bình.
 7. **Phản ánh Số liệu Quản trị (Nhóm 4):** Đơn hàng hoàn tất lập tức phản ánh vào các chỉ số kinh doanh tại Dashboard (`DashboardControl`): Tăng tổng doanh thu, tăng số đơn, cập nhật danh sách đơn mới nhất và sản phẩm bán chạy nhất.
 
@@ -83,9 +83,9 @@ sequenceDiagram
     UI_AdminCat->>DB: INSERT INTO DanhMuc
     Admin->>UI_AdminProd: 2. Nhập thông tin sản phẩm, giá bán, cấu hình & ảnh bìa
     Admin->>UI_AdminProd: 3. Chọn file cài đặt (.zip/.exe) -> Bấm Upload tệp số
-    UI_AdminProd->>UI_AdminProd: 4. Tính toán mã băm mật mã học SHA-256 của tệp nguồn
+    UI_AdminProd->>UI_AdminProd: 4. Kiểm tra định dạng & dung lượng byte của tệp nguồn
     UI_AdminProd->>Storage: 5. Copy file vật lý vào thư mục Storage/Products/{MaSanPham}/
-    UI_AdminProd->>DB: 6. INSERT SanPham & INSERT TepSanPham (lưu đường dẫn + Hash SHA-256)
+    UI_AdminProd->>DB: 6. INSERT SanPham & INSERT TepSanPham (lưu đường dẫn tương đối, định dạng, byte)
 
     Note over Admin,UI_AdminOrder: GIAI ĐOẠN 2: ĐIỀU HÀNH ĐƠN HÀNG & CAN THIỆP DỰ PHÒNG
     Admin->>UI_AdminOrder: 7. Mở danh sách đơn hàng toàn sàn, lọc đơn "Chờ xử lý"
@@ -105,7 +105,7 @@ sequenceDiagram
 ### Chi tiết các bước thực hiện của Quản trị viên:
 1. **Khởi tạo Danh mục (Nhóm 3):** Quản trị viên truy cập UI 11 tạo danh mục thể loại (VD: *"Hành động"*, *"Chiến thuật"*, *"Mô hình 3D"*).
 2. **Khởi tạo Sản phẩm Thương mại (Nhóm 3):** Quản trị viên truy cập UI 10 nhập tên, giá bán, chọn danh mục, tải ảnh bìa đại diện và lưu vào CSDL.
-3. **Upload Tệp số & Sinh mã băm SHA-256 (Nhóm 3):** Quản trị viên chọn file bộ cài đặt `.zip`/`.exe` từ máy tính. Hệ thống tự động tính toán mã hash SHA-256, sao chép file vật lý vào thư mục ứng dụng `Storage/Products/{MaSanPham}/` và lưu metadata vào bảng `TepSanPham`.
+3. **Upload Tệp số & Lưu siêu dữ liệu (Nhóm 3):** Quản trị viên chọn file bộ cài đặt `.zip`/`.exe` từ máy tính. Hệ thống tự động trích xuất dung lượng MB, sao chép file vật lý vào thư mục ứng dụng `Storage/Products/{TenTep}` và lưu metadata vào bảng `TepSanPham`.
 4. **Mở bán tại Cửa hàng (Nhóm 1):** Sản phẩm có cờ `DangKinhDoanh = 1` tự động xuất hiện tại Cửa hàng (`StoreViewControl`) để khách hàng tìm kiếm và mua sắm.
 5. **Điều hành & Duyệt đơn dự phòng (Nhóm 5):** Quản trị viên theo dõi đơn hàng toàn sàn qua UI 13, thực hiện kích hoạt cấp thư viện thủ công khi cần can thiệp hoặc hủy đơn vi phạm.
 6. **Kiểm soát Người dùng (Nhóm 4):** Quản trị viên tra cứu danh sách người dùng toàn sàn qua UI 12, thực hiện khóa/mở khóa tài khoản (có chốt chặn an toàn ngăn tự khóa tài khoản của chính mình).

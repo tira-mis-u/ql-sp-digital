@@ -135,7 +135,7 @@
 | Giao diện | Thao tác CRUD | Bảng CSDL tác động | Điều kiện lọc & Tham số nghiệp vụ | Kết quả trả về giao diện |
 |---|---|---|---|---|
 | **UI 4: Giỏ hàng** (`CartControl`) | **Read** (Xem giỏ) | `GioHang`, `SanPham` | `MaNguoiDung = @UserId`<br>`INNER JOIN SanPham` | Danh sách `List<GioHangItemDTO>`, Tạm tính `SubTotal`. |
-| **UI 4: Giỏ hàng** (`CartControl`) | **Update** (Đổi số lượng) | `GioHang` | `MaGioHang = @MaGioHang`<br>Cập nhật `SoLuong = @SoLuong` | Cập nhật lại số lượng và tổng thành tiền dòng hàng. |
+| **UI 4: Giỏ hàng** (`CartControl`) | **Update** (Chuẩn hóa số lượng) | `GioHang` | `MaNguoiDung = @UserId AND MaSanPham = @SpId` | Chặn mua trùng lặp; chuẩn hóa cố định `SoLuong = 1` cho sản phẩm số. |
 | **UI 4: Giỏ hàng** (`CartControl`) | **Delete** (Xóa món) | `GioHang` | `MaGioHang = @MaGioHang` hoặc `MaNguoiDung = @UserId` (Xóa hết) | Xóa dòng khỏi DataGridView và tính lại tổng hóa đơn. |
 | **UI 4: Giỏ hàng** (`CartControl`) | **Create** (Thanh toán 1-Click) | `NguoiDung`, `DonHang`, `ChiTietDonHang`, `SoHuuSanPham`, `MaGiamGiaNguoiDung`, `ThanhToan`, `GioHang` | Kiểm tra `SoDuVi >= TongThanhToan`<br>Thực thi Transaction 8 bước | Trừ số dư ví, cấp game vào Thư viện, làm sạch giỏ, báo thành công. |
 | **UI 5: Ví tài khoản** (`WalletControl`) | **Read** (Xem số dư) | `NguoiDung`, `ThanhToan` | `MaNguoiDung = @UserId` | Hiển thị `SoDuVi` to rõ ràng và bảng lịch sử nạp/trừ tiền. |

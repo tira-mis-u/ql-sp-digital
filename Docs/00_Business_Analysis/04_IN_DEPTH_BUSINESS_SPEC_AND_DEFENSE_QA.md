@@ -53,7 +53,7 @@ Khác biệt cốt lõi giữa hệ thống bán lẻ hàng hóa vật lý và n
                                              +-----------------------+
                                              | Thư viện sở hữu       |
                                              | (SoHuuSanPham)        | ===> BÀN GIAO LICENSE KEY
-                                             +-----------------------+      & TẢI FILE SHA-256
+                                             +-----------------------+      & TẢI FILE NÉN PK-ZIP
 ```
 
 ### Nguyên tắc hạch toán tài chính trong DPMS:
@@ -70,7 +70,7 @@ Một sản phẩm số trong DPMS trải qua 6 trạng thái vòng đời nghi�
 1. **Khám phá (Discovery):** Khách vãng lai và thành viên duyệt Store, xem thông số cấu hình và điểm đánh giá trung bình.
 2. **Ủ quyền (Staging in Cart):** Khách hàng đưa sản phẩm vào giỏ. Hệ thống kiểm tra điều kiện tiên quyết: *Tài khoản chưa từng sở hữu sản phẩm này trong thư viện và giỏ hàng chưa có mục này*.
 3. **Chốt quyền (Acquisition / Checkout):** Trừ tiền ví `NguoiDung.SoDuVi`, tạo bản ghi hóa đơn `DonHang` và sinh License Key duy nhất chèn vào `SoHuuSanPham`.
-4. **Khai thác (Active Consumption):** Khách hàng truy cập `LibraryControl`, tải tệp cài đặt vật lý, đối soát mã băm SHA-256 và mở file `LICENSE_AND_KEY.txt` để lấy key bản quyền.
+4. **Khai thác (Active Consumption):** Khách hàng truy cập `LibraryControl`, tải tệp cài đặt nén PK-Zip, mở file `LICENSE_AND_KEY.txt` để xác nhận chứng chỉ bản quyền kỹ thuật số.
 5. **Gỡ cài đặt cục bộ (Client-side Uninstall):** Khách bấm "Gỡ bỏ" chỉ để xóa file trên ổ cứng máy khách. **Quyền sở hữu trong CSDL không bị xóa**, khách được quyền tải lại bất kỳ lúc nào.
 6. **Thu hồi quyền (Revocation / Dispute Refund):** Chỉ xảy ra khi Admin bấm "Hủy đơn & Hoàn tiền ví" tại `OrderManageControl` để giải quyết khiếu nại. Bản ghi `SoHuuSanPham` bị xóa hoặc vô hiệu hóa, tiền hoàn trả lại vào ví người dùng.
 
@@ -80,11 +80,11 @@ Một sản phẩm số trong DPMS trải qua 6 trạng thái vòng đời nghi�
 
 Hệ thống triển khai mô hình **Lưu trữ lai (Hybrid Storage Architecture)** nhằm giải quyết bài toán tải trọng tệp lớn:
 
-* **Tại CSDL SQL Server:** Bảng `TepSanPham` chỉ lưu Metadata: `TenTep`, `DuongDanTep` (`Storage/Products/{fileName}`), `DinhDangTep` (`.zip`, `.exe`), `KichThuocByte` và `MaHashSHA256` (chuỗi 64 ký tự Hex).
+* **Tại CSDL SQL Server:** Bảng `TepSanPham` chỉ lưu Metadata: `TenTep`, `DuongDanTep` (`Storage/Products/{fileName}`), `DinhDangTep` (`.zip`, `.exe`), `KichThuocByte` và `PhienBan`.
 * **Tại Hệ thống tệp OS:** Tệp nhị phân được lưu trữ phân tán tại thư mục ứng dụng `[AppDomain]/Storage/Products/`.
 * **Giao thức Đối soát Kép (Dual-hash Verification Protocol):**
-  1. *Khâu tải lên (Admin Upload):* Hệ thống đọc luồng `FileStream`, tính toán mã SHA-256 nguồn và lưu vào CSDL (`ProductManageControl.cs:L261`).
-  2. *Khâu tải xuống (Client Download):* Hệ thống sao chép file bất đồng bộ (`Task.Run`), kiểm tra tính khớp nối của mã băm trước khi xuất thông báo "Đã kiểm tra SHA-256 an toàn" (`LibraryControl.cs:L220`).
+  1. *Khâu tải lên (Admin Upload):* Hệ thống đọc luồng `FileInfo`, trích xuất dung lượng MB, sao chép file vào thư mục lưu trữ và ghi nhận siêu dữ liệu (`ProductManageControl.cs`).
+  2. *Khâu tải xuống (Client Download):* Hệ thống đóng gói nén bất đồng bộ (`Task.Run`) chuẩn PK-Zip, tự động sinh chứng chỉ `LICENSE_AND_KEY.txt` và cập nhật số lượt tải trong CSDL (`DonHangService.cs`).
   3. *Chứng chỉ đi kèm:* Tự động đóng gói file `LICENSE_AND_KEY.txt` trong tệp ZIP tải về (`DonHangService.cs:L168-171`).
 
 ---
@@ -177,7 +177,7 @@ Hệ thống triển khai mô hình **Lưu trữ lai (Hybrid Storage Architectur
 * Giải quyết thách thức lưu trữ các tệp phần mềm/game dung lượng lớn bằng kiến trúc **Hybrid Storage**: Không làm phình to CSDL mà vẫn quản lý tập trung và an toàn.
 
 #### B. Killer Features & Điểm nhấn kỹ thuật
-1. **Tự động sinh mã băm SHA-256 khi Upload:** Khi Admin chọn file từ đĩa, hệ thống đọc luồng byte, tính chuỗi băm 64 ký tự Hex `MaHashSHA256` và kích thước byte, lưu vào bảng `TepSanPham` (`ProductManageControl.cs:L261`).
+1. **Tự động trích xuất thông tin tệp số khi Upload:** Khi Admin chọn file từ đĩa, hệ thống đọc thông tin tệp, tính dung lượng byte và quy đổi sang MB, lấy định dạng (.zip/.exe/.rar) và lưu đường dẫn tương đối vào bảng `TepSanPham`.
 2. **Cơ chế Soft Delete (Bảo toàn quyền sở hữu của khách):** Tuyệt đối không xóa vật lý sản phẩm đã bán.
 3. **Quản lý Avatar & Hồ sơ cá nhân:** Cập nhật thông tin tài khoản, đổi mật khẩu có kiểm tra đối chiếu mật khẩu cũ.
 
@@ -188,10 +188,10 @@ Hệ thống triển khai mô hình **Lưu trữ lai (Hybrid Storage Architectur
 #### D. Bộ 5 câu hỏi vấn đáp phòng thủ "tử huyệt" & Cách trả lời:
 
 * ❓ **Câu hỏi 3.1:** *"Tại sao không lưu trực tiếp file cài đặt (`VARBINARY(MAX)` / BLOB) vào bảng `TepSanPham` trong SQL Server mà lại lưu ra thư mục `Storage/Products/` rồi lưu đường dẫn vào DB?"*
-  * 💡 **Trả lời:** *"Dạ thưa Thầy/Cô, đây là kiến trúc Hybrid Storage chuẩn mực trong công nghiệp. Tệp cài đặt phần mềm và game số có dung lượng rất lớn (từ hàng trăm MB đến hàng chục GB). Nếu lưu trực tiếp BLOB vào SQL Server sẽ làm kích thước file `.mdf` phình to dữ dội, làm cạn kiệt bộ nhớ RAM đệm (Buffer Pool) của database server, khiến các câu truy vấn thông thường bị chậm nghiêm trọng, đồng thời việc sao lưu (Backup) và phục hồi (Restore) CSDL sẽ mất hàng giờ đồng hồ. Lưu file vật lý riêng trên đĩa và chỉ lưu đường dẫn cùng mã băm SHA-256 trong DB giúp CSDL cực kỳ nhẹ và tối ưu tốc độ."*
+  * 💡 **Trả lời:** *"Dạ thưa Thầy/Cô, đây là kiến trúc Hybrid Storage chuẩn mực trong công nghiệp. Tệp cài đặt phần mềm và game số có dung lượng rất lớn (từ hàng trăm MB đến hàng chục GB). Nếu lưu trực tiếp BLOB vào SQL Server sẽ làm kích thước file `.mdf` phình to dữ dội, làm cạn kiệt bộ nhớ RAM đệm (Buffer Pool) của database server, khiến các câu truy vấn thông thường bị chậm nghiêm trọng, đồng thời việc sao lưu (Backup) và phục hồi (Restore) CSDL sẽ mất hàng giờ đồng hồ. Lưu file vật lý riêng trên đĩa và chỉ lưu đường dẫn tương đối cùng dung lượng byte trong DB giúp CSDL cực kỳ nhẹ và tối ưu tốc độ."*
 
-* ❓ **Câu hỏi 3.2:** *"Nếu Admin tải lên một file cập nhật (Patch) mới cho game thì mã SHA-256 cũ xử lý ra sao?"*
-  * 💡 **Trả lời:** *"Hệ thống sẽ chạy lại hàm `SecurityHelper.ComputeFileSha256` trên file mới, sau đó cập nhật đè (UPDATE) các trường `DuongDanTep`, `KichThuocByte`, `MaHashSHA256`, `PhienBan` và `NgayTaiLen` trong bảng `TepSanPham`. Khách hàng tải về sau này sẽ nhận được bản cập nhật mới nhất kèm mã xác thực mới."*
+* ❓ **Câu hỏi 3.2:** *"Nếu Admin tải lên một file cập nhật (Patch) mới cho game thì thông tin tệp cũ được xử lý ra sao?"*
+  * 💡 **Trả lời:** *"Hệ thống cập nhật đè (UPDATE) các trường `DuongDanTep`, `KichThuocByte`, `PhienBan` và `NgayTaiLen` trong bảng `TepSanPham`. Khách hàng tải về sau này sẽ nhận được bản cập nhật mới nhất."*
 
 * ❓ **Câu hỏi 3.3:** *"Nếu người quản trị lỡ tay xóa một sản phẩm đã có 1.000 khách hàng mua thì CSDL sẽ xử lý thế nào?"*
   * 💡 **Trả lời:** *"CSDL thiết lập ràng buộc khóa ngoại `ON DELETE NO ACTION` giữa `SanPham` và các bảng `ChiTietDonHang`, `SoHuuSanPham`. Đồng thời ở tầng nghiệp vụ BLL, hệ thống kiểm tra nếu sản phẩm đã phát sinh giao dịch thì chặn lệnh xóa và hiển thị cảnh báo: 'Sản phẩm đã có người mua, bạn chỉ có thể chọn Ngừng kinh doanh (Ẩn sản phẩm)'. Điều này đảm bảo 1.000 khách hàng cũ vẫn giữ vĩnh viễn quyền sở hữu game trong Thư viện của họ."*
@@ -200,7 +200,7 @@ Hệ thống triển khai mô hình **Lưu trữ lai (Hybrid Storage Architectur
   * 💡 **Trả lời:** *"Trước khi `INSERT`, BLL gọi hàm kiểm tra `EXISTS (SELECT 1 FROM DanhMuc WHERE LOWER(TenDanhMuc) = LOWER(@ten))`. Nếu trùng tên, hệ thống ném ra ngoại lệ và báo lỗi ngay trên giao diện."*
 
 * ❓ **Câu hỏi 3.5:** *"Khi đổi mật khẩu tài khoản ở màn hình Profile, cơ chế bảo mật hoạt động như thế nào?"*
-  * 💡 **Trả lời:** *"Người dùng phải nhập đủ: Mật khẩu cũ, Mật khẩu mới và Xác nhận mật khẩu mới. Hệ thống dùng hàm `SecurityHelper.VerifyPassword(matKhauCu, matKhauHashTrongDB)` để xác thực danh tính. Chỉ khi mật khẩu cũ khớp và 2 ô mật khẩu mới giống nhau thì mới thực hiện băm SHA-256 mật khẩu mới và lưu vào CSDL."*
+  * 💡 **Trả lời:** *"Người dùng phải nhập đủ: Mật khẩu cũ, Mật khẩu mới và Xác nhận mật khẩu mới. Hệ thống kiểm tra đối chiếu mật khẩu cũ với cột `MatKhau` trong CSDL, đồng thời kiểm tra mật khẩu mới phải đạt độ dài tối thiểu 6 ký tự và xác nhận mật khẩu mới phải khớp hoàn toàn trước khi thực hiện cập nhật vào CSDL."*
 
 ---
 
@@ -213,7 +213,7 @@ Hệ thống triển khai mô hình **Lưu trữ lai (Hybrid Storage Architectur
 * Cung cấp trung tâm điều hành Dashboard đo lường các chỉ số tài chính và sức khỏe kinh doanh của sàn số.
 
 #### B. Killer Features & Điểm nhấn kỹ thuật
-1. **Mã hóa mật khẩu 1 chiều chuẩn SHA-256:** Tuyệt đối không lưu mật khẩu dạng bản rõ (Plain text) trong CSDL.
+1. **Xác thực phiên làm việc & Kiểm soát phân quyền (RBAC):** Quản lý phiên đăng nhập an toàn, đối chiếu mật khẩu và kiểm tra trạng thái tài khoản (`TrangThai = 1 / 0`) trước khi cấp quyền truy cập hệ thống.
 2. **Quy tắc Chống tự khóa tài khoản Admin (Self-Locking Guard):** Quản trị viên đang đăng nhập không thể tự bấm Khóa tài khoản của chính mình.
 3. **Điều chỉnh số dư ví thủ công (Manual Balance Adjustment):** Hỗ trợ CSKH nạp tiền bù hoặc hoàn tiền cho khách khi giải quyết khiếu nại.
 4. **Dashboard tổng hợp KPI Real-time bằng Native SQL:** Thống kê Doanh thu, Đơn hàng, Khách hàng, Sản phẩm mở bán và Top 5 sản phẩm bán chạy nhất bằng các hàm tổng hợp `SUM`, `COUNT`, `GROUP BY`.
@@ -224,8 +224,8 @@ Hệ thống triển khai mô hình **Lưu trữ lai (Hybrid Storage Architectur
 
 #### D. Bộ 5 câu hỏi vấn đáp phòng thủ "tử huyệt" & Cách trả lời:
 
-* ❓ **Câu hỏi 4.1:** *"Mật khẩu băm SHA-256 có dịch ngược lại (Decrypt) ra mật khẩu ban đầu được không? Nếu không dịch ngược được thì làm sao kiểm tra đăng nhập?"*
-  * 💡 **Trả lời:** *"SHA-256 là hàm băm mật mã học một chiều (One-way Cryptographic Hash Function), về mặt toán học không thể giải mã ngược lại chuỗi gốc ban đầu. Khi người dùng đăng nhập, hệ thống lấy mật khẩu người dùng vừa nhập, chạy qua hàm băm SHA-256 và so sánh chuỗi Hash vừa sinh ra với chuỗi Hash đang lưu trong CSDL. Nếu 2 chuỗi hash trùng khớp 100% thì đăng nhập thành công."*
+* ❓ **Câu hỏi 4.1:** *"Hệ thống quản lý mật khẩu người dùng như thế nào và cơ chế đăng nhập hoạt động ra sao?"*
+  * 💡 **Trả lời:** *"Trong phạm vi đề tài, mật khẩu người dùng được lưu trữ và quản lý trực tiếp qua cột `MatKhau NVARCHAR(255)` trong bảng `NguoiDung`. Khi người dùng đăng nhập, hệ thống kiểm tra đối chiếu chính xác tên đăng nhập và mật khẩu qua câu lệnh SQL tham số hóa (`@User`, `@Password`) để ngăn chặn SQL Injection. Đồng thời hệ thống kiểm tra cờ `TrangThai`: nếu tài khoản bị khóa (`TrangThai = 0`), hệ thống sẽ từ chối đăng nhập và thông báo rõ ràng cho người dùng."*
 
 * ❓ **Câu hỏi 4.2:** *"Doanh thu hiển thị trên Dashboard được tính như thế nào? Có bị tính trùng với tiền khách nạp vào ví không?"*
   * 💡 **Trả lời:** *"Dạ hoàn toàn không bị tính trùng. Doanh thu của sàn DPMS được tính bằng câu lệnh `SELECT SUM(TongTien) FROM DonHang WHERE TrangThai = N'DaThanhToan'`. Tiền khách nạp vào ví chỉ làm tăng số dư `SoDuVi` trong bảng `NguoiDung`, đó là tiền tạm giữ, chưa phát sinh việc chuyển giao bản quyền số nên chưa được tính là doanh thu. Doanh thu chỉ được ghi nhận khi phát sinh đơn hàng thực tế."*
@@ -237,7 +237,7 @@ Hệ thống triển khai mô hình **Lưu trữ lai (Hybrid Storage Architectur
   * 💡 **Trả lời:** *"Hệ thống dùng câu lệnh `SELECT TOP 5 sp.TenSanPham, COUNT(ct.MaSanPham) AS SoLuongBan, SUM(ct.GiaBan) AS DoanhThu FROM ChiTietDonHang ct JOIN DonHang dh ON ct.MaDonHang = dh.MaDonHang JOIN SanPham sp ON ct.MaSanPham = sp.MaSanPham WHERE dh.TrangThai = N'DaThanhToan' GROUP BY sp.TenSanPham ORDER BY SoLuongBan DESC`."*
 
 * ❓ **Câu hỏi 4.5:** *"Khi Admin tạo mới một tài khoản Khách hàng trong trang Quản lý người dùng, mật khẩu mặc định được cấp là gì?"*
-  * 💡 **Trả lời:** *"Hệ thống cấp mật khẩu mặc định ban đầu là `123456` (được băm SHA-256 trước khi lưu) và yêu cầu người dùng phải đổi mật khẩu ở lần đăng nhập đầu tiên tại màn hình Profile."*
+  * 💡 **Trả lời:** *"Hệ thống cấp mật khẩu mặc định ban đầu là `123456` và cho phép người dùng chủ động đổi mật khẩu tại màn hình Hồ sơ cá nhân (Profile)."*
 
 ---
 
@@ -251,9 +251,9 @@ Hệ thống triển khai mô hình **Lưu trữ lai (Hybrid Storage Architectur
 #### B. Killer Features & Điểm nhấn kỹ thuật
 1. **Instant Fulfillment & Sinh License Key tự động:** Ngay khi thanh toán thành công, hệ thống sinh một mã khóa bản quyền ngẫu nhiên duy nhất (GUID dạng `DPMS-XXXX-YYYY-ZZZZ`) và chèn vào bảng `SoHuuSanPham`.
 2. **Kích hoạt bù thủ công (Manual Fulfillment Fallback):** Admin có nút "Kích hoạt thủ công" tại `OrderManageControl` để cấp bù game vào Thư viện cho khách khi giao dịch gặp sự cố mạng hoặc tranh chấp.
-3. **Tải tệp kèm xác thực SHA-256 & Đóng gói chứng chỉ số:**
-   * Tải tệp bất đồng bộ có `ProgressBar` và đối soát mã băm (`LibraryControl.cs:L220`).
-   * Tự động sinh file `LICENSE_AND_KEY.txt` chứa thông tin người mua, ngày giờ cấp phép, License Key và mã băm SHA-256 xác thực bản quyền (`DonHangService.cs:L168-171`).
+3. **Tải tệp nén PK-Zip & Đóng gói chứng chỉ số độc bản:**
+   * Tải tệp bất đồng bộ có `ProgressBar` và nén chuẩn PK-Zip (`LibraryControl.cs`).
+   * Tự động đóng gói file `.zip` và sinh chứng chỉ `LICENSE_AND_KEY.txt` chứa thông tin người mua, mã đơn hàng, ngày giờ cấp phép và chứng nhận bản quyền số chính thức (`DonHangService.cs:L145-161`).
 4. **Theo dõi lượt tải (`SoLanTai`):** Tự động tăng biến đếm `SoLanTai = SoLanTai + 1` sau mỗi lần tải thành công.
 
 #### C. Ràng buộc ngầm (Hidden Constraints)
@@ -266,7 +266,7 @@ Hệ thống triển khai mô hình **Lưu trữ lai (Hybrid Storage Architectur
   * 💡 **Trả lời:** *"Trong thực tế vận hành các hệ thống thương mại điện tử, luôn có tỷ lệ nhỏ phát sinh ngoại lệ kỹ thuật (Edge Cases): ví dụ khách hàng bị trừ tiền ví nhưng đường truyền mạng socket bị ngắt đột ngột khiến tiến trình cấp game vào Thư viện bị treo ở trạng thái `DangXuLy`. Nút 'Kích hoạt thủ công' chính là **kịch bản ngoại lệ `<extend> [Giao dịch lỗi/Khiếu nại]`** cho phép Admin kiểm tra sao kê ví và cấp game cho khách bằng một cú click chuột ngay trên phần mềm mà không cần phải can thiệp thủ công bằng câu lệnh SQL nguy hiểm vào CSDL sản xuất."*
 
 * ❓ **Câu hỏi 5.2:** *"Ý nghĩa thực tế của file `LICENSE_AND_KEY.txt` được tải về kèm bộ cài đặt là gì?"*
-  * 💡 **Trả lời:** *"Đây là Giấy chứng nhận sở hữu số (Digital Certificate of Ownership) tương tự như chứng chỉ bản quyền của Microsoft, Steam hay Humble Bundle. Nó ghi nhận danh tính người mua, mã đơn hàng, ngày giờ cấp quyền, License Key để kích hoạt phần mềm và mã SHA-256 để người dùng tự kiểm tra tính toàn vẹn của tệp cài đặt."*
+  * 💡 **Trả lời:** *"Đây là Giấy chứng nhận sở hữu số (Digital Certificate of Ownership) tương tự như chứng chỉ bản quyền của Microsoft hay Steam. Nó ghi nhận danh tính người mua, mã đơn hàng, phiên bản sản phẩm, thời điểm cấp quyền và chứng nhận bản quyền chính thức được cấp bởi DPMS Platform."*
 
 * ❓ **Câu hỏi 5.3:** *"Nếu khách hàng bấm nút 'Gỡ khỏi thư viện' (`btnUninstall`), hệ thống có xóa dòng dữ liệu trong bảng `SoHuuSanPham` không?"*
   * 💡 **Trả lời:** *"Tuyệt đối **KHÔNG**! Nút 'Gỡ bỏ' ở phía client chỉ làm nhiệm vụ xóa tệp cài đặt vật lý trên máy tính của người dùng nhằm giải phóng dung lượng ổ cứng. Quyền sở hữu trong bảng `SoHuuSanPham` trên máy chủ vẫn được lưu trữ vĩnh viễn. Khách hàng có thể mở lại Thư viện và bấm nút 'Tải xuống' bất kỳ lúc nào mà không phải trả thêm tiền."*
@@ -285,9 +285,9 @@ Hệ thống triển khai mô hình **Lưu trữ lai (Hybrid Storage Architectur
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | **1** | **Lê Nguyễn Minh Trí** | UI 2, UI 3, UI 14 | `SanPham`, `DanhGia` | Verified Purchase Reviews, Auto Recalc Rating | 1 review/user/SP; Chỉ người đã sở hữu mới được đánh giá |
 | **2** | **Nguyễn Quốc Trung** | UI 4, UI 5, UI 15 | `GioHang`, `MaGiamGia`, `GiaoDichVi` | 1-Click Wallet Checkout, 3-Layer Voucher Validation | Quantity = 1; Chặn mua trùng SP đã có trong Library |
-| **3** | **Phạm Trung Hiếu** | UI 10, UI 11, UI 8 | `SanPham`, `DanhMuc`, `TepSanPham` | Hybrid Storage, Tự động tính hash SHA-256 Upload | Soft Delete bảo vệ quyền khách; Ràng buộc danh mục có SP |
-| **4** | **Trần Quốc Thuận** | UI 1, UI 12, UI 9 | `NguoiDung`, `VaiTro` | Mã hóa 1 chiều SHA-256, Native SQL KPI Aggregation | Chống Admin tự khóa mình; Tách biệt tiền ví và doanh thu |
-| **5** | **Phạm Văn Đam** | UI 13, UI 7, UI 6 | `DonHang`, `ChiTietDonHang`, `SoHuuSanPham` | Auto License Key, Tải file đối soát SHA-256, Fallback Admin | Uninstall client không mất quyền server; Hoàn tiền đa bảng |
+| **3** | **Phạm Trung Hiếu** | UI 10, UI 11, UI 8 | `SanPham`, `DanhMuc`, `TepSanPham` | Hybrid Storage, Quản lý tệp số & phiên bản | Soft Delete bảo vệ quyền khách; Ràng buộc danh mục có SP |
+| **4** | **Trần Quốc Thuận** | UI 1, UI 12, UI 9 | `NguoiDung`, `VaiTro` | Quản lý phiên & RBAC, Native SQL KPI Aggregation | Chống Admin tự khóa mình; Tách biệt tiền ví và doanh thu |
+| **5** | **Phạm Văn Đam** | UI 13, UI 7, UI 6 | `DonHang`, `ChiTietDonHang`, `SoHuuSanPham` | Auto License Key, Tải tệp mô phỏng tiến trình, Fallback Admin | Uninstall client không mất quyền server; Hoàn tiền đa bảng |
 
 ---
 
@@ -327,7 +327,7 @@ Hệ thống triển khai mô hình **Lưu trữ lai (Hybrid Storage Architectur
   * Khách mới: Không thể tìm thấy hoặc mua tựa game này trên Store.
   * Khách cũ đã mua trước đó: Vẫn truy cập `LibraryControl` bình thường, vẫn tải file cài đặt được 100%.
 * **Logic Cập nhật Bản vá (Patch Update):**
-  * Admin chọn file mới `Game_v1.1.zip` $\to$ Hệ thống băm lại SHA-256 mới, cập nhật phiên bản mới vào `TepSanPham` mà không xóa sản phẩm, không làm gián đoạn quyền sở hữu của khách cũ.
+  * Admin chọn file mới `Game_v1.1.zip` $\to$ Hệ thống cập nhật phiên bản và dung lượng mới vào `TepSanPham` mà không xóa sản phẩm, không làm gián đoạn quyền sở hữu của khách cũ.
 
 ### 6.4. Nhóm 4 (Thuận) - Logic Thu hồi Phiên tức thì & Tách biệt Kế toán Doanh thu
 * **Logic Thu hồi phiên tức thì (Session Eviction):**
@@ -353,7 +353,7 @@ Hệ thống triển khai mô hình **Lưu trữ lai (Hybrid Storage Architectur
 | **Nhóm 1 (Trí)** | Verified Reviews & Auto Recalc Rating | Bị spam review ảo, làm sai lệch điểm đánh giá uy tín của sản phẩm |
 | **Nhóm 2 (Trung)** | Quantity = 1 & Chặn mua trùng lặp trong thư viện | Khách mua đè 2 bản quyền cho 1 tài khoản, phát sinh khiếu nại đòi tiền |
 | **Nhóm 3 (Hiếu)** | Hybrid Storage & Soft Delete bảo vệ quyền khách | CSDL phình to làm sập SQL Server; xóa game làm mất quyền của khách cũ |
-| **Nhóm 4 (Thuận)** | Băm SHA-256 mật khẩu & Tách biệt tiền ví với doanh thu | Lộ mật khẩu khi CSDL bị lộ; hạch toán sai lệch doanh thu kế toán sàn |
+| **Nhóm 4 (Thuận)** | Cơ chế Anti-Lockout chống tự khóa Admin & Tách biệt tiền ví với doanh thu | Admin tự khóa tài khoản làm tê liệt hệ thống; hạch toán sai lệch doanh thu sàn |
 | **Nhóm 5 (Đam)** | Cấp License Key tức thì & Kích hoạt bù thủ công | Khách trả tiền không nhận được hàng; không có cơ chế xử lý khiếu nại CSKH |
 
 ---
@@ -385,17 +385,15 @@ Qua quá trình rà soát và kiểm toán toàn diện mã nguồn (`qlspdigita
   * **Cấp 2 - Voucher Nhà phát hành (`MaNhaPhatHanh IS NOT NULL`):** Do chính Studio/Nhà phát triển game tài trợ (Ví dụ: mã `PIXELSTUDIO10` do *Pixel Game Studio* tài trợ chiết khấu 10%). Tiền giảm trừ được trích từ phần doanh thu chia sẻ của nhà phát hành đó.
   * **Quy trình Thu thập Trước - Áp dụng Sau (Claim-then-Apply):** Khách hàng phải vào UI 5 (`VoucherControl`) bấm "Thu thập vào ví" để sinh bản ghi trong `MaGiamGiaNguoiDung`. Khi thanh toán tại UI 4 (`CartControl`), hệ thống xác thực `DaThuThap = 1` và `DaSuDung = 0`. Điều này ngăn chặn việc người dùng đoán mò mã code công khai khi chưa được cấp quyền nhận.
 
-### 9.3. Đồng bộ Giao diện Phản ứng theo Sự kiện (Event-Driven Reactive UI Bus)
-* **Vị trí Mã nguồn:** Các sự kiện tĩnh C# `event Action` phân tán tại BLL và Shared:
-  * `UserSession.SessionChanged`: Đồng bộ trạng thái đăng nhập/đăng xuất, hoán đổi danh sách menu Admin/User trên `MainForm`.
-  * `UserSession.BalanceChanged`: Tự động cập nhật số dư hiển thị tại Header (`lblBalance`) ngay khi khách nạp tiền hoặc thanh toán mà không cần tải lại form.
-  * `GioHangService.CartUpdated`: Tự động nhảy Badge số lượng món trên nút menu "Giỏ hàng" khi bấm mua sản phẩm từ bất kỳ màn hình nào.
-  * `MaGiamGiaService.VoucherUpdated`: Đồng bộ lại danh sách voucher còn hiệu lực và kho voucher cá nhân.
-  * `SanPhamAdminService.ProductCatalogChanged`: Khi Admin thêm/sửa/đổi trạng thái game, thông báo ngay cho `StoreViewControl` làm mới danh mục.
-  * `SanPhamAdminService.CategoryCatalogChanged`: Khi danh mục thay đổi, cập nhật ngay các ComboBox bộ lọc trên giao diện.
-  * `SanPhamService.ReviewUpdated`: Khi có đánh giá mới, tự động tính lại điểm sao trung bình `DiemTrungBinh` của sản phẩm.
-  * `DonHangService.LibraryUpdated`: Khi đơn hàng chuyển sang `Hoàn thành`, tự động thêm game vào `LibraryControl` và đổi nhãn nút mua trên Store sang "Đã sở hữu".
-* **Ý nghĩa:** Tránh hoàn toàn việc WinForms bị "đơ" (lag) hoặc phải `Timer.Tick` quét CSDL liên tục (anti-pattern Polling).
+### 9.3. Cơ chế Cập nhật Giao diện Tường minh (Explicit UI Refresh)
+* **Triển khai thực tế:** `UserSession` không có static events (`SessionChanged`, `BalanceChanged`). `GioHangService` không có static event `CartUpdated`. Không có Event Bus tập trung trong phiên bản hiện tại.
+* **Thay vào đó:** Mỗi `UserControl` sau khi thực hiện xong nghiệp vụ sẽ gọi tường minh phương thức của `MainForm`:
+  * `mainForm.UpdateUserInterfaceSession()`: Đồng bộ trạng thái đăng nhập/đăng xuất, số dư ví, menu RBAC Admin/User sau login, logout, nạp tiền, thanh toán.
+  * `mainForm.UpdateCartBadge()`: Cập nhật badge số lượng giỏ hàng bằng cách đếm trực tiếp từ CSDL qua `GioHangService.LayTongSoLuongItem()`.
+  * `UserSession.UpdateBalance(newBalance)`: Cập nhật số dư trong static session state.
+  * `UserSession.UpdateProfile(hoTen, email)`: Cập nhật họ tên/email trong static session state.
+* **Ưu điểm của pattern này (cho BTL):** Đơn giản, dễ hiểu, dễ debug. Không cần quản lý lifecycle của event subscriptions/unsubscriptions, tránh memory leak.
+* **Nhược điểm (lý thuyết):** Coupling cao hơn; trong hệ thống production thực tế nên dùng Observer pattern hoặc EventAggregator.
 
 ### 9.4. Sổ cái Kế toán Độc lập & Truy vết Gian lận (Financial Audit Ledger)
 * **Vị trí CSDL & Mã nguồn:** Bảng `ThanhToan` độc lập với bảng `DonHang`; thực thi tại `DonHangRepository.cs:L268-276` và `ViTaiKhoanRepository.cs`.
@@ -445,7 +443,7 @@ Qua quá trình rà soát và kiểm toán toàn diện mã nguồn (`qlspdigita
 * **Vị trí Mã nguồn:** `DonHangService.cs:L78-180` (`TaiXuongTepAsync`).
 * **Cơ chế chịu lỗi (Fault-tolerant Packaging):**
   * Sử dụng thư viện chuẩn `.NET` `System.IO.Compression.ZipArchive` với `CompressionLevel.Optimal`, định dạng chuẩn PK zip tương thích 100% với Windows Explorer, 7-Zip và WinRAR.
-  * Ngay cả khi tệp thực thi vật lý của sản phẩm mẫu chưa có sẵn trên ổ cứng server, hệ thống **không báo lỗi sập ứng dụng (Crash 404)** mà tự động sinh tệp mô phỏng kèm theo chứng chỉ số độc bản `LICENSE_AND_KEY.txt` chứa đầy đủ: Tên sản phẩm, Mã đơn hàng, Mã khách hàng, Thời điểm cấp quyền và Mã băm SHA-256 xác thực.
+  * Ngay cả khi tệp thực thi vật lý của sản phẩm mẫu chưa có sẵn trên ổ cứng server, hệ thống **không báo lỗi sập ứng dụng (Crash 404)** mà tự động sinh tệp mô phỏng kèm theo chứng chỉ số độc bản `LICENSE_AND_KEY.txt` chứa đầy đủ: Tên sản phẩm, Mã đơn hàng, Mã khách hàng, Thời điểm cấp quyền và Chứng nhận bản quyền số.
 
 ---
 
@@ -461,7 +459,7 @@ Qua quá trình rà soát và kiểm toán toàn diện mã nguồn (`qlspdigita
 
 #### Câu 28: "Hệ thống làm thế nào để đồng bộ số dư ví và giỏ hàng tức thì trên giao diện mà không cần tắt mở lại ứng dụng hay dùng Timer quét DB liên tục?"
 * **Trả lời mẫu:**
-  > "Dạ thưa Thầy/Cô, nhóm em xây dựng cơ chế **Event-Driven Reactive Bus** bằng các `event Action` tĩnh trong C#. Cụ thể, khi có giao dịch nạp tiền hoặc thanh toán, BLL phát sự kiện `UserSession.BalanceChanged` và `GioHangService.CartUpdated`. Lớp giao diện `MainForm` đã đăng ký lắng nghe các sự kiện này từ lúc khởi tạo (`SubscribeEvents`), do đó số dư ví và Badge giỏ hàng trên Header được cập nhật tức thì theo thời gian thực mà không tiêu tốn tài nguyên hệ thống như kỹ thuật Polling liên tục."
+  > "Dạ thưa Thầy/Cô, hệ thống áp dụng cơ chế **Cập nhật giao diện tường minh (Explicit UI Refresh)** thông qua form điều phối trung tâm `MainForm`. Cụ thể, sau mỗi thao tác làm thay đổi trạng thái (như đăng nhập, đăng xuất, nạp tiền ví, đặt mua đơn hàng hay thêm sản phẩm vào giỏ), các UserControl gọi trực tiếp phương thức của `MainForm`: `mainForm.UpdateUserInterfaceSession()` để làm mới thông tin phiên làm việc và số dư ví trên Header, và `mainForm.UpdateCartBadge()` để truy vấn đếm lại số lượng sản phẩm trong giỏ hàng và hiển thị ngay trên badge biểu tượng giỏ. Kỹ thuật này giúp giao diện cập nhật ngay lập tức mà không cần Timer quét ngầm, đồng thời loại bỏ nguy cơ memory leak từ việc quản lý vòng đời hủy đăng ký static event."
 
 #### Câu 29: "Trong phương thức thanh toán giỏ hàng, nếu trừ tiền ví thành công nhưng khi cấp sản phẩm vào Thư viện lại bị mất kết nối CSDL thì hệ thống xử lý thế nào?"
 * **Trả lời mẫu:**

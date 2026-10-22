@@ -11,7 +11,7 @@ Thư mục này được tổ chức độc lập thành 4 tài liệu đặc t�
 
 | Thứ tự | Tên tài liệu | Nội dung trọng tâm | Đường dẫn xem chi tiết |
 |:---:|---|---|---|
-| **01** | **Phát biểu & Mô tả bài toán** | - Bối cảnh chuyển dịch số & mô hình phân phối Steam-like.<br>- Bản chất sản phẩm số: License sở hữu, không logistics, không tồn kho vật lý.<br>- Thách thức lưu trữ tệp số Hybrid Storage & kiểm tra toàn vẹn hash SHA-256.<br>- Xác định đúng 3 tác nhân hệ thống (Guest, Customer, Admin). | [`./01_PROBLEM_STATEMENT.md`](./01_PROBLEM_STATEMENT.md) |
+| **01** | **Phát biểu & Mô tả bài toán** | - Bối cảnh chuyển dịch số & mô hình phân phối Steam-like.<br>- Bản chất sản phẩm số: License sở hữu, không logistics, không tồn kho vật lý.<br>- Thách thức lưu trữ tệp số Hybrid Storage & đóng gói chứng chỉ bản quyền số.<br>- Xác định đúng 3 tác nhân hệ thống (Guest, Customer, Admin). | [`./01_PROBLEM_STATEMENT.md`](./01_PROBLEM_STATEMENT.md) |
 | **02** | **Đặc tả nghiệp vụ chi tiết 5 nhóm** | - Chi tiết toàn bộ nghiệp vụ của 5 nhóm chức năng (15 màn hình `UserControl`).<br>- Quy trình xử lý cụ thể từng màn hình, luật nghiệp vụ (Business Rules).<br>- Ràng buộc dữ liệu, bẫy bắt lỗi và điều kiện biên của từng phân hệ. | [`./02_DETAILED_BUSINESS_RULES.md`](./02_DETAILED_BUSINESS_RULES.md) |
 | **03** | **Tích hợp quy trình xuyên suốt** | - Sơ đồ tuần tự (Sequence Diagram) luồng Mua sắm & Cấp quyền sở hữu End-to-End.<br>- Luồng quản trị vòng đời sản phẩm số từ lúc tạo danh mục đến lúc khách tải game.<br>- 3 cơ chế tự phục hồi và xử lý ngoại lệ an toàn (Manual Override, Self-Lock Guard, Soft Delete). | [`./03_CROSS_MODULE_INTEGRATION.md`](./03_CROSS_MODULE_INTEGRATION.md) |
 | **04** | **Khai thác chuyên sâu & Vấn đáp phòng thủ** | - Chu chuyển giá trị số, dòng tiền kế toán & vòng đời sở hữu số (Ownership Lifecycle).<br>- Khai thác sâu các ràng buộc CSDL ngầm, kiến trúc Hybrid Storage kép.<br>- **8 cơ chế nghiệp vụ kiểm toán chuyên sâu** (Snapshot giá, Voucher 2 cấp, Reactive Bus, Sổ cái...).<br>- **Bộ 31 câu hỏi vấn đáp phòng thủ "tử huyệt"** của giảng viên/hội đồng và lời giải trình đanh thép. | [`./04_IN_DEPTH_BUSINESS_SPEC_AND_DEFENSE_QA.md`](./04_IN_DEPTH_BUSINESS_SPEC_AND_DEFENSE_QA.md) |
@@ -44,17 +44,17 @@ Docs/
 ├── 03_Product_Category_Profile/    # [NHIỆM VỤ 3 - PHẠM TRUNG HIẾU]
 │   ├── PRD.md                      # Quản lý SP & Tệp số (UI 10), Danh mục (UI 11), Hồ sơ (UI 8)
 │   ├── UI_MOCKUP.md                # Bản vẽ giao diện ASCII & thuộc tính Controls
-│   └── SYSTEM_DESIGN.md            # Kiến trúc 3 tầng, Hybrid Storage, Hash SHA-256 & Lệnh CRUD
+│   └── SYSTEM_DESIGN.md            # Kiến trúc 3 tầng, Hybrid Storage, Upload tệp số & Lệnh CRUD
 │
 ├── 04_Auth_User_Dashboard/         # [NHIỆM VỤ 4 - TRẦN QUỐC THUẬN]
 │   ├── PRD.md                      # Đăng nhập/Đăng ký (UI 1), Quản lý User (UI 12), Dashboard (UI 9)
 │   ├── UI_MOCKUP.md                # Bản vẽ giao diện ASCII & thuộc tính Controls
-│   └── SYSTEM_DESIGN.md            # Kiến trúc 3 tầng, Băm SHA-256, RBAC & SQL Aggregations
+│   └── SYSTEM_DESIGN.md            # Kiến trúc 3 tầng, Xác thực người dùng, RBAC & SQL Aggregations
 │
 ├── 05_Orders_Library/              # [NHIỆM VỤ 5 - PHẠM VĂN ĐAM]
 │   ├── PRD.md                      # Duyệt đơn (UI 13), Lịch sử mua (UI 7), Thư viện số (UI 6)
 │   ├── UI_MOCKUP.md                # Bản vẽ giao diện ASCII & thuộc tính Controls
-│   └── SYSTEM_DESIGN.md            # Kiến trúc 3 tầng, Cấp quyền tức thì & Đối chiếu SHA-256
+│   └── SYSTEM_DESIGN.md            # Kiến trúc 3 tầng, Cấp quyền tức thì & Đóng gói PK-Zip bản quyền
 │
 └── 06_Function_And_Button_Call_Flow/ # [TRA CỨU LUỒNG GỌI HÀM & NÚT BẤM 15 MÀN HÌNH + MAINFORM]
     ├── README.md                   # Kiến trúc Call Hierarchy & Dòng chu chuyển dữ liệu

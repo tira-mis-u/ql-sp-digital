@@ -1,4 +1,4 @@
-# PRD: PHÂN HỆ QUẢN TRỊ SẢN PHẨM, DANH MỤC & HỒ SƠ CÁ NHÂN
+﻿# PRD: PHÂN HỆ QUẢN TRỊ SẢN PHẨM, DANH MỤC & HỒ SƠ CÁ NHÂN
 **Nhiệm vụ:** STT 3  
 **Thành viên phụ trách:** Phạm Trung Hiếu (Nhóm 3)  
 **Màn hình phụ trách:**  
@@ -68,7 +68,7 @@ Cung cấp bộ công cụ quản trị dữ liệu cốt lõi cho Administrator
    - Hiển thị: Tên đăng nhập (chỉ đọc), Vai trò (`QuanTriVien`/`KhachHang`), Số dư ví (`SoDuVi`), Họ và tên, Email, Số điện thoại.
 2. **Cập nhật thông tin cá nhân & Đồng bộ Realtime (CRUD Update 3):**
    - Cho phép chỉnh sửa: Họ tên, Email, Số điện thoại $\rightarrow$ Bấm nút **"Lưu thay đổi hồ sơ"** $\rightarrow$ Thực thi `UPDATE NguoiDung`.
-   - **Đồng bộ thời gian thực (Real-time Sync):** Khi cập nhật họ tên thành công, hệ thống gọi `UserSession.UpdateProfile(hoTen, email)` để kích hoạt sự kiện `SessionChanged`. Thanh tiêu đề Header trên `MainForm` (`lblUserGreeting`) lập tức lắng nghe sự kiện và cập nhật lại câu chào cùng họ tên mới ngay trong tích tắc mà không cần khởi động lại ứng dụng.
+   - **Đồng bộ thời gian thực (Real-time Sync):** Khi cập nhật họ tên thành công, hệ thống gọi `UserSession.UpdateProfile(hoTen, email)` để cập nhật ngay họ tên và email mới trong đối tượng phiên tĩnh `UserSession`.
 3. **Đổi mật khẩu an toàn:**
    - Nhập: Mật khẩu cũ, Mật khẩu mới, Xác nhận mật khẩu mới.
    - Kiểm tra mật khẩu cũ $\rightarrow$ Nếu đúng cập nhật mật khẩu mới $\rightarrow$ Bấm nút **"Lưu mật khẩu mới"** $\rightarrow$ `UPDATE NguoiDung SET MatKhau = @MatKhauMoi`.
@@ -103,7 +103,7 @@ Cung cấp bộ công cụ quản trị dữ liệu cốt lõi cho Administrator
 ## 5. Tiêu chí nghiệm thu & Báo cáo BTL (Acceptance Criteria)
 - [x] **CRUD 1 (Sản phẩm & Tệp số - UI 10):** Thêm, sửa, ngưng bán sản phẩm mượt mà; chọn và upload tệp kỹ thuật số vào thư mục `Storage/` và ghi metadata vào `TepSanPham` thành công.
 - [x] **CRUD 2 (Danh mục thể loại - UI 11):** Thêm, xem, sửa, xóa danh mục trên DataGridView thành công.
-- [x] **CRUD 3 (Hồ sơ, Đổi mật khẩu & Cài đặt - UI 8):** Cập nhật họ tên, email, đồng bộ Header realtime qua `SessionChanged`, đổi mật khẩu an toàn và lưu bền vững cấu hình vào `CaiDatNguoiDung` trong CSDL. Banner bảo mật hiển thị trọn vẹn không bị cắt dòng.
+- [x] **CRUD 3 (Hồ sơ, Đổi mật khẩu & Cài đặt - UI 8):** Cập nhật họ tên, email, đồng bộ phiên làm việc qua `UserSession.UpdateProfile`, đổi mật khẩu an toàn và lưu bền vững cấu hình vào `CaiDatNguoiDung` trong CSDL. Banner bảo mật hiển thị trọn vẹn không bị cắt dòng.
 
 ---
 

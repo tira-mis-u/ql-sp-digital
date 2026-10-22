@@ -20,9 +20,9 @@ So với các hệ thống thương mại điện tử hàng hóa vật lý thô
 2. **Loại bỏ quy trình logistics cồng kềnh:**
    - Không cần địa chỉ giao hàng, không tính phí vận chuyển (shipping fee), không có thời gian chờ giao hàng.
    - Luồng mua hàng đòi hỏi trải nghiệm **Thanh toán 1-Click tức thì (1-Click Instant Fulfillment)**: Ngay khi xác nhận giao dịch thành công, sản phẩm phải lập tức xuất hiện trong Kho Thư viện cá nhân của người dùng để sẵn sàng tải về.
-3. **Bài toán lưu trữ và toàn vẹn tệp kỹ thuật số (Hybrid Storage & Data Integrity):**
+3. **Bài toán lưu trữ và đóng gói tệp kỹ thuật số (Hybrid Storage & Digital Packaging):**
    - Các bộ cài đặt trò chơi, phần mềm, mô hình 3D có dung lượng từ hàng trăm Megabyte đến hàng chục Gigabyte. Nếu lưu trữ trực tiếp các tệp nhị phân lớn này vào cơ sở dữ liệu quan hệ (SQL Server `VARBINARY(MAX)`) sẽ gây ra hiện tượng **phình to CSDL (Database Bloat)**, suy giảm nghiêm trọng hiệu năng truy vấn và gây khó khăn khi sao lưu/phục hồi.
-   - Tệp phân phối qua mạng hoặc lưu trữ lâu dài có nguy cơ bị lỗi dữ liệu (bit rot) hoặc bị chỉnh sửa trái phép. Hệ thống bắt buộc phải có cơ chế **kiểm tra tính toàn vẹn (Integrity Verification)** bằng thuật toán băm mật mã học (Cryptographic Hash SHA-256).
+   - Hệ thống áp dụng mô hình **Hybrid Storage**: CSDL chỉ lưu trữ siêu dữ liệu (Metadata: tên file, đường dẫn tương đối, định dạng, kích thước byte, phiên bản), còn tệp vật lý được lưu trữ trên hệ thống tệp ứng dụng (`Storage/Products/`). Khi khách hàng tải xuống, hệ thống tự động nén đóng gói bất đồng bộ chuẩn PK-Zip và đính kèm giấy chứng nhận sở hữu độc bản `LICENSE_AND_KEY.txt`.
 4. **Mô hình tiền tệ nội bộ và kích cầu mua sắm:**
    - Người dùng cần một cơ chế thanh toán nhanh chóng, an toàn, không phải nhập lại thông tin thẻ ngân hàng ở mỗi lượt mua: Mô phỏng **Ví tài khoản (Steam Wallet Simulation)** với tính năng nạp tiền nhanh theo các gói mệnh giá.
    - Hệ thống khuyến mại số linh hoạt: Kho mã giảm giá (**Vouchers / Coupons**) với khả năng chiết khấu theo tỷ lệ phần trăm hoặc số tiền mặt trực tiếp trên giỏ hàng.
@@ -39,14 +39,14 @@ Dự án **Digital Product Management System (DPMS)** được thiết kế và 
   - Cung cấp không gian Cửa hàng trực quan (Storefront) để tìm kiếm, phân loại theo thể loại, tra cứu thông tin chi tiết cấu hình và xem đánh giá cộng đồng.
   - Cung cấp trải nghiệm mua sắm nhanh gọn với Giỏ hàng thông minh, hỗ trợ thu thập và áp dụng Mã giảm giá.
   - Tích hợp Ví tài khoản cá nhân, cho phép nạp tiền mô phỏng và thanh toán 1-Click an toàn, minh bạch.
-  - Quản lý kho game/sản phẩm đã mua trong Thư viện số (My Library), hỗ trợ tải tệp về máy tính có thanh tiến trình (ProgressBar) và tự động đối chiếu mã băm SHA-256 để đảm bảo tệp không bị lỗi.
-  - Quản lý lịch sử giao dịch và hồ sơ cá nhân bảo mật (đổi mật khẩu băm SHA-256, tùy biến cấu hình hệ thống).
+  - Quản lý kho game/sản phẩm đã mua trong Thư viện số (My Library), hỗ trợ tải tệp về máy tính có thanh tiến trình (ProgressBar), đóng gói nén chuẩn PK-Zip và kèm chứng chỉ số `LICENSE_AND_KEY.txt`.
+  - Quản lý lịch sử giao dịch và hồ sơ cá nhân (đổi mật khẩu an toàn, tùy biến cấu hình hệ thống).
 
 - **Đối với Quản trị viên (Administrators / Platform Operators):**
   - Cung cấp bảng điều khiển trung tâm (Admin Dashboard) hiển thị các chỉ số kinh doanh cốt lõi (KPIs): Tổng doanh thu thực tế, số lượng đơn hàng hoàn tất, số lượng thành viên, số lượng sản phẩm mở bán và danh sách Top sản phẩm bán chạy nhất.
   - Quản trị toàn diện vòng đời sản phẩm: Thêm mới, cập nhật giá bán, phiên bản, hình ảnh, ngưng kinh doanh (xóa mềm bảo toàn dữ liệu lịch sử).
   - Quản trị danh mục thể loại với ràng buộc toàn vẹn khóa ngoại (chặn xóa danh mục đang có sản phẩm liên kết).
-  - Quản trị tải lên siêu dữ liệu tệp số (Digital Files Management) và tính toán mã băm SHA-256 tự động.
+  - Quản trị tải lên siêu dữ liệu tệp số (Digital Files Management) và tự động trích xuất dung lượng, định dạng tệp.
   - Quản lý và điều hành đơn hàng toàn hệ thống: Theo dõi trạng thái, xem chi tiết hóa đơn, duyệt/kích hoạt cấp quyền thư viện thủ công (cơ chế dự phòng khi có sự cố) hoặc hủy đơn hàng.
   - Quản lý người dùng: Tra cứu danh sách tài khoản toàn sàn, kiểm soát phân quyền (RBAC: `QuanTriVien` / `KhachHang`) và thực thi khóa/mở khóa tài khoản vi phạm.
 
@@ -61,8 +61,8 @@ Hệ thống DPMS thiết lập các nguyên tắc nghiệp vụ cốt lõi sau 
 | **Số lượng tồn kho (Inventory)** | Bị giới hạn vật lý trong kho; giảm dần khi xuất hàng; có nguy cơ hết hàng. | **Vô hạn bản sao**. Cột trạng thái `DangKinhDoanh` (1: Đang bán / 0: Ngưng bán) quyết định sản phẩm có được hiển thị hay không, không phụ thuộc số lượng tồn. |
 | **Quy trình Giao nhận (Fulfillment)** | Đóng gói $\rightarrow$ Giao hàng $\rightarrow$ Thu tiền (COD) $\rightarrow$ Khách nhận hàng. | **Instant Entitlement**. Sau khi thanh toán ví thành công trong cùng 1 transaction, hệ thống tự động ghi bản ghi vào bảng `SoHuuSanPham`. Khách nhận game ngay tức khắc. |
 | **Chi phí vận chuyển & Địa chỉ** | Bắt buộc nhập địa chỉ, số nhà, tỉnh thành, tính phí ship. | **Không có địa chỉ nhận hàng, phí vận chuyển luôn bằng 0đ**. |
-| **Lưu trữ tệp sản phẩm** | Kho hàng vật lý (kệ, pallet). | **Mô hình Hybrid Storage**: Tệp `.zip`/`.exe` lưu tại thư mục hệ thống `Storage/Products/{MaSanPham}/`, CSDL chỉ lưu đường dẫn tương đối, định dạng, dung lượng byte và mã hash SHA-256. |
-| **Kiểm tra tính toàn vẹn** | Kiểm tra bao bì, niêm phong tem vỡ. | **Đối chiếu mã băm mật mã học SHA-256**: Hệ thống tính toán hash của tệp nguồn lúc Admin upload và so sánh với tệp khi Khách hàng tải về máy. |
+| **Lưu trữ tệp sản phẩm** | Kho hàng vật lý (kệ, pallet). | **Mô hình Hybrid Storage**: Tệp `.zip`/`.exe` lưu tại thư mục hệ thống `Storage/Products/{MaSanPham}/`, CSDL chỉ lưu đường dẫn tương đối, định dạng và kích thước byte. |
+| **Kiểm tra tính toàn vẹn** | Kiểm tra bao bì, niêm phong tem vỡ. | **Xác thực cấu trúc tệp và phiên bản**: Hệ thống kiểm tra tệp tồn tại, định dạng hợp lệ (`.zip`, `.exe`, `.rar`, v.v.), dung lượng byte và cấp quyền tải theo phiên bản sản phẩm. |
 | **Hủy bán sản phẩm** | Thanh lý hoặc tiêu hủy hàng tồn. | **Xóa mềm (Soft Delete)**: Đặt `DangKinhDoanh = 0`. Các khách hàng đã mua trong quá khứ vẫn giữ nguyên quyền tải tệp trong Thư viện, các hóa đơn lịch sử không bị gãy khóa ngoại. |
 | **Phương thức thanh toán** | COD, thẻ tín dụng, chuyển khoản ngoài. | **Mô phỏng Ví tài khoản (Steam Wallet Simulation)**: Số dư `SoDuVi` lưu trong bảng `NguoiDung`, nạp tiền tức thì qua các gói mệnh giá 50k - 1.000k và trừ tiền 1-Click. |
 
@@ -101,7 +101,7 @@ Dựa trên cơ sở dữ liệu chuẩn ([Database/DPMS_Database_Master.sql](..
    - Quyền hạn: Duyệt danh mục sản phẩm dạng thẻ lưới tại Trang chủ Cửa hàng, tìm kiếm theo từ khóa, lọc theo danh mục thể loại, xem trang chi tiết mô tả và cấu hình, đọc các đánh giá của cộng đồng, thực hiện Đăng ký tài khoản mới (`RegisterControl`) hoặc Đăng nhập vào hệ thống (`LoginControl`).
 2. **Khách hàng (`KhachHang` / Customer):**
    - Trạng thái hệ thống: `UserSession.IsLoggedIn == true` và `UserSession.CurrentRole == "KhachHang"`.
-   - Quyền hạn: Kế thừa toàn bộ quyền của Khách vãng lai, đồng thời được mở khóa các phân hệ giao dịch: Quản lý giỏ hàng cá nhân, nạp tiền vào ví ảo, thu thập mã giảm giá (Voucher), thanh toán đơn hàng bằng số dư ví, sở hữu vĩnh viễn sản phẩm trong Thư viện số, tải tệp kỹ thuật số về máy tính kèm thanh tiến trình và kiểm tra mã băm SHA-256, viết/chỉnh sửa/xóa nhận xét đánh giá sản phẩm (1-5 sao), xem lịch sử mua sắm và hóa đơn chi tiết, cập nhật hồ sơ cá nhân, đổi mật khẩu và lưu cấu hình ứng dụng.
+   - Quyền hạn: Kế thừa toàn bộ quyền của Khách vãng lai, đồng thời được mở khóa các phân hệ giao dịch: Quản lý giỏ hàng cá nhân, nạp tiền vào ví ảo, thu thập mã giảm giá (Voucher), thanh toán đơn hàng bằng số dư ví, sở hữu vĩnh viễn sản phẩm trong Thư viện số, tải tệp kỹ thuật số về máy tính kèm thanh tiến trình tải xuống, viết/chỉnh sửa/xóa nhận xét đánh giá sản phẩm (1-5 sao), xem lịch sử mua sắm và hóa đơn chi tiết, cập nhật hồ sơ cá nhân, đổi mật khẩu và lưu cấu hình ứng dụng.
 3. **Quản trị viên (`QuanTriVien` / Administrator):**
    - Trạng thái hệ thống: `UserSession.IsLoggedIn == true` và `UserSession.CurrentRole == "QuanTriVien"`.
-   - Quyền hạn: Toàn quyền quản trị phân hệ Backoffice: Theo dõi chỉ số kinh doanh tổng quan tại Dashboard (doanh thu, đơn hàng, khách hàng, sản phẩm đang bán, top 5 bán chạy), thực hiện CRUD sản phẩm và upload tệp số kèm mã băm SHA-256, thực hiện CRUD danh mục thể loại kèm kiểm tra ràng buộc khóa ngoại, quản lý và điều hành trạng thái đơn hàng toàn sàn (duyệt đơn, kích hoạt cấp thư viện thủ công, hủy đơn), tra cứu danh sách người dùng toàn sàn, thực thi Khóa/Mở khóa tài khoản (ngăn chặn tự khóa chính mình), cập nhật hồ sơ cá nhân và đổi mật khẩu an toàn.
+   - Quyền hạn: Toàn quyền quản trị phân hệ Backoffice: Theo dõi chỉ số kinh doanh tổng quan tại Dashboard (doanh thu, đơn hàng, khách hàng, sản phẩm đang bán, top 5 bán chạy), thực hiện CRUD sản phẩm và upload đính kèm tệp số, thực hiện CRUD danh mục thể loại kèm kiểm tra ràng buộc khóa ngoại, quản lý và điều hành trạng thái đơn hàng toàn sàn (duyệt đơn, kích hoạt cấp thư viện thủ công, hủy đơn), tra cứu danh sách người dùng toàn sàn, thực thi Khóa/Mở khóa tài khoản (ngăn chặn tự khóa chính mình), cập nhật hồ sơ cá nhân và đổi mật khẩu an toàn.

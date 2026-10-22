@@ -147,7 +147,7 @@ Trong các hệ thống phân phối nội dung kỹ thuật số (tương tự 
 
 ### Câu hỏi 4: "Giỏ hàng ở nhóm 2 có thao tác Update số lượng không?"
 - **Trả lời đanh thép:**  
-  *"Thưa thầy/cô, có ạ. Ở tầng BLL và DAL, hàm `CapNhatSoLuong()` được cài đặt đầy đủ. Khi khách hàng nhấn thêm một sản phẩm đã có sẵn trong giỏ, hệ thống tự động kiểm tra sự tồn tại và gọi lệnh UPDATE tăng số lượng `currentQty + soLuong`. Khi thanh toán thành công, hệ thống tự động gọi lệnh DELETE dọn sạch giỏ hàng. Ngoài ra, phân hệ của em còn quản lý **Kho Voucher cá nhân** với đầy đủ CRUD: Thu thập mã vào ví (Create), Xem danh sách ưu đãi (Read), Cập nhật trạng thái đã dùng khi thanh toán (Update), và Xóa mã khỏi ví (Delete)."*
+  *"Thưa thầy/cô, đối với sản phẩm kỹ thuật số (bản quyền game/phần mềm), mỗi tài khoản chỉ cần mua đúng 1 giấy phép sở hữu (License). Vì vậy, hệ thống chuẩn hóa số lượng `Quantity = 1` và áp dụng bẫy nghiệp vụ chặn mua trùng lặp: nếu sản phẩm đã có trong giỏ hàng (`DaCoTrongGioHang`), hệ thống sẽ từ chối thêm mới và giải thích rõ mỗi tài khoản chỉ cần 1 bản quyền. Thao tác Update trong phân hệ Giỏ hàng được thể hiện rõ nét qua việc áp dụng/thay đổi Mã giảm giá (`UpdateVoucher`), cập nhật tổng tiền thanh toán động, và chuyển trạng thái voucher sang `DaSuDung = 1` sau khi thanh toán thành công."*
 
 ---
 
