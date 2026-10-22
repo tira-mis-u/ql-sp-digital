@@ -41,7 +41,7 @@ GO
 CREATE TABLE NguoiDung (
     MaNguoiDung INT IDENTITY(1,1) PRIMARY KEY,
     TenDangNhap NVARCHAR(50) NOT NULL UNIQUE,
-    MatKhauHash NVARCHAR(256) NOT NULL,
+    MatKhau NVARCHAR(255) NOT NULL,
     HoTen NVARCHAR(100) NOT NULL,
     Email NVARCHAR(100) NOT NULL UNIQUE,
     SoDienThoai NVARCHAR(20) NULL,
@@ -110,7 +110,6 @@ CREATE TABLE TepSanPham (
     DuongDanTep NVARCHAR(500) NOT NULL, -- Đường dẫn tương đối: Storage/Products/{MaSanPham}/setup.zip
     DinhDangTep NVARCHAR(50) NOT NULL, -- .zip, .exe, .rar, .iso, .pdf
     KichThuocByte BIGINT NOT NULL DEFAULT 0,
-    MaHashSHA256 NVARCHAR(64) NULL, -- Kiểm tra toàn vẹn file chống lỗi khi tải
     PhienBan NVARCHAR(50) NOT NULL DEFAULT '1.0.0',
     NgayTaiLen DATETIME NOT NULL DEFAULT GETDATE(),
     CONSTRAINT FK_TepSanPham_SanPham FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham) ON DELETE CASCADE
@@ -256,15 +255,15 @@ GO
 -- ============================================================================
 
 -- 5.1. Dữ liệu Người dùng (NguoiDung)
--- Mật khẩu mặc định: '123456' (Hash SHA-256: 8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92)
-INSERT INTO NguoiDung (TenDangNhap, MatKhauHash, HoTen, Email, SoDienThoai, VaiTro, SoDuVi, TrangThai)
+-- Mật khẩu mặc định: '123456'
+INSERT INTO NguoiDung (TenDangNhap, MatKhau, HoTen, Email, SoDienThoai, VaiTro, SoDuVi, TrangThai)
 VALUES
-(N'admin', N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', N'Quản Trị Viên Hệ Thống', N'admin@dpms.com', N'0901234567', N'QuanTriVien', 5000000.00, 1),
-(N'hieu_pham', N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', N'Phạm Trung Hiếu', N'hieu@gmail.com', N'0912345678', N'KhachHang', 1500000.00, 1),
-(N'thuan_tran', N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', N'Trần Quốc Thuận', N'thuan@gmail.com', N'0923456789', N'KhachHang', 850000.00, 1),
-(N'tri_le', N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', N'Lê Nguyễn Minh Trí', N'tri@gmail.com', N'0934567890', N'KhachHang', 200000.00, 1),
-(N'dam_pham', N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', N'Phạm Văn Đam', N'dam@gmail.com', N'0945678901', N'KhachHang', 600000.00, 1),
-(N'trung_nguyen', N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', N'Nguyễn Quốc Trung', N'trung@gmail.com', N'0956789012', N'KhachHang', 1200000.00, 1);
+(N'admin', N'123456', N'Quản Trị Viên Hệ Thống', N'admin@dpms.com', N'0901234567', N'QuanTriVien', 5000000.00, 1),
+(N'hieu_pham', N'123456', N'Phạm Trung Hiếu', N'hieu@gmail.com', N'0912345678', N'KhachHang', 1500000.00, 1),
+(N'thuan_tran', N'123456', N'Trần Quốc Thuận', N'thuan@gmail.com', N'0923456789', N'KhachHang', 850000.00, 1),
+(N'tri_le', N'123456', N'Lê Nguyễn Minh Trí', N'tri@gmail.com', N'0934567890', N'KhachHang', 200000.00, 1),
+(N'dam_pham', N'123456', N'Phạm Văn Đam', N'dam@gmail.com', N'0945678901', N'KhachHang', 600000.00, 1),
+(N'trung_nguyen', N'123456', N'Nguyễn Quốc Trung', N'trung@gmail.com', N'0956789012', N'KhachHang', 1200000.00, 1);
 GO
 
 -- 5.2. Danh mục sản phẩm (DanhMuc)
@@ -302,16 +301,16 @@ VALUES
 GO
 
 -- 5.5. Tệp sản phẩm kỹ thuật số (TepSanPham - Metadata & đường dẫn tương đối)
-INSERT INTO TepSanPham (MaSanPham, TenTep, DuongDanTep, DinhDangTep, KichThuocByte, MaHashSHA256, PhienBan)
+INSERT INTO TepSanPham (MaSanPham, TenTep, DuongDanTep, DinhDangTep, KichThuocByte, PhienBan)
 VALUES
-(1, N'Setup_CyberAdventure_v1.2.0.exe', N'Storage/Products/1/Setup_CyberAdventure_v1.2.0.exe', N'.exe', 15569256448, N'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', N'1.2.0'),
-(2, N'PhotoStudioPro_Installer_x64.zip', N'Storage/Products/2/PhotoStudioPro_Installer_x64.zip', N'.zip', 2684354560, N'a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e', N'3.0.1'),
-(3, N'LowPoly_SciFi_Assets_FBX.zip', N'Storage/Products/3/LowPoly_SciFi_Assets_FBX.zip', N'.zip', 891289600, N'5d41402abc4b2a76b9719d911017c592b23a9d363b7e416a7f80db40243454b5', N'1.0.0'),
-(4, N'Epic_Ambient_Audio_WAV.rar', N'Storage/Products/4/Epic_Ambient_Audio_WAV.rar', N'.rar', 1258291200, N'098f6bcd4621d373cade4e832627b4f62bf9f0951111626c927f879685a2ce2b', N'2.0.0'),
-(5, N'CodeMaster_Extension_vsix.zip', N'Storage/Products/5/CodeMaster_Extension_vsix.zip', N'.zip', 157286400, N'1f3870be274f6c49b3e31a0c6728957f4955b7ca4b2ffb2888cf3e27a6f3b0ba', N'1.5.4'),
-(6, N'FantasyHero_Rigged_Blender_FBX.zip', N'Storage/Products/6/FantasyHero_Rigged_Blender_FBX.zip', N'.zip', 440401920, N'7d793037a0760186574b0282f2f435e7090b8f1073860ee6e3a652ff5432095f', N'1.1.0'),
-(7, N'PixelBattleArena_Setup.exe', N'Storage/Products/7/PixelBattleArena_Setup.exe', N'.exe', 471859200, N'865c0c0b4ab0e063e5caa3387c1a874136e0d37e38ec2d480e6c278fb1a6a6f4', N'1.0.5'),
-(8, N'GameUI_Vector_Kit_SVG_PNG.zip', N'Storage/Products/8/GameUI_Vector_Kit_SVG_PNG.zip', N'.zip', 335544320, N'f073286f059e99c15848aa61730bb394d21e8609ee3631f79f046b0a17409fcf', N'2.1.0');
+(1, N'Setup_CyberAdventure_v1.2.0.exe', N'Storage/Products/1/Setup_CyberAdventure_v1.2.0.exe', N'.exe', 15569256448, N'1.2.0'),
+(2, N'PhotoStudioPro_Installer_x64.zip', N'Storage/Products/2/PhotoStudioPro_Installer_x64.zip', N'.zip', 2684354560, N'3.0.1'),
+(3, N'LowPoly_SciFi_Assets_FBX.zip', N'Storage/Products/3/LowPoly_SciFi_Assets_FBX.zip', N'.zip', 891289600, N'1.0.0'),
+(4, N'Epic_Ambient_Audio_WAV.rar', N'Storage/Products/4/Epic_Ambient_Audio_WAV.rar', N'.rar', 1258291200, N'2.0.0'),
+(5, N'CodeMaster_Extension_vsix.zip', N'Storage/Products/5/CodeMaster_Extension_vsix.zip', N'.zip', 157286400, N'1.5.4'),
+(6, N'FantasyHero_Rigged_Blender_FBX.zip', N'Storage/Products/6/FantasyHero_Rigged_Blender_FBX.zip', N'.zip', 440401920, N'1.1.0'),
+(7, N'PixelBattleArena_Setup.exe', N'Storage/Products/7/PixelBattleArena_Setup.exe', N'.exe', 471859200, N'1.0.5'),
+(8, N'GameUI_Vector_Kit_SVG_PNG.zip', N'Storage/Products/8/GameUI_Vector_Kit_SVG_PNG.zip', N'.zip', 335544320, N'2.1.0');
 GO
 
 -- 5.6. Mã giảm giá (MaGiamGia)

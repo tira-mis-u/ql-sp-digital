@@ -14,7 +14,9 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
         public NguoiDungDTO? LayThongTinHoSo(int maNguoiDung)
         {
             string query = @"
-                SELECT MaNguoiDung, TenDangNhap, MatKhauHash, HoTen, Email, SoDienThoai, VaiTro, SoDuVi, TrangThai, NgayTao
+                SELECT MaNguoiDung, TenDangNhap, 
+                       MatKhau,
+                       HoTen, Email, SoDienThoai, VaiTro, SoDuVi, TrangThai, NgayTao
                 FROM NguoiDung
                 WHERE MaNguoiDung = @MaNguoiDung";
 
@@ -28,7 +30,7 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
                 {
                     MaNguoiDung = Convert.ToInt32(row["MaNguoiDung"]),
                     TenDangNhap = row["TenDangNhap"].ToString() ?? string.Empty,
-                    MatKhauHash = row["MatKhauHash"].ToString() ?? string.Empty,
+                    MatKhau = row["MatKhau"].ToString() ?? string.Empty,
                     HoTen = row["HoTen"].ToString() ?? string.Empty,
                     Email = row["Email"].ToString() ?? string.Empty,
                     SoDienThoai = row["SoDienThoai"] != DBNull.Value ? row["SoDienThoai"].ToString() : null,
@@ -89,28 +91,27 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
         public bool DoiMatKhau(int maNguoiDung, string matKhauCu, string matKhauMoi, out string thongBao)
         {
             // Kiểm tra mật khẩu cũ
-            string queryCheckPass = "SELECT MatKhauHash FROM NguoiDung WHERE MaNguoiDung = @MaNguoiDung";
+            string queryCheckPass = "SELECT MatKhau FROM NguoiDung WHERE MaNguoiDung = @MaNguoiDung";
             SqlParameter[] pCheck = { new SqlParameter("@MaNguoiDung", maNguoiDung) };
-            object? hashObj = DatabaseHelper.ExecuteScalar(queryCheckPass, pCheck);
+            object? passObj = DatabaseHelper.ExecuteScalar(queryCheckPass, pCheck);
 
-            if (hashObj == null || hashObj == DBNull.Value)
+            if (passObj == null || passObj == DBNull.Value)
             {
                 thongBao = "Không tìm thấy thông tin tài khoản!";
                 return false;
             }
 
-            string storedHash = hashObj.ToString() ?? string.Empty;
-            if (!SecurityHelper.VerifyPassword(matKhauCu, storedHash))
+            string storedPass = passObj.ToString() ?? string.Empty;
+            if (matKhauCu != storedPass)
             {
                 thongBao = "Mật khẩu hiện tại không chính xác!";
                 return false;
             }
 
-            string newHash = SecurityHelper.ComputeSha256Hash(matKhauMoi);
-            string queryUpdate = "UPDATE NguoiDung SET MatKhauHash = @NewHash WHERE MaNguoiDung = @MaNguoiDung";
+            string queryUpdate = "UPDATE NguoiDung SET MatKhau = @NewPass WHERE MaNguoiDung = @MaNguoiDung";
             SqlParameter[] pUpdate =
             {
-                new SqlParameter("@NewHash", newHash),
+                new SqlParameter("@NewPass", matKhauMoi),
                 new SqlParameter("@MaNguoiDung", maNguoiDung)
             };
 
@@ -222,7 +223,6 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
                     DuongDanTep = row["DuongDanTep"].ToString() ?? string.Empty,
                     DinhDangTep = row["DinhDangTep"].ToString() ?? ".zip",
                     KichThuocByte = Convert.ToInt64(row["KichThuocByte"]),
-                    MaHashSHA256 = row["MaHashSHA256"] != DBNull.Value ? row["MaHashSHA256"].ToString() : null,
                     PhienBan = row["PhienBan"].ToString() ?? "1.0.0",
                     NgayTaiLen = Convert.ToDateTime(row["NgayTaiLen"])
                 };
@@ -238,13 +238,13 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
                 BEGIN
                     UPDATE TepSanPham
                     SET TenTep = @TenTep, DuongDanTep = @DuongDanTep, DinhDangTep = @DinhDangTep,
-                        KichThuocByte = @KichThuocByte, MaHashSHA256 = @MaHashSHA256, PhienBan = @PhienBan, NgayTaiLen = GETDATE()
+                        KichThuocByte = @KichThuocByte, PhienBan = @PhienBan, NgayTaiLen = GETDATE()
                     WHERE MaSanPham = @MaSanPham
                 END
                 ELSE
                 BEGIN
-                    INSERT INTO TepSanPham (MaSanPham, TenTep, DuongDanTep, DinhDangTep, KichThuocByte, MaHashSHA256, PhienBan, NgayTaiLen)
-                    VALUES (@MaSanPham, @TenTep, @DuongDanTep, @DinhDangTep, @KichThuocByte, @MaHashSHA256, @PhienBan, GETDATE())
+                    INSERT INTO TepSanPham (MaSanPham, TenTep, DuongDanTep, DinhDangTep, KichThuocByte, PhienBan, NgayTaiLen)
+                    VALUES (@MaSanPham, @TenTep, @DuongDanTep, @DinhDangTep, @KichThuocByte, @PhienBan, GETDATE())
                 END";
 
             SqlParameter[] parameters =
@@ -254,7 +254,6 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
                 new SqlParameter("@DuongDanTep", dto.DuongDanTep),
                 new SqlParameter("@DinhDangTep", dto.DinhDangTep),
                 new SqlParameter("@KichThuocByte", dto.KichThuocByte),
-                new SqlParameter("@MaHashSHA256", (object?)dto.MaHashSHA256 ?? DBNull.Value),
                 new SqlParameter("@PhienBan", dto.PhienBan)
             };
 

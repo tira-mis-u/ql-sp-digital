@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
@@ -17,6 +17,7 @@ namespace qlspdigital.DAL.Nhom2_Cart
             List<GioHangItemDTO> list = new List<GioHangItemDTO>();
 
             string query = @"
+                UPDATE GioHang SET SoLuong = 1 WHERE MaNguoiDung = @MaNguoiDung AND SoLuong > 1;
                 SELECT gh.MaGioHang, gh.MaNguoiDung, gh.MaSanPham, gh.SoLuong, gh.NgayThem,
                        sp.TenSanPham, sp.GiaBan AS DonGia, sp.HinhAnh
                 FROM GioHang gh
@@ -36,7 +37,7 @@ namespace qlspdigital.DAL.Nhom2_Cart
                     MaSanPham = Convert.ToInt32(row["MaSanPham"]),
                     TenSanPham = row["TenSanPham"].ToString() ?? string.Empty,
                     DonGia = Convert.ToDecimal(row["DonGia"]),
-                    SoLuong = Convert.ToInt32(row["SoLuong"]),
+                    SoLuong = 1, // Sản phẩm kỹ thuật số: mỗi bản quyền chỉ có số lượng là 1
                     HinhAnh = row["HinhAnh"] != DBNull.Value ? row["HinhAnh"].ToString() : null,
                     NgayThem = Convert.ToDateTime(row["NgayThem"])
                 });
@@ -45,7 +46,21 @@ namespace qlspdigital.DAL.Nhom2_Cart
             return list;
         }
 
-        // Thêm sản phẩm vào giỏ hàng (Create / Update nếu đã tồn tại)
+        // Kiểm tra sản phẩm đã có trong giỏ hàng chưa (chặn chọn lặp lại)
+        public bool DaCoTrongGioHang(int maNguoiDung, int maSanPham)
+        {
+            string query = "SELECT COUNT(1) FROM GioHang WHERE MaNguoiDung = @MaNguoiDung AND MaSanPham = @MaSanPham";
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@MaNguoiDung", maNguoiDung),
+                new SqlParameter("@MaSanPham", maSanPham)
+            };
+
+            object? result = DatabaseHelper.ExecuteScalar(query, parameters);
+            return result != null && Convert.ToInt32(result) > 0;
+        }
+
+        // Thêm sản phẩm vào giỏ hàng (Chặn nếu đã có trong giỏ, số lượng luôn là 1)
         public bool ThemVaoGioHang(int maNguoiDung, int maSanPham, int soLuong = 1)
         {
             string queryCheck = "SELECT MaGioHang, SoLuong FROM GioHang WHERE MaNguoiDung = @MaNguoiDung AND MaSanPham = @MaSanPham";
@@ -58,30 +73,27 @@ namespace qlspdigital.DAL.Nhom2_Cart
             DataTable dt = DatabaseHelper.ExecuteQuery(queryCheck, pCheck);
             if (dt.Rows.Count > 0)
             {
-                // Đã có trong giỏ hàng, cập nhật tăng số lượng
-                int maGioHang = Convert.ToInt32(dt.Rows[0]["MaGioHang"]);
-                int currentQty = Convert.ToInt32(dt.Rows[0]["SoLuong"]);
-                return CapNhatSoLuong(maGioHang, currentQty + soLuong);
+                // Sản phẩm số: đã có trong giỏ hàng thì chặn, không cho tăng số lượng
+                return false;
             }
             else
             {
-                // Chưa có, thêm mới dòng hàng
+                // Chưa có, thêm mới với số lượng luôn là 1
                 string queryInsert = @"
                     INSERT INTO GioHang (MaNguoiDung, MaSanPham, SoLuong, NgayThem)
-                    VALUES (@MaNguoiDung, @MaSanPham, @SoLuong, GETDATE())";
+                    VALUES (@MaNguoiDung, @MaSanPham, 1, GETDATE())";
 
                 SqlParameter[] pInsert =
                 {
                     new SqlParameter("@MaNguoiDung", maNguoiDung),
-                    new SqlParameter("@MaSanPham", maSanPham),
-                    new SqlParameter("@SoLuong", soLuong)
+                    new SqlParameter("@MaSanPham", maSanPham)
                 };
 
                 return DatabaseHelper.ExecuteNonQuery(queryInsert, pInsert) > 0;
             }
         }
 
-        // Cập nhật số lượng món trong giỏ (Update)
+        // Cập nhật số lượng món trong giỏ (Update) - với sản phẩm số thì luôn là 1
         public bool CapNhatSoLuong(int maGioHang, int soLuong)
         {
             if (soLuong <= 0)
@@ -89,10 +101,9 @@ namespace qlspdigital.DAL.Nhom2_Cart
                 return XoaKhoiGioHang(maGioHang);
             }
 
-            string query = "UPDATE GioHang SET SoLuong = @SoLuong WHERE MaGioHang = @MaGioHang";
+            string query = "UPDATE GioHang SET SoLuong = 1 WHERE MaGioHang = @MaGioHang";
             SqlParameter[] parameters =
             {
-                new SqlParameter("@SoLuong", soLuong),
                 new SqlParameter("@MaGioHang", maGioHang)
             };
 

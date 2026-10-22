@@ -27,7 +27,7 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
 
             List<SqlParameter> parameters = new List<SqlParameter>();
 
-            if (!string.IsNullOrWhiteSpace(tuKhoa))
+            if (!string.IsNullOrEmpty(tuKhoa) && tuKhoa.Trim() != "")
             {
                 query += " AND sp.TenSanPham LIKE @TuKhoa";
                 string safeKey = tuKhoa.Trim().Replace("[", "[[]");
@@ -66,6 +66,41 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
             return list;
         }
 
+        // Lấy thông tin chi tiết 1 sản phẩm cho quản trị viên theo MaSanPham
+        public SanPhamDTO? LayChiTietAdmin(int maSanPham)
+        {
+            string query = @"
+                SELECT sp.MaSanPham, sp.TenSanPham, sp.MoTa, sp.GiaBan, sp.HinhAnh,
+                       sp.DungLuongMB, sp.PhienBan, sp.MaDanhMuc, sp.MaNhaPhatHanh, sp.DangKinhDoanh, sp.NgayTao,
+                       dm.TenDanhMuc, ISNULL(nph.TenNhaPhatHanh, N'Đang cập nhật') AS TenNhaPhatHanh
+                FROM SanPham sp
+                INNER JOIN DanhMuc dm ON sp.MaDanhMuc = dm.MaDanhMuc
+                LEFT JOIN NhaPhatHanh nph ON sp.MaNhaPhatHanh = nph.MaNhaPhatHanh
+                WHERE sp.MaSanPham = @MaSanPham";
+
+            SqlParameter[] parameters = { new SqlParameter("@MaSanPham", maSanPham) };
+            DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
+            if (dt.Rows.Count == 0) return null;
+
+            DataRow row = dt.Rows[0];
+            return new SanPhamDTO
+            {
+                MaSanPham = Convert.ToInt32(row["MaSanPham"]),
+                TenSanPham = row["TenSanPham"].ToString() ?? string.Empty,
+                MoTa = row["MoTa"] != DBNull.Value ? row["MoTa"].ToString() : null,
+                GiaBan = Convert.ToDecimal(row["GiaBan"]),
+                HinhAnh = row["HinhAnh"] != DBNull.Value ? row["HinhAnh"].ToString() : null,
+                DungLuongMB = Convert.ToDecimal(row["DungLuongMB"]),
+                PhienBan = row["PhienBan"] != DBNull.Value ? row["PhienBan"].ToString() ?? "1.0.0" : "1.0.0",
+                MaDanhMuc = Convert.ToInt32(row["MaDanhMuc"]),
+                MaNhaPhatHanh = row["MaNhaPhatHanh"] != DBNull.Value ? Convert.ToInt32(row["MaNhaPhatHanh"]) : null,
+                DangKinhDoanh = Convert.ToBoolean(row["DangKinhDoanh"]),
+                NgayTao = Convert.ToDateTime(row["NgayTao"]),
+                TenDanhMuc = row["TenDanhMuc"].ToString() ?? string.Empty,
+                TenNhaPhatHanh = row["TenNhaPhatHanh"].ToString() ?? string.Empty
+            };
+        }
+
         // Thêm sản phẩm mới (Create)
         public bool ThemSanPham(SanPhamDTO sp, out int maSanPhamMoi)
         {
@@ -82,7 +117,7 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
                 new SqlParameter("@GiaBan", sp.GiaBan),
                 new SqlParameter("@HinhAnh", (object?)sp.HinhAnh ?? DBNull.Value),
                 new SqlParameter("@DungLuongMB", sp.DungLuongMB),
-                new SqlParameter("@PhienBan", string.IsNullOrWhiteSpace(sp.PhienBan) ? "1.0.0" : sp.PhienBan),
+                new SqlParameter("@PhienBan", string.IsNullOrEmpty(sp.PhienBan) ? "1.0.0" : sp.PhienBan),
                 new SqlParameter("@MaDanhMuc", sp.MaDanhMuc),
                 new SqlParameter("@MaNhaPhatHanh", sp.MaNhaPhatHanh.HasValue ? (object)sp.MaNhaPhatHanh.Value : DBNull.Value),
                 new SqlParameter("@DangKinhDoanh", sp.DangKinhDoanh)
@@ -121,7 +156,7 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
                 new SqlParameter("@GiaBan", sp.GiaBan),
                 new SqlParameter("@HinhAnh", (object?)sp.HinhAnh ?? DBNull.Value),
                 new SqlParameter("@DungLuongMB", sp.DungLuongMB),
-                new SqlParameter("@PhienBan", string.IsNullOrWhiteSpace(sp.PhienBan) ? "1.0.0" : sp.PhienBan),
+                new SqlParameter("@PhienBan", string.IsNullOrEmpty(sp.PhienBan) ? "1.0.0" : sp.PhienBan),
                 new SqlParameter("@MaDanhMuc", sp.MaDanhMuc),
                 new SqlParameter("@MaNhaPhatHanh", sp.MaNhaPhatHanh.HasValue ? (object)sp.MaNhaPhatHanh.Value : DBNull.Value),
                 new SqlParameter("@DangKinhDoanh", sp.DangKinhDoanh),

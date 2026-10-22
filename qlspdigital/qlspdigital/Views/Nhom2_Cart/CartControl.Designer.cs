@@ -322,6 +322,8 @@ namespace qlspdigital.Views.Nhom2_Cart
             this.btnOpenVouchers.BackColor = System.Drawing.Color.Transparent;
             this.btnOpenVouchers.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnOpenVouchers.FlatAppearance.BorderSize = 0;
+            this.btnOpenVouchers.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(35, 55, 75);
+            this.btnOpenVouchers.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(25, 40, 55);
             this.btnOpenVouchers.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnOpenVouchers.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Underline);
             this.btnOpenVouchers.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(192)))), ((int)(((byte)(244)))));
@@ -409,7 +411,7 @@ namespace qlspdigital.Views.Nhom2_Cart
             this.panelVoucher.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
+            this.AdjustLayout();
         }
 
         #endregion
@@ -437,5 +439,57 @@ namespace qlspdigital.Views.Nhom2_Cart
         private System.Windows.Forms.Label lblWalletBalance;
         private System.Windows.Forms.Button btnDeposit;
         private System.Windows.Forms.Button btnCheckout;
+
+        #region Windows Form Designer - Layout & UI Helpers
+#nullable enable
+
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public qlspdigital.Views.Main.MainForm? MainForm { get; set; }
+
+        protected override void OnResize(System.EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            if (dgvCart == null || panelBottomActions == null || panelSummary == null) return;
+            int totalW = System.Math.Max(600, this.ClientSize.Width);
+            int totalH = System.Math.Max(380, this.ClientSize.Height);
+
+            int summaryW = System.Math.Clamp((int)(totalW * 0.34), 320, 380);
+            int leftW = System.Math.Max(260, totalW - summaryW - 65);
+            int bottomH = 46;
+            int contentH = System.Math.Max(180, totalH - 55 - bottomH - 22);
+
+            // Left grid
+            dgvCart.Location = new System.Drawing.Point(25, 55);
+            dgvCart.Size = new System.Drawing.Size(leftW, contentH);
+
+            // Left bottom actions
+            panelBottomActions.Location = new System.Drawing.Point(25, 55 + contentH + 8);
+            panelBottomActions.Size = new System.Drawing.Size(leftW, bottomH);
+
+            // Right Summary panel
+            panelSummary.Location = new System.Drawing.Point(25 + leftW + 15, 55);
+            panelSummary.Size = new System.Drawing.Size(summaryW, System.Math.Max(380, contentH + bottomH + 8));
+
+            // Responsive voucher box inside panelSummary
+            if (txtVoucher != null && btnApplyVoucher != null)
+            {
+                int pnlW = panelSummary.ClientSize.Width - 40;
+                int btnW = 120;
+                int txtW = System.Math.Max(100, pnlW - btnW - 10);
+                txtVoucher.Width = txtW;
+                btnApplyVoucher.Location = new System.Drawing.Point(txtW + 10, 27);
+                btnApplyVoucher.Width = btnW;
+            }
+        }
+
+#nullable restore
+        #endregion
     }
 }

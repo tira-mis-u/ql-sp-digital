@@ -11,8 +11,6 @@ namespace qlspdigital.Controls
     public partial class ProductCardControl : UserControl
     {
         public int MaSanPham { get; private set; }
-        public event Action<int>? OnDetailClicked;
-        public event Action<int>? OnAddToCartClicked;
 
         public ProductCardControl()
         {
@@ -30,22 +28,13 @@ namespace qlspdigital.Controls
 
         private void BtnDetail_Click(object? sender, EventArgs e)
         {
-            OnDetailClicked?.Invoke(MaSanPham);
+            MainForm?.NavigateToProductDetail(MaSanPham);
         }
 
         private void BtnAddToCart_Click(object? sender, EventArgs e)
         {
-            OnAddToCartClicked?.Invoke(MaSanPham);
-        }
-
-        private void ProductCardControl_MouseEnter(object? sender, EventArgs e)
-        {
-            this.BackColor = Color.FromArgb(42, 71, 94);
-        }
-
-        private void ProductCardControl_MouseLeave(object? sender, EventArgs e)
-        {
-            this.BackColor = Color.FromArgb(30, 45, 62);
+            // Gọi phương thức thêm giỏ hàng trực tiếp từ StoreViewControl
+            StoreView?.XuLyThemVaoGio(MaSanPham);
         }
     }
 }

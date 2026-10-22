@@ -17,7 +17,7 @@ Mỗi thư mục đại diện cho một phân hệ độc lập, bao gồm tr�
 >   - `BLL/`: Nơi viết logic nghiệp vụ phân theo từng nhóm ([`../qlspdigital/qlspdigital/BLL/`](../qlspdigital/qlspdigital/BLL/)).
 >   - `DAL/`: Nơi viết các truy vấn ADO.NET SQL phân theo từng nhóm ([`../qlspdigital/qlspdigital/DAL/`](../qlspdigital/qlspdigital/DAL/)).
 >   - `DTOs/`: Nơi định nghĩa các class DTO truyền dữ liệu giữa các tầng ([`../qlspdigital/qlspdigital/DTOs/`](../qlspdigital/qlspdigital/DTOs/)).
->   - `Shared/`: Nơi lưu các tiện ích dùng chung: kết nối CSDL `DatabaseHelper.cs`, phiên `UserSession.cs`, băm `SecurityHelper.cs` ([`../qlspdigital/qlspdigital/Shared/`](../qlspdigital/qlspdigital/Shared/)).
+>   - `Shared/`: Nơi lưu các tiện ích dùng chung: kết nối CSDL `DatabaseHelper.cs`, phiên `UserSession.cs`, định dạng dữ liệu `FormatHelper.cs` ([`../qlspdigital/qlspdigital/Shared/`](../qlspdigital/qlspdigital/Shared/)).
 >   - `Database/`: Nơi lưu trữ kịch bản SQL thực thi trên SSMS ([`../Database/DPMS_Database_Master.sql`](../Database/DPMS_Database_Master.sql)).
 
 ---
@@ -46,6 +46,7 @@ Docs/
 │   ├── 03_CROSS_MODULE_INTEGRATION.md      # Quy trình mua hàng xuyên suốt & xử lý ngoại lệ
 │   └── 04_IN_DEPTH_BUSINESS_SPEC_AND_DEFENSE_QA.md # Khai thác chuyên sâu & 25 câu hỏi vấn đáp phòng thủ BTL
 ├── DEVELOPMENT_PLAN.md                     # Kế hoạch triển khai tổng thể & kiến trúc khung sườn MainForm
+├── FULL_SYSTEM_CRUD_AUDIT_AND_MATRIX.md    # [TÀI LIỆU CỐT LÕI] Đặc tả chi tiết & Ma trận đối soát 100% CRUD 5 nhóm
 ├── README.md                               # (Tài liệu này) Quy chuẩn làm việc, tra cứu CSDL & mục lục
 │
 ├── 01_Store_ProductDetails/                # [NHIỆM VỤ 1] Cửa hàng, Chi tiết sản phẩm & Đánh giá (Reviews)
@@ -96,11 +97,11 @@ Toàn bộ hệ thống cơ sở dữ liệu đã được chuẩn hóa và vi�
 
 | STT | Tên bảng | Khóa chính (PK) | Khóa ngoại (FK) & Liên kết | Mục đích sử dụng | Phân hệ phụ trách |
 |:---:|---|---|---|---|---|
-| 1 | `NguoiDung` | `MaNguoiDung` (IDENTITY) | *Không có* | Lưu tài khoản, mật khẩu hash, quyền (`QuanTriVien`/`KhachHang`) và số dư ví `SoDuVi`. | Nhóm 4 / Nhóm 3 / Nhóm 2 |
+| 1 | `NguoiDung` | `MaNguoiDung` (IDENTITY) | *Không có* | Lưu tài khoản, mật khẩu, quyền (`QuanTriVien`/`KhachHang`) và số dư ví `SoDuVi`. | Nhóm 4 / Nhóm 3 / Nhóm 2 |
 | 2 | `DanhMuc` | `MaDanhMuc` (IDENTITY) | *Không có* | Danh mục phân loại sản phẩm số (Game, Phần mềm, Mô hình 3D, Đồ họa). | Nhóm 3 |
 | 3 | `NhaPhatHanh` | `MaNhaPhatHanh` (IDENTITY) | *Không có* | Nhà phát hành / Studio sáng tạo sản phẩm. | Nhóm 1 / Nhóm 3 |
 | 4 | `SanPham` | `MaSanPham` (IDENTITY) | `MaDanhMuc` -> `DanhMuc`<br>`MaNhaPhatHanh` -> `NhaPhatHanh` | Thông tin sản phẩm số, tiêu đề, giá bán, phiên bản, dung lượng, đường dẫn ảnh. | Nhóm 1 / Nhóm 3 |
-| 5 | `TepSanPham` | `MaTep` (IDENTITY) | `MaSanPham` -> `SanPham` | Siêu dữ liệu tệp số (tên file, đường dẫn tương đối lưu file vật lý, định dạng `.zip`/`.exe`, kích thước byte, mã SHA256). | Nhóm 3 / Nhóm 5 |
+| 5 | `TepSanPham` | `MaTep` (IDENTITY) | `MaSanPham` -> `SanPham` | Siêu dữ liệu tệp số (tên file, đường dẫn tương đối lưu file vật lý, định dạng `.zip`/`.exe`, kích thước byte, phiên bản). | Nhóm 3 / Nhóm 5 |
 | 6 | `GioHang` | `MaGioHang` (IDENTITY) | `MaNguoiDung` -> `NguoiDung`<br>`MaSanPham` -> `SanPham` | Giỏ hàng tạm thời của khách hàng (ràng buộc `UNIQUE(MaNguoiDung, MaSanPham)`). | Nhóm 2 |
 | 7 | `MaGiamGia` | `MaGiamGiaId` (IDENTITY) | `MaNhaPhatHanh` -> `NhaPhatHanh` (NULL) | Mã ưu đãi: toàn hệ thống (NULL) hoặc theo Studio, loại giảm (`PhanTram`/`TienMat`), đơn tối thiểu, hạn dùng. | Nhóm 2 |
 | 8 | `MaGiamGiaNguoiDung` | `MaNguoiDungVoucherId` (IDENTITY) | `MaNguoiDung` -> `NguoiDung`<br>`MaGiamGiaId` -> `MaGiamGia` | Kho voucher cá nhân đã thu thập, trạng thái `DaSuDung`, ngày dùng. | Nhóm 2 |

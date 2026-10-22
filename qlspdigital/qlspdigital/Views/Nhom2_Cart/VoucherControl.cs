@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom2_Cart;
@@ -13,98 +12,23 @@ namespace qlspdigital.Views.Nhom2_Cart
     {
         private readonly MaGiamGiaService _voucherService;
 
-        public event Action? OnNavigateToCart;
-        public event Action<string>? OnNavigateToCartWithVoucher;
-
-
-
         public VoucherControl()
         {
             _voucherService = new MaGiamGiaService();
 
             InitializeComponent();
-            AdjustLayout();
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             LoadVouchers();
-
-            MaGiamGiaService.VoucherUpdated += () =>
-            {
-                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
-                {
-                    try { this.BeginInvoke(new Action(LoadVouchers)); } catch { }
-                }
-            };
-            UserSession.SessionChanged += () =>
-            {
-                if (!this.IsDisposed && !this.Disposing && this.IsHandleCreated)
-                {
-                    try { this.BeginInvoke(new Action(LoadVouchers)); } catch { }
-                }
-            };
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            AdjustLayout();
-        }
-
-        private void AdjustLayout()
-        {
-            if (panelCollect == null || dgvVouchers == null || panelBottomActions == null || txtVoucherCode == null || btnCollect == null || btnGoToCart == null || lblCodeTitle == null || lblListTitle == null) return;
-            int totalW = Math.Max(600, this.ClientSize.Width);
-            int totalH = Math.Max(380, this.ClientSize.Height);
-
-            int fullW = totalW - 50;
-            panelCollect.Location = new Point(25, 55);
-
-            // Bố cục khung thu thập mã: nhãn ở trên, ô nhập + nút ở dưới với khoảng cách rộng rãi, không bao giờ che dấu tiếng Việt
-            lblCodeTitle.Location = new Point(20, 14);
-            int inputY = lblCodeTitle.Bottom + 10;
-            int codeW = Math.Clamp((int)(fullW * 0.35), 280, 420);
-            txtVoucherCode.Location = new Point(20, inputY);
-            txtVoucherCode.Width = codeW;
-
-            btnCollect.Location = new Point(txtVoucherCode.Right + 15, inputY);
-            btnCollect.Size = new Size(160, 34);
-
-            btnGoToCart.Location = new Point(btnCollect.Right + 15, inputY);
-            btnGoToCart.Size = new Size(310, 34);
-
-            panelCollect.Size = new Size(fullW, txtVoucherCode.Bottom + 16);
-
-            // Bố cục bảng voucher
-            lblListTitle.Location = new Point(25, panelCollect.Bottom + 16);
-            int dgvY = lblListTitle.Bottom + 10;
-            int bottomH = 48;
-            int contentH = Math.Max(180, totalH - dgvY - bottomH - 20);
-
-            dgvVouchers.Location = new Point(25, dgvY);
-            dgvVouchers.Size = new Size(fullW, contentH);
-
-            panelBottomActions.Location = new Point(25, dgvVouchers.Bottom + 10);
-            panelBottomActions.Size = new Size(fullW, bottomH);
-
-            if (btnCollectSelected != null && btnApplySelected != null && btnDelete != null && lblVoucherGuide != null)
-            {
-                btnCollectSelected.Location = new Point(0, 4);
-                btnApplySelected.Location = new Point(btnCollectSelected.Right + 12, 4);
-                btnDelete.Location = new Point(btnApplySelected.Right + 12, 4);
-                int guideLeft = btnDelete.Right + 15;
-                lblVoucherGuide.Location = new Point(guideLeft, 6);
-                lblVoucherGuide.Size = new Size(Math.Max(150, fullW - guideLeft), 38);
-            }
         }
 
         public void LoadVouchers()
         {
             dgvVouchers.Rows.Clear();
             int userId = UserSession.IsLoggedIn ? UserSession.CurrentUserId : 0;
-            var list = _voucherService.LayDanhSachVoucher(userId);
+            List<MaGiamGiaDTO> list = _voucherService.LayDanhSachVoucher(userId);
 
-            foreach (var v in list)
+            foreach (MaGiamGiaDTO v in list)
             {
-                string mucGiam = v.LoaiGiamGia.Equals("PhanTram", StringComparison.OrdinalIgnoreCase)
+                string mucGiam = v.LoaiGiamGia == "PhanTram"
                     ? $"Giảm {v.GiaTriGiam:0.#}%"
                     : $"Giảm {FormatHelper.FormatCurrency(v.GiaTriGiam)}";
 
@@ -112,15 +36,8 @@ namespace qlspdigital.Views.Nhom2_Cart
                 if (v.DaSuDung) tt = "Đã sử dụng";
                 else if (v.DaThuThap) tt = "Đã trong ví";
 
-                int newRowIdx = dgvVouchers.Rows.Add(
-                    v.MaGiamGiaId,
-                    v.MaCode,
-                    v.TieuDe,
-                    mucGiam,
-                    FormatHelper.FormatCurrency(v.DonToiThieu),
-                    FormatHelper.FormatDate(v.NgayKetThuc),
-                    tt
-                );
+                int newRowIdx = dgvVouchers.Rows.Add(v.MaGiamGiaId, v.MaCode, v.TieuDe, mucGiam, FormatHelper.FormatCurrency(v.DonToiThieu), FormatHelper.FormatDate(v.NgayKetThuc), tt);
+
 
                 if (v.DaSuDung)
                 {
@@ -144,7 +61,7 @@ namespace qlspdigital.Views.Nhom2_Cart
             }
 
             string code = txtVoucherCode.Text.Trim();
-            if (string.IsNullOrWhiteSpace(code))
+            if (code == "")
             {
                 MessageBox.Show("Vui lòng nhập mã voucher cần thu thập!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -178,9 +95,9 @@ namespace qlspdigital.Views.Nhom2_Cart
                 return;
             }
 
-            var row = dgvVouchers.SelectedRows[0];
+            DataGridViewRow row = dgvVouchers.SelectedRows[0];
             if (row == null || row.Index < 0) return;
-            var val = (dgvVouchers.Columns.Contains("MaGiamGiaId") ? row.Cells["MaGiamGiaId"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            object? val = (dgvVouchers.Columns.Contains("MaGiamGiaId") ? row.Cells["MaGiamGiaId"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
             if (val == null) return;
             int voucherId = Convert.ToInt32(val);
             if (_voucherService.XoaVoucherCaNhan(voucherId, UserSession.CurrentUserId))
@@ -196,28 +113,27 @@ namespace qlspdigital.Views.Nhom2_Cart
 
         private void BtnGoToCart_Click(object? sender, EventArgs e)
         {
-            OnNavigateToCart?.Invoke();
+            MainForm?.NavigateToCart();
         }
 
         private bool _canCollectSelected = false;
         private bool _canApplySelected = false;
         private bool _canDeleteSelected = false;
 
-        private void SetBtnState(Button btn, bool enabled, Color activeColor, string text, ref bool flag)
+        private void SetBtnState(Button btn, bool enabled, Color activeColor, string text)
         {
             if (btn == null) return;
-            flag = enabled;
             btn.Text = text;
             if (enabled)
             {
-                btn.BackColor = activeColor;
+                btn.BackColor = ThemeHelper.GetButtonColor(activeColor);
                 btn.ForeColor = Color.White;
                 btn.Cursor = Cursors.Hand;
             }
             else
             {
-                btn.BackColor = Color.FromArgb(42, 54, 66);
-                btn.ForeColor = Color.FromArgb(105, 120, 135);
+                btn.BackColor = ThemeHelper.GetDisabledButtonColor();
+                btn.ForeColor = ThemeHelper.GetDisabledButtonTextColor();
                 btn.Cursor = Cursors.No;
             }
         }
@@ -228,49 +144,55 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             if (dgvVouchers.SelectedRows.Count == 0)
             {
-                SetBtnState(btnCollectSelected, false, Color.FromArgb(49, 98, 130), "Thu thập mã vào ví", ref _canCollectSelected);
-                SetBtnState(btnApplySelected, false, Color.FromArgb(90, 160, 45), "Dùng ngay (Cần thu thập trước)", ref _canApplySelected);
-                SetBtnState(btnDelete, false, Color.FromArgb(180, 40, 40), "Xóa khỏi ví", ref _canDeleteSelected);
+                _canCollectSelected = false;
+                _canApplySelected = false;
+                _canDeleteSelected = false;
+                SetBtnState(btnCollectSelected, false, Color.FromArgb(49, 98, 130), "Thu thập mã vào ví");
+                SetBtnState(btnApplySelected, false, Color.FromArgb(90, 160, 45), "Dùng ngay (Cần thu thập trước)");
+                SetBtnState(btnDelete, false, Color.FromArgb(180, 40, 40), "Xóa khỏi ví");
                 return;
             }
 
-            var row = dgvVouchers.SelectedRows[0];
+            DataGridViewRow row = dgvVouchers.SelectedRows[0];
             string tt = row.Cells["TrangThai"]?.Value?.ToString() ?? string.Empty;
 
             if (tt == "Chưa lưu")
             {
-                SetBtnState(btnCollectSelected, true, Color.FromArgb(49, 98, 130), "Thu thập mã vào ví", ref _canCollectSelected);
-                SetBtnState(btnApplySelected, false, Color.FromArgb(90, 160, 45), "Dùng ngay (Cần thu thập trước)", ref _canApplySelected);
-                SetBtnState(btnDelete, false, Color.FromArgb(180, 40, 40), "Xóa khỏi ví", ref _canDeleteSelected);
+                _canCollectSelected = true;
+                _canApplySelected = false;
+                _canDeleteSelected = false;
+                SetBtnState(btnCollectSelected, true, Color.FromArgb(49, 98, 130), "Thu thập mã vào ví");
+                SetBtnState(btnApplySelected, false, Color.FromArgb(90, 160, 45), "Dùng ngay (Cần thu thập trước)");
+                SetBtnState(btnDelete, false, Color.FromArgb(180, 40, 40), "Xóa khỏi ví");
             }
             else if (tt == "Đã trong ví")
             {
-                SetBtnState(btnCollectSelected, false, Color.FromArgb(49, 98, 130), "Đã có trong ví", ref _canCollectSelected);
-                SetBtnState(btnApplySelected, true, Color.FromArgb(90, 160, 45), "Dùng ngay (Áp dụng vào giỏ)", ref _canApplySelected);
-                SetBtnState(btnDelete, true, Color.FromArgb(180, 40, 40), "Xóa khỏi ví", ref _canDeleteSelected);
+                _canCollectSelected = false;
+                _canApplySelected = true;
+                _canDeleteSelected = true;
+                SetBtnState(btnCollectSelected, false, Color.FromArgb(49, 98, 130), "Đã có trong ví");
+                SetBtnState(btnApplySelected, true, Color.FromArgb(90, 160, 45), "Dùng ngay (Áp dụng vào giỏ)");
+                SetBtnState(btnDelete, true, Color.FromArgb(180, 40, 40), "Xóa khỏi ví");
             }
             else if (tt == "Đã sử dụng")
             {
-                SetBtnState(btnCollectSelected, false, Color.FromArgb(49, 98, 130), "Đã sử dụng", ref _canCollectSelected);
-                SetBtnState(btnApplySelected, false, Color.FromArgb(90, 160, 45), "Đã sử dụng (Hết lượt)", ref _canApplySelected);
-                SetBtnState(btnDelete, false, Color.FromArgb(180, 40, 40), "Xóa khỏi ví", ref _canDeleteSelected);
+                _canCollectSelected = false;
+                _canApplySelected = false;
+                _canDeleteSelected = false;
+                SetBtnState(btnCollectSelected, false, Color.FromArgb(49, 98, 130), "Đã sử dụng");
+                SetBtnState(btnApplySelected, false, Color.FromArgb(90, 160, 45), "Đã sử dụng (Hết lượt)");
+                SetBtnState(btnDelete, false, Color.FromArgb(180, 40, 40), "Xóa khỏi ví");
             }
         }
 
         private void DgvVouchers_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.RowIndex >= dgvVouchers.Rows.Count) return;
-            var row = dgvVouchers.Rows[e.RowIndex];
+            DataGridViewRow row = dgvVouchers.Rows[e.RowIndex];
             string tt = row.Cells["TrangThai"]?.Value?.ToString() ?? string.Empty;
 
-            if (tt == "Chưa lưu")
-            {
-                BtnCollectSelected_Click(null, EventArgs.Empty);
-            }
-            else if (tt == "Đã trong ví")
-            {
-                BtnApplySelected_Click(null, EventArgs.Empty);
-            }
+            if (tt == "Chưa lưu") BtnCollectSelected_Click(null, EventArgs.Empty);
+            else if (tt == "Đã trong ví") BtnApplySelected_Click(null, EventArgs.Empty);
         }
 
         private void BtnCollectSelected_Click(object? sender, EventArgs e)
@@ -287,9 +209,9 @@ namespace qlspdigital.Views.Nhom2_Cart
                 return;
             }
 
-            var row = dgvVouchers.SelectedRows[0];
+            DataGridViewRow row = dgvVouchers.SelectedRows[0];
             string code = row.Cells["MaCode"]?.Value?.ToString() ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(code)) return;
+            if (code == "") return;
 
             if (_voucherService.ThuThapVoucher(UserSession.CurrentUserId, code, out string msg))
             {
@@ -309,7 +231,7 @@ namespace qlspdigital.Views.Nhom2_Cart
                 MessageBox.Show("Chỉ có mã ưu đãi 'Đã trong ví' mới có thể áp dụng vào giỏ hàng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            var row = dgvVouchers.SelectedRows[0];
+            DataGridViewRow row = dgvVouchers.SelectedRows[0];
             string tt = row.Cells["TrangThai"]?.Value?.ToString() ?? string.Empty;
 
             if (tt != "Đã trong ví")
@@ -319,9 +241,9 @@ namespace qlspdigital.Views.Nhom2_Cart
             }
 
             string code = row.Cells["MaCode"]?.Value?.ToString() ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(code)) return;
+            if (code == "") return;
 
-            OnNavigateToCartWithVoucher?.Invoke(code);
+            MainForm?.NavigateToCart(code);
         }
     }
 }

@@ -16,11 +16,34 @@ namespace qlspdigital.Views.Main
             base.Dispose(disposing);
         }
 
+        protected override void OnLoad(System.EventArgs e)
+        {
+            base.OnLoad(e);
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            qlspdigital.Shared.ThemeHelper.ApplyTheme(this);
+            if (System.Windows.Forms.Screen.PrimaryScreen != null && System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Height <= 768)
+            {
+                this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            }
+        }
+
+        // Hàm chuyển đổi linh hoạt các UserControl vào vùng hiển thị chính
+        public void SwitchView(UserControl newView)
+        {
+            panelMainContent.Controls.Clear();
+            newView.Dock = DockStyle.Fill;
+            panelMainContent.Controls.Add(newView);
+            newView.BringToFront();
+            qlspdigital.Shared.ThemeHelper.ApplyTheme(newView);
+            UpdateCartBadge();
+        }
+
         #region Windows Form Designer generated code
         private void InitializeComponent()
         {
             this.panelHeader = new System.Windows.Forms.Panel();
             this.lblLogo = new System.Windows.Forms.Label();
+            this.btnThemeToggle = new System.Windows.Forms.Button();
             this.panelHeaderRight = new System.Windows.Forms.Panel();
             this.lblUserGreeting = new System.Windows.Forms.Label();
             this.btnHeaderAuth = new System.Windows.Forms.Button();
@@ -84,15 +107,34 @@ namespace qlspdigital.Views.Main
             // 
             // panelHeaderRight
             // 
+            this.panelHeaderRight.BackColor = System.Drawing.Color.FromArgb(16, 24, 34);
             this.panelHeaderRight.Controls.Add(this.lblUserGreeting);
+            this.panelHeaderRight.Controls.Add(this.btnThemeToggle);
             this.panelHeaderRight.Controls.Add(this.btnHeaderAuth);
             this.panelHeaderRight.Controls.Add(this.lblBalance);
             this.panelHeaderRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelHeaderRight.Location = new System.Drawing.Point(749, 10);
+            this.panelHeaderRight.Location = new System.Drawing.Point(634, 10);
             this.panelHeaderRight.Name = "panelHeaderRight";
             this.panelHeaderRight.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
-            this.panelHeaderRight.Size = new System.Drawing.Size(520, 45);
+            this.panelHeaderRight.Size = new System.Drawing.Size(635, 45);
             this.panelHeaderRight.TabIndex = 1;
+
+            // 
+            // btnThemeToggle
+            // 
+            this.btnThemeToggle.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnThemeToggle.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnThemeToggle.FlatAppearance.BorderSize = 1;
+            this.btnThemeToggle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnThemeToggle.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btnThemeToggle.Location = new System.Drawing.Point(225, 5);
+            this.btnThemeToggle.Name = "btnThemeToggle";
+            this.btnThemeToggle.Size = new System.Drawing.Size(130, 35);
+            this.btnThemeToggle.TabIndex = 3;
+            this.btnThemeToggle.Text = "☀️ Sáng";
+            this.btnThemeToggle.UseMnemonic = false;
+            this.btnThemeToggle.UseVisualStyleBackColor = false;
+            this.btnThemeToggle.Click += new System.EventHandler(this.BtnThemeToggle_Click);
 
             // 
             // lblBalance
@@ -122,7 +164,7 @@ namespace qlspdigital.Views.Main
             this.btnHeaderAuth.ForeColor = System.Drawing.Color.White;
             this.btnHeaderAuth.Location = new System.Drawing.Point(215, 5);
             this.btnHeaderAuth.Name = "btnHeaderAuth";
-            this.btnHeaderAuth.Size = new System.Drawing.Size(145, 35);
+            this.btnHeaderAuth.Size = new System.Drawing.Size(130, 35);
             this.btnHeaderAuth.TabIndex = 1;
             this.btnHeaderAuth.Text = "Đăng nhập";
             this.btnHeaderAuth.UseMnemonic = false;
@@ -607,5 +649,17 @@ namespace qlspdigital.Views.Main
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel lblStatusText;
         private System.Windows.Forms.ToolStripStatusLabel lblDbStatus;
+        public System.Windows.Forms.Button btnThemeToggle;
+
+        private void PanelHeader_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
+        {
+            if (sender is System.Windows.Forms.Panel pnl)
+            {
+                using (System.Drawing.Pen p = new System.Drawing.Pen(qlspdigital.Shared.ThemeHelper.GetHeaderBorderColor(), 1))
+                {
+                    e.Graphics.DrawLine(p, 0, pnl.Height - 1, pnl.Width, pnl.Height - 1);
+                }
+            }
+        }
     }
 }

@@ -196,5 +196,29 @@ namespace qlspdigital.Controls
         private System.Windows.Forms.Panel panelButtons;
         private System.Windows.Forms.Button btnDetail;
         private System.Windows.Forms.Button btnAddToCart;
+
+        #region Windows Form Designer - Layout & UI Helpers
+#nullable enable
+
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public qlspdigital.Views.Main.MainForm? MainForm { get; set; }
+
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public qlspdigital.Views.Nhom1_Store.StoreViewControl? StoreView { get; set; }
+
+        private void ProductCardControl_MouseEnter(object? sender, System.EventArgs e)
+        {
+            this.BackColor = qlspdigital.Shared.ThemeHelper.GetCardHoverColor();
+        }
+
+        private void ProductCardControl_MouseLeave(object? sender, System.EventArgs e)
+        {
+            this.BackColor = qlspdigital.Shared.ThemeHelper.GetCardNormalColor();
+        }
+
+#nullable restore
+        #endregion
     }
 }

@@ -9,19 +9,19 @@
 
 ## 0. Danh mục File & Thư mục phụ trách trực tiếp (Đường dẫn tương đối)
 
-| Phân tầng kiến trúc | Tên File / Thư mục cụ thể | Đường dẫn tương đối từ tài liệu này | Ý nghĩa chức năng |
-|---|---|---|---|
-| **Giao diện (Views)** | `ProductManageControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProductManageControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProductManageControl.cs) | UI 10: CRUD thông tin sản phẩm, giá bán, phiên bản, chọn tệp đính kèm |
-| **Giao diện (Views)** | `CategoryManageControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/CategoryManageControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/CategoryManageControl.cs) | UI 11: CRUD thể loại hàng hóa, đếm số SP trực thuộc, chặn xóa nếu có ràng buộc |
-| **Giao diện (Views)** | `ProfileControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProfileControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProfileControl.cs) | UI 8: Xem và cập nhật họ tên/email/SĐT, đổi mật khẩu băm SHA-256 |
-| **Nghiệp vụ (BLL)** | `SanPhamAdminService.cs` | [`../../qlspdigital/qlspdigital/BLL/Nhom3_ProductAdmin/SanPhamAdminService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom3_ProductAdmin/SanPhamAdminService.cs) | Xử lý logic sản phẩm (`SanPhamAdminService`), danh mục (`DanhMucService`) & hồ sơ (`HoSoService`) |
-| **Truy vấn CSDL (DAL)** | `SanPhamAdminRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/SanPhamAdminRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/SanPhamAdminRepository.cs) | Lệnh ADO.NET CRUD trực tiếp bảng `SanPham` (SELECT, INSERT, UPDATE, DELETE) |
-| **Truy vấn CSDL (DAL)** | `DanhMucRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/DanhMucRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/DanhMucRepository.cs) | Lệnh ADO.NET CRUD bảng `DanhMuc`, đếm `COUNT(sp)` |
-| **Truy vấn CSDL (DAL)** | `HoSoRepository.cs` (chứa class `TepSanPhamRepository`) | [`../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/HoSoRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/HoSoRepository.cs) | Lệnh ADO.NET UPDATE hồ sơ, đổi mật khẩu `NguoiDung`, lưu `CaiDatNguoiDung` & metadata `TepSanPham` |
-| **Dữ liệu truyền tải (DTO)** | `SanPhamDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/SanPhamDTO.cs`](../../qlspdigital/qlspdigital/DTOs/SanPhamDTO.cs) | Định nghĩa cấu trúc `SanPhamDTO` và `TepSanPhamDTO` |
-| **Dữ liệu truyền tải (DTO)** | `DanhMucDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/DanhMucDTO.cs`](../../qlspdigital/qlspdigital/DTOs/DanhMucDTO.cs) | Định nghĩa cấu trúc `DanhMucDTO` |
-| **Dữ liệu truyền tải (DTO)** | `NguoiDungDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/NguoiDungDTO.cs`](../../qlspdigital/qlspdigital/DTOs/NguoiDungDTO.cs) | Định nghĩa cấu trúc `NguoiDungDTO` |
-| **CSDL Master SQL** | `DPMS_Database_Master.sql` | [`../../Database/DPMS_Database_Master.sql`](../../Database/DPMS_Database_Master.sql) | Bảng sử dụng: `SanPham`, `TepSanPham`, `DanhMuc`, `NguoiDung` |
+| Phân tầng kiến trúc | File / Thư mục mã nguồn | Ý nghĩa chức năng |
+|---|---|---|
+| **Giao diện (Views)** | [`ProductManageControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProductManageControl.cs) | UI 10: CRUD thông tin sản phẩm, giá bán, phiên bản, chọn tệp đính kèm |
+| **Giao diện (Views)** | [`CategoryManageControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/CategoryManageControl.cs) | UI 11: CRUD thể loại hàng hóa, đếm số SP trực thuộc, chặn xóa nếu có ràng buộc |
+| **Giao diện (Views)** | [`ProfileControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom3_ProductAdmin/ProfileControl.cs) | UI 8: Xem và cập nhật họ tên/email/SĐT, đổi mật khẩu & cấu hình cài đặt |
+| **Nghiệp vụ (BLL)** | [`SanPhamAdminService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom3_ProductAdmin/SanPhamAdminService.cs) | Xử lý logic sản phẩm (`SanPhamAdminService`), danh mục (`DanhMucService`) & hồ sơ (`HoSoService`) |
+| **Truy vấn CSDL (DAL)** | [`SanPhamAdminRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/SanPhamAdminRepository.cs) | Lệnh ADO.NET CRUD trực tiếp bảng `SanPham` (SELECT, INSERT, UPDATE, DELETE) |
+| **Truy vấn CSDL (DAL)** | [`DanhMucRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/DanhMucRepository.cs) | Lệnh ADO.NET CRUD bảng `DanhMuc`, đếm `COUNT(sp)` |
+| **Truy vấn CSDL (DAL)** | [`TepSanPhamRepository` (trong `HoSoRepository.cs`)](../../qlspdigital/qlspdigital/DAL/Nhom3_ProductAdmin/HoSoRepository.cs) | Lệnh ADO.NET UPDATE hồ sơ, đổi mật khẩu `NguoiDung`, lưu `CaiDatNguoiDung` & metadata `TepSanPham` |
+| **Dữ liệu truyền tải (DTO)** | [`SanPhamDTO.cs`](../../qlspdigital/qlspdigital/DTOs/SanPhamDTO.cs) | Định nghĩa cấu trúc `SanPhamDTO` và `TepSanPhamDTO` |
+| **Dữ liệu truyền tải (DTO)** | [`DanhMucDTO.cs`](../../qlspdigital/qlspdigital/DTOs/DanhMucDTO.cs) | Định nghĩa cấu trúc `DanhMucDTO` |
+| **Dữ liệu truyền tải (DTO)** | [`NguoiDungDTO.cs`](../../qlspdigital/qlspdigital/DTOs/NguoiDungDTO.cs) | Định nghĩa cấu trúc `NguoiDungDTO` |
+| **CSDL Master SQL** | [`DPMS_Database_Master.sql`](../../Database/DPMS_Database_Master.sql) | Bảng sử dụng: `SanPham`, `TepSanPham`, `DanhMuc`, `NguoiDung` |
 
 ---
 
@@ -40,7 +40,7 @@
 |                                        BUSINESS LOGIC (BLL)                                        |
 |  - ISanPhamAdminService / SanPhamAdminService.cs - ITepSanPhamService / TepSanPhamService.cs       |
 |  - IDanhMucService / DanhMucService.cs           - IProfileService / ProfileService.cs             |
-|  - IFileStorageManager (Tính băm SHA-256, Đọc ghi FileStream 64KB Async, Dọn file mồ côi)         |
+|  - IFileStorageManager (Đọc ghi FileStream 64KB Async, Dọn file vật lý mồ côi)                     |
 +--------------------------------------------------+-------------------------------------------------+
                                                    | Entities / Parameters
 +--------------------------------------------------v-------------------------------------------------+
@@ -85,7 +85,6 @@
 | `DuongDanTep` | `NVARCHAR(500)` | | `NOT NULL` | Đường dẫn tương đối lưu trữ (VD: `Storage/Products/1/Setup.zip`). |
 | `DinhDangTep` | `VARCHAR(20)` | | `NOT NULL` | Đuôi mở rộng (.zip, .rar, .exe, .iso, .pdf). |
 | `KichThuocByte` | `BIGINT` | | `NOT NULL, CHECK > 0` | Kích thước chính xác tính theo Byte của tệp. |
-| `MaHashSHA256` | `VARCHAR(64)` | | `NOT NULL` | Chuỗi 64 ký tự băm kiểm tra toàn vẹn chống hỏng file. |
 | `PhienBan` | `NVARCHAR(50)` | | `NOT NULL, DEFAULT '1.0.0'` | Phiên bản riêng của tệp đính kèm. |
 | `NgayTaiLen` | `DATETIME` | | `NOT NULL, DEFAULT GETDATE()` | Thời điểm tải tệp lên hệ thống. |
 
@@ -102,7 +101,7 @@
 |---|---|:---:|---|---|
 | `MaNguoiDung` | `INT` | **PK** | `IDENTITY(1,1)` | Mã tài khoản (lấy từ phiên đăng nhập). |
 | `TenDangNhap` | `VARCHAR(50)` | | `NOT NULL, UNIQUE` | Tên đăng nhập (chỉ đọc trên UI 8, không cho sửa). |
-| `MatKhauHash` | `VARCHAR(256)` | | `NOT NULL` | Mật khẩu mã hóa băm SHA-256 (cập nhật khi đổi mật khẩu). |
+| `MatKhau` | `NVARCHAR(255)` | | `NOT NULL` | Mật khẩu tài khoản (cập nhật khi đổi mật khẩu). |
 | `HoTen` | `NVARCHAR(100)` | | `NOT NULL` | Họ và tên hiển thị của người dùng. |
 | `Email` | `VARCHAR(100)` | | `NOT NULL, UNIQUE` | Thư điện tử nhận thông báo. |
 | `VaiTro` | `NVARCHAR(20)` | | `NOT NULL, DEFAULT N'KhachHang'` | Vai trò tài khoản (`N'QuanTriVien'` hoặc `N'KhachHang'`). |
@@ -146,7 +145,7 @@
 | **UI 10: Quản lý SP** (`ProductManageControl`) | **Update** (Sửa sản phẩm) | `SanPham` | `MaSanPham = @MaSanPham`<br>Cập nhật thông tin giá, mô tả, thể loại | Cập nhật lại thông tin sản phẩm và hiển thị thông báo thành công. |
 | **UI 10: Quản lý SP** (`ProductManageControl`) | **Delete** (Ngưng kinh doanh) | `SanPham` | `MaSanPham = @MaSanPham`<br>Cập nhật `DangKinhDoanh = 0` (Xóa mềm) | Ẩn sản phẩm khỏi Store UI 2 nhưng giữ nguyên lịch sử đơn hàng. |
 | **UI 10: Quản lý Tệp số** (`ProductManageControl`) | **Read** (Danh sách tệp đính kèm) | `TepSanPham` | `MaSanPham = @MaSanPham`<br>`ORDER BY NgayTaiLen DESC` | Danh sách `List<TepSanPhamDTO>` nạp vào DataGridView tệp con. |
-| **UI 10: Quản lý Tệp số** (`ProductManageControl`) | **Create** (Upload tệp số) | `TepSanPham` | `@MaSanPham`, `@TenTep`, `@DuongDanTep`, `@DinhDangTep`, `@KichThuocByte`, `@MaHashSHA256`, `@PhienBan` | Ghi nhận metadata tệp; copy file vật lý bất đồng bộ có ProgressBar. |
+| **UI 10: Quản lý Tệp số** (`ProductManageControl`) | **Create** (Upload tệp số) | `TepSanPham` | `@MaSanPham`, `@TenTep`, `@DuongDanTep`, `@DinhDangTep`, `@KichThuocByte`, `@PhienBan` | Ghi nhận metadata tệp; copy file vật lý bất đồng bộ có ProgressBar. |
 | **UI 10: Quản lý Tệp số** (`ProductManageControl`) | **Delete** (Xóa tệp đính kèm) | `TepSanPham` | `MaTep = @MaTep` | Xóa bản ghi CSDL và dọn sạch file vật lý trên ổ cứng. |
 | **UI 11: Quản lý Danh mục** (`CategoryManageControl`) | **Read** (Xem danh mục) | `DanhMuc`, `SanPham` | `COUNT(sp.MaSanPham)` theo từng danh mục | Lưới danh mục kèm cột số lượng sản phẩm đang có. |
 | **UI 11: Quản lý Danh mục** (`CategoryManageControl`) | **Create** (Thêm danh mục) | `DanhMuc` | `@TenDanhMuc`, `@MoTa`, `TrangThai = 1` | Bổ sung thể loại mới vào ComboBox lọc của toàn hệ thống. |
@@ -154,7 +153,7 @@
 | **UI 11: Quản lý Danh mục** (`CategoryManageControl`) | **Delete** (Xóa danh mục) | `DanhMuc` | `MaDanhMuc = @MaDanhMuc` VÀ không có sản phẩm liên kết | Xóa danh mục nếu rỗng; cảnh báo lỗi nếu còn sản phẩm. |
 | **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Read** (Xem hồ sơ & Cài đặt) | `NguoiDung`, `CaiDatNguoiDung` | `MaNguoiDung = @UserId` | Điền thông tin lên form: Họ tên, Email, SĐT, Số dư ví, Ngày tạo và nạp 4 tùy chọn cài đặt hệ thống. |
 | **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Update** (Sửa thông tin & Realtime) | `NguoiDung` | `MaNguoiDung = @UserId`<br>Cập nhật `@HoTen`, `@Email`, `@SoDienThoai` | Cập nhật CSDL và gọi `UserSession.UpdateProfile()` bắn sự kiện `SessionChanged` đồng bộ tức thì lên Header `MainForm`. |
-| **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Update** (Đổi mật khẩu) | `NguoiDung` | `MaNguoiDung = @UserId AND MatKhauHash = @HashCu`<br>Cập nhật `MatKhauHash = @HashMoi` | Xác nhận đổi mật khẩu thành công bằng mã băm SHA-256 an toàn. |
+| **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Update** (Đổi mật khẩu) | `NguoiDung` | `MaNguoiDung = @UserId AND MatKhau = @MatKhauCu`<br>Cập nhật `MatKhau = @MatKhauMoi` | Xác nhận đổi mật khẩu thành công. |
 | **UI 8: Hồ sơ cá nhân** (`ProfileControl`) | **Create/Update** (Lưu cài đặt ứng dụng) | `CaiDatNguoiDung` | `MaNguoiDung = @UserId`<br>Cập nhật `@ThongBaoEmail`, `@GhiNhoDangNhap`, `@TuDongCapNhat`, `@XacNhanThanhToan` | Thực thi UPSERT vào CSDL, bảo đảm các checkbox cấu hình được lưu bền vững vào database thực tế. |
 
 ---
@@ -192,16 +191,13 @@ Khi phát triển chức năng thêm sản phẩm số tại **UI 10**, Admin b�
 | [BLL: Tự động trích xuất Tên, Đuôi file, Dung lượng FileInfo.Length (Byte)]                        |
 |         |                                                                                          |
 |         v                                                                                          |
-| [BLL: Tính mã băm SHA-256 của tệp nguồn (Đảm bảo chống lỗi tệp sau này)]                           |
-|         |                                                                                          |
-|         v                                                                                          |
 | [Tạo thư mục đích: Path.Combine(Application.StartupPath, "Storage", "Products", MaSanPham)]        |
 |         |                                                                                          |
 |         v                                                                                          |
 | [Async Chunk Copy: FileStream đọc ghi khối 64KB kèm ProgressBar trên UI (Không đơ Form)]          |
 |         |                                                                                          |
 |         v                                                                                          |
-| [DAL: INSERT INTO TepSanPham (Lưu đường dẫn tương đối, tên, kích thước, hash, phiên bản)]          |
+| [DAL: INSERT INTO TepSanPham (Lưu đường dẫn tương đối, tên, kích thước, phiên bản)]          |
 |         |                                                                                          |
 |         v                                                                                          |
 | [UI 10: Nạp lại DataGridView danh sách tệp đính kèm -> Hoàn tất!]                                  |
@@ -220,10 +216,10 @@ Khi phát triển chức năng thêm sản phẩm số tại **UI 10**, Admin b�
    - CSDL **chỉ lưu đường dẫn tương đối**: `Storage/Products/{MaSanPham}/{TenTep}`.
    - Mã C# luôn phân giải động qua `Path.Combine(Application.StartupPath, duongDanTep.Replace("/", "\\"))`.
 
-#### Bài toán 3: Tự động tính toán Checksum SHA-256 phòng ngừa file hỏng
-- **Cái khó:** File cài đặt số kích thước lớn rất dễ bị hỏng (corrupt) trong quá trình truyền dữ liệu mạng hoặc sao chép ổ cứng. Nếu không có cơ chế đối chiếu, khách hàng tải về sẽ không biết tại sao không cài được game.
+#### Bài toán 3: Quản lý siêu dữ liệu và tệp đính kèm an toàn
+- **Cái khó:** Tệp cài đặt sản phẩm cần được tổ chức ngăn nắp, đồng bộ giữa CSDL và ổ đĩa vật lý.
 - **Giải pháp:**
-   - Ngay khi Admin up tệp tại UI 10, hệ thống tự động băm file bằng `SHA256CryptoServiceProvider` và lưu chuỗi 64 ký tự hex vào `TepSanPham.MaHashSHA256`.
+   - Ngay khi Admin up tệp tại UI 10, hệ thống tự động lưu metadata tệp vào `TepSanPham` và sao chép tệp vật lý vào thư mục lưu trữ `Storage/Products/...`.
    - Phân hệ Thư viện (Nhóm 5) khi tải file về máy khách sẽ băm lại và so khớp. Nếu khớp 100% mới báo hoàn tất.
 
 #### Bài toán 4: Quản lý quan hệ 1-N (1 Sản phẩm có nhiều tệp số)
@@ -272,7 +268,6 @@ namespace DPMS.Shared.DTOs
         public string DuongDanTep { get; set; }  // Đường dẫn tương đối: Storage/Products/1/Setup.zip
         public string DinhDangTep { get; set; }  // .zip, .exe, .rar, .iso, .pdf
         public long KichThuocByte { get; set; }
-        public string MaHashSHA256 { get; set; }
         public string PhienBan { get; set; }
         public DateTime NgayTaiLen { get; set; }
 
@@ -347,7 +342,6 @@ namespace DPMS.BLL.Interfaces
     // Tiện ích File Storage Engine
     public interface IFileStorageManager
     {
-        string ComputeSha256(string filePath);
         Task CopyFileWithProgressAsync(string sourcePath, string destPath, IProgress<int> progress);
         void DeletePhysicalFile(string relativeDbPath);
         string GetAbsolutePath(string relativeDbPath);
@@ -366,7 +360,7 @@ namespace DPMS.BLL.Interfaces
 2. **Upload tệp đính kèm bất đồng bộ:**
    - Admin bấm **[ 📁 Chọn tệp... ]** $\rightarrow$ chọn file `.zip` / `.exe` / `.rar`.
    - Giao diện gọi `ITepSanPhamService.UploadTepAsync`:
-     - BLL tính toán mã băm SHA-256 ngầm qua `IFileStorageManager.ComputeSha256`.
+     - Trích xuất thông tin tệp: tên, phần mở rộng, dung lượng byte, phiên bản.
      - Tạo thư mục tương đối `Storage/Products/{MaSanPham}`.
      - Sao chép file nhị phân theo khối buffer 64KB không làm đơ giao diện (`Task.Run` + `IProgress<int>` cập nhật `ProgressBar`).
      - Ghi nhận bản ghi mới vào bảng `TepSanPham`.
@@ -392,8 +386,7 @@ namespace DPMS.BLL.Interfaces
    - `MainForm` lắng nghe sự kiện qua `SessionChanged += UpdateUserInterfaceSession` và cập nhật tức thì nhãn câu chào `lblUserGreeting` ("Xin chào, {HoTen}") trên Header thanh điều hướng mà không cần người dùng thao tác F5 hay đăng nhập lại.
 2. **Đổi mật khẩu bảo mật:**
    - Khách nhập Mật khẩu hiện tại, Mật khẩu mới, Xác nhận mật khẩu mới.
-   - BLL băm mật khẩu cũ bằng SHA-256: `Hash(MatKhauCu)`.
-   - Đối chiếu với `MatKhauHash` hiện tại trong CSDL. Nếu khớp, tính `Hash(MatKhauMoi)` và thực thi cập nhật `MatKhauHash`.
+   - Đối chiếu với `MatKhau` hiện tại trong CSDL. Nếu khớp, thực thi cập nhật `MatKhau = @MatKhauMoi`.
    - Báo đổi mật khẩu thành công và thông báo lưu ý bảo mật.
 3. **Lưu cấu hình cài đặt ứng dụng vào CSDL:**
    - Người dùng tick/untick 4 tùy chọn (Thông báo email, Ghi nhớ đăng nhập, Tự động cập nhật, Xác nhận thanh toán).
@@ -413,6 +406,6 @@ namespace DPMS.BLL.Interfaces
    - Khi mở lại tab Hồ sơ, hệ thống tự động nạp cấu hình đã lưu để hiển thị lại chính xác trạng thái checkbox của người dùng.
 4. **Hiển thị khung Nguyên tắc bảo mật tài khoản Digital Steam:**
    - Sử dụng layout tự co giãn linh hoạt: `lblSecurityContent.AutoSize = true`, giới hạn `MaximumSize = new Size(panelWidth - 40, 0)` và gán `panelSecurityBanner.Height = Math.Max(180, lblSecurityContent.Bottom + 25)`.
-   - Đảm bảo hiển thị trọn vẹn 4 điều khoản bảo mật chuẩn Steam (Mật khẩu mạnh, Không chia sẻ OTP, Cảnh báo giao dịch ví, Kiểm tra hash SHA-256) mà không bao giờ bị cắt cụt phần bullet list bên dưới.
+   - Đảm bảo hiển thị trọn vẹn 4 điều khoản bảo mật chuẩn Steam (Mật khẩu mạnh, Không chia sẻ OTP, Cảnh báo giao dịch ví, Bảo vệ tài khoản) mà không bao giờ bị cắt cụt phần bullet list bên dưới.
 5. **Quy tắc thiết kế nút bấm (Button Policy):**
    - Không lạm dụng icon emoji trong text của các nút bấm hành động (Ví dụ dùng: `Lưu thay đổi hồ sơ`, `Lưu mật khẩu mới`, `Lưu cài đặt ứng dụng`). Giữ giao diện chuẩn mực, thanh lịch và đồng nhất giữa các màn hình.

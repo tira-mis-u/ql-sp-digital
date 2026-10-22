@@ -16,29 +16,20 @@ namespace qlspdigital.Views.Main
     public partial class MainForm : Form
     {
         private Button? _activeMenuButton = null;
+        public Button? ActiveMenuButton => _activeMenuButton;
 
         public MainForm()
         {
             InitializeComponent();
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
-            SubscribeEvents();
         }
 
-        private void PanelHeader_Paint(object? sender, PaintEventArgs e)
-        {
-            if (sender is Panel pnl)
-            {
-                using var p = new Pen(Color.FromArgb(35, 48, 68), 1);
-                e.Graphics.DrawLine(p, 0, pnl.Height - 1, pnl.Width, pnl.Height - 1);
-            }
-        }
 
         private void SetActiveMenu(Button? btn)
         {
             if (_activeMenuButton != null && _activeMenuButton != btn)
             {
-                _activeMenuButton.BackColor = Color.FromArgb(18, 25, 35);
-                _activeMenuButton.ForeColor = Color.FromArgb(199, 213, 224);
+                _activeMenuButton.BackColor = ThemeHelper.IsDarkMode ? Color.FromArgb(18, 25, 35) : Color.FromArgb(248, 249, 251);
+                _activeMenuButton.ForeColor = ThemeHelper.IsDarkMode ? Color.FromArgb(199, 213, 224) : Color.FromArgb(71, 85, 105);
                 _activeMenuButton.Font = new Font("Segoe UI", 9.5f, FontStyle.Regular);
             }
 
@@ -46,7 +37,7 @@ namespace qlspdigital.Views.Main
 
             if (_activeMenuButton != null)
             {
-                _activeMenuButton.BackColor = Color.FromArgb(49, 98, 130);
+                _activeMenuButton.BackColor = ThemeHelper.IsDarkMode ? Color.FromArgb(49, 98, 130) : Color.FromArgb(14, 116, 144);
                 _activeMenuButton.ForeColor = Color.White;
                 _activeMenuButton.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             }
@@ -56,8 +47,8 @@ namespace qlspdigital.Views.Main
         {
             if (sender is Button btn && btn != _activeMenuButton)
             {
-                btn.BackColor = Color.FromArgb(42, 71, 94);
-                btn.ForeColor = Color.White;
+                btn.BackColor = ThemeHelper.IsDarkMode ? Color.FromArgb(42, 71, 94) : Color.FromArgb(241, 245, 249);
+                btn.ForeColor = ThemeHelper.IsDarkMode ? Color.White : Color.FromArgb(15, 23, 42);
             }
         }
 
@@ -65,8 +56,8 @@ namespace qlspdigital.Views.Main
         {
             if (sender is Button btn && btn != _activeMenuButton)
             {
-                btn.BackColor = Color.FromArgb(18, 25, 35);
-                btn.ForeColor = Color.FromArgb(199, 213, 224);
+                btn.BackColor = ThemeHelper.IsDarkMode ? Color.FromArgb(18, 25, 35) : Color.FromArgb(248, 249, 251);
+                btn.ForeColor = ThemeHelper.IsDarkMode ? Color.FromArgb(199, 213, 224) : Color.FromArgb(71, 85, 105);
             }
         }
 
@@ -85,22 +76,12 @@ namespace qlspdigital.Views.Main
         private void BtnMenuUserManage_Click(object? sender, EventArgs e) => NavigateToUserManage();
         private void LblBalance_Click(object? sender, EventArgs e) => NavigateToWallet();
 
-        private void SubscribeEvents()
-        {
-            UserSession.SessionChanged += UpdateUserInterfaceSession;
-            UserSession.BalanceChanged += (bal) =>
-            {
-                lblBalance.Text = $"Ví: {FormatHelper.FormatCurrency(bal)}";
-            };
-            GioHangService.CartUpdated += UpdateCartBadge;
-        }
-
-        private void UpdateCartBadge()
+        public void UpdateCartBadge()
         {
             int count = 0;
             if (UserSession.IsLoggedIn)
             {
-                var cartService = new GioHangService();
+                GioHangService cartService = new GioHangService();
                 count = cartService.LayTongSoLuongItem(UserSession.CurrentUserId);
             }
             btnMenuCart.Text = $"🛍️ Giỏ hàng ({count})";
@@ -108,27 +89,18 @@ namespace qlspdigital.Views.Main
 
         private void MainForm_Load(object? sender, EventArgs e)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
-
-            // Kích hoạt giao diện Dark Mode (thanh cuộn và thanh tiêu đề)
-            ThemeHelper.ApplyDarkMode(this);
-
-            // Tự động tối ưu cửa sổ cho màn hình laptop nhỏ (<= 768p)
-            if (Screen.PrimaryScreen != null && Screen.PrimaryScreen.WorkingArea.Height <= 768)
-            {
-                this.WindowState = FormWindowState.Maximized;
-            }
+            UpdateThemeToggleVisuals();
 
             // Kiểm tra kết nối CSDL
             if (DatabaseHelper.TestConnection(out string msg))
             {
                 lblDbStatus.Text = "🟢 CSDL: DPMS_Db (Kết nối thành công)";
-                lblDbStatus.ForeColor = Color.FromArgb(164, 208, 7);
+                lblDbStatus.ForeColor = ThemeHelper.IsDarkMode ? Color.FromArgb(164, 208, 7) : Color.FromArgb(22, 163, 74);
             }
             else
             {
                 lblDbStatus.Text = "🔴 CSDL: Lỗi kết nối DPMS_Db";
-                lblDbStatus.ForeColor = Color.FromArgb(231, 76, 60);
+                lblDbStatus.ForeColor = ThemeHelper.IsDarkMode ? Color.FromArgb(231, 76, 60) : Color.FromArgb(220, 38, 38);
                 MessageBox.Show($"Không thể kết nối CSDL SQL Server!\n{msg}\n\nVui lòng đảm bảo SQL Server đang chạy và đã thực thi file script 'Database/DPMS_Database_Master.sql'.", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
@@ -137,17 +109,34 @@ namespace qlspdigital.Views.Main
             UpdateUserInterfaceSession();
         }
 
-        // Hàm dùng chung chuyển đổi linh hoạt các UserControl vào vùng chính
-        public void SwitchView(UserControl newView)
+        private void BtnThemeToggle_Click(object? sender, EventArgs e)
         {
-            panelMainContent.Controls.Clear();
-            newView.Dock = DockStyle.Fill;
-            panelMainContent.Controls.Add(newView);
-            newView.BringToFront();
-            ThemeHelper.ApplyDarkMode(newView);
+            ThemeHelper.ToggleTheme(this);
+            UpdateThemeToggleVisuals();
+            UpdateUserInterfaceSession();
+            SetActiveMenu(_activeMenuButton);
         }
 
-        private void UpdateUserInterfaceSession()
+        public void UpdateThemeToggleVisuals()
+        {
+            if (btnThemeToggle == null) return;
+            if (ThemeHelper.IsDarkMode)
+            {
+                btnThemeToggle.Text = "☀️ Sáng";
+                btnThemeToggle.BackColor = Color.FromArgb(27, 40, 56);
+                btnThemeToggle.ForeColor = Color.FromArgb(102, 192, 244);
+                btnThemeToggle.FlatAppearance.BorderColor = Color.FromArgb(42, 71, 94);
+            }
+            else
+            {
+                btnThemeToggle.Text = "🌙 Tối";
+                btnThemeToggle.BackColor = Color.FromArgb(241, 245, 249);
+                btnThemeToggle.ForeColor = Color.FromArgb(15, 23, 42);
+                btnThemeToggle.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+            }
+        }
+
+        public void UpdateUserInterfaceSession()
         {
             bool isAdmin = UserSession.IsLoggedIn && UserSession.IsAdmin;
 
@@ -156,14 +145,14 @@ namespace qlspdigital.Views.Main
                 lblUserGreeting.Text = $"{UserSession.CurrentFullName} ({(UserSession.IsAdmin ? "Admin" : "Khách Hàng")})";
                 lblBalance.Text = $"Ví: {FormatHelper.FormatCurrency(UserSession.CurrentBalance)}";
                 btnHeaderAuth.Text = "Đăng xuất";
-                btnHeaderAuth.BackColor = Color.FromArgb(180, 40, 40);
+                btnHeaderAuth.BackColor = ThemeHelper.GetButtonColor(Color.FromArgb(180, 40, 40));
             }
             else
             {
                 lblUserGreeting.Text = "Khách (Chưa đăng nhập)";
                 lblBalance.Text = "Ví: 0 ₫";
                 btnHeaderAuth.Text = "Đăng nhập";
-                btnHeaderAuth.BackColor = Color.FromArgb(49, 98, 130);
+                btnHeaderAuth.BackColor = ThemeHelper.GetButtonColor(Color.FromArgb(49, 98, 130));
             }
 
             // Phân quyền chuẩn RBAC: Chỉ tài khoản Quản trị viên (QuanTriVien) mới hiển thị menu Admin
@@ -175,6 +164,13 @@ namespace qlspdigital.Views.Main
             btnMenuUserManage.Visible = isAdmin;
 
             UpdateCartBadge();
+
+            // Nếu đang xem Store, reload lại để ẩn/hiện sản phẩm đã mua theo session mới
+            if (panelMainContent.Controls.Count > 0 &&
+                panelMainContent.Controls[0] is qlspdigital.Views.Nhom1_Store.StoreViewControl activeStore)
+            {
+                activeStore.LoadProducts();
+            }
         }
 
         // ==========================================
@@ -186,16 +182,13 @@ namespace qlspdigital.Views.Main
         {
             if (!UserSession.IsLoggedIn)
             {
-                var result = MessageBox.Show(
+                DialogResult result = MessageBox.Show(
                     $"Bạn cần đăng nhập tài khoản để truy cập '{tenChucNang}'.\nBạn có muốn chuyển sang màn hình Đăng nhập ngay bây giờ không?",
                     "Yêu cầu đăng nhập",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Information);
 
-                if (result == DialogResult.Yes)
-                {
-                    NavigateToLogin();
-                }
+                if (result == DialogResult.Yes) NavigateToLogin();
                 return false;
             }
             return true;
@@ -231,7 +224,7 @@ namespace qlspdigital.Views.Main
         {
             SetActiveMenu(btnMenuStore);
             StoreViewControl store = new StoreViewControl();
-            store.OnViewProductDetail += (spId) => NavigateToProductDetail(spId);
+            store.MainForm = this;
             SwitchView(store);
             lblStatusText.Text = "Đang xem: Cửa hàng sản phẩm số (Nhóm 1 - Lê Nguyễn Minh Trí)";
         }
@@ -240,9 +233,8 @@ namespace qlspdigital.Views.Main
         {
             SetActiveMenu(btnMenuStore);
             ProductDetailControl detail = new ProductDetailControl();
+            detail.MainForm = this;
             detail.LoadProductDetail(maSanPham);
-            detail.OnBackToStore += () => NavigateToStore();
-            detail.OnViewReviews += (id) => NavigateToReviews(id);
             SwitchView(detail);
             lblStatusText.Text = "Đang xem: Chi tiết sản phẩm số (Nhóm 1 - Lê Nguyễn Minh Trí)";
         }
@@ -262,13 +254,11 @@ namespace qlspdigital.Views.Main
 
             SetActiveMenu(btnMenuCart);
             CartControl cart = new CartControl();
-            if (!string.IsNullOrWhiteSpace(initialVoucherCode))
+            cart.MainForm = this;
+            if (initialVoucherCode != null && initialVoucherCode.Trim() != "")
             {
                 cart.SetInitialVoucherCode(initialVoucherCode);
             }
-            cart.OnNavigateToLibrary += () => NavigateToLibrary();
-            cart.OnNavigateToWallet += () => NavigateToWallet();
-            cart.OnNavigateToVouchers += () => NavigateToVouchers();
             SwitchView(cart);
             lblStatusText.Text = "Đang xem: Giỏ hàng mua sắm & Thanh toán (Nhóm 2 - Nguyễn Quốc Trung)";
         }
@@ -279,6 +269,7 @@ namespace qlspdigital.Views.Main
 
             SetActiveMenu(btnMenuWallet);
             WalletControl wallet = new WalletControl();
+            wallet.MainForm = this;
             SwitchView(wallet);
             lblStatusText.Text = "Đang xem: Ví tài khoản & Nạp tiền mô phỏng (Nhóm 2 - Nguyễn Quốc Trung)";
         }
@@ -289,8 +280,7 @@ namespace qlspdigital.Views.Main
 
             SetActiveMenu(btnMenuVouchers);
             VoucherControl voucher = new VoucherControl();
-            voucher.OnNavigateToCart += () => NavigateToCart();
-            voucher.OnNavigateToCartWithVoucher += (code) => NavigateToCart(code);
+            voucher.MainForm = this;
             SwitchView(voucher);
             lblStatusText.Text = "Đang xem: Kho mã ưu đãi & Voucher giảm giá (Nhóm 2 - Nguyễn Quốc Trung)";
         }
@@ -379,8 +369,7 @@ namespace qlspdigital.Views.Main
         {
             SetActiveMenu(null);
             LoginControl login = new LoginControl();
-            login.OnLoginSuccess += () => NavigateToStore();
-            login.OnNavigateToRegister += () => NavigateToRegister();
+            login.MainForm = this;
             SwitchView(login);
             lblStatusText.Text = "Đang xem: Đăng nhập tài khoản (Nhóm 4 - Trần Quốc Thuận)";
         }
@@ -389,7 +378,7 @@ namespace qlspdigital.Views.Main
         {
             SetActiveMenu(null);
             RegisterControl register = new RegisterControl();
-            register.OnNavigateToLogin += () => NavigateToLogin();
+            register.MainForm = this;
             SwitchView(register);
             lblStatusText.Text = "Đang xem: Đăng ký thành viên mới (Nhóm 4 - Trần Quốc Thuận)";
         }
@@ -401,6 +390,7 @@ namespace qlspdigital.Views.Main
                 if (MessageBox.Show("Bạn có muốn đăng xuất khỏi hệ thống?", "Xác nhận đăng xuất", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     UserSession.Logout();
+                    UpdateUserInterfaceSession();
                     NavigateToStore();
                 }
             }

@@ -9,18 +9,18 @@
 
 ## 0. Danh mục File & Thư mục phụ trách trực tiếp (Đường dẫn tương đối)
 
-| Phân tầng kiến trúc | Tên File / Thư mục cụ thể | Đường dẫn tương đối từ tài liệu này | Ý nghĩa chức năng |
-|---|---|---|---|
-| **Giao diện (Views)** | `CartControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom2_Cart/CartControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/CartControl.cs) | UI 4: Giỏ hàng, sửa số lượng, áp dụng Voucher, nút Thanh toán 1-Click ví |
-| **Giao diện (Views)** | `WalletControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom2_Cart/WalletControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/WalletControl.cs) | UI 5: Ví tài khoản, nạp tiền nhanh 50k-500k, lịch sử biến động số dư |
-| **Giao diện (Views)** | `VoucherControl.cs` | [`../../qlspdigital/qlspdigital/Views/Nhom2_Cart/VoucherControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/VoucherControl.cs) | UI 15: Kho ưu đãi, nhập mã thu thập voucher (Create), xóa voucher (Delete) |
-| **Nghiệp vụ (BLL)** | `GioHangService.cs` | [`../../qlspdigital/qlspdigital/BLL/Nhom2_Cart/GioHangService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom2_Cart/GioHangService.cs) | Xử lý nghiệp vụ giỏ hàng (`GioHangService`), ví (`ViTaiKhoanService`), voucher (`MaGiamGiaService`) & thanh toán (`ThanhToanService`) |
-| **Truy vấn CSDL (DAL)** | `GioHangRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/GioHangRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/GioHangRepository.cs) | Lệnh ADO.NET CRUD bảng `GioHang` (thêm, xem, sửa số lượng, xóa món, dọn giỏ) |
-| **Truy vấn CSDL (DAL)** | `ViTaiKhoanRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/ViTaiKhoanRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/ViTaiKhoanRepository.cs) | Lệnh ADO.NET UPDATE `SoDuVi`, INSERT lịch sử bảng `ThanhToan` |
-| **Truy vấn CSDL (DAL)** | `MaGiamGiaRepository.cs` | [`../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/MaGiamGiaRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/MaGiamGiaRepository.cs) | Lệnh ADO.NET SELECT/INSERT/DELETE kho mã ưu đãi `MaGiamGia` & `MaGiamGiaNguoiDung` |
-| **Dữ liệu truyền tải (DTO)** | `GioHangItemDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/GioHangItemDTO.cs`](../../qlspdigital/qlspdigital/DTOs/GioHangItemDTO.cs) | Định nghĩa cấu trúc `GioHangItemDTO` và `MaGiamGiaDTO` |
-| **Dữ liệu truyền tải (DTO)** | `DonHangDTO.cs` | [`../../qlspdigital/qlspdigital/DTOs/DonHangDTO.cs`](../../qlspdigital/qlspdigital/DTOs/DonHangDTO.cs) | Định nghĩa cấu trúc `ThanhToanDTO` |
-| **CSDL Master SQL** | `DPMS_Database_Master.sql` | [`../../Database/DPMS_Database_Master.sql`](../../Database/DPMS_Database_Master.sql) | Bảng sử dụng: `GioHang`, `NguoiDung` (`SoDuVi`), `MaGiamGia`, `MaGiamGiaNguoiDung`, `ThanhToan` |
+| Phân tầng kiến trúc | File / Thư mục mã nguồn | Ý nghĩa chức năng |
+|---|---|---|
+| **Giao diện (Views)** | [`CartControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/CartControl.cs) | UI 4: Giỏ hàng, sửa số lượng, áp dụng Voucher, nút Thanh toán 1-Click ví |
+| **Giao diện (Views)** | [`WalletControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/WalletControl.cs) | UI 5: Ví tài khoản, nạp tiền nhanh 50k-500k, lịch sử biến động số dư |
+| **Giao diện (Views)** | [`VoucherControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/VoucherControl.cs) | UI 15: Kho ưu đãi, nhập mã thu thập voucher (Create), xóa voucher (Delete) |
+| **Nghiệp vụ (BLL)** | [`GioHangService.cs`](../../qlspdigital/qlspdigital/BLL/Nhom2_Cart/GioHangService.cs) | Xử lý nghiệp vụ giỏ hàng (`GioHangService`), ví (`ViTaiKhoanService`), voucher (`MaGiamGiaService`) & thanh toán (`ThanhToanService`) |
+| **Truy vấn CSDL (DAL)** | [`GioHangRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/GioHangRepository.cs) | Lệnh ADO.NET CRUD bảng `GioHang` (thêm, xem, sửa số lượng, xóa món, dọn giỏ) |
+| **Truy vấn CSDL (DAL)** | [`ViTaiKhoanRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/ViTaiKhoanRepository.cs) | Lệnh ADO.NET UPDATE `SoDuVi`, INSERT lịch sử bảng `ThanhToan` |
+| **Truy vấn CSDL (DAL)** | [`MaGiamGiaRepository.cs`](../../qlspdigital/qlspdigital/DAL/Nhom2_Cart/MaGiamGiaRepository.cs) | Lệnh ADO.NET SELECT/INSERT/DELETE kho mã ưu đãi `MaGiamGia` & `MaGiamGiaNguoiDung` |
+| **Dữ liệu truyền tải (DTO)** | [`GioHangItemDTO.cs`](../../qlspdigital/qlspdigital/DTOs/GioHangItemDTO.cs) | Định nghĩa cấu trúc `GioHangItemDTO` và `MaGiamGiaDTO` |
+| **Dữ liệu truyền tải (DTO)** | [`DonHangDTO.cs` (chứa `ThanhToanDTO`)](../../qlspdigital/qlspdigital/DTOs/DonHangDTO.cs) | Định nghĩa cấu trúc `ThanhToanDTO` |
+| **CSDL Master SQL** | [`DPMS_Database_Master.sql`](../../Database/DPMS_Database_Master.sql) | Bảng sử dụng: `GioHang`, `NguoiDung` (`SoDuVi`), `MaGiamGia`, `MaGiamGiaNguoiDung`, `ThanhToan` |
 
 ---
 
@@ -124,7 +124,7 @@
       | (1)
       +------------------------ (N) [ SoHuuSanPham ]
 ```
-- **Ràng buộc cặp duy nhất Giỏ hàng:** `CONSTRAINT UQ_GioHang UNIQUE (MaNguoiDung, MaSanPham)` $\rightarrow$ Nếu thêm trùng sản phẩm thì chỉ tăng số lượng.
+- **Ràng buộc cặp duy nhất Giỏ hàng:** `CONSTRAINT UQ_GioHang UNIQUE (MaNguoiDung, MaSanPham)` $\rightarrow$ Sản phẩm số (Digital Products: Game/License) mỗi tài khoản chỉ sở hữu 1 bản quyền; hệ thống kích hoạt cơ chế chặn chọn trùng nhiều lần, số lượng luôn chuẩn hóa là 1.
 - **Ràng buộc cặp duy nhất Kho Voucher:** `CONSTRAINT UQ_NguoiDung_Voucher UNIQUE (MaNguoiDung, MaGiamGiaId)` $\rightarrow$ Mỗi tài khoản chỉ được thu thập 1 mã ưu đãi cùng loại một lần.
 - **Quy tắc an toàn số dư:** Ràng buộc `CHECK (SoDuVi >= 0)` ngăn chặn hoàn toàn tình trạng tài khoản bị âm tiền khi gặp tranh chấp đồng thời (Race Condition).
 
@@ -296,3 +296,73 @@ Quy trình đảm bảo tính toàn vẹn tuyệt đối qua Transaction:
    - Kiểm tra mã này đã có trong `MaGiamGiaNguoiDung` của khách hay chưa (chống spam thu thập nhiều lần).
    - Thêm bản ghi mới vào `MaGiamGiaNguoiDung` với `DaSuDung = 0`.
 3. **Presentation:** Hiển thị thẻ voucher mới trong danh sách "Voucher khả dụng". Nút **[ Dùng ngay ]** sẽ tự động chuyển view sang UI 4 và điền sẵn mã ưu đãi.
+
+---
+
+## 7. Bảo mật & Hardening (Security Hardening — Cập nhật tháng 10/2026)
+
+### 7.1. Chống Double-Click / Race Condition tại Thanh toán Giỏ hàng (`CartControl`)
+
+**Vấn đề gốc:**  
+Người dùng nhấp nhanh nút **"Thanh toán"** nhiều lần có thể kích hoạt `ThanhToanGioHang()` nhiều lần chồng chéo nhau trước khi giao dịch đầu tiên commit xong, dẫn đến trừ tiền ví lặp.
+
+**Giải pháp triển khai trong [`CartControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/CartControl.cs):**
+
+```csharp
+private bool _isCheckingOut = false; // Anti double-click guard
+
+private void BtnCheckout_Click(object? sender, EventArgs e)
+{
+    if (_isCheckingOut) return;       // Bỏ qua nếu đang trong giao dịch
+    _isCheckingOut = true;
+    if (btnCheckout != null) btnCheckout.Enabled = false;
+    try
+    {
+        // ... gọi ThanhToanGioHang() ...
+    }
+    finally
+    {
+        _isCheckingOut = false;
+        if (btnCheckout != null && !btnCheckout.IsDisposed) btnCheckout.Enabled = true;
+    }
+}
+```
+
+**Cơ chế hoạt động:**
+1. Biến `_isCheckingOut` (`bool`) hoạt động như một **mutex ứng dụng** cho giao dịch thanh toán.
+2. Nút `btnCheckout` bị Disabled trong suốt thời gian giao dịch đang chạy (feedback rõ ràng cho người dùng).
+3. Khối `finally` **luôn luôn** mở khóa lại dù giao dịch thành công hay thất bại — tránh UI bị treo.
+4. Lớp bảo vệ cuối cùng: `ThanhToanGioHang()` ở DAL chạy trong `SqlTransaction` — nếu trùng lặp vẫn lọt qua, DB sẽ rollback an toàn.
+
+---
+
+### 7.2. Chống Double-Click tại Nạp tiền Ví (`WalletControl`)
+
+**Vấn đề gốc:**  
+Người dùng nhấp nhanh các nút nạp tiền nhanh (50k/100k/200k/500k) hoặc nút "Nạp tùy chọn" nhiều lần có thể ghi nhiều bản ghi `ThanhToan` cùng lúc và tăng số dư ví lặp.
+
+**Giải pháp triển khai trong [`WalletControl.cs`](../../qlspdigital/qlspdigital/Views/Nhom2_Cart/WalletControl.cs):**
+
+```csharp
+private bool _isTopUpPending = false; // Anti double-click guard
+
+private void NapTien(decimal soTien)
+{
+    if (_isTopUpPending) return;
+    _isTopUpPending = true;
+
+    // Vô hiệu hóa TẤT CẢ nút nạp (cả preset lẫn custom)
+    Control[] topupBtns = { btnTopUp50k, btnTopUp100k, btnTopUp200k, btnTopUp500k, btnCustomTopUp };
+    foreach (var btn in topupBtns) if (btn != null) btn.Enabled = false;
+
+    try { /* gọi _viService.NapTien() */ }
+    finally
+    {
+        _isTopUpPending = false;
+        foreach (var btn in topupBtns) if (btn != null && !btn.IsDisposed) btn.Enabled = true;
+    }
+}
+```
+
+**Điểm khác biệt với Checkout:** Vì có 5 nút nạp, tất cả 5 nút được vô hiệu hóa đồng thời trong `finally`, tránh tình huống người dùng click nút 50k rồi ngay lập tức click nút 100k.
+

@@ -162,9 +162,10 @@ namespace qlspdigital.Views.Nhom1_Store
             this.flowProducts.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowProducts.Location = new System.Drawing.Point(0, 65);
             this.flowProducts.Name = "flowProducts";
-            this.flowProducts.Padding = new System.Windows.Forms.Padding(15, 8, 15, 8);
+            this.flowProducts.Padding = new System.Windows.Forms.Padding(15, 8, 32, 8);
             this.flowProducts.Size = new System.Drawing.Size(1040, 635);
             this.flowProducts.TabIndex = 1;
+            this.flowProducts.WrapContents = true;
             // 
             // StoreViewControl
             // 
@@ -178,7 +179,7 @@ namespace qlspdigital.Views.Nhom1_Store
             this.panelFilter.ResumeLayout(false);
             this.panelFilter.PerformLayout();
             this.ResumeLayout(false);
-
+            this.AdjustLayout();
         }
 
         #endregion
@@ -192,5 +193,84 @@ namespace qlspdigital.Views.Nhom1_Store
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.Label lblTotalCount;
         private System.Windows.Forms.FlowLayoutPanel flowProducts;
+
+        #region Windows Form Designer - Layout & UI Helpers
+#nullable enable
+
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public qlspdigital.Views.Main.MainForm? MainForm
+        {
+            get => _mainForm;
+            set
+            {
+                _mainForm = value;
+                // Khi MainForm được gán (sau constructor), cập nhật tất cả card đang hiển thị
+                // Điều này sửa lỗi card.MainForm == null khi LoadProducts() chạy trước khi MainForm được set
+                if (flowProducts != null)
+                {
+                    foreach (System.Windows.Forms.Control ctrl in flowProducts.Controls)
+                    {
+                        if (ctrl is qlspdigital.Controls.ProductCardControl card)
+                            card.MainForm = value;
+                    }
+                }
+            }
+        }
+        private qlspdigital.Views.Main.MainForm? _mainForm;
+
+        protected override void OnResize(System.EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            if (panelFilter == null || txtSearch == null || cboCategory == null || btnSearch == null || btnRefresh == null || lblTotalCount == null || lblSearchTitle == null || lblCategoryTitle == null) return;
+            int pnlW = panelFilter.ClientSize.Width;
+            if (pnlW < 300) return;
+
+            lblTotalCount.Location = new System.Drawing.Point(pnlW - lblTotalCount.Width - 25, 22);
+
+            lblSearchTitle.Location = new System.Drawing.Point(20, 22);
+            txtSearch.Location = new System.Drawing.Point(lblSearchTitle.Right + 12, 15);
+
+            int btnSearchW = 100;
+            int btnRefreshW = 90;
+            int rightBoundary = lblTotalCount.Left - 20;
+            int nonInputSpace = 20 + lblSearchTitle.Width + 12 + btnSearchW + 18 + lblCategoryTitle.Width + 12 + btnRefreshW + 12;
+            int availableForInputs = System.Math.Max(260, rightBoundary - nonInputSpace);
+
+            int searchW = System.Math.Clamp((int)(availableForInputs * 0.58), 160, 450);
+            int catW = System.Math.Clamp((int)(availableForInputs * 0.42), 120, 220);
+
+            txtSearch.Size = new System.Drawing.Size(searchW, 34);
+
+            btnSearch.Location = new System.Drawing.Point(txtSearch.Right + 10, 15);
+            btnSearch.Size = new System.Drawing.Size(btnSearchW, 34);
+
+            lblCategoryTitle.Location = new System.Drawing.Point(btnSearch.Right + 22, 22);
+            cboCategory.Location = new System.Drawing.Point(lblCategoryTitle.Right + 12, 15);
+            cboCategory.Size = new System.Drawing.Size(catW, 34);
+
+            btnRefresh.Location = new System.Drawing.Point(cboCategory.Right + 14, 15);
+            btnRefresh.Size = new System.Drawing.Size(btnRefreshW, 34);
+        }
+
+        private void PanelFilter_Paint(object? sender, System.Windows.Forms.PaintEventArgs e)
+        {
+            if (sender is System.Windows.Forms.Panel pnl)
+            {
+                using (System.Drawing.Pen p = new System.Drawing.Pen(qlspdigital.Shared.ThemeHelper.GetHeaderBorderColor(), 1))
+                {
+                    e.Graphics.DrawLine(p, 0, pnl.Height - 1, pnl.Width, pnl.Height - 1);
+                }
+            }
+        }
+
+#nullable restore
+        #endregion
     }
 }

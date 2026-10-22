@@ -588,6 +588,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             this.panelForm.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+            this.AdjustLayout();
         }
         #endregion
 
@@ -626,5 +627,73 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnDelete;
+
+        #region Windows Form Designer - Layout & UI Helpers
+
+        protected override void OnResize(System.EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            if (panelForm == null || dgvProducts == null || txtDescription == null || btnNew == null || txtId == null) return;
+            int totalW = System.Math.Max(700, this.ClientSize.Width);
+            int totalH = System.Math.Max(400, this.ClientSize.Height);
+
+            int rightW = System.Math.Clamp((int)(totalW * 0.34), 345, 420);
+            int leftW = System.Math.Max(260, totalW - rightW - 65); // margin 25 left + 15 gap + 25 right
+            int contentH = System.Math.Max(220, totalH - 120);
+
+            // 1. Search Bar
+            panelSearch.Location = new System.Drawing.Point(25, 55);
+            panelSearch.Size = new System.Drawing.Size(leftW, 42);
+            lblSearch.Location = new System.Drawing.Point(12, 12);
+            txtSearch.Location = new System.Drawing.Point(lblSearch.Right + 12, 8);
+            btnSearch.Size = new System.Drawing.Size(95, 30);
+            btnSearch.Location = new System.Drawing.Point(leftW - 105, 6);
+            txtSearch.Width = System.Math.Max(120, btnSearch.Left - txtSearch.Left - 12);
+
+            // 2. DataGridView
+            dgvProducts.Location = new System.Drawing.Point(25, 105);
+            dgvProducts.Size = new System.Drawing.Size(leftW, contentH);
+
+            // 3. Form Panel
+            panelForm.Location = new System.Drawing.Point(25 + leftW + 15, 55);
+            panelForm.Size = new System.Drawing.Size(rightW, contentH + 50);
+
+            // 4. Form Controls inside panelForm
+            int fieldInputW = System.Math.Max(150, rightW - 175);
+            txtId.Width = fieldInputW;
+            txtName.Width = fieldInputW;
+            txtPrice.Width = fieldInputW;
+            txtSize.Width = fieldInputW;
+            txtVersion.Width = fieldInputW;
+            cboCategory.Width = fieldInputW;
+
+            int browseW = 75;
+            btnBrowseFile.Size = new System.Drawing.Size(browseW, txtFilePath.Height + 2);
+            txtFilePath.Width = System.Math.Max(60, fieldInputW - browseW - 10);
+            btnBrowseFile.Location = new System.Drawing.Point(txtFilePath.Left + txtFilePath.Width + 10, txtFilePath.Top - 1);
+            txtDescription.Width = rightW - 40;
+
+            // Dynamically stretch textarea vertically and pin buttons cleanly
+            int formH = panelForm.ClientSize.Height;
+            int descH = System.Math.Clamp(formH - txtDescription.Top - 65, 75, 180);
+            txtDescription.Height = descH;
+            int btnY = txtDescription.Bottom + 12;
+
+            int btnW = System.Math.Max(90, (rightW - 40 - 20) / 3);
+            btnNew.Location = new System.Drawing.Point(20, btnY);
+            btnNew.Size = new System.Drawing.Size(btnW, 38);
+            btnSave.Location = new System.Drawing.Point(20 + btnW + 10, btnY);
+            btnSave.Size = new System.Drawing.Size(btnW, 38);
+            btnDelete.Location = new System.Drawing.Point(20 + (btnW + 10) * 2, btnY);
+            btnDelete.Size = new System.Drawing.Size(btnW, 38);
+        }
+
+        #endregion
     }
 }

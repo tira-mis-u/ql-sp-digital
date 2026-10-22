@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using qlspdigital.DAL.Nhom2_Cart;
 using qlspdigital.DAL.Nhom5_Orders;
@@ -12,13 +11,6 @@ namespace qlspdigital.BLL.Nhom2_Cart
     public class GioHangService
     {
         private readonly GioHangRepository _gioHangRepo;
-
-        public static event Action? CartUpdated;
-
-        public static void NotifyCartUpdated()
-        {
-            CartUpdated?.Invoke();
-        }
 
         public GioHangService()
         {
@@ -34,10 +26,16 @@ namespace qlspdigital.BLL.Nhom2_Cart
         public int LayTongSoLuongItem(int maNguoiDung)
         {
             if (maNguoiDung <= 0) return 0;
-            var list = _gioHangRepo.LayGioHang(maNguoiDung);
+            List<GioHangItemDTO> list = _gioHangRepo.LayGioHang(maNguoiDung);
             int sum = 0;
-            foreach (var item in list) sum += item.SoLuong;
+            foreach (GioHangItemDTO item in list) sum += item.SoLuong;
             return sum;
+        }
+
+        public bool DaCoTrongGioHang(int maNguoiDung, int maSanPham)
+        {
+            if (maNguoiDung <= 0 || maSanPham <= 0) return false;
+            return _gioHangRepo.DaCoTrongGioHang(maNguoiDung, maSanPham);
         }
 
         public bool ThemVaoGioHang(int maNguoiDung, int maSanPham, int soLuong, out string thongBao)
@@ -60,30 +58,33 @@ namespace qlspdigital.BLL.Nhom2_Cart
                 return false;
             }
 
-            bool ok = _gioHangRepo.ThemVaoGioHang(maNguoiDung, maSanPham, soLuong);
+            if (_gioHangRepo.DaCoTrongGioHang(maNguoiDung, maSanPham))
+            {
+                thongBao = "Sản phẩm này đã có trong giỏ hàng của bạn rồi! Vì là sản phẩm kỹ thuật số, mỗi tài khoản chỉ mua 1 bản quyền.";
+                return false;
+            }
+
+            bool ok = _gioHangRepo.ThemVaoGioHang(maNguoiDung, maSanPham, 1);
             thongBao = ok ? "Đã thêm sản phẩm vào giỏ hàng thành công!" : "Không thể thêm vào giỏ hàng.";
-            if (ok) NotifyCartUpdated();
             return ok;
         }
 
         public bool CapNhatSoLuong(int maGioHang, int soLuong)
         {
             bool ok = _gioHangRepo.CapNhatSoLuong(maGioHang, soLuong);
-            if (ok) NotifyCartUpdated();
             return ok;
         }
 
         public bool XoaKhoiGioHang(int maGioHang)
         {
             bool ok = _gioHangRepo.XoaKhoiGioHang(maGioHang);
-            if (ok) NotifyCartUpdated();
             return ok;
         }
 
         public decimal TinhTongTien(List<GioHangItemDTO> items)
         {
             decimal total = 0;
-            foreach (var item in items)
+            foreach (GioHangItemDTO item in items)
             {
                 total += item.ThanhTien;
             }
@@ -162,13 +163,6 @@ namespace qlspdigital.BLL.Nhom2_Cart
     {
         private readonly MaGiamGiaRepository _voucherRepo;
 
-        public static event Action? VoucherUpdated;
-
-        public static void NotifyVoucherUpdated()
-        {
-            VoucherUpdated?.Invoke();
-        }
-
         public MaGiamGiaService()
         {
             _voucherRepo = new MaGiamGiaRepository();
@@ -187,14 +181,13 @@ namespace qlspdigital.BLL.Nhom2_Cart
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(maCode))
+            if (string.IsNullOrEmpty(maCode) || maCode.Trim() == "")
             {
                 thongBao = "Vui lòng nhập mã voucher cần thu thập!";
                 return false;
             }
 
             bool ok = _voucherRepo.ThuThapVoucher(maNguoiDung, maCode, out thongBao);
-            if (ok) NotifyVoucherUpdated();
             return ok;
         }
 
@@ -206,7 +199,6 @@ namespace qlspdigital.BLL.Nhom2_Cart
         public bool XoaVoucherCaNhan(int maGiamGiaId, int maNguoiDung)
         {
             bool ok = _voucherRepo.XoaVoucherCaNhan(maGiamGiaId, maNguoiDung);
-            if (ok) NotifyVoucherUpdated();
             return ok;
         }
     }
@@ -236,7 +228,7 @@ namespace qlspdigital.BLL.Nhom2_Cart
                 return false;
             }
 
-            var items = _gioHangRepo.LayGioHang(maNguoiDung);
+            List<GioHangItemDTO> items = _gioHangRepo.LayGioHang(maNguoiDung);
             if (items == null || items.Count == 0)
             {
                 thongBao = "Giỏ hàng của bạn đang trống! Vui lòng chọn sản phẩm trước khi thanh toán.";
@@ -244,7 +236,7 @@ namespace qlspdigital.BLL.Nhom2_Cart
             }
 
             decimal tamTinh = 0;
-            foreach (var item in items) tamTinh += item.ThanhTien;
+            foreach (GioHangItemDTO item in items) tamTinh += item.ThanhTien;
 
             bool ok = _donHangRepo.ThucHienThanhToanDonHang(maNguoiDung, items, tamTinh, tienGiam, maGiamGiaId, out maDonHangCode, out thongBao);
             if (ok)
@@ -252,12 +244,6 @@ namespace qlspdigital.BLL.Nhom2_Cart
                 // Đồng bộ số dư mới sau khi trừ ví
                 decimal balanceMoi = _viRepo.LaySoDuVi(maNguoiDung);
                 UserSession.UpdateBalance(balanceMoi);
-                GioHangService.NotifyCartUpdated();
-                qlspdigital.BLL.Nhom5_Orders.ThuVienService.NotifyLibraryUpdated();
-                if (maGiamGiaId.HasValue)
-                {
-                    MaGiamGiaService.NotifyVoucherUpdated();
-                }
             }
 
             return ok;

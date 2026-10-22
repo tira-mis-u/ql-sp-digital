@@ -27,13 +27,13 @@ namespace qlspdigital.DAL.Nhom5_Orders
 
             List<SqlParameter> parameters = new List<SqlParameter>();
 
-            if (!string.IsNullOrWhiteSpace(trangThai) && !trangThai.Equals("Tất cả", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(trangThai) && trangThai != "Tất cả")
             {
                 query += " AND dh.TrangThaiDonHang = @TrangThai";
                 parameters.Add(new SqlParameter("@TrangThai", trangThai.Trim()));
             }
 
-            if (!string.IsNullOrWhiteSpace(tuKhoa))
+            if (!string.IsNullOrEmpty(tuKhoa) && tuKhoa.Trim() != "")
             {
                 query += " AND (dh.MaDonHangCode LIKE @TuKhoa OR nd.HoTen LIKE @TuKhoa)";
                 string safeKey = tuKhoa.Trim().Replace("[", "[[]");
@@ -78,7 +78,9 @@ namespace qlspdigital.DAL.Nhom5_Orders
         }
 
         // Lấy chi tiết các sản phẩm trong 1 đơn hàng
-        public List<ChiTietDonHangDTO> LayChiTietDonHang(int maDonHang)
+        // requestorId > 0: giới hạn chỉ trả kết quả nếu đơn thuộc về requestorId (chống IDOR)
+        // requestorId = 0: Admin, không kiểm tra sở hữu
+        public List<ChiTietDonHangDTO> LayChiTietDonHang(int maDonHang, int requestorId = 0)
         {
             List<ChiTietDonHangDTO> list = new List<ChiTietDonHangDTO>();
 
@@ -87,10 +89,22 @@ namespace qlspdigital.DAL.Nhom5_Orders
                        sp.TenSanPham
                 FROM ChiTietDonHang ct
                 INNER JOIN SanPham sp ON ct.MaSanPham = sp.MaSanPham
+                INNER JOIN DonHang dh ON ct.MaDonHang = dh.MaDonHang
                 WHERE ct.MaDonHang = @MaDonHang";
 
-            SqlParameter[] parameters = { new SqlParameter("@MaDonHang", maDonHang) };
-            DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
+            List<SqlParameter> parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@MaDonHang", maDonHang)
+            };
+
+            // Chống IDOR: nếu không phải Admin thì buộc phải khớp chủ đơn hàng
+            if (requestorId > 0)
+            {
+                query += " AND dh.MaNguoiDung = @RequestorId";
+                parameters.Add(new SqlParameter("@RequestorId", requestorId));
+            }
+
+            DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters.ToArray());
 
             foreach (DataRow row in dt.Rows)
             {
@@ -128,7 +142,7 @@ namespace qlspdigital.DAL.Nhom5_Orders
                         }
 
                         // 2. Nếu chuyển sang 'Hoàn thành', cấp game vào Thư viện SoHuuSanPham
-                        if (trangThaiMoi.Equals("Hoàn thành", StringComparison.OrdinalIgnoreCase))
+                        if (trangThaiMoi == "Hoàn thành")
                         {
                             string queryGrant = @"
                                 INSERT INTO SoHuuSanPham (MaNguoiDung, MaSanPham, MaDonHang, NgaySoHuu, SoLanTai)
@@ -233,7 +247,7 @@ namespace qlspdigital.DAL.Nhom5_Orders
                         }
 
                         // 5. Thêm chi tiết đơn hàng & cấp vào SoHuuSanPham
-                        foreach (var item in items)
+                        foreach (GioHangItemDTO item in items)
                         {
                             // ChiTietDonHang
                             string qDetail = @"
@@ -243,7 +257,7 @@ namespace qlspdigital.DAL.Nhom5_Orders
                             {
                                 cmdDetail.Parameters.AddWithValue("@MaDonHang", newOrderId);
                                 cmdDetail.Parameters.AddWithValue("@MaSanPham", item.MaSanPham);
-                                cmdDetail.Parameters.AddWithValue("@SoLuong", item.SoLuong);
+                                cmdDetail.Parameters.AddWithValue("@SoLuong", 1); // Sản phẩm kỹ thuật số: mỗi bản quyền chỉ có số lượng là 1
                                 cmdDetail.Parameters.AddWithValue("@DonGia", item.DonGia);
                                 cmdDetail.ExecuteNonQuery();
                             }
@@ -356,7 +370,7 @@ namespace qlspdigital.DAL.Nhom5_Orders
             string query = @"
                 SELECT sh.MaSoHuu, sh.MaNguoiDung, sh.MaSanPham, sh.MaDonHang, sh.NgaySoHuu, sh.SoLanTai, sh.LanTaiCuoi,
                        sp.TenSanPham, sp.HinhAnh, sp.DungLuongMB, sp.PhienBan, dm.TenDanhMuc,
-                       ISNULL(tp.DuongDanTep, '') AS DuongDanTep, tp.MaHashSHA256
+                       ISNULL(tp.DuongDanTep, '') AS DuongDanTep
                 FROM SoHuuSanPham sh
                 INNER JOIN SanPham sp ON sh.MaSanPham = sp.MaSanPham
                 INNER JOIN DanhMuc dm ON sp.MaDanhMuc = dm.MaDanhMuc
@@ -383,8 +397,7 @@ namespace qlspdigital.DAL.Nhom5_Orders
                     NgaySoHuu = Convert.ToDateTime(row["NgaySoHuu"]),
                     SoLanTai = Convert.ToInt32(row["SoLanTai"]),
                     LanTaiCuoi = row["LanTaiCuoi"] != DBNull.Value ? Convert.ToDateTime(row["LanTaiCuoi"]) : null,
-                    DuongDanTep = row["DuongDanTep"].ToString() ?? string.Empty,
-                    MaHashSHA256 = row["MaHashSHA256"] != DBNull.Value ? row["MaHashSHA256"].ToString() : null
+                    DuongDanTep = row["DuongDanTep"].ToString() ?? string.Empty
                 });
             }
 

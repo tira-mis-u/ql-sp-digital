@@ -259,6 +259,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             panelDetail.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvDetails).EndInit();
             ResumeLayout(false);
+            AdjustLayout();
         }
         #endregion
 
@@ -277,5 +278,39 @@ namespace qlspdigital.Views.Nhom5_Orders
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.Label lblDetailTitle;
+
+        #region Windows Form Designer - Layout & UI Helpers
+
+        protected override void OnResize(System.EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            if (dgvOrders == null || panelDetail == null || panelTop == null || btnRefresh == null || lblHeader == null) return;
+            int totalW = System.Math.Max(600, this.ClientSize.Width);
+            int totalH = System.Math.Max(380, this.ClientSize.Height);
+
+            panelTop.Location = new System.Drawing.Point(25, 20);
+            panelTop.Size = new System.Drawing.Size(totalW - 50, 48);
+            lblHeader.Location = new System.Drawing.Point(0, (panelTop.Height - lblHeader.Height) / 2);
+            btnRefresh.Location = new System.Drawing.Point(panelTop.Width - 110, (panelTop.Height - 32) / 2);
+            btnRefresh.Size = new System.Drawing.Size(110, 32);
+
+            int rightW = System.Math.Clamp((int)(totalW * 0.38), 300, 440);
+            int leftW = System.Math.Max(260, totalW - rightW - 65);
+            int contentH = System.Math.Max(180, totalH - 80 - 25);
+
+            dgvOrders.Location = new System.Drawing.Point(25, 80);
+            dgvOrders.Size = new System.Drawing.Size(leftW, contentH);
+
+            panelDetail.Location = new System.Drawing.Point(25 + leftW + 15, 80);
+            panelDetail.Size = new System.Drawing.Size(rightW, contentH);
+        }
+
+        #endregion
     }
 }

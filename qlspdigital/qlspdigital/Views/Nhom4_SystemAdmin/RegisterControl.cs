@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom4_SystemAdmin;
 
@@ -11,28 +10,16 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
     {
         private readonly AuthService _authService;
 
-        public event Action? OnNavigateToLogin;
-
         public RegisterControl()
         {
             _authService = new AuthService();
             InitializeComponent();
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            if (panelCenter != null)
-            {
-                int w = Math.Max(panelCenter.Width + 40, this.ClientSize.Width);
-                int h = Math.Max(panelCenter.Height + 40, this.ClientSize.Height);
-                panelCenter.Location = new Point(Math.Max(20, (w - panelCenter.Width) / 2), Math.Max(20, (h - panelCenter.Height) / 2));
-            }
-        }
 
         private void BtnBackToLogin_Click(object? sender, EventArgs e)
         {
-            OnNavigateToLogin?.Invoke();
+            MainForm?.NavigateToLogin();
         }
 
         private void BtnRegister_Click(object? sender, EventArgs e)
@@ -47,7 +34,7 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             if (_authService.DangKy(username, password, confirmPassword, fullname, email, phone, out string msg))
             {
                 MessageBox.Show(msg, "Đăng ký thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                OnNavigateToLogin?.Invoke();
+                MainForm?.NavigateToLogin();
             }
             else
             {

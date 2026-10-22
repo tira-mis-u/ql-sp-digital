@@ -115,3 +115,16 @@ Mô hình này giúp loại bỏ hoàn toàn màn hình Checkout rườm rà, ph
 - [x] **CRUD 2 (Ví tài khoản):** Nạp tiền tăng số dư (Update `SoDuVi`), mua hàng trừ số dư (Update `SoDuVi`) và chặn thành công khi số dư không đủ.
 - [x] **CRUD 3 (Kho Voucher - UI 15):** Hiển thị kho voucher (Read), thu thập mã ưu đãi mới (Create), tính toán giảm trừ hóa đơn chính xác khi áp dụng (Update `DaSuDung`), xóa voucher khỏi danh sách (Delete).
 - [x] Kịch bản demo bài tập lớn mượt mà, thuyết phục và logic 100%.
+
+---
+
+## 6. Ma trận Đặc tả Nghiệp vụ CRUD Chuyên sâu (CRUD Matrix & Defense Rationale)
+
+| Thực thể | **C** (Create) | **R** (Read) | **U** (Update) | **D** (Delete) |
+|---|---|---|---|---|
+| **Giỏ hàng** (`GioHang`) | Thêm SP từ Store (`ThemVaoGioHang`) | `dgvCart` hiển thị món hàng (`LayGioHang`) | Cộng dồn số lượng khi thêm trùng (`CapNhatSoLuong`) | `btnRemoveItem` (xóa món lẻ), `btnClearCart` (dọn giỏ) |
+| **Voucher** (`MaGiamGiaNguoiDung`) | Nhập mã hoặc bấm `btnCollectSelected` | `dgvVouchers` phân loại 3 trạng thái | Cập nhật `DaSuDung = 1` khi đơn hàng thành công | `btnDelete` ("Xóa khỏi ví") qua `XoaVoucherCaNhan()` |
+| **Ví Steam** (`SoDuVi`) | Nạp tiền vào ví (`NapTienVi`) | Hiển thị số dư real-time trên Header & Giỏ | Trừ tiền thanh toán đơn hàng | Không áp dụng (Số dư được bảo toàn lịch sử) |
+
+> **Phòng thủ vấn đáp BTL:** Khẳng định với Hội đồng rằng phân hệ của Nguyễn Quốc Trung có **FULL CRUD** trên cả Giỏ hàng lẫn Kho Voucher cá nhân. Hệ thống áp dụng nguyên tắc **ACID Transaction** khi thanh toán: đồng thời trừ tiền ví, tạo hóa đơn, cấp bản quyền thư viện và xóa giỏ hàng chỉ trong 1 giao dịch an toàn tuyệt đối.
+

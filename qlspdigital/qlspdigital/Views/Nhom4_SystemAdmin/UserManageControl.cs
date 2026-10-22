@@ -21,53 +21,13 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             _userService = new NguoiDungService();
 
             InitializeComponent();
-            AdjustLayout();
-            dgvUsers.SelectionChanged += (s, e) => UpdateActionButtons();
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            dgvUsers.SelectionChanged += DgvUsers_SelectionChanged;
             LoadUsers();
         }
 
-        protected override void OnResize(EventArgs e)
+        private void DgvUsers_SelectionChanged(object? sender, EventArgs e)
         {
-            base.OnResize(e);
-            AdjustLayout();
-        }
-
-        private void AdjustLayout()
-        {
-            if (panelFilter == null || dgvUsers == null || panelBottomActions == null || txtSearch == null || btnRefresh == null || lblRole == null || lblSearch == null || cboRole == null) return;
-            int totalW = Math.Max(600, this.ClientSize.Width);
-            int totalH = Math.Max(380, this.ClientSize.Height);
-
-            int fullW = totalW - 50;
-            panelFilter.Location = new Point(25, 55);
-            panelFilter.Size = new Size(fullW, 50);
-
-            // Bố cục tuần tự tương đối - không bao giờ chồng lấn nhãn
-            lblRole.Location = new Point(15, 15);
-            cboRole.Location = new Point(lblRole.Right + 12, 10);
-            lblSearch.Location = new Point(cboRole.Right + 24, 15);
-            txtSearch.Location = new Point(lblSearch.Right + 12, 10);
-
-            int btnSearchW = 100;
-            int btnRefreshW = 100;
-            int searchW = Math.Clamp(fullW - txtSearch.Left - btnSearchW - btnRefreshW - 45, 180, 520);
-            txtSearch.Size = new Size(searchW, 30);
-
-            btnSearch.Location = new Point(txtSearch.Right + 10, 9);
-            btnSearch.Size = new Size(btnSearchW, 32);
-
-            btnRefresh.Location = new Point(btnSearch.Right + 10, 9);
-            btnRefresh.Size = new Size(btnRefreshW, 32);
-
-            int bottomH = 46;
-            int contentH = Math.Max(180, totalH - 115 - bottomH - 18);
-
-            dgvUsers.Location = new Point(25, 115);
-            dgvUsers.Size = new Size(fullW, contentH);
-
-            panelBottomActions.Location = new Point(25, 115 + contentH + 8);
-            panelBottomActions.Size = new Size(fullW, bottomH);
+            UpdateActionButtons();
         }
 
         public void LoadUsers()
@@ -76,37 +36,27 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
             string? role = cboRole.SelectedItem?.ToString();
             string keyword = txtSearch.Text.Trim();
 
-            var list = _userService.LayDanhSachNguoiDung(role, keyword);
-            foreach (var u in list)
+            List<NguoiDungDTO> list = _userService.LayDanhSachNguoiDung(role, keyword);
+            foreach (NguoiDungDTO u in list)
             {
-                dgvUsers.Rows.Add(
-                    u.MaNguoiDung,
-                    u.TenDangNhap,
-                    u.HoTen,
-                    u.Email,
-                    u.SoDienThoai ?? "---",
-                    u.VaiTro == "QuanTriVien" ? "Quản Trị Viên" : "Khách Hàng",
-                    FormatHelper.FormatCurrency(u.SoDuVi),
-                    u.TrangThai ? "Hoạt động" : "Bị khóa"
-                );
+                dgvUsers.Rows.Add(u.MaNguoiDung, u.TenDangNhap, u.HoTen, u.Email, u.SoDienThoai ?? "---", u.VaiTro == "QuanTriVien" ? "Quản Trị Viên" : "Khách Hàng", FormatHelper.FormatCurrency(u.SoDuVi), u.TrangThai ? "Hoạt động" : "Bị khóa");
             }
             UpdateActionButtons();
         }
 
-        private void SetButtonState(Button btn, bool enabled, Color activeColor, string tooltipText, ref bool flag)
+        private void SetButtonState(Button btn, bool enabled, Color activeColor, string tooltipText)
         {
             if (btn == null) return;
-            flag = enabled;
             if (enabled)
             {
-                btn.BackColor = activeColor;
+                btn.BackColor = ThemeHelper.GetButtonColor(activeColor);
                 btn.ForeColor = Color.White;
                 btn.Cursor = Cursors.Hand;
             }
             else
             {
-                btn.BackColor = Color.FromArgb(42, 54, 66);
-                btn.ForeColor = Color.FromArgb(105, 120, 135);
+                btn.BackColor = ThemeHelper.GetDisabledButtonColor();
+                btn.ForeColor = ThemeHelper.GetDisabledButtonTextColor();
                 btn.Cursor = Cursors.No;
             }
             _toolTip.SetToolTip(btn, tooltipText);
@@ -118,22 +68,26 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
             if (dgvUsers.SelectedRows.Count == 0)
             {
-                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Vui lòng chọn một người dùng", ref _canLock);
-                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Vui lòng chọn một người dùng", ref _canUnlock);
+                _canLock = false;
+                _canUnlock = false;
+                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Vui lòng chọn một người dùng");
+                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Vui lòng chọn một người dùng");
                 return;
             }
 
-            var row = dgvUsers.SelectedRows[0];
+            DataGridViewRow row = dgvUsers.SelectedRows[0];
             if (row == null || row.Index < 0)
             {
-                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Vui lòng chọn một người dùng", ref _canLock);
-                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Vui lòng chọn một người dùng", ref _canUnlock);
+                _canLock = false;
+                _canUnlock = false;
+                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Vui lòng chọn một người dùng");
+                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Vui lòng chọn một người dùng");
                 return;
             }
 
-            var valId = (dgvUsers.Columns.Contains("colMaNguoiDung") ? row.Cells["colMaNguoiDung"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            object? valId = (dgvUsers.Columns.Contains("MaNguoiDung") ? row.Cells["MaNguoiDung"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
             int id = valId != null ? Convert.ToInt32(valId) : 0;
-            string status = (dgvUsers.Columns.Contains("colTrangThai") ? row.Cells["colTrangThai"].Value : null)?.ToString()
+            string status = (dgvUsers.Columns.Contains("TrangThai") ? row.Cells["TrangThai"].Value : null)?.ToString()
                 ?? (row.Cells.Count > 7 ? row.Cells[7].Value?.ToString() : "") ?? "";
 
             bool isSelf = UserSession.IsLoggedIn && UserSession.CurrentUserId == id;
@@ -141,18 +95,24 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
 
             if (isSelf)
             {
-                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Không thể tự khóa tài khoản quản trị đang đăng nhập", ref _canLock);
-                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Tài khoản của bạn đang hoạt động", ref _canUnlock);
+                _canLock = false;
+                _canUnlock = false;
+                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Không thể tự khóa tài khoản quản trị đang đăng nhập");
+                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Tài khoản của bạn đang hoạt động");
             }
             else if (isActive)
             {
-                SetButtonState(btnLock, true, Color.FromArgb(180, 40, 40), "Khóa tài khoản này", ref _canLock);
-                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Tài khoản này đang hoạt động bình thường", ref _canUnlock);
+                _canLock = true;
+                _canUnlock = false;
+                SetButtonState(btnLock, true, Color.FromArgb(180, 40, 40), "Khóa tài khoản này");
+                SetButtonState(btnUnlock, false, Color.FromArgb(90, 160, 45), "Tài khoản này đang hoạt động bình thường");
             }
             else
             {
-                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Tài khoản này đã bị khóa từ trước", ref _canLock);
-                SetButtonState(btnUnlock, true, Color.FromArgb(90, 160, 45), "Mở khóa cho tài khoản này", ref _canUnlock);
+                _canLock = false;
+                _canUnlock = true;
+                SetButtonState(btnLock, false, Color.FromArgb(180, 40, 40), "Tài khoản này đã bị khóa từ trước");
+                SetButtonState(btnUnlock, true, Color.FromArgb(90, 160, 45), "Mở khóa cho tài khoản này");
             }
         }
 
@@ -176,9 +136,9 @@ namespace qlspdigital.Views.Nhom4_SystemAdmin
                 return;
             }
 
-            var row = dgvUsers.SelectedRows[0];
+            DataGridViewRow row = dgvUsers.SelectedRows[0];
             if (row == null || row.Index < 0) return;
-            var val = (dgvUsers.Columns.Contains("MaNguoiDung") ? row.Cells["MaNguoiDung"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            object? val = (dgvUsers.Columns.Contains("MaNguoiDung") ? row.Cells["MaNguoiDung"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
             if (val == null) return;
             int id = Convert.ToInt32(val);
             string username = (dgvUsers.Columns.Contains("TenDangNhap") ? row.Cells["TenDangNhap"].Value : null)?.ToString()

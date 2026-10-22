@@ -14,7 +14,7 @@
 ## 1. Mục tiêu phân hệ
 Cung cấp bộ công cụ quản trị dữ liệu cốt lõi cho Administrator:
 1. Quản lý thông tin thương mại sản phẩm (thêm, sửa, ngưng bán sản phẩm, cập nhật giá).
-2. **Quản lý & Tải lên tệp kỹ thuật số (Digital Files Management):** Upload tệp cài đặt (`.zip`, `.exe`, `.iso`), đo dung lượng byte, tự động sinh mã băm SHA-256 chống lỗi file, lưu trữ vật lý vào thư mục hệ thống và ghi nhận siêu dữ liệu vào bảng `TepSanPham`.
+2. **Quản lý & Tải lên tệp kỹ thuật số (Digital Files Management):** Upload tệp cài đặt (`.zip`, `.exe`, `.iso`), đo dung lượng byte, phiên bản, lưu trữ vật lý vào thư mục hệ thống và ghi nhận siêu dữ liệu vào bảng `TepSanPham`.
 3. Quản lý danh mục thể loại hàng hóa (`DanhMuc`).
 4. Quản lý hồ sơ cá nhân và đổi mật khẩu an toàn (`NguoiDung`).
 
@@ -44,9 +44,8 @@ Cung cấp bộ công cụ quản trị dữ liệu cốt lõi cho Administrator
    - Nút **"📁 Chọn tệp kỹ thuật số..."** (`OpenFileDialog` lọc `*.zip;*.rar;*.exe;*.iso;*.pdf`):
      + Người dùng chọn file bộ cài hoặc tài nguyên từ máy tính.
      + Hệ thống tự động trích xuất: Tên file gốc, định dạng mở rộng (extension), dung lượng chính xác theo Byte/MB.
-     + Tự động tính mã băm kiểm tra toàn vẹn **`SHA-256`** của tệp nguồn.
      + Copy tệp vật lý vào thư mục lưu trữ ứng dụng: `Storage/Products/{MaSanPham}/{TenTep}` (chạy luồng nền hoặc thanh ProgressBar).
-     + Lưu siêu dữ liệu vào bảng `TepSanPham`: `INSERT INTO TepSanPham (MaSanPham, TenTep, DuongDanTep, DinhDangTep, KichThuocByte, MaHashSHA256, PhienBan)`.
+     + Lưu siêu dữ liệu vào bảng `TepSanPham`: `INSERT INTO TepSanPham (MaSanPham, TenTep, DuongDanTep, DinhDangTep, KichThuocByte, PhienBan)`.
    - Danh sách tệp đính kèm của sản phẩm: Hiển thị bảng con các file thuộc về sản phẩm hiện tại, cho phép xóa tệp cũ hoặc cập nhật phiên bản mới.
 4. **Cập nhật sản phẩm (CRUD Update 1):**
    - Click chọn dòng trên DataGridView $\rightarrow$ Dữ liệu đổ ngược về Form nhập liệu và nạp danh sách tệp đính kèm.
@@ -72,7 +71,7 @@ Cung cấp bộ công cụ quản trị dữ liệu cốt lõi cho Administrator
    - **Đồng bộ thời gian thực (Real-time Sync):** Khi cập nhật họ tên thành công, hệ thống gọi `UserSession.UpdateProfile(hoTen, email)` để kích hoạt sự kiện `SessionChanged`. Thanh tiêu đề Header trên `MainForm` (`lblUserGreeting`) lập tức lắng nghe sự kiện và cập nhật lại câu chào cùng họ tên mới ngay trong tích tắc mà không cần khởi động lại ứng dụng.
 3. **Đổi mật khẩu an toàn:**
    - Nhập: Mật khẩu cũ, Mật khẩu mới, Xác nhận mật khẩu mới.
-   - Kiểm tra hash SHA-256 mật khẩu cũ $\rightarrow$ Nếu đúng cập nhật mật khẩu mới $\rightarrow$ Bấm nút **"Lưu mật khẩu mới"** $\rightarrow$ `UPDATE NguoiDung SET MatKhauHash = @MatKhauHashMoi`.
+   - Kiểm tra mật khẩu cũ $\rightarrow$ Nếu đúng cập nhật mật khẩu mới $\rightarrow$ Bấm nút **"Lưu mật khẩu mới"** $\rightarrow$ `UPDATE NguoiDung SET MatKhau = @MatKhauMoi`.
 4. **Tùy chọn cài đặt ứng dụng & Lưu trữ CSDL thật (Settings Persistence):**
    - Cung cấp các cấu hình tùy chọn:
      + Nhận thông báo giao dịch & ưu đãi qua Email (`ThongBaoEmail`).
@@ -81,7 +80,7 @@ Cung cấp bộ công cụ quản trị dữ liệu cốt lõi cho Administrator
      + Luôn hiển thị hộp thoại xác nhận trước khi trừ ví thanh toán (`XacNhanThanhToan`).
    - Bấm nút **"Lưu cài đặt ứng dụng"** $\rightarrow$ Lưu bền vững vào bảng CSDL `CaiDatNguoiDung` (cơ chế UPSERT - nếu chưa có thì INSERT, đã có thì UPDATE). Mỗi khi người dùng mở màn hình Hồ sơ, hệ thống tự động nạp trạng thái đã lưu từ CSDL.
 5. **Banner Nguyên tắc bảo mật tài khoản Digital Steam:**
-   - Tích hợp khung thông tin khuyến cáo an toàn tài khoản số chuẩn Steam với 4 quy tắc cốt lõi: Mật khẩu phức tạp độc nhất, Tuyệt đối không chia sẻ mã xác thực OTP/Email, Cảnh báo giao dịch nạp/trừ ví bất thường, Kiểm tra tính toàn vẹn mã hash SHA-256 của tệp cài đặt.
+   - Tích hợp khung thông tin khuyến cáo an toàn tài khoản số chuẩn Steam với 4 quy tắc cốt lõi: Mật khẩu phức tạp độc nhất, Tuyệt đối không chia sẻ mã xác thực OTP/Email, Cảnh báo giao dịch nạp/trừ ví bất thường, Bảo vệ an toàn tài khoản và thiết bị.
    - Cơ chế layout động (`AutoSize` và tính toán lại `Height` theo độ rộng thực tế `lblSecurityContent.Bottom + 25px`), đảm bảo hiển thị trọn vẹn toàn bộ các mục danh sách và không bị che khuất phần chân ở bất kỳ kích thước màn hình nào.
 6. **Quy chuẩn nhãn nút bấm:**
    - Tất cả các nút bấm hành động đều sử dụng nhãn chữ thuần (plain text), tuyệt đối không thêm icon emoji để giữ tính trang trọng, chuyên nghiệp và đồng bộ chuẩn ứng dụng Desktop.
@@ -95,8 +94,8 @@ Cung cấp bộ công cụ quản trị dữ liệu cốt lõi cho Administrator
    - Tuyệt đối không lưu tệp nhị phân trực tiếp vào SQL Server để tránh phình to CSDL (database bloat).
    - Tệp vật lý phải được lưu trong thư mục: `Storage/Products/{MaSanPham}/{TenTep}`.
    - CSDL chỉ lưu **đường dẫn tương đối** và các siêu dữ liệu kỹ thuật.
-4. **Kiểm tra toàn vẹn (SHA-256):** Mỗi tệp upload bắt buộc phải được tính toán mã hash SHA-256 để làm cơ sở cho phân hệ Thư viện (Nhóm 5) đối chiếu kiểm tra khi người dùng tải tệp về.
-5. **Ràng buộc bảo mật mật khẩu:** Mật khẩu cũ phải trùng khớp với hash trong CSDL; mật khẩu mới phải có độ dài tối thiểu 6 ký tự.
+4. **Quản lý siêu dữ liệu tệp:** Mỗi tệp upload được ghi nhận metadata (tên tệp, đường dẫn, định dạng, dung lượng byte, phiên bản) làm cơ sở cho phân hệ Thư viện (Nhóm 5) quản lý khi người dùng tải tệp về.
+5. **Ràng buộc mật khẩu:** Mật khẩu cũ phải trùng khớp với CSDL; mật khẩu mới phải có độ dài tối thiểu 6 ký tự.
 6. **Bảo toàn cài đặt người dùng:** Bảng `CaiDatNguoiDung` liên kết khóa ngoại với `NguoiDung(MaNguoiDung)` với `ON DELETE CASCADE`, đảm bảo cấu hình cá nhân luôn đi liền với tài khoản.
 
 ---
@@ -105,4 +104,17 @@ Cung cấp bộ công cụ quản trị dữ liệu cốt lõi cho Administrator
 - [x] **CRUD 1 (Sản phẩm & Tệp số - UI 10):** Thêm, sửa, ngưng bán sản phẩm mượt mà; chọn và upload tệp kỹ thuật số vào thư mục `Storage/` và ghi metadata vào `TepSanPham` thành công.
 - [x] **CRUD 2 (Danh mục thể loại - UI 11):** Thêm, xem, sửa, xóa danh mục trên DataGridView thành công.
 - [x] **CRUD 3 (Hồ sơ, Đổi mật khẩu & Cài đặt - UI 8):** Cập nhật họ tên, email, đồng bộ Header realtime qua `SessionChanged`, đổi mật khẩu an toàn và lưu bền vững cấu hình vào `CaiDatNguoiDung` trong CSDL. Banner bảo mật hiển thị trọn vẹn không bị cắt dòng.
+
+---
+
+## 6. Ma trận Đặc tả Nghiệp vụ CRUD Chuyên sâu (CRUD Matrix & Defense Rationale)
+
+| Thực thể | **C** (Create) | **R** (Read) | **U** (Update) | **D** (Delete) |
+|---|---|---|---|---|
+| **Sản phẩm & File** (`SanPham`, `TepSanPham`) | `btnNew` + `btnSave` (upload file, lưu metadata) | `dgvProducts` + ô tìm kiếm `txtSearch` | `btnSave` (khi `txtId > 0`) cập nhật giá, phiên bản, trạng thái | `btnDelete` xóa sản phẩm khỏi CSDL |
+| **Danh mục** (`DanhMuc`) | `btnNew` + `btnSave` thêm danh mục mới | `dgvCategories` hiển thị kèm số lượng SP | `btnSave` sửa tên và mô tả danh mục | `btnDelete` xóa danh mục (chặn nếu còn sản phẩm) |
+| **Hồ sơ cá nhân** (`HoSo`) | Đăng ký tài khoản (tại Nhóm 4) | `LoadProfile` nạp thông tin cá nhân | `btnUpdateProfile` đổi họ tên, email, SĐT; `btnChangePassword` đổi mật khẩu | Không áp dụng (Hồ sơ gắn liền phiên đăng nhập) |
+
+> **Phòng thủ vấn đáp BTL:** Khẳng định với Hội đồng rằng phân hệ của Phạm Trung Hiếu là **chuẩn mực Master Data CRUD hoàn hảo 100%**: hỗ trợ cả upload tệp nhị phân Hybrid Storage bên ngoài CSDL và bẫy kiểm tra toàn vẹn danh mục (Cascade Check) ngăn chặn xóa nhầm danh mục đang chứa sản phẩm.
+
 

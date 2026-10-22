@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using Microsoft.Data.SqlClient;
 
@@ -39,7 +39,7 @@ namespace qlspdigital.Shared
                 // 2. Nếu thất bại, duyệt qua danh sách các chuỗi kết nối dự phòng
                 foreach (string candidate in FallbackConnectionStrings)
                 {
-                    if (string.Equals(candidate, ConnectionString, StringComparison.OrdinalIgnoreCase))
+                    if (candidate.ToLower() == ConnectionString.ToLower())
                         continue;
 
                     try
