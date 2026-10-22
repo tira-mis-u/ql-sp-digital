@@ -12,7 +12,8 @@ namespace qlspdigital.DAL.Nhom1_Store
     public class SanPhamRepository
     {
         // Lấy danh sách sản phẩm mở bán theo bộ lọc từ khóa và danh mục
-        public List<SanPhamDTO> LayDanhSachSanPham(string? tuKhoa = null, int? maDanhMuc = null)
+        // Nếu maNguoiDung > 0: tự động ẩn các sản phẩm người dùng đã sở hữu trong Thư viện (lọc bằng SQL)
+        public List<SanPhamDTO> LayDanhSachSanPham(string? tuKhoa = null, int? maDanhMuc = null, int maNguoiDung = 0)
         {
             List<SanPhamDTO> list = new List<SanPhamDTO>();
 
@@ -41,6 +42,18 @@ namespace qlspdigital.DAL.Nhom1_Store
             {
                 query += " AND sp.MaDanhMuc = @MaDanhMuc";
                 parameters.Add(new SqlParameter("@MaDanhMuc", maDanhMuc.Value));
+            }
+
+            // Ẩn sản phẩm đã mua bằng SQL NOT EXISTS — không cần lọc thêm ở C#
+            if (maNguoiDung > 0)
+            {
+                query += @"
+                  AND NOT EXISTS (
+                      SELECT 1 FROM SoHuuSanPham sh
+                      WHERE sh.MaSanPham = sp.MaSanPham
+                        AND sh.MaNguoiDung = @MaNguoiDung
+                  )";
+                parameters.Add(new SqlParameter("@MaNguoiDung", maNguoiDung));
             }
 
             query += @"

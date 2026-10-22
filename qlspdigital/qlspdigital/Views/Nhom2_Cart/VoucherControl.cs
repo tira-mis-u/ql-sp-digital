@@ -120,21 +120,20 @@ namespace qlspdigital.Views.Nhom2_Cart
         private bool _canApplySelected = false;
         private bool _canDeleteSelected = false;
 
-        private void SetBtnState(Button btn, bool enabled, Color activeColor, string text, ref bool flag)
+        private void SetBtnState(Button btn, bool enabled, Color activeColor, string text)
         {
             if (btn == null) return;
-            flag = enabled;
             btn.Text = text;
             if (enabled)
             {
-                btn.BackColor = activeColor;
+                btn.BackColor = ThemeHelper.GetButtonColor(activeColor);
                 btn.ForeColor = Color.White;
                 btn.Cursor = Cursors.Hand;
             }
             else
             {
-                btn.BackColor = Color.FromArgb(42, 54, 66);
-                btn.ForeColor = Color.FromArgb(105, 120, 135);
+                btn.BackColor = ThemeHelper.GetDisabledButtonColor();
+                btn.ForeColor = ThemeHelper.GetDisabledButtonTextColor();
                 btn.Cursor = Cursors.No;
             }
         }
@@ -145,9 +144,12 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             if (dgvVouchers.SelectedRows.Count == 0)
             {
-                SetBtnState(btnCollectSelected, false, Color.FromArgb(49, 98, 130), "Thu thập mã vào ví", ref _canCollectSelected);
-                SetBtnState(btnApplySelected, false, Color.FromArgb(90, 160, 45), "Dùng ngay (Cần thu thập trước)", ref _canApplySelected);
-                SetBtnState(btnDelete, false, Color.FromArgb(180, 40, 40), "Xóa khỏi ví", ref _canDeleteSelected);
+                _canCollectSelected = false;
+                _canApplySelected = false;
+                _canDeleteSelected = false;
+                SetBtnState(btnCollectSelected, false, Color.FromArgb(49, 98, 130), "Thu thập mã vào ví");
+                SetBtnState(btnApplySelected, false, Color.FromArgb(90, 160, 45), "Dùng ngay (Cần thu thập trước)");
+                SetBtnState(btnDelete, false, Color.FromArgb(180, 40, 40), "Xóa khỏi ví");
                 return;
             }
 
@@ -156,21 +158,30 @@ namespace qlspdigital.Views.Nhom2_Cart
 
             if (tt == "Chưa lưu")
             {
-                SetBtnState(btnCollectSelected, true, Color.FromArgb(49, 98, 130), "Thu thập mã vào ví", ref _canCollectSelected);
-                SetBtnState(btnApplySelected, false, Color.FromArgb(90, 160, 45), "Dùng ngay (Cần thu thập trước)", ref _canApplySelected);
-                SetBtnState(btnDelete, false, Color.FromArgb(180, 40, 40), "Xóa khỏi ví", ref _canDeleteSelected);
+                _canCollectSelected = true;
+                _canApplySelected = false;
+                _canDeleteSelected = false;
+                SetBtnState(btnCollectSelected, true, Color.FromArgb(49, 98, 130), "Thu thập mã vào ví");
+                SetBtnState(btnApplySelected, false, Color.FromArgb(90, 160, 45), "Dùng ngay (Cần thu thập trước)");
+                SetBtnState(btnDelete, false, Color.FromArgb(180, 40, 40), "Xóa khỏi ví");
             }
             else if (tt == "Đã trong ví")
             {
-                SetBtnState(btnCollectSelected, false, Color.FromArgb(49, 98, 130), "Đã có trong ví", ref _canCollectSelected);
-                SetBtnState(btnApplySelected, true, Color.FromArgb(90, 160, 45), "Dùng ngay (Áp dụng vào giỏ)", ref _canApplySelected);
-                SetBtnState(btnDelete, true, Color.FromArgb(180, 40, 40), "Xóa khỏi ví", ref _canDeleteSelected);
+                _canCollectSelected = false;
+                _canApplySelected = true;
+                _canDeleteSelected = true;
+                SetBtnState(btnCollectSelected, false, Color.FromArgb(49, 98, 130), "Đã có trong ví");
+                SetBtnState(btnApplySelected, true, Color.FromArgb(90, 160, 45), "Dùng ngay (Áp dụng vào giỏ)");
+                SetBtnState(btnDelete, true, Color.FromArgb(180, 40, 40), "Xóa khỏi ví");
             }
             else if (tt == "Đã sử dụng")
             {
-                SetBtnState(btnCollectSelected, false, Color.FromArgb(49, 98, 130), "Đã sử dụng", ref _canCollectSelected);
-                SetBtnState(btnApplySelected, false, Color.FromArgb(90, 160, 45), "Đã sử dụng (Hết lượt)", ref _canApplySelected);
-                SetBtnState(btnDelete, false, Color.FromArgb(180, 40, 40), "Xóa khỏi ví", ref _canDeleteSelected);
+                _canCollectSelected = false;
+                _canApplySelected = false;
+                _canDeleteSelected = false;
+                SetBtnState(btnCollectSelected, false, Color.FromArgb(49, 98, 130), "Đã sử dụng");
+                SetBtnState(btnApplySelected, false, Color.FromArgb(90, 160, 45), "Đã sử dụng (Hết lượt)");
+                SetBtnState(btnDelete, false, Color.FromArgb(180, 40, 40), "Xóa khỏi ví");
             }
         }
 

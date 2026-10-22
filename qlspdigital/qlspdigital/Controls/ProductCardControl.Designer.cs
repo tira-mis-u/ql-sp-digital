@@ -210,12 +210,12 @@ namespace qlspdigital.Controls
 
         private void ProductCardControl_MouseEnter(object? sender, System.EventArgs e)
         {
-            this.BackColor = System.Drawing.Color.FromArgb(42, 71, 94);
+            this.BackColor = qlspdigital.Shared.ThemeHelper.GetCardHoverColor();
         }
 
         private void ProductCardControl_MouseLeave(object? sender, System.EventArgs e)
         {
-            this.BackColor = System.Drawing.Color.FromArgb(30, 45, 62);
+            this.BackColor = qlspdigital.Shared.ThemeHelper.GetCardNormalColor();
         }
 
 #nullable restore

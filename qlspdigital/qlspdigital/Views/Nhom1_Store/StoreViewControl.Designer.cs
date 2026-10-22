@@ -162,9 +162,10 @@ namespace qlspdigital.Views.Nhom1_Store
             this.flowProducts.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowProducts.Location = new System.Drawing.Point(0, 65);
             this.flowProducts.Name = "flowProducts";
-            this.flowProducts.Padding = new System.Windows.Forms.Padding(15, 8, 15, 8);
+            this.flowProducts.Padding = new System.Windows.Forms.Padding(15, 8, 32, 8);
             this.flowProducts.Size = new System.Drawing.Size(1040, 635);
             this.flowProducts.TabIndex = 1;
+            this.flowProducts.WrapContents = true;
             // 
             // StoreViewControl
             // 
@@ -262,7 +263,7 @@ namespace qlspdigital.Views.Nhom1_Store
         {
             if (sender is System.Windows.Forms.Panel pnl)
             {
-                using (System.Drawing.Pen p = new System.Drawing.Pen(System.Drawing.Color.FromArgb(35, 48, 68), 1))
+                using (System.Drawing.Pen p = new System.Drawing.Pen(qlspdigital.Shared.ThemeHelper.GetHeaderBorderColor(), 1))
                 {
                     e.Graphics.DrawLine(p, 0, pnl.Height - 1, pnl.Width, pnl.Height - 1);
                 }

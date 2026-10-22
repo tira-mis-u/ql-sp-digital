@@ -50,21 +50,20 @@ namespace qlspdigital.Views.Nhom5_Orders
         private bool _canCancel = false;
         private readonly ToolTip _actionToolTip = new ToolTip();
 
-        private void SetButtonVisualState(Button btn, bool canAction, Color activeColor, string tooltipText, string disabledReason, ref bool actionFlag)
+        private void SetButtonVisualState(Button btn, bool canAction, Color activeColor, string tooltipText, string disabledReason)
         {
-            actionFlag = canAction;
             if (canAction)
             {
-                btn.BackColor = activeColor;
+                btn.BackColor = qlspdigital.Shared.ThemeHelper.GetButtonColor(activeColor);
                 btn.ForeColor = Color.White;
                 btn.Cursor = Cursors.Hand;
                 _actionToolTip.SetToolTip(btn, tooltipText);
             }
             else
             {
-                // Giảm opacity: Màu nền xám trầm mờ (42, 54, 66) và chữ xám nhạt (105, 120, 135)
-                btn.BackColor = Color.FromArgb(42, 54, 66);
-                btn.ForeColor = Color.FromArgb(105, 120, 135);
+                // Giảm opacity: Màu nền xám mờ và chữ xám nhạt theo Theme hiện tại
+                btn.BackColor = qlspdigital.Shared.ThemeHelper.GetDisabledButtonColor();
+                btn.ForeColor = qlspdigital.Shared.ThemeHelper.GetDisabledButtonTextColor();
                 btn.Cursor = Cursors.No; // Con trỏ disabled 🚫
                 _actionToolTip.SetToolTip(btn, disabledReason);
             }
@@ -75,16 +74,20 @@ namespace qlspdigital.Views.Nhom5_Orders
             if (dgvOrders.SelectedRows.Count == 0)
             {
                 dgvOrderDetails.Rows.Clear();
-                SetButtonVisualState(btnApprove, false, Color.FromArgb(90, 160, 45), "", "Vui lòng chọn đơn hàng cần xử lý", ref _canApprove);
-                SetButtonVisualState(btnCancelOrder, false, Color.FromArgb(180, 40, 40), "", "Vui lòng chọn đơn hàng cần xử lý", ref _canCancel);
+                _canApprove = false;
+                _canCancel = false;
+                SetButtonVisualState(btnApprove, false, Color.FromArgb(90, 160, 45), "", "Vui lòng chọn đơn hàng cần xử lý");
+                SetButtonVisualState(btnCancelOrder, false, Color.FromArgb(180, 40, 40), "", "Vui lòng chọn đơn hàng cần xử lý");
                 return;
             }
 
             DataGridViewRow row = dgvOrders.SelectedRows[0];
             if (row == null || row.Index < 0)
             {
-                SetButtonVisualState(btnApprove, false, Color.FromArgb(90, 160, 45), "", "Vui lòng chọn đơn hàng cần xử lý", ref _canApprove);
-                SetButtonVisualState(btnCancelOrder, false, Color.FromArgb(180, 40, 40), "", "Vui lòng chọn đơn hàng cần xử lý", ref _canCancel);
+                _canApprove = false;
+                _canCancel = false;
+                SetButtonVisualState(btnApprove, false, Color.FromArgb(90, 160, 45), "", "Vui lòng chọn đơn hàng cần xử lý");
+                SetButtonVisualState(btnCancelOrder, false, Color.FromArgb(180, 40, 40), "", "Vui lòng chọn đơn hàng cần xử lý");
                 return;
             }
 
@@ -101,12 +104,15 @@ namespace qlspdigital.Views.Nhom5_Orders
             bool isCompleted = orderStatus == "Hoàn thành";
             bool isCancelled = orderStatus == "Đã hủy";
 
-            SetButtonVisualState(btnApprove, !isCompleted, Color.FromArgb(90, 160, 45),
-                "Kích hoạt thủ công đơn hàng và cấp bản quyền vào Thư viện của khách",
-                "Đơn hàng này đã Hoàn thành và sản phẩm đã có sẵn trong Thư viện của khách hàng", ref _canApprove);
+            _canApprove = !isCompleted;
+            _canCancel = !isCancelled;
 
-            SetButtonVisualState(btnCancelOrder, !isCancelled, Color.FromArgb(180, 40, 40),
-                "Hủy đơn hàng này", "Đơn hàng này đã ở trạng thái Đã hủy", ref _canCancel);
+            SetButtonVisualState(btnApprove, _canApprove, Color.FromArgb(90, 160, 45),
+                "Kích hoạt thủ công đơn hàng và cấp bản quyền vào Thư viện của khách",
+                "Đơn hàng này đã Hoàn thành và sản phẩm đã có sẵn trong Thư viện của khách hàng");
+
+            SetButtonVisualState(btnCancelOrder, _canCancel, Color.FromArgb(180, 40, 40),
+                "Hủy đơn hàng này", "Đơn hàng này đã ở trạng thái Đã hủy");
 
             dgvOrderDetails.Rows.Clear();
 

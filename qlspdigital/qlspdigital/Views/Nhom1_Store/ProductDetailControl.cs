@@ -70,7 +70,7 @@ namespace qlspdigital.Views.Nhom1_Store
             {
                 btnAddToCart.Text = "Thêm vào giỏ hàng";
                 btnAddToCart.Enabled = true;
-                btnAddToCart.BackColor = Color.FromArgb(90, 160, 45);
+                btnAddToCart.BackColor = ThemeHelper.GetButtonColor(Color.FromArgb(90, 160, 45));
                 return;
             }
 
@@ -78,19 +78,19 @@ namespace qlspdigital.Views.Nhom1_Store
             {
                 btnAddToCart.Text = "✓ Đã sở hữu trong Thư viện";
                 btnAddToCart.Enabled = false;
-                btnAddToCart.BackColor = Color.FromArgb(60, 65, 75);
+                btnAddToCart.BackColor = ThemeHelper.GetButtonColor(Color.FromArgb(60, 65, 75));
             }
             else if (_gioHangService.DaCoTrongGioHang(UserSession.CurrentUserId, _maSanPham))
             {
                 btnAddToCart.Text = "✓ Đã có trong Giỏ hàng";
                 btnAddToCart.Enabled = false;
-                btnAddToCart.BackColor = Color.FromArgb(49, 98, 130);
+                btnAddToCart.BackColor = ThemeHelper.GetButtonColor(Color.FromArgb(49, 98, 130));
             }
             else
             {
                 btnAddToCart.Text = "Thêm vào giỏ hàng";
                 btnAddToCart.Enabled = true;
-                btnAddToCart.BackColor = Color.FromArgb(90, 160, 45);
+                btnAddToCart.BackColor = ThemeHelper.GetButtonColor(Color.FromArgb(90, 160, 45));
             }
         }
 

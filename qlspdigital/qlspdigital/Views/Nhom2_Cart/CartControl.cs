@@ -106,12 +106,12 @@ namespace qlspdigital.Views.Nhom2_Cart
             if (_appliedVoucherCode != "" && currentText.ToUpper() != _appliedVoucherCode.ToUpper())
             {
                 btnApplyVoucher.Text = "Áp dụng";
-                btnApplyVoucher.BackColor = Color.FromArgb(49, 98, 130);
+                btnApplyVoucher.BackColor = ThemeHelper.GetButtonColor(Color.FromArgb(49, 98, 130));
             }
             else if (_appliedVoucherCode != "" && currentText.ToUpper() == _appliedVoucherCode.ToUpper())
             {
                 btnApplyVoucher.Text = "Đã áp dụng";
-                btnApplyVoucher.BackColor = Color.FromArgb(90, 160, 45);
+                btnApplyVoucher.BackColor = ThemeHelper.GetButtonColor(Color.FromArgb(90, 160, 45));
             }
         }
 
@@ -154,7 +154,7 @@ namespace qlspdigital.Views.Nhom2_Cart
                 _appliedVoucherCode = code;
                 _tienGiam = tienGiam;
                 btnApplyVoucher.Text = "Đã áp dụng";
-                btnApplyVoucher.BackColor = Color.FromArgb(90, 160, 45);
+                btnApplyVoucher.BackColor = ThemeHelper.GetButtonColor(Color.FromArgb(90, 160, 45));
                 UpdateTotals();
                 MessageBox.Show(msg, "Áp dụng Voucher thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -164,7 +164,7 @@ namespace qlspdigital.Views.Nhom2_Cart
                 _appliedVoucherCode = string.Empty;
                 _tienGiam = 0;
                 btnApplyVoucher.Text = "Áp dụng";
-                btnApplyVoucher.BackColor = Color.FromArgb(49, 98, 130);
+                btnApplyVoucher.BackColor = ThemeHelper.GetButtonColor(Color.FromArgb(49, 98, 130));
                 UpdateTotals();
                 MessageBox.Show(msg, "Lỗi Voucher", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }

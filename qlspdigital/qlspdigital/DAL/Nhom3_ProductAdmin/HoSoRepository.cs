@@ -91,8 +91,7 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
         public bool DoiMatKhau(int maNguoiDung, string matKhauCu, string matKhauMoi, out string thongBao)
         {
             // Kiểm tra mật khẩu cũ
-            string colName = "MatKhau";
-            string queryCheckPass = $"SELECT {colName} FROM NguoiDung WHERE MaNguoiDung = @MaNguoiDung";
+            string queryCheckPass = "SELECT MatKhau FROM NguoiDung WHERE MaNguoiDung = @MaNguoiDung";
             SqlParameter[] pCheck = { new SqlParameter("@MaNguoiDung", maNguoiDung) };
             object? passObj = DatabaseHelper.ExecuteScalar(queryCheckPass, pCheck);
 
@@ -109,7 +108,7 @@ namespace qlspdigital.DAL.Nhom3_ProductAdmin
                 return false;
             }
 
-            string queryUpdate = $"UPDATE NguoiDung SET {colName} = @NewPass WHERE MaNguoiDung = @MaNguoiDung";
+            string queryUpdate = "UPDATE NguoiDung SET MatKhau = @NewPass WHERE MaNguoiDung = @MaNguoiDung";
             SqlParameter[] pUpdate =
             {
                 new SqlParameter("@NewPass", matKhauMoi),

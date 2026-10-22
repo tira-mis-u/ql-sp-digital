@@ -56,14 +56,14 @@ namespace qlspdigital.Views.Nhom5_Orders
             btn.Enabled = enabled;
             if (enabled)
             {
-                btn.BackColor = activeColor;
+                btn.BackColor = ThemeHelper.GetButtonColor(activeColor);
                 btn.ForeColor = Color.White;
                 btn.Cursor = Cursors.Hand;
             }
             else
             {
-                btn.BackColor = Color.FromArgb(42, 54, 66);
-                btn.ForeColor = Color.FromArgb(105, 120, 135);
+                btn.BackColor = ThemeHelper.GetDisabledButtonColor();
+                btn.ForeColor = ThemeHelper.GetDisabledButtonTextColor();
                 btn.Cursor = Cursors.No;
             }
         }
@@ -73,7 +73,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             if (dgvLibrary.SelectedRows.Count == 0) return 0;
             DataGridViewRow row = dgvLibrary.SelectedRows[0];
             if (row == null || row.Index < 0) return 0;
-            object? val = (dgvLibrary.Columns.Contains("MaSoHuu") ? row.Cells["MaSoHuu"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
+            object? val = row.Cells.Count > 0 ? row.Cells[0].Value : null;
             return val != null ? Convert.ToInt32(val) : 0;
         }
 
@@ -82,7 +82,7 @@ namespace qlspdigital.Views.Nhom5_Orders
             if (dgvLibrary.SelectedRows.Count == 0) return string.Empty;
             DataGridViewRow row = dgvLibrary.SelectedRows[0];
             if (row == null || row.Index < 0) return string.Empty;
-            object? val = (dgvLibrary.Columns.Contains("TenSanPham") ? row.Cells["TenSanPham"].Value : null) ?? (row.Cells.Count > 1 ? row.Cells[1].Value : null);
+            object? val = row.Cells.Count > 1 ? row.Cells[1].Value : null;
             return val?.ToString() ?? string.Empty;
         }
 

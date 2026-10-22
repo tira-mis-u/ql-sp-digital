@@ -60,8 +60,7 @@ namespace qlspdigital.Views.Nhom3_ProductAdmin
             object? val = (dgvProducts.Columns.Contains("MaSanPham") ? row.Cells["MaSanPham"].Value : null) ?? (row.Cells.Count > 0 ? row.Cells[0].Value : null);
             if (val == null) return;
             int id = Convert.ToInt32(val);
-            List<SanPhamDTO> list = _spAdminService.LayDanhSachSanPham();
-            SanPhamDTO? sp = list.Find(x => x.MaSanPham == id);
+            SanPhamDTO? sp = _spAdminService.LayChiTietSanPham(id);
 
             if (sp != null)
             {

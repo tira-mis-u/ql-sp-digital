@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using qlspdigital.BLL.Nhom1_Store;
@@ -66,7 +67,10 @@ namespace qlspdigital.Views.Nhom1_Store
 
             try
             {
-                List<SanPhamDTO> products = _sanPhamService.LayDanhSachSanPham(tuKhoa, maDanhMuc);
+                // Truyền maNguoiDung để SQL tự lọc sản phẩm đã sở hữu (NOT EXISTS) — không cần xử lý thêm ở C#
+                int maNguoiDung = UserSession.IsLoggedIn ? UserSession.CurrentUserId : 0;
+                List<SanPhamDTO> products = _sanPhamService.LayDanhSachSanPham(tuKhoa, maDanhMuc, maNguoiDung);
+
                 lblTotalCount.Text = $"Hiển thị: {products.Count} sản phẩm";
 
                 if (products.Count == 0)
@@ -83,6 +87,8 @@ namespace qlspdigital.Views.Nhom1_Store
                     return;
                 }
 
+                // SuspendLayout để tránh tính toán scroll sai nhiều lần khi add card liên tục
+                flowProducts.SuspendLayout();
                 foreach (SanPhamDTO sp in products)
                 {
                     ProductCardControl card = new ProductCardControl();
@@ -93,7 +99,15 @@ namespace qlspdigital.Views.Nhom1_Store
                     card.StoreView = this;
 
                     flowProducts.Controls.Add(card);
+
+                    // Đảm bảo theme hiện tại được áp dụng đúng sau khi bind data,
+                    // bất kể ControlAdded event có kịp fire trước hay sau BindData.
+                    ThemeHelper.ApplyTheme(card);
                 }
+                flowProducts.ResumeLayout(true);
+
+                // Reset AutoScrollMinSize để tránh vùng cuộn ảo (scroll vô hạn)
+                flowProducts.AutoScrollMinSize = System.Drawing.Size.Empty;
             }
             catch (Exception ex)
             {
